@@ -1,7 +1,6 @@
 "use client";
 
 import { WorkOrderStatus } from "../types/workOrder.types";
-import { WorkOrderCard } from "./WorkOrderCard";
 import { useWorkOrders } from "../hooks/useWorkOrders";
 import {
   DndContext,
@@ -12,12 +11,7 @@ import {
   useSensors,
   DragEndEvent,
 } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
  
 import { useState } from "react";
 import { SortableWorkOrderCard } from "./SortableWorkOrderCard";

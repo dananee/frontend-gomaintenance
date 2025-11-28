@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDistanceToNow } from "date-fns";
 import {
   CheckCircle2,
   MessageSquare,
@@ -19,11 +18,10 @@ interface TimelineEvent {
   description: string;
   user: string;
   timestamp: string; // Using string for mock data compatibility
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 interface WorkOrderTimelineProps {
-  workOrderId: string;
   events?: TimelineEvent[];
 }
 
@@ -44,7 +42,6 @@ const eventColors = {
 };
 
 export function WorkOrderTimeline({
-  workOrderId,
   events = [],
 }: WorkOrderTimelineProps) {
   const mockEvents: TimelineEvent[] = events.length > 0 ? events : [

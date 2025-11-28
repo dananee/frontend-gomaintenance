@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Package } from "lucide-react";
 
@@ -13,12 +13,10 @@ interface Part {
 }
 
 interface WorkOrderPartsProps {
-  workOrderId: string;
   parts?: Part[];
 }
 
 export function WorkOrderParts({
-  workOrderId,
   parts = [],
 }: WorkOrderPartsProps) {
   const mockParts: Part[] = parts.length > 0 ? parts : [

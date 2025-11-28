@@ -17,7 +17,6 @@ interface StockMovement {
 }
 
 interface PartMovementHistoryProps {
-  partId: string;
   movements?: StockMovement[];
 }
 
@@ -48,10 +47,7 @@ const movementTypeConfig = {
   },
 };
 
-export function PartMovementHistory({
-  partId,
-  movements = [],
-}: PartMovementHistoryProps) {
+export function PartMovementHistory({ movements = [] }: PartMovementHistoryProps) {
   const mockMovements: StockMovement[] = movements.length > 0 ? movements : [
     {
       id: "1",

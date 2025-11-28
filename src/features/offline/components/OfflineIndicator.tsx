@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { WifiOff } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 import { useSyncManager } from "../hooks/useSyncManager";
 
 export function OfflineIndicator() {
   useSyncManager();
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(() => {
+    if (typeof navigator === "undefined") return true;
+    return navigator.onLine;
+  });
 
   useEffect(() => {
-    setIsOnline(navigator.onLine);
-
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 

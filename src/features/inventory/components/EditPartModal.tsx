@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -29,7 +28,7 @@ interface EditPartModalProps {
 }
 
 export function EditPartModal({ isOpen, onClose, part, onSave }: EditPartModalProps) {
-  const { register, handleSubmit, setValue, watch } = useForm<Partial<Part>>({
+  const { register, handleSubmit, setValue } = useForm<Partial<Part>>({
     defaultValues: part || {
       name: "",
       part_number: "",

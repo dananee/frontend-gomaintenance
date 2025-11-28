@@ -6,8 +6,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
+type NotificationChannelSettings = {
+  workOrders: boolean;
+  inventory: boolean;
+  maintenance: boolean;
+  marketing?: boolean;
+};
+
+type NotificationSettingsFormValues = {
+  email: NotificationChannelSettings;
+  push: Omit<NotificationChannelSettings, "marketing">;
+};
+
 export function NotificationSettingsForm() {
-  const { register, handleSubmit, watch, setValue } = useForm({
+  const { handleSubmit, setValue } = useForm<NotificationSettingsFormValues>({
     defaultValues: {
       email: {
         workOrders: true,
@@ -24,11 +36,14 @@ export function NotificationSettingsForm() {
   });
 
   // Helper to handle switch changes
-  const handleSwitchChange = (path: string, value: boolean) => {
-    setValue(path as any, value);
+  const handleSwitchChange = (
+    path: "email.workOrders" | "email.inventory" | "email.maintenance" | "email.marketing" | "push.workOrders" | "push.inventory" | "push.maintenance",
+    value: boolean,
+  ) => {
+    setValue(path, value);
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: NotificationSettingsFormValues) => {
     console.log(data);
   };
 

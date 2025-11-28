@@ -6,8 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
+type BrandingFormValues = {
+  primaryColor: string;
+  accentColor: string;
+  logoUrl: string;
+};
+
 export function BrandingSettingsForm() {
-  const { register, handleSubmit, watch } = useForm({
+  const { register, handleSubmit } = useForm<BrandingFormValues>({
     defaultValues: {
       primaryColor: "#3b82f6",
       accentColor: "#f59e0b",
@@ -15,10 +21,7 @@ export function BrandingSettingsForm() {
     },
   });
 
-  const primaryColor = watch("primaryColor");
-  const accentColor = watch("accentColor");
-
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: BrandingFormValues) => {
     console.log(data);
   };
 

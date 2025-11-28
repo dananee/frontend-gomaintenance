@@ -12,7 +12,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import Link from "next/link";
 import { AlertTriangle, Edit } from "lucide-react";
 
 interface PartsTableProps {

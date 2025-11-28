@@ -7,8 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+interface ProfileFormValues {
+  fullName: string;
+  email: string;
+  title: string;
+  bio: string;
+}
+
 export function ProfileSettingsForm() {
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<ProfileFormValues>({
     defaultValues: {
       fullName: "John Doe",
       email: "john.doe@example.com",
@@ -17,7 +24,7 @@ export function ProfileSettingsForm() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: ProfileFormValues) => {
     console.log(data);
     // Mock API call
   };

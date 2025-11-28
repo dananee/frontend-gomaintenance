@@ -17,12 +17,10 @@ interface Comment {
 }
 
 interface WorkOrderCommentsProps {
-  workOrderId: string;
   comments?: Comment[];
 }
 
 export function WorkOrderComments({
-  workOrderId,
   comments = [],
 }: WorkOrderCommentsProps) {
   const [newComment, setNewComment] = useState("");

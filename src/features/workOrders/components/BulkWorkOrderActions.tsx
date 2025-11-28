@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CheckSquare, MoreHorizontal, Trash2, CheckCircle, PlayCircle } from "lucide-react";
+import { Trash2, CheckCircle, PlayCircle } from "lucide-react";
 
 interface BulkWorkOrderActionsProps {
   selectedCount: number;

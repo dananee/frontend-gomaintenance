@@ -1,15 +1,16 @@
 "use client";
 
 import { Notification } from "../types/notification.types";
-import { cn, formatDate } from "@/lib/utils";
-import { 
-  CheckCircle, 
-  AlertTriangle, 
-  Info, 
-  XCircle, 
-  Wrench, 
-  Package, 
-  Settings 
+import { cn } from "@/lib/utils";
+import {
+  CheckCircle,
+  AlertTriangle,
+  Info,
+  XCircle,
+  Wrench,
+  Package,
+  Settings,
+  CalendarClock,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -39,6 +40,8 @@ export function NotificationItem({ notification, onRead, onClick }: Notification
         return <Wrench className="h-3 w-3" />;
       case "inventory":
         return <Package className="h-3 w-3" />;
+      case "maintenance":
+        return <CalendarClock className="h-3 w-3" />;
       case "system":
         return <Settings className="h-3 w-3" />;
       default:
