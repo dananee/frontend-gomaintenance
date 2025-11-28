@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { checkPermission } from "@/lib/rbac/checkPermission";
 import { Permission } from "@/lib/rbac/permissions";
-import { LayoutDashboard, Car, ClipboardCheck, Boxes, Users, BarChart3, X } from "lucide-react";
+import { LayoutDashboard, Car, ClipboardList, Package, Users, BarChart3, X, Wrench } from "lucide-react";
 
 interface NavItem {
   name: string;
@@ -30,13 +30,19 @@ const navItems: NavItem[] = [
   {
     name: "Work Orders",
     href: "/dashboard/work-orders",
-    icon: ClipboardCheck,
+    icon: ClipboardList,
     permission: "view_work_orders",
+  },
+  {
+    name: "Maintenance",
+    href: "/dashboard/maintenance",
+    icon: Wrench,
+    permission: "view_maintenance",
   },
   {
     name: "Inventory",
     href: "/dashboard/inventory",
-    icon: Boxes,
+    icon: Package,
     permission: "view_inventory",
   },
   {

@@ -1,17 +1,23 @@
 export type Role = "admin" | "mechanic" | "driver" | "supervisor";
 
 export type Permission =
-  | "manage_users"
-  | "view_users"
-  | "manage_vehicles"
+  | "view_dashboard"
   | "view_vehicles"
-  | "manage_work_orders"
+  | "edit_vehicles"
+  | "manage_vehicles"
   | "view_work_orders"
+  | "create_work_orders"
+  | "edit_work_orders"
+  | "manage_work_orders"
   | "complete_tasks"
-  | "manage_inventory"
   | "view_inventory"
+  | "manage_inventory"
+  | "view_users"
+  | "manage_users"
   | "view_reports"
   | "manage_reports"
+  | "view_maintenance"
+  | "manage_maintenance"
   | "report_incident"
   | "view_costs";
 

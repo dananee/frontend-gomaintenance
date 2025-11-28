@@ -1,10 +1,12 @@
 "use client";
 
 import { PartsTable } from "@/features/inventory/components/PartsTable";
+import { EditPartModal } from "@/features/inventory/components/EditPartModal";
 import { useParts } from "@/features/inventory/hooks/useParts";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Part } from "@/features/inventory/types/inventory.types";
 
 export default function InventoryPage() {
   const { data: parts, isLoading } = useParts();
@@ -12,6 +14,9 @@ export default function InventoryPage() {
   const [warehouse, setWarehouse] = useState("all");
   const [category, setCategory] = useState("all");
   const [lowStockOnly, setLowStockOnly] = useState(false);
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPart, setEditingPart] = useState<Part | undefined>(undefined);
 
   const filteredParts = useMemo(() => {
     const rows = parts?.data || [];
@@ -20,20 +25,36 @@ export default function InventoryPage() {
       const matchesSearch =
         !search ||
         part.name.toLowerCase().includes(search.toLowerCase()) ||
-        part.sku?.toLowerCase().includes(search.toLowerCase());
+        part.part_number?.toLowerCase().includes(search.toLowerCase());
       const matchesWarehouse = warehouse === "all" || part.location === warehouse;
       const matchesCategory = category === "all" || part.category === category;
-      const matchesLowStock = !lowStockOnly || part.quantity <= (part.reorderLevel || 5);
+      const matchesLowStock = !lowStockOnly || part.quantity <= part.min_quantity;
 
       return matchesSearch && matchesWarehouse && matchesCategory && matchesLowStock;
     });
   }, [category, lowStockOnly, parts?.data, search, warehouse]);
 
+  const handleCreate = () => {
+    setEditingPart(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (part: Part) => {
+    setEditingPart(part);
+    setIsModalOpen(true);
+  };
+
+  const handleSave = (partData: Partial<Part>) => {
+    console.log("Saving part:", partData);
+    // Here we would call the mutation to create or update the part
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Inventory</h1>
-        <Button>
+        <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
           Add Part
         </Button>
@@ -52,9 +73,11 @@ export default function InventoryPage() {
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">All categories</option>
-          <option value="engine">Engine</option>
-          <option value="brakes">Brakes</option>
-          <option value="tires">Tires</option>
+          <option value="Engine">Engine</option>
+          <option value="Brakes">Brakes</option>
+          <option value="Tires">Tires</option>
+          <option value="Filters">Filters</option>
+          <option value="Fluids">Fluids</option>
         </select>
         <select
           value={warehouse}
@@ -62,9 +85,8 @@ export default function InventoryPage() {
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">All warehouses</option>
-          <option value="central">Central</option>
-          <option value="east">East</option>
-          <option value="mobile">Mobile</option>
+          <option value="Shelf A-1">Shelf A-1</option>
+          <option value="Shelf B-2">Shelf B-2</option>
         </select>
         <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           <input
@@ -76,7 +98,18 @@ export default function InventoryPage() {
         </label>
       </div>
 
-      <PartsTable parts={filteredParts} isLoading={isLoading} />
+      <PartsTable 
+        parts={filteredParts} 
+        isLoading={isLoading} 
+        onEdit={handleEdit}
+      />
+
+      <EditPartModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        part={editingPart}
+        onSave={handleSave}
+      />
     </div>
   );
 }

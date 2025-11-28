@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Toaster } from "@/components/ui/sonner";
 import { GlobalErrorBoundary } from "@/components/layout/GlobalErrorBoundary";
+import { OfflineIndicator } from "@/features/offline/components/OfflineIndicator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <GlobalErrorBoundary>
           <Providers>
             <ProgressBar />
+            <OfflineIndicator />
             {children}
             <Toaster />
           </Providers>
