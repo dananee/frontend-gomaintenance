@@ -4,6 +4,7 @@ import { useState } from "react";
 import { VehicleTable } from "@/features/vehicles/components/VehicleTable";
 import { VehicleForm } from "@/features/vehicles/components/VehicleForm";
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
+import { Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
@@ -12,9 +13,9 @@ import { Plus } from "lucide-react";
 export default function VehiclesPage() {
   const { data, isLoading } = useVehicles();
   const { isOpen, open, close } = useModal();
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
-  const handleEdit = (vehicle: any) => {
+  const handleEdit = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
     open();
   };
