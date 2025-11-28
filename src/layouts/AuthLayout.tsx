@@ -1,0 +1,22 @@
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
+
+export function AuthLayout({ children }: AuthLayoutProps) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 dark:from-gray-900 dark:to-gray-800">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Fleet Maintenance
+          </h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Manage your fleet efficiently
+          </p>
+        </div>
+        
+        {children}
+      </div>
+    </div>
+  );
+}
