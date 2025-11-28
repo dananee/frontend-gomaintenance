@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { CreateWorkOrderDTO, WorkOrderPriority, WorkOrderType } from "../types/workOrder.types";
+import { CreateWorkOrderDTO } from "../types/workOrder.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCreateWorkOrder } from "../hooks/useCreateWorkOrder";

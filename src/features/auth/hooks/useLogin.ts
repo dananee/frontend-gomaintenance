@@ -11,7 +11,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: (credentials: LoginCredentials) => login(credentials),
     onSuccess: (data) => {
-      setAuth(data.user, data.token);
+      setAuth(data.user, data.token, data.refreshToken);
       router.push("/dashboard");
     },
   });

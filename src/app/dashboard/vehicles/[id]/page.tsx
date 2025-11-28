@@ -1,164 +1,149 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { useVehicle } from "@/features/vehicles/hooks/useVehicle";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, Trash2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useState } from "react";
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
+import { Upload } from "lucide-react";
 
-export default function VehicleDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params.id as string;
-  const { data: vehicle, isLoading, error } = useVehicle(id);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+export default function VehicleDetailPage() {
+  const params = useParams<{ id: string }>();
+  const { data, isLoading } = useVehicle(params?.id ?? "");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-10 w-32" />
-        </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-64" />
-        </div>
-      </div>
-    );
+    return <Skeleton className="h-[60vh] w-full" />;
   }
 
-  if (error || !vehicle) {
-    return (
-      <div className="flex h-[50vh] flex-col items-center justify-center text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Vehicle Not Found</h2>
-        <p className="mt-2 text-gray-500">The vehicle you are looking for does not exist or has been removed.</p>
-        <Button onClick={() => router.back()} className="mt-4" variant="outline">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Go Back
-        </Button>
-      </div>
-    );
+  if (!data) {
+    return <div className="text-sm text-gray-500">Vehicle not found.</div>;
   }
 
-  const handleDelete = () => {
-    // Implement delete logic here
-    toast.success("Vehicle deleted successfully");
-    router.push("/dashboard/vehicles");
-  };
+  const maintenancePlans = [
+    { title: "Oil Change", dueIn: "1,200 mi", interval: "Every 5,000 mi" },
+    { title: "Brake Inspection", dueIn: "3 weeks", interval: "Quarterly" },
+  ];
+
+  const documents = [
+    { id: "reg", name: "Registration.pdf", updated: "2024-11-01" },
+    { id: "ins", name: "Insurance Card.png", updated: "2024-10-15" },
+  ];
+
+  const workOrders = [
+    { id: "WO-124", title: "Brake pads replacement", status: "In Progress" },
+    { id: "WO-101", title: "Annual inspection", status: "Completed" },
+  ];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {vehicle.brand} {vehicle.model}
-            </h1>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>{vehicle.year}</span>
-              <span>•</span>
-              <span className="font-mono">{vehicle.plate_number}</span>
-            </div>
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <p className="text-sm text-gray-500">Vehicle</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{data.name}</h1>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Badge variant="info">{data.type}</Badge>
+            <Badge variant="success">{data.status}</Badge>
+            <Badge variant="warning">Odometer: {data.odometer || "—"}</Badge>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => {}}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit
-          </Button>
-          <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </Button>
-        </div>
+        <Button onClick={() => setShowConfirm(true)} variant="outline">
+          Archive Vehicle
+        </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="md:col-span-2">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Vehicle Information</CardTitle>
+            <CardTitle>Details</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="text-sm font-medium text-gray-500">VIN</label>
-              <p className="font-mono text-sm">{vehicle.vin}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Type</label>
-              <p className="capitalize">{vehicle.type}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Status</label>
-              <div className="mt-1">
-                <Badge
-                  variant={
-                    vehicle.status === "active"
-                      ? "success"
-                      : vehicle.status === "maintenance"
-                      ? "warning"
-                      : "default"
-                  }
-                >
-                  {vehicle.status}
-                </Badge>
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Current Mileage</label>
-              <p>{vehicle.current_km.toLocaleString()} km</p>
-            </div>
-            {vehicle.current_engine_hours && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Engine Hours</label>
-                <p>{vehicle.current_engine_hours} hrs</p>
-              </div>
-            )}
-            <div>
-              <label className="text-sm font-medium text-gray-500">Last Updated</label>
-              <p>{vehicle.updated_at ? formatDate(vehicle.updated_at) : "N/A"}</p>
-            </div>
+            <Detail label="VIN" value={data.vin} />
+            <Detail label="License Plate" value={data.licensePlate} />
+            <Detail label="Category" value={data.type} />
+            <Detail label="Assigned Driver" value={data.assignedTo || "Unassigned"} />
+            <Detail label="Last Service" value={data.lastService || "Unknown"} />
+            <Detail label="Next Service" value="Auto calculated" />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Quick Stats</CardTitle>
+            <CardTitle>Maintenance Plans</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-gray-500">Total Work Orders</label>
-              <p className="text-2xl font-bold">0</p> {/* Placeholder */}
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Total Cost</label>
-              <p className="text-2xl font-bold">$0.00</p> {/* Placeholder */}
-            </div>
+          <CardContent className="space-y-3">
+            {maintenancePlans.map((plan) => (
+              <div key={plan.title} className="rounded-lg border border-gray-200 p-3 dark:border-gray-800">
+                <p className="font-semibold text-gray-900 dark:text-gray-100">{plan.title}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Next: {plan.dueIn}</p>
+                <p className="text-xs text-gray-400">Interval: {plan.interval}</p>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabs for History, Docs, etc. will go here */}
-      
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Documents</CardTitle>
+            <Button size="sm" variant="secondary">
+              <Upload className="mr-2 h-4 w-4" /> Upload
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {documents.map((doc) => (
+              <div
+                key={doc.id}
+                className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-800"
+              >
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{doc.name}</p>
+                  <p className="text-xs text-gray-500">Updated {doc.updated}</p>
+                </div>
+                <Badge variant="outline">View</Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Work Orders</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {workOrders.map((wo) => (
+              <div key={wo.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-800">
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{wo.title}</p>
+                  <p className="text-xs text-gray-500">{wo.id}</p>
+                </div>
+                <Badge variant={wo.status === "Completed" ? "success" : "warning"}>{wo.status}</Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
       <ConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleDelete}
-        title="Delete Vehicle"
-        description="Are you sure you want to delete this vehicle? This action cannot be undone."
-        variant="destructive"
-        confirmText="Delete"
+        open={showConfirm}
+        onOpenChange={setShowConfirm}
+        title="Archive vehicle?"
+        description="This will remove the vehicle from active dispatch and maintenance queues."
+        onConfirm={() => setShowConfirm(false)}
       />
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value?: string | number | null }) {
+  return (
+    <div>
+      <p className="text-xs uppercase text-gray-500">{label}</p>
+      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{value || "—"}</p>
     </div>
   );
 }

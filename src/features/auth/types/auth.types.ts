@@ -11,6 +11,7 @@ export interface User {
 export interface LoginResponse {
   user: User;
   token: string;
+  refreshToken?: string;
 }
 
 export interface LoginCredentials {
