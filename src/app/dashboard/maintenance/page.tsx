@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MaintenanceCalendar } from "@/features/maintenance/components/MaintenanceCalendar";
 import { MaintenancePlanCard } from "@/features/maintenance/components/MaintenancePlanCard";
 import { MaintenanceScheduleEvent, MaintenancePlan, MaintenanceTemplate } from "@/features/maintenance/types/maintenance.types";

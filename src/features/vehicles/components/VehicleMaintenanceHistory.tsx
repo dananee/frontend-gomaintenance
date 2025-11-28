@@ -17,12 +17,10 @@ interface MaintenanceRecord {
 }
 
 interface VehicleMaintenanceHistoryProps {
-  vehicleId: string;
   records?: MaintenanceRecord[];
 }
 
 export function VehicleMaintenanceHistory({
-  vehicleId,
   records = [],
 }: VehicleMaintenanceHistoryProps) {
   const mockRecords: MaintenanceRecord[] = records.length > 0 ? records : [
@@ -82,7 +80,7 @@ export function VehicleMaintenanceHistory({
         <div className="absolute left-5 top-0 h-full w-0.5 bg-gray-200 dark:bg-gray-800" />
 
         <div className="space-y-6">
-          {mockRecords.map((record, index) => (
+          {mockRecords.map((record) => (
             <div key={record.id} className="relative pl-12">
               {/* Timeline dot */}
               <div className="absolute left-3 top-2 h-4 w-4 rounded-full border-2 border-blue-500 bg-white dark:bg-gray-900" />

@@ -5,8 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface CompanyFormValues {
+  companyName: string;
+  website: string;
+  address: string;
+  city: string;
+  country: string;
+}
+
 export function CompanySettingsForm() {
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<CompanyFormValues>({
     defaultValues: {
       companyName: "Acme Logistics",
       website: "https://acme-logistics.com",
@@ -16,7 +24,7 @@ export function CompanySettingsForm() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: CompanyFormValues) => {
     console.log(data);
   };
 

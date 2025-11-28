@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ClipboardCheck } from "lucide-react";
 import Link from "next/link";
@@ -14,7 +14,6 @@ interface WorkOrder {
 }
 
 interface VehicleWorkOrdersProps {
-  vehicleId: string;
   workOrders?: WorkOrder[];
 }
 
@@ -33,7 +32,6 @@ const priorityVariant = {
 };
 
 export function VehicleWorkOrders({
-  vehicleId,
   workOrders = [],
 }: VehicleWorkOrdersProps) {
   const mockWorkOrders: WorkOrder[] = workOrders.length > 0 ? workOrders : [

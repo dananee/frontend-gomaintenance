@@ -1,17 +1,8 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
-import { 
-  CheckCircle, 
-  FileText, 
-  Wrench, 
-  User, 
-  LogIn,
-  Settings
-} from "lucide-react";
+import { CheckCircle, Wrench, User, LogIn, Settings } from "lucide-react";
 
 interface ActivityLog {
   id: string;
@@ -23,7 +14,6 @@ interface ActivityLog {
 }
 
 interface UserActivityLogProps {
-  userId: string;
   activities?: ActivityLog[];
 }
 
@@ -55,7 +45,7 @@ const activityConfig = {
   },
 };
 
-export function UserActivityLog({ userId, activities = [] }: UserActivityLogProps) {
+export function UserActivityLog({ activities = [] }: UserActivityLogProps) {
   // Mock data if none provided
   const displayActivities: ActivityLog[] = activities.length > 0 ? activities : [
     {

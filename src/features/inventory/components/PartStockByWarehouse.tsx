@@ -12,14 +12,10 @@ interface StockByWarehouse {
 }
 
 interface PartStockByWarehouseProps {
-  partId: string;
   stock?: StockByWarehouse[];
 }
 
-export function PartStockByWarehouse({
-  partId,
-  stock = [],
-}: PartStockByWarehouseProps) {
+export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) {
   const mockStock: StockByWarehouse[] = stock.length > 0 ? stock : [
     {
       warehouse: "Main Warehouse",

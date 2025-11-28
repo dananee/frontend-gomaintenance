@@ -3,25 +3,31 @@ import { openDB, DBSchema, IDBPDatabase } from "idb";
 interface MaintenanceDB extends DBSchema {
   workOrders: {
     key: string;
-    value: {
-      id: string;
-      title: string;
-      status: string;
-      priority: string;
-      updatedAt: string;
-      syncStatus: "synced" | "pending" | "error";
-    };
+    value: OfflineWorkOrder;
     indexes: { "by-status": string };
   };
   syncQueue: {
     key: number;
-    value: {
-      url: string;
-      method: string;
-      body: any;
-      timestamp: number;
-    };
+    value: SyncRequest;
   };
+}
+
+type SyncRequestBody = Record<string, unknown> | string | null | undefined;
+
+export interface OfflineWorkOrder {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  updatedAt: string;
+  syncStatus: "synced" | "pending" | "error";
+}
+
+interface SyncRequest {
+  url: string;
+  method: string;
+  body?: SyncRequestBody;
+  timestamp: number;
 }
 
 let dbPromise: Promise<IDBPDatabase<MaintenanceDB>>;
@@ -43,7 +49,7 @@ export const initDB = () => {
   return dbPromise;
 };
 
-export const saveWorkOrderOffline = async (workOrder: any) => {
+export const saveWorkOrderOffline = async (workOrder: OfflineWorkOrder) => {
   const db = await initDB();
   await db.put("workOrders", { ...workOrder, syncStatus: "pending" });
 };
@@ -53,7 +59,7 @@ export const getOfflineWorkOrders = async () => {
   return db.getAll("workOrders");
 };
 
-export const addToSyncQueue = async (request: { url: string; method: string; body: any }) => {
+export const addToSyncQueue = async (request: Omit<SyncRequest, "timestamp">) => {
   const db = await initDB();
   await db.add("syncQueue", {
     ...request,

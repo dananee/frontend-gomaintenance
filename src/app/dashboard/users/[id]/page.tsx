@@ -1,223 +1,284 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useMemo, useState } from "react";
+import { BadgeCheck, CalendarRange, FileUp, Mail, Pencil, ShieldHalf, Smartphone, UserRound } from "lucide-react";
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/modal";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import { UserActivityLog } from "@/features/users/components/UserActivityLog";
-import { Mail, Phone, MapPin, Calendar, Shield, Edit, CheckCircle } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { useModal } from "@/hooks/useModal";
 
-// Mock hook - replace with actual hook
-function useUser(id: string) {
-  return {
-    data: {
-      id,
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      phone: "+1 (555) 123-4567",
-      role: "technician",
-      status: "active",
-      department: "Maintenance",
-      joinDate: "2023-01-15",
-      lastActive: "2024-11-28T14:30:00Z",
-      avatarUrl: "",
-      location: "Main Workshop",
-      skills: ["Engine Repair", "Electrical Systems", "Diagnostics"],
-      certifications: ["ASE Master Technician", "Ford Certified"],
-    },
-    isLoading: false,
-  };
+interface Attachment {
+  id: number;
+  name: string;
+  size: string;
 }
 
-export default function UserDetailPage() {
-  const params = useParams<{ id: string }>();
-  const { data: user, isLoading } = useUser(params?.id ?? "");
+interface Comment {
+  id: number;
+  author: string;
+  text: string;
+  timestamp: string;
+}
 
-  if (isLoading) {
-    return <Skeleton className="h-[60vh] w-full" />;
-  }
+const defaultAttachments: Attachment[] = [
+  { id: 1, name: "Training-certs.pdf", size: "500 KB" },
+  { id: 2, name: "Driver-license.png", size: "900 KB" },
+];
 
-  if (!user) {
-    return <div className="text-sm text-gray-500">User not found.</div>;
-  }
+const defaultComments: Comment[] = [
+  { id: 1, author: "HR Bot", text: "Annual safety training completed.", timestamp: "Mar 1, 4:14 PM" },
+  {
+    id: 2,
+    author: "Fleet Manager",
+    text: "Consistently completes work orders ahead of schedule.",
+    timestamp: "Feb 22, 10:05 AM",
+  },
+];
 
-  const initials = `${user.firstName[0]}${user.lastName[0]}`;
+const activity = [
+  { id: 1, action: "Closed WO-214", date: "Today" },
+  { id: 2, action: "Added new vehicle note", date: "Mar 12" },
+  { id: 3, action: "Reassigned WO-198", date: "Mar 9" },
+];
+
+const accessRoles = [
+  { id: 1, role: "Technician", scope: "Maintenance", lastActive: "Today" },
+  { id: 2, role: "Dispatcher", scope: "Scheduling", lastActive: "Mar 10" },
+];
+
+export default function UserDetailsPage() {
+  const [attachments, setAttachments] = useState<Attachment[]>(defaultAttachments);
+  const [comments, setComments] = useState<Comment[]>(defaultComments);
+  const [newComment, setNewComment] = useState("");
+  const { isOpen, open, close } = useModal();
+
+  const user = useMemo(
+    () => ({
+      name: "Alex Turner",
+      email: "alex.turner@example.com",
+      phone: "+1 (415) 555-0101",
+      role: "Technician",
+      status: "active",
+      lastActive: "Today, 08:14",
+    }),
+    []
+  );
+
+  const handleFileUpload = (files: FileList | null) => {
+    if (!files?.length) return;
+    const uploads = Array.from(files).map((file) => ({
+      id: Date.now() + Math.random(),
+      name: file.name,
+      size: `${(file.size / 1024).toFixed(1)} KB`,
+    }));
+    setAttachments((prev) => [...uploads, ...prev]);
+  };
+
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+    setComments((prev) => [
+      { id: Date.now(), author: "You", text: newComment.trim(), timestamp: "Just now" },
+      ...prev,
+    ]);
+    setNewComment("");
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header Profile Card */}
-      <Card className="overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-900 dark:to-blue-700" />
-        <CardContent className="relative pb-6 pt-0">
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-end">
-            <Avatar className="-mt-12 h-24 w-24 border-4 border-white shadow-lg dark:border-gray-950">
-              <AvatarImage src={user.avatarUrl} alt={`${user.firstName} ${user.lastName}`} />
-              <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="mt-4 flex-1 space-y-1 sm:mt-0 sm:pb-2">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {user.firstName} {user.lastName}
-                </h1>
-                <Badge variant={user.status === "active" ? "success" : "secondary"}>
-                  {user.status}
-                </Badge>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                <Shield className="h-3.5 w-3.5" />
-                <span className="capitalize">{user.role}</span>
-                <span>•</span>
-                <span>{user.department}</span>
-              </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12">
+            <AvatarFallback>AT</AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{user.name}</h1>
+              <Badge variant="outline" className="capitalize">
+                {user.status}
+              </Badge>
+              <Badge className="capitalize">{user.role}</Badge>
             </div>
-            <div className="mt-4 flex gap-2 sm:mt-0 sm:pb-2">
-              <Button>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit Profile
-              </Button>
-            </div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Last active {user.lastActive}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={open}>
+            <Pencil className="mr-2 h-4 w-4" /> Edit User
+          </Button>
+          <Button>
+            <BadgeCheck className="mr-2 h-4 w-4" /> Invite/Resend
+          </Button>
+        </div>
+      </div>
 
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
+      <Tabs defaultValue="overview">
+        <TabsList className="grid grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="activity">Activity Log</TabsTrigger>
-          <TabsTrigger value="permissions">Permissions</TabsTrigger>
+          <TabsTrigger value="roles">Roles</TabsTrigger>
+          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="attachments">Attachments</TabsTrigger>
+          <TabsTrigger value="comments">Comments</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                    <Mail className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.email}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
-                    <Phone className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</p>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.phone}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
-                    <MapPin className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Location</p>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.location}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-                    <Calendar className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Joined</p>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{formatDate(user.joinDate)}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Skills & Expertise</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {user.skills.map((skill) => (
-                      <Badge key={skill} variant="secondary">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Certifications</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {user.certifications.map((cert) => (
-                      <li key={cert} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        {cert}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="activity">
-          <UserActivityLog userId={user.id} />
-        </TabsContent>
-
-        <TabsContent value="permissions">
+        <TabsContent value="overview" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Role & Permissions</CardTitle>
+              <CardTitle>Profile</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-3">
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <Mail className="h-4 w-4" /> {user.email}
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <Smartphone className="h-4 w-4" /> {user.phone}
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <CalendarRange className="h-4 w-4" /> Last active {user.lastActive}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="roles" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Roles & Permissions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 capitalize">{user.role}</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Full access to work orders and vehicle maintenance records.
-                      </p>
-                    </div>
-                    <Badge>Current Role</Badge>
-                  </div>
-                </div>
-                
-                {/* Mock permissions list */}
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {["Create Work Orders", "Edit Work Orders", "View Vehicles", "Update Inventory", "View Reports"].map((perm) => (
-                    <div key={perm} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-gray-700 dark:text-gray-300">{perm}</span>
-                    </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Scope</TableHead>
+                    <TableHead>Last Active</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {accessRoles.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <ShieldHalf className="h-4 w-4 text-gray-400" />
+                          <span className="capitalize">{item.role}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{item.scope}</TableCell>
+                      <TableCell>{item.lastActive}</TableCell>
+                    </TableRow>
                   ))}
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <CheckCircle className="h-4 w-4 text-gray-300" />
-                    <span className="line-through">Manage Users</span>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="activity" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {activity.map((item) => (
+                <div key={item.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700">
+                  <div className="flex items-center gap-2">
+                    <UserRound className="h-4 w-4 text-gray-400" />
+                    <span>{item.action}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <CheckCircle className="h-4 w-4 text-gray-300" />
-                    <span className="line-through">System Settings</span>
-                  </div>
+                  <span className="text-xs text-gray-500">{item.date}</span>
                 </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="attachments" className="space-y-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Attachments</CardTitle>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="user-files"
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleFileUpload(e.target.files)}
+                />
+                <label htmlFor="user-files">
+                  <Button variant="outline" asChild>
+                    <span className="flex items-center">
+                      <FileUp className="mr-2 h-4 w-4" /> Upload
+                    </span>
+                  </Button>
+                </label>
+              </div>
+            </CardHeader>
+            <CardContent className="grid gap-3 md:grid-cols-2">
+              {attachments.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700"
+                >
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{file.name}</p>
+                    <p className="text-xs text-gray-500">{file.size}</p>
+                  </div>
+                  <Badge variant="secondary">PDF/Image</Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="comments" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notes</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <Textarea
+                  placeholder="Add a note"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <div className="flex justify-end">
+                  <Button onClick={handleAddComment}>Post note</Button>
+                </div>
+              </div>
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{comment.author}</p>
+                      <span className="text-xs text-gray-500">{comment.timestamp}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">{comment.text}</p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      <Modal isOpen={isOpen} onClose={close} title="Edit User" description="Update user contact and access.">
+        <div className="space-y-4">
+          <Input placeholder="Full name" defaultValue={user.name} />
+          <Input placeholder="Email" defaultValue={user.email} />
+          <Input placeholder="Phone" defaultValue={user.phone} />
+          <div className="flex justify-end">
+            <Button onClick={close}>Save changes</Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
+

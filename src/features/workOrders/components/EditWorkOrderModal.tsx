@@ -35,7 +35,7 @@ export function EditWorkOrderModal({
   workOrder,
   onSave,
 }: EditWorkOrderModalProps) {
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const { register, handleSubmit, setValue } = useForm<Partial<WorkOrder>>({
     defaultValues: {
       title: workOrder?.title || "",
       description: workOrder?.description || "",
@@ -52,7 +52,7 @@ export function EditWorkOrderModal({
     } : undefined
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: Partial<WorkOrder>) => {
     onSave(data);
     onClose();
   };

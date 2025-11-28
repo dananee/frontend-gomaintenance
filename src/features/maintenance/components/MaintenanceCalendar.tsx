@@ -5,8 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { MaintenanceScheduleEvent } from "@/features/maintenance/types/maintenance.types";
-import { formatDate } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
 interface MaintenanceCalendarProps {
   events: MaintenanceScheduleEvent[];

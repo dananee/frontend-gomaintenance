@@ -13,14 +13,10 @@ interface ActivityLog {
 }
 
 interface VehicleActivityLogProps {
-  vehicleId: string;
   activities?: ActivityLog[];
 }
 
-export function VehicleActivityLog({
-  vehicleId,
-  activities = [],
-}: VehicleActivityLogProps) {
+export function VehicleActivityLog({ activities = [], }: VehicleActivityLogProps) {
   const mockActivities: ActivityLog[] = activities.length > 0 ? activities : [
     {
       id: "1",

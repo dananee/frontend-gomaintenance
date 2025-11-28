@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { MaintenancePlan, MaintenanceTemplate } from "@/features/maintenance/types/maintenance.types";
-import { Calendar, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 interface MaintenancePlanCardProps {

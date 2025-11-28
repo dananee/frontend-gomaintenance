@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { formatDate } from "@/lib/utils";
-import { Calendar, User } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 interface WorkOrderCardProps {
   workOrder: WorkOrder;
