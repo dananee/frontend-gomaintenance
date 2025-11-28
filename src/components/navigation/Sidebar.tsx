@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/store/useSidebarStore";
-import { usePermission } from "@/lib/rbac/checkPermission";
+import { checkPermission } from "@/lib/rbac/checkPermission";
+import { Permission } from "@/lib/rbac/permissions";
 import {
   LayoutDashboard,
   Truck,
@@ -19,7 +20,7 @@ interface NavItem {
   name: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
-  permission?: string;
+  permission?: Permission;
 }
 
 const navItems: NavItem[] = [
@@ -66,8 +67,7 @@ export function Sidebar() {
 
   const filteredNavItems = navItems.filter((item) => {
     if (!item.permission) return true;
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return usePermission(item.permission as any);
+    return checkPermission(item.permission);
   });
 
   const sidebarContent = (
