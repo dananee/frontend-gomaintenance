@@ -3,7 +3,7 @@
 import { WorkOrder, WorkOrderPriority } from "../types/workOrder.types";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import { Calendar, AlertCircle, User } from "lucide-react";
+import { Calendar, User } from "lucide-react";
 
 interface WorkOrderCardProps {
   workOrder: WorkOrder;

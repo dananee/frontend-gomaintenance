@@ -1,6 +1,6 @@
 "use client";
 
-import { WorkOrder, WorkOrderStatus } from "../types/workOrder.types";
+import { WorkOrderStatus } from "../types/workOrder.types";
 import { WorkOrderCard } from "./WorkOrderCard";
 import { useWorkOrders } from "../hooks/useWorkOrders";
 
@@ -10,7 +10,14 @@ const columns: { id: WorkOrderStatus; title: string }[] = [
   { id: "completed", title: "Completed" },
 ];
 
-export function WorkOrderKanban() {
+export interface WorkOrderFilters {
+  search?: string;
+  status?: WorkOrderStatus | "all";
+  priority?: string;
+  assignee?: string;
+}
+
+export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
   const { data: workOrders, isLoading } = useWorkOrders();
 
   if (isLoading) {
@@ -24,9 +31,18 @@ export function WorkOrderKanban() {
   return (
     <div className="flex h-full gap-6 overflow-x-auto pb-4">
       {columns.map((column) => {
-        const columnOrders = workOrders.data.filter(
-          (order) => order.status === column.id
-        );
+        const columnOrders = workOrders.data.filter((order) => {
+          const matchesStatus =
+            (filters?.status ?? "all") === "all" || order.status === filters?.status;
+          const matchesPriority = !filters?.priority || order.priority === filters.priority;
+          const matchesAssignee = !filters?.assignee || order.assignedTo === filters.assignee;
+          const matchesSearch =
+            !filters?.search ||
+            order.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+            order.id.toLowerCase().includes(filters.search.toLowerCase());
+
+          return order.status === column.id && matchesStatus && matchesPriority && matchesAssignee && matchesSearch;
+        });
 
         return (
           <div key={column.id} className="flex h-full min-w-[300px] flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">

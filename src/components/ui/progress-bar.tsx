@@ -12,10 +12,12 @@ export function ProgressBar() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    NProgress.done();
+    NProgress.start();
+    const timer = setTimeout(() => NProgress.done(), 300);
+
     return () => {
-      // Optional: Start on unmount (navigation start), but this might be flaky
-      // NProgress.start(); 
+      clearTimeout(timer);
+      NProgress.done();
     };
   }, [pathname, searchParams]);
 

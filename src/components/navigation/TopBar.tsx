@@ -1,11 +1,13 @@
 "use client";
 
-import { Menu, Bell, User } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { GlobalSearch } from "./GlobalSearch";
+import { NotificationsPanel } from "./NotificationsPanel";
 
 export function TopBar() {
   const { toggle, toggleMobile } = useSidebarStore();
@@ -38,13 +40,11 @@ export function TopBar() {
         </button>
       </div>
 
+      <GlobalSearch className="mx-4 hidden flex-1 lg:block" />
+
       {/* Right side */}
       <div className="flex items-center gap-3">
-        {/* Notifications */}
-        <button className="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
-          <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
-        </button>
+        <NotificationsPanel />
 
         {/* User menu */}
         <div className="flex items-center gap-3">

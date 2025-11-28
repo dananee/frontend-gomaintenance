@@ -1,141 +1,93 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { useWorkOrder } from "@/features/workOrders/hooks/useWorkOrder";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Clock, CheckCircle2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { UploadCloud } from "lucide-react";
 
-export default function WorkOrderDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params.id as string;
-  const { data: workOrder, isLoading, error } = useWorkOrder(id);
+const sampleTasks = [
+  { title: "Inspect brake lines", assignee: "Alex", status: "In Progress" },
+  { title: "Replace pads", assignee: "Jamie", status: "Pending" },
+];
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid gap-6 md:grid-cols-3">
-          <Skeleton className="col-span-2 h-96" />
-          <Skeleton className="h-96" />
-        </div>
-      </div>
-    );
-  }
+const sampleParts = [
+  { name: "Brake pads", qty: 2, cost: 120 },
+  { name: "Brake cleaner", qty: 1, cost: 20 },
+];
 
-  if (error || !workOrder) {
-    return (
-      <div className="flex h-[50vh] flex-col items-center justify-center text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Work Order Not Found</h2>
-        <Button onClick={() => router.back()} className="mt-4" variant="outline">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Go Back
-        </Button>
-      </div>
-    );
-  }
+export default function WorkOrderDetailPage() {
+  const params = useParams<{ id: string }>();
+  const { data, isLoading } = useWorkOrder(params?.id ?? "");
+
+  if (isLoading) return <Skeleton className="h-[50vh] w-full" />;
+  if (!data) return <div className="text-sm text-gray-500">Work order not found.</div>;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              WO #{workOrder.id.slice(0, 8)}
-            </h1>
-            <p className="text-sm text-gray-500">{workOrder.title}</p>
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <p className="text-sm text-gray-500">Work Order</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{data.title}</h1>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Badge variant="info">{data.priority}</Badge>
+            <Badge variant="warning">Due {data.dueDate || "TBD"}</Badge>
+            <Badge variant="success">{data.status}</Badge>
           </div>
         </div>
-        <Badge
-          variant={
-            workOrder.status === "completed"
-              ? "success"
-              : workOrder.status === "in_progress"
-              ? "info"
-              : workOrder.status === "cancelled"
-              ? "destructive"
-              : "default"
-          }
-          className="capitalize"
-        >
-          {workOrder.status.replace("_", " ")}
-        </Badge>
+        <Button>Complete</Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Description</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {workOrder.description}
-              </p>
-            </CardContent>
-          </Card>
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Tasks</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {sampleTasks.map((task) => (
+              <div key={task.title} className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-800">
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{task.title}</p>
+                  <p className="text-xs text-gray-500">Assignee: {task.assignee}</p>
+                </div>
+                <Badge variant={task.status === "Pending" ? "warning" : "success"}>{task.status}</Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Tasks</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* Tasks list placeholder - will implement real tasks later */}
-              <div className="text-sm text-gray-500 italic">No tasks added yet.</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-500">Vehicle</label>
-                <p className="font-medium">{workOrder.vehicle_name || "Unknown"}</p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Parts & Costs</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {sampleParts.map((part) => (
+              <div key={part.name} className="flex items-center justify-between text-sm">
+                <span className="text-gray-800 dark:text-gray-100">{part.name}</span>
+                <span className="text-gray-500 dark:text-gray-400">{part.qty} x ${part.cost}</span>
               </div>
-              <div>
-                <label className="text-sm font-medium text-gray-500">Assigned To</label>
-                <div className="flex items-center gap-2 mt-1">
-                  <User className="h-4 w-4 text-gray-400" />
-                  <span>{workOrder.assigned_to_name || "Unassigned"}</span>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-500">Priority</label>
-                <div className="mt-1">
-                  <Badge variant={workOrder.priority === "urgent" ? "destructive" : "outline"}>
-                    {workOrder.priority}
-                  </Badge>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-500">Scheduled Date</label>
-                <div className="flex items-center gap-2 mt-1">
-                  <Calendar className="h-4 w-4 text-gray-400" />
-                  <span>{workOrder.scheduled_date ? formatDate(workOrder.scheduled_date) : "Not scheduled"}</span>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-500">Created At</label>
-                <div className="flex items-center gap-2 mt-1">
-                  <Clock className="h-4 w-4 text-gray-400" />
-                  <span>{formatDate(workOrder.created_at)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            ))}
+            <div className="mt-3 flex items-center justify-between border-t pt-3 text-sm font-semibold dark:border-gray-800">
+              <span>Total</span>
+              <span>$140</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Attachments</CardTitle>
+          <Button size="sm" variant="secondary">
+            <UploadCloud className="mr-2 h-4 w-4" /> Upload
+          </Button>
+        </CardHeader>
+        <CardContent className="text-sm text-gray-500">
+          Drag and drop job photos, invoices, or logs to keep this work order auditable.
+        </CardContent>
+      </Card>
     </div>
   );
 }

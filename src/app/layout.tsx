@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Toaster } from "@/components/ui/sonner";
+import { GlobalErrorBoundary } from "@/components/layout/GlobalErrorBoundary";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          <ProgressBar />
-          {children}
-          <Toaster />
-        </Providers>
+        <GlobalErrorBoundary>
+          <Providers>
+            <ProgressBar />
+            {children}
+            <Toaster />
+          </Providers>
+        </GlobalErrorBoundary>
       </body>
     </html>
   );
