@@ -2,10 +2,12 @@ import apiClient from "@/lib/api/axiosClient";
 import { WorkOrder } from "../types/workOrder.types";
 
 export interface GetWorkOrdersParams {
+  page?: number;
+  page_size?: number;
   status?: string;
-  priority?: string;
-  vehicleId?: string;
-  assignedTo?: string;
+  type?: string;
+  vehicle_id?: string;
+  assigned_to?: string;
 }
 
 export interface GetWorkOrdersResponse {

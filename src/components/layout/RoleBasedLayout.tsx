@@ -40,7 +40,7 @@ export function RoleBasedLayout({ children }: RoleBasedLayoutProps) {
   }
 
   // Cast role to string for comparison if needed, or rely on TypeScript if Role is compatible
-  if (user?.role === "mechanic") {
+  if (user?.role === "technician") {
     return <TechnicianLayout>{children}</TechnicianLayout>;
   }
 

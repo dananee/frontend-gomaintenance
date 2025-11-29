@@ -1,4 +1,4 @@
-export type Role = "admin" | "mechanic" | "driver" | "supervisor";
+export type Role = "admin" | "manager" | "technician" | "viewer";
 
 export type Permission =
   | "view_dashboard"
@@ -35,21 +35,22 @@ export const rolePermissions: Record<Role, Permission[]> = {
     "manage_reports",
     "view_costs",
   ],
-  supervisor: [
+  manager: [
     "view_users",
     "manage_vehicles",
     "view_vehicles",
     "manage_work_orders",
     "view_work_orders",
+    "manage_inventory",
     "view_inventory",
     "view_reports",
     "view_costs",
   ],
-  mechanic: [
+  technician: [
     "view_vehicles",
     "view_work_orders",
     "complete_tasks",
     "view_inventory",
   ],
-  driver: ["view_vehicles", "report_incident"],
+  viewer: ["view_dashboard", "view_vehicles", "view_work_orders"],
 };

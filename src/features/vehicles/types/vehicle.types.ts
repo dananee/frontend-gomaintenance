@@ -1,4 +1,4 @@
-export type VehicleStatus = "active" | "maintenance" | "retired";
+export type VehicleStatus = "active" | "maintenance" | "inactive";
 
 export interface Vehicle {
   id: string;
@@ -9,7 +9,7 @@ export interface Vehicle {
   model: string;
   year: number;
   status: VehicleStatus;
-  current_km: number;
+  current_km?: number;
   current_engine_hours?: number;
   created_at?: string;
   updated_at?: string;

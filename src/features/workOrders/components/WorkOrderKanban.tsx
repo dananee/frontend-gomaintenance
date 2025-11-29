@@ -34,7 +34,6 @@ import { useQueryClient } from "@tanstack/react-query";
 const columns = [
   { id: "pending" as WorkOrderStatus, title: "Pending", color: "orange" },
   { id: "in_progress" as WorkOrderStatus, title: "In Progress", color: "blue" },
-  { id: "review" as WorkOrderStatus, title: "Review", color: "yellow" },
   { id: "completed" as WorkOrderStatus, title: "Completed", color: "green" },
   { id: "cancelled" as WorkOrderStatus, title: "Cancelled", color: "red" },
 ];

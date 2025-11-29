@@ -52,12 +52,6 @@ const statusConfig: Record<WorkOrderStatus, {
     icon: PlayCircle,
     label: "In Progress",
   },
-  review: {
-    color: "text-yellow-700 dark:text-yellow-400",
-    bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
-    icon: CheckCircle,
-    label: "Review",
-  },
   completed: {
     color: "text-green-700 dark:text-green-400",
     bgColor: "bg-green-100 dark:bg-green-900/30",

@@ -2,7 +2,6 @@ export type WorkOrderPriority = "low" | "medium" | "high" | "urgent";
 export type WorkOrderStatus =
   | "pending"
   | "in_progress"
-  | "review"
   | "completed"
   | "cancelled";
 export type WorkOrderType = "preventive" | "corrective" | "inspection";

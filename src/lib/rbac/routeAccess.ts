@@ -8,7 +8,7 @@ interface AccessRule {
 const routeAccessRules: AccessRule[] = [
   {
     pattern: /^\/dashboard\/?$/, // dashboard overview
-    roles: ["admin", "supervisor", "mechanic", "driver"],
+    roles: ["admin", "manager", "technician", "viewer"],
   },
   {
     pattern: /^\/dashboard\/users/,
@@ -16,19 +16,19 @@ const routeAccessRules: AccessRule[] = [
   },
   {
     pattern: /^\/dashboard\/reports/,
-    roles: ["admin", "supervisor"],
+    roles: ["admin", "manager"],
   },
   {
     pattern: /^\/dashboard\/work-orders/,
-    roles: ["admin", "supervisor", "mechanic"],
+    roles: ["admin", "manager", "technician"],
   },
   {
     pattern: /^\/dashboard\/inventory/,
-    roles: ["admin", "supervisor"],
+    roles: ["admin", "manager"],
   },
   {
     pattern: /^\/dashboard\/vehicles/,
-    roles: ["admin", "supervisor", "driver"],
+    roles: ["admin", "manager", "viewer", "technician"],
   },
   {
     pattern: /^\/dashboard\//,

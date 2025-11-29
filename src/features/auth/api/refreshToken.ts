@@ -8,5 +8,12 @@ export const refreshToken = async (
     "/auth/refresh",
     { refreshToken: token }
   );
-  return response.data;
+  const user = response.data.user;
+  return {
+    ...response.data,
+    user: {
+      ...user,
+      name: user.name || `${user.first_name} ${user.last_name}`.trim(),
+    },
+  };
 };
