@@ -14,7 +14,11 @@ function formatSegment(segment: string) {
 
 export function Breadcrumbs() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
+  const segments = pathname
+    .split("/")
+    .filter(Boolean)
+    .filter((segment) => segment !== "dashboard")
+    .slice(0, 2);
 
   const crumbs = segments.map((segment, index) => {
     const href = "/" + segments.slice(0, index + 1).join("/");

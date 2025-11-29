@@ -17,8 +17,6 @@ import { useState } from "react";
 import { SortableWorkOrderCard } from "./SortableWorkOrderCard";
 import { EditWorkOrderModal } from "./EditWorkOrderModal";
 import { BulkWorkOrderActions } from "./BulkWorkOrderActions";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { WorkOrder } from "../types/workOrder.types";
 const columns: { id: WorkOrderStatus; title: string }[] = [
   { id: "pending", title: "To Do" },
@@ -93,11 +91,6 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     setIsEditModalOpen(true);
   };
 
-  const handleCreate = () => {
-    setEditingOrder(undefined);
-    setIsEditModalOpen(true);
-  };
-
   const handleSave = (data: Partial<WorkOrder>) => {
     if (editingOrder) {
       // Update existing
@@ -151,13 +144,6 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
-        <Button onClick={handleCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Work Order
-        </Button>
-      </div>
-
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
