@@ -88,17 +88,17 @@ const roleColors: Record<string, { bg: string; text: string; border: string }> =
       text: "text-red-700 dark:text-red-400",
       border: "border-red-200 dark:border-red-800",
     },
-    supervisor: {
+    manager: {
       bg: "bg-blue-50 dark:bg-blue-900/20",
       text: "text-blue-700 dark:text-blue-400",
       border: "border-blue-200 dark:border-blue-800",
     },
-    mechanic: {
+    technician: {
       bg: "bg-amber-50 dark:bg-amber-900/20",
       text: "text-amber-700 dark:text-amber-400",
       border: "border-amber-200 dark:border-amber-800",
     },
-    driver: {
+    viewer: {
       bg: "bg-purple-50 dark:bg-purple-900/20",
       text: "text-purple-700 dark:text-purple-400",
       border: "border-purple-200 dark:border-purple-800",

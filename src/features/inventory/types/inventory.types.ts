@@ -3,7 +3,7 @@ export interface Part {
   name: string;
   part_number: string;
   description?: string;
-  category: string;
+  category?: string;
   quantity: number;
   min_quantity: number;
   cost: number;
@@ -12,8 +12,10 @@ export interface Part {
   supplier_id?: string;
   warehouse?: string;
   compatible_vehicles?: string[];
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
+  brand?: string;
+  unit_price?: number;
 }
 
 export interface Supplier {

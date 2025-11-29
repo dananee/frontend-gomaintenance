@@ -3,7 +3,7 @@ import { Vehicle } from "../types/vehicle.types";
 
 export interface GetVehiclesParams {
   page?: number;
-  limit?: number;
+  page_size?: number;
   search?: string;
   status?: string;
   type?: string;

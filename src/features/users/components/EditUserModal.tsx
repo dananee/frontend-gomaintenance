@@ -31,7 +31,7 @@ interface EditUserModalProps {
   user: UserRecord;
 }
 
-const roles = ["admin", "supervisor", "mechanic", "driver"] as const;
+const roles = ["admin", "manager", "technician", "viewer"] as const;
 
 export function EditUserModal({
   open,

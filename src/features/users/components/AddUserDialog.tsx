@@ -18,7 +18,7 @@ interface AddUserDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const roles: Role[] = ["admin", "supervisor", "mechanic", "driver", "viewer"];
+const roles: Role[] = ["admin", "manager", "technician", "viewer"];
 
 export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
   const addUser = useUsersStore((state) => state.addUser);

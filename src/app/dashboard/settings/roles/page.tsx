@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { rolePermissions, Role } from "@/lib/rbac/permissions";
 
 export default function RolesSettingsPage() {
-  const roles: Role[] = ["admin", "supervisor", "mechanic", "driver"];
+  const roles: Role[] = ["admin", "manager", "technician", "viewer"];
 
   return (
     <div className="space-y-6">

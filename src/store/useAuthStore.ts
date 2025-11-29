@@ -5,9 +5,12 @@ import { Role } from "@/lib/rbac/permissions";
 export interface User {
   id: string;
   email: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   role: Role;
+  is_active?: boolean;
   avatar?: string;
+  name?: string;
 }
 
 interface AuthState {
