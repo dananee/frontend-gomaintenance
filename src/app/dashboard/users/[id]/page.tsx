@@ -1,18 +1,41 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BadgeCheck, CalendarRange, FileUp, Mail, Pencil, ShieldHalf, Smartphone, UserRound } from "lucide-react";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import {
+  BadgeCheck,
+  CalendarRange,
+  FileUp,
+  Mail,
+  Pencil,
+  ShieldHalf,
+  Smartphone,
+  UserRound,
+  Ban,
+  CheckCircle,
+} from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { DetailPageSkeleton } from "@/components/ui/skeleton";
 import { useModal } from "@/hooks/useModal";
+import { useUsersStore } from "@/features/users/store/useUsersStore";
+import { EditUserModal } from "@/features/users/components/EditUserModal";
+import { getInitials } from "@/lib/utils";
 
 interface Attachment {
   id: number;
@@ -33,7 +56,12 @@ const defaultAttachments: Attachment[] = [
 ];
 
 const defaultComments: Comment[] = [
-  { id: 1, author: "HR Bot", text: "Annual safety training completed.", timestamp: "Mar 1, 4:14 PM" },
+  {
+    id: 1,
+    author: "HR Bot",
+    text: "Annual safety training completed.",
+    timestamp: "Mar 1, 4:14 PM",
+  },
   {
     id: 2,
     author: "Fleet Manager",
@@ -53,23 +81,61 @@ const accessRoles = [
   { id: 2, role: "Dispatcher", scope: "Scheduling", lastActive: "Mar 10" },
 ];
 
+const roleColors: Record<string, { bg: string; text: string; border: string }> =
+  {
+    admin: {
+      bg: "bg-red-50 dark:bg-red-900/20",
+      text: "text-red-700 dark:text-red-400",
+      border: "border-red-200 dark:border-red-800",
+    },
+    supervisor: {
+      bg: "bg-blue-50 dark:bg-blue-900/20",
+      text: "text-blue-700 dark:text-blue-400",
+      border: "border-blue-200 dark:border-blue-800",
+    },
+    mechanic: {
+      bg: "bg-amber-50 dark:bg-amber-900/20",
+      text: "text-amber-700 dark:text-amber-400",
+      border: "border-amber-200 dark:border-amber-800",
+    },
+    driver: {
+      bg: "bg-purple-50 dark:bg-purple-900/20",
+      text: "text-purple-700 dark:text-purple-400",
+      border: "border-purple-200 dark:border-purple-800",
+    },
+  };
+
 export default function UserDetailsPage() {
-  const [attachments, setAttachments] = useState<Attachment[]>(defaultAttachments);
+  const params = useParams();
+  const userId = params.id as string;
+  const users = useUsersStore((state) => state.users);
+  const suspendUser = useUsersStore((state) => state.suspendUser);
+  const reactivateUser = useUsersStore((state) => state.reactivateUser);
+
+  const user = users.find((u) => u.id === userId);
+  const [attachments, setAttachments] =
+    useState<Attachment[]>(defaultAttachments);
   const [comments, setComments] = useState<Comment[]>(defaultComments);
   const [newComment, setNewComment] = useState("");
   const { isOpen, open, close } = useModal();
+  const [isLoading] = useState(false); // Can be connected to actual loading state
 
-  const user = useMemo(
-    () => ({
-      name: "Alex Turner",
-      email: "alex.turner@example.com",
-      phone: "+1 (415) 555-0101",
-      role: "Technician",
-      status: "active",
-      lastActive: "Today, 08:14",
-    }),
-    []
-  );
+  if (isLoading) {
+    return <DetailPageSkeleton />;
+  }
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <UserRound className="h-12 w-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            User not found
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const handleFileUpload = (files: FileList | null) => {
     if (!files?.length) return;
@@ -81,13 +147,40 @@ export default function UserDetailsPage() {
     setAttachments((prev) => [...uploads, ...prev]);
   };
 
+  const handleSuspend = () => {
+    if (confirm(`Are you sure you want to suspend ${user.name}?`)) {
+      suspendUser(user.id);
+      toast.success("User suspended", {
+        description: `${user.name} has been suspended.`,
+      });
+    }
+  };
+
+  const handleReactivate = () => {
+    reactivateUser(user.id);
+    toast.success("User reactivated", {
+      description: `${user.name} has been reactivated.`,
+    });
+  };
+
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     setComments((prev) => [
-      { id: Date.now(), author: "You", text: newComment.trim(), timestamp: "Just now" },
+      {
+        id: Date.now(),
+        author: "You",
+        text: newComment.trim(),
+        timestamp: "Just now",
+      },
       ...prev,
     ]);
     setNewComment("");
+  };
+
+  const roleColor = roleColors[user.role] || {
+    bg: "bg-gray-50 dark:bg-gray-800",
+    text: "text-gray-700 dark:text-gray-300",
+    border: "border-gray-200 dark:border-gray-700",
   };
 
   return (
@@ -95,20 +188,48 @@ export default function UserDetailsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12">
-            <AvatarFallback>AT</AvatarFallback>
+            {user.avatar && <AvatarImage src={user.avatar} alt={user.name} />}
+            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{user.name}</h1>
-              <Badge variant="outline" className="capitalize">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                {user.name}
+              </h1>
+              <Badge
+                variant="outline"
+                className={
+                  user.status === "active"
+                    ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                    : user.status === "suspended"
+                    ? "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
+                    : "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
+                }
+              >
                 {user.status}
               </Badge>
-              <Badge className="capitalize">{user.role}</Badge>
+              <Badge
+                variant="outline"
+                className={`${roleColor.bg} ${roleColor.text} ${roleColor.border} capitalize`}
+              >
+                {user.role}
+              </Badge>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Last active {user.lastActive}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Last active {user.last_active || "Recently"}
+            </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          {user.status === "suspended" ? (
+            <Button variant="outline" onClick={handleReactivate}>
+              <CheckCircle className="mr-2 h-4 w-4" /> Reactivate
+            </Button>
+          ) : (
+            <Button variant="outline" onClick={handleSuspend}>
+              <Ban className="mr-2 h-4 w-4" /> Suspend
+            </Button>
+          )}
           <Button variant="outline" onClick={open}>
             <Pencil className="mr-2 h-4 w-4" /> Edit User
           </Button>
@@ -136,11 +257,14 @@ export default function UserDetailsPage() {
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Mail className="h-4 w-4" /> {user.email}
               </div>
+              {user.phone && (
+                <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <Smartphone className="h-4 w-4" /> {user.phone}
+                </div>
+              )}
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <Smartphone className="h-4 w-4" /> {user.phone}
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <CalendarRange className="h-4 w-4" /> Last active {user.lastActive}
+                <CalendarRange className="h-4 w-4" /> Last active{" "}
+                {user.last_active || "Recently"}
               </div>
             </CardContent>
           </Card>
@@ -186,7 +310,10 @@ export default function UserDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {activity.map((item) => (
-                <div key={item.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700"
+                >
                   <div className="flex items-center gap-2">
                     <UserRound className="h-4 w-4 text-gray-400" />
                     <span>{item.action}</span>
@@ -210,13 +337,12 @@ export default function UserDetailsPage() {
                   className="hidden"
                   onChange={(e) => handleFileUpload(e.target.files)}
                 />
-                <label htmlFor="user-files">
-                  <Button variant="outline" asChild>
-                    <span className="flex items-center">
-                      <FileUp className="mr-2 h-4 w-4" /> Upload
-                    </span>
-                  </Button>
-                </label>
+                <Button
+                  variant="outline"
+                  onClick={() => document.getElementById("user-files")?.click()}
+                >
+                  <FileUp className="mr-2 h-4 w-4" /> Upload
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-3 md:grid-cols-2">
@@ -226,7 +352,9 @@ export default function UserDetailsPage() {
                   className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700"
                 >
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{file.name}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                      {file.name}
+                    </p>
                     <p className="text-xs text-gray-500">{file.size}</p>
                   </div>
                   <Badge variant="secondary">PDF/Image</Badge>
@@ -254,12 +382,21 @@ export default function UserDetailsPage() {
               </div>
               <div className="space-y-4">
                 {comments.map((comment) => (
-                  <div key={comment.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                  <div
+                    key={comment.id}
+                    className="rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+                  >
                     <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900 dark:text-gray-100">{comment.author}</p>
-                      <span className="text-xs text-gray-500">{comment.timestamp}</span>
+                      <p className="font-medium text-gray-900 dark:text-gray-100">
+                        {comment.author}
+                      </p>
+                      <span className="text-xs text-gray-500">
+                        {comment.timestamp}
+                      </span>
                     </div>
-                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">{comment.text}</p>
+                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
+                      {comment.text}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -268,17 +405,7 @@ export default function UserDetailsPage() {
         </TabsContent>
       </Tabs>
 
-      <Modal isOpen={isOpen} onClose={close} title="Edit User" description="Update user contact and access.">
-        <div className="space-y-4">
-          <Input placeholder="Full name" defaultValue={user.name} />
-          <Input placeholder="Email" defaultValue={user.email} />
-          <Input placeholder="Phone" defaultValue={user.phone} />
-          <div className="flex justify-end">
-            <Button onClick={close}>Save changes</Button>
-          </div>
-        </div>
-      </Modal>
+      <EditUserModal open={isOpen} onOpenChange={close} user={user} />
     </div>
   );
 }
-

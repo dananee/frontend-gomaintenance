@@ -47,7 +47,7 @@ export function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -57,9 +57,9 @@ export function Modal({
       {/* Modal */}
       <div
         className={cn(
-          "relative z-50 w-full rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-800",
+          "relative z-50 w-full rounded-xl bg-white p-4 shadow-2xl dark:bg-gray-800 sm:p-6",
           sizeClasses[size],
-          "mx-4 max-h-[90vh] overflow-y-auto"
+          "max-h-[90vh] overflow-y-auto"
         )}
       >
         {/* Close button */}

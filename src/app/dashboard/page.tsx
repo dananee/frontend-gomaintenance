@@ -12,59 +12,89 @@ import Link from "next/link";
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-      
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        Dashboard
+      </h1>
+
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/vehicles">
-          <Card className="transition-all hover:shadow-lg cursor-pointer">
+          <Card className="group cursor-pointer border-blue-200 transition-all hover:border-blue-400 hover:shadow-lg dark:border-blue-900/50 dark:hover:border-blue-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Vehicles</CardTitle>
-              <Truck className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Total Vehicles
+              </CardTitle>
+              <div className="rounded-lg bg-blue-100 p-2 transition-colors group-hover:bg-blue-200 dark:bg-blue-900/30 dark:group-hover:bg-blue-900/50">
+                <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">124</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                124
+              </div>
               <TrendBadge value={3.2} label="from last month" />
             </CardContent>
           </Card>
         </Link>
-        
+
         <Link href="/dashboard/work-orders">
-          <Card className="transition-all hover:shadow-lg cursor-pointer">
+          <Card className="group cursor-pointer border-orange-200 transition-all hover:border-orange-400 hover:shadow-lg dark:border-orange-900/50 dark:hover:border-orange-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Work Orders</CardTitle>
-              <Wrench className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Active Work Orders
+              </CardTitle>
+              <div className="rounded-lg bg-orange-100 p-2 transition-colors group-hover:bg-orange-200 dark:bg-orange-900/30 dark:group-hover:bg-orange-900/50">
+                <Wrench className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                12
+              </div>
               <TrendBadge value={-15.5} label="from last week" />
             </CardContent>
           </Card>
         </Link>
-        
-        <Card className="border-red-200 dark:border-red-900/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Critical Issues</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">2</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Requires immediate attention
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-green-200 dark:border-green-900/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Fleet Availability</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">92%</div>
-            <TrendBadge value={2.1} label="from last week" />
-          </CardContent>
-        </Card>
+
+        <Link href="/dashboard/maintenance">
+          <Card className="group cursor-pointer border-red-200 transition-all hover:border-red-400 hover:shadow-lg dark:border-red-900/50 dark:hover:border-red-700">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Critical Issues
+              </CardTitle>
+              <div className="rounded-lg bg-red-100 p-2 transition-colors group-hover:bg-red-200 dark:bg-red-900/30 dark:group-hover:bg-red-900/50">
+                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+                2
+              </div>
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                Requires immediate attention
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/reports">
+          <Card className="group cursor-pointer border-green-200 transition-all hover:border-green-400 hover:shadow-lg dark:border-green-900/50 dark:hover:border-green-700">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Fleet Availability
+              </CardTitle>
+              <div className="rounded-lg bg-green-100 p-2 transition-colors group-hover:bg-green-200 dark:bg-green-900/30 dark:group-hover:bg-green-900/50">
+                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                92%
+              </div>
+              <TrendBadge value={2.1} label="from last week" />
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* Widgets Row */}

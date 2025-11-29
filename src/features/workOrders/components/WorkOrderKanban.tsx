@@ -1,27 +1,42 @@
-"use client";
-
-import { WorkOrderStatus } from "../types/workOrder.types";
+import { useRouter } from "next/navigation";
 import { useWorkOrders } from "../hooks/useWorkOrders";
+import { useUpdateWorkOrder } from "../hooks/useWorkOrders";
 import {
   DndContext,
-  closestCenter,
+  closestCorners,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  DragOverEvent,
 } from "@dnd-kit/core";
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
- 
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
 import { useState } from "react";
 import { SortableWorkOrderCard } from "./SortableWorkOrderCard";
+import { WorkOrderCard } from "./WorkOrderCard";
+import { DroppableColumn } from "./DroppableColumn";
 import { EditWorkOrderModal } from "./EditWorkOrderModal";
 import { BulkWorkOrderActions } from "./BulkWorkOrderActions";
-import { WorkOrder } from "../types/workOrder.types";
-const columns: { id: WorkOrderStatus; title: string }[] = [
-  { id: "pending", title: "To Do" },
-  { id: "in_progress", title: "In Progress" },
-  { id: "completed", title: "Completed" },
+import { WorkOrder, WorkOrderStatus } from "../types/workOrder.types";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ClipboardList } from "lucide-react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+
+const columns = [
+  { id: "pending" as WorkOrderStatus, title: "Pending", color: "orange" },
+  { id: "in_progress" as WorkOrderStatus, title: "In Progress", color: "blue" },
+  { id: "review" as WorkOrderStatus, title: "Review", color: "yellow" },
+  { id: "completed" as WorkOrderStatus, title: "Completed", color: "green" },
+  { id: "cancelled" as WorkOrderStatus, title: "Cancelled", color: "red" },
 ];
 
 export interface WorkOrderFilters {
@@ -32,16 +47,20 @@ export interface WorkOrderFilters {
 }
 
 export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
+  const router = useRouter();
   const { data: workOrders, isLoading } = useWorkOrders();
-  const [localWorkOrders, setLocalWorkOrders] = useState(workOrders?.data || []);
+  const updateWorkOrder = useUpdateWorkOrder();
+  const queryClient = useQueryClient();
+  
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingOrder, setEditingOrder] = useState<WorkOrder | undefined>(undefined);
+  const [editingOrder, setEditingOrder] = useState<WorkOrder | undefined>(
+    undefined
+  );
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
 
-  // Update local state when data changes
-  if (workOrders?.data && localWorkOrders.length === 0 && workOrders.data.length > 0) {
-    setLocalWorkOrders(workOrders.data);
-  }
+  const allWorkOrders = workOrders?.data || [];
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -54,36 +73,82 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     })
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    const { over } = event;
+    setOverId(over ? (over.id as string) : null);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (!over) return;
+    if (!over) {
+      setActiveId(null);
+      setOverId(null);
+      return;
+    }
 
     const activeId = active.id as string;
     const overId = over.id as string;
 
     // Find the order that was dragged
-    const draggedOrder = localWorkOrders.find((order) => order.id === activeId);
-    if (!draggedOrder) return;
+    const draggedOrder = allWorkOrders.find((order) => order.id === activeId);
+    if (!draggedOrder) {
+      setActiveId(null);
+      setOverId(null);
+      return;
+    }
 
     // Determine the new status based on the container it was dropped in
     const newStatus = overId.startsWith("column-")
       ? (overId.replace("column-", "") as WorkOrderStatus)
-      : localWorkOrders.find((order) => order.id === overId)?.status;
+      : allWorkOrders.find((order) => order.id === overId)?.status;
 
-    if (!newStatus) return;
-
-    // Update the order's status
-    if (draggedOrder.status !== newStatus) {
-      setLocalWorkOrders((orders) =>
-        orders.map((order) =>
-          order.id === activeId ? { ...order, status: newStatus } : order
-        )
-      );
-      
-      // TODO: API call to update status
-      console.log(`Updated work order ${activeId} status to ${newStatus}`);
+    if (!newStatus || draggedOrder.status === newStatus) {
+      setActiveId(null);
+      setOverId(null);
+      return;
     }
+
+    // Optimistic update
+    const previousData = queryClient.getQueryData(["workOrders"]);
+    // Optimistic update
+    queryClient.setQueryData(["workOrders"], (old: WorkOrder[] | undefined) => {
+      if (!old) return old;
+      return old.map((order) =>
+        order.id === activeId ? { ...order, status: newStatus } : order
+      );
+    });
+
+    // Perform mutation (removed toast from here to avoid duplicate)
+    updateWorkOrder.mutate(
+      {
+        id: activeId,
+        status: newStatus,
+      },
+      {
+        onError: (error) => {
+          // Rollback on error
+          queryClient.setQueryData(["workOrders"], previousData);
+          toast.error("Failed to update work order", {
+            description: "The status change could not be saved. Please try again.",
+          });
+          console.error("Failed to update work order:", error);
+        },
+      }
+    );
+
+    // Reset drag state
+    setActiveId(null);
+    setOverId(null);
+  };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
+    setOverId(null);
   };
 
   const handleEdit = (order: WorkOrder) => {
@@ -93,126 +158,208 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
 
   const handleSave = (data: Partial<WorkOrder>) => {
     if (editingOrder) {
-      // Update existing
-      setLocalWorkOrders(prev => prev.map(o => o.id === editingOrder.id ? { ...o, ...data } : o));
+      // Update existing using mutation
+      updateWorkOrder.mutate(
+        {
+          id: editingOrder.id,
+          ...data,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Work order updated", {
+              description: "Changes have been saved successfully.",
+            });
+            setIsEditModalOpen(false);
+          },
+          onError: () => {
+            toast.error("Failed to update work order", {
+              description: "Please try again.",
+            });
+          },
+        }
+      );
     } else {
-      // Create new
-      const newOrder: WorkOrder = {
-        id: Math.random().toString(36).substr(2, 9),
-        title: data.title || "",
-        description: data.description || "",
-        status: data.status || "pending",
-        priority: data.priority || "medium",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        assigned_to: data.assigned_to,
-        vehicle_id: "vehicle-1", // Mock
-        ...data
-      } as WorkOrder;
-      setLocalWorkOrders(prev => [...prev, newOrder]);
+      // Create new - would need a create mutation
+      toast.info("Create functionality not yet implemented");
+      setIsEditModalOpen(false);
     }
-    setIsEditModalOpen(false);
+  };
+
+  const handleCardClick = (id: string) => {
+    router.push(`/dashboard/work-orders/${id}`);
   };
 
   const toggleSelection = (id: string) => {
-    setSelectedOrders(prev => 
-      prev.includes(id) ? prev.filter(oId => oId !== id) : [...prev, id]
+    setSelectedOrders((prev) =>
+      prev.includes(id) ? prev.filter((oId) => oId !== id) : [...prev, id]
     );
   };
 
   const handleBulkDelete = () => {
     if (confirm(`Delete ${selectedOrders.length} orders?`)) {
-      setLocalWorkOrders(prev => prev.filter(o => !selectedOrders.includes(o.id)));
+      // TODO: Implement bulk delete mutation
+      toast.info("Bulk delete not yet implemented");
       setSelectedOrders([]);
     }
   };
 
   const handleBulkStatusChange = (status: string) => {
-    setLocalWorkOrders(prev => prev.map(o => 
-      selectedOrders.includes(o.id) ? { ...o, status: status as WorkOrderStatus } : o
-    ));
+    // TODO: Implement bulk status change mutation
+    toast.info("Bulk status change not yet implemented");
     setSelectedOrders([]);
   };
+
+  const handleDelete = (order: WorkOrder) => {
+    if (confirm(`Delete work order "${order.title}"?`)) {
+      // TODO: Implement delete mutation
+      toast.info("Delete functionality not yet implemented");
+    }
+  };
+
+  const activeWorkOrder = activeId
+    ? allWorkOrders.find((order) => order.id === activeId)
+    : null;
 
   if (isLoading) {
     return <div>Loading work orders...</div>;
   }
 
-  if (!localWorkOrders || localWorkOrders.length === 0) {
-    return <div>No work orders found</div>;
+  if (!allWorkOrders || allWorkOrders.length === 0) {
+    return (
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700">
+        <EmptyState
+          icon={ClipboardList}
+          title="No work orders yet"
+          description="Create your first work order to start tracking maintenance tasks, repairs, and inspections for your fleet."
+        />
+      </div>
+    );
   }
 
   return (
     <>
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
-        <div className="flex h-full gap-6 overflow-x-auto pb-4">
+        <div className="flex h-full gap-6 overflow-x-auto pb-4 px-2">
           {columns.map((column) => {
-            const columnOrders = localWorkOrders.filter((order) => {
+            const columnOrders = allWorkOrders.filter((order) => {
               const matchesStatus =
-                (filters?.status ?? "all") === "all" || order.status === filters?.status;
-              const matchesPriority = !filters?.priority || order.priority === filters.priority;
-              const matchesAssignee = !filters?.assignee || order.assigned_to === filters.assignee;
+                (filters?.status ?? "all") === "all" ||
+                order.status === filters?.status;
+              const matchesPriority =
+                !filters?.priority || order.priority === filters.priority;
+              const matchesAssignee =
+                !filters?.assignee || order.assigned_to === filters.assignee;
               const matchesSearch =
                 !filters?.search ||
-                order.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+                order.title
+                  .toLowerCase()
+                  .includes(filters.search.toLowerCase()) ||
                 order.id.toLowerCase().includes(filters.search.toLowerCase());
 
-              return order.status === column.id && matchesStatus && matchesPriority && matchesAssignee && matchesSearch;
+              return (
+                order.status === column.id &&
+                matchesStatus &&
+                matchesPriority &&
+                matchesAssignee &&
+                matchesSearch
+              );
             });
 
             const orderIds = columnOrders.map((order) => order.id);
+            const isOver =
+              overId === `column-${column.id}` ||
+              columnOrders.some((order) => order.id === overId);
 
             return (
-              <div
+              <DroppableColumn
                 key={column.id}
-                className="flex h-full min-w-[300px] flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50"
+                id={`column-${column.id}`}
+                status={column.id}
+                title={column.title}
+                count={columnOrders.length}
+                isOver={isOver}
+                color={column.color}
               >
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                    {column.title}
-                  </h3>
-                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                    {columnOrders.length}
-                  </span>
-                </div>
 
-                <SortableContext items={orderIds} strategy={verticalListSortingStrategy}>
-                  <div 
+                <SortableContext
+                  items={orderIds}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div
                     id={`column-${column.id}`}
-                    className="flex flex-1 flex-col gap-3 overflow-y-auto"
+                    className={`flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg p-2 transition-all duration-300 ${
+                      isOver && columnOrders.length === 0
+                        ? "border-2 border-dashed border-blue-400 bg-blue-50/50 dark:bg-blue-900/10 animate-pulse"
+                        : ""
+                    }`}
+                    style={{ minHeight: "200px" }}
                   >
-                    {columnOrders.map((order) => (
-                      <div key={order.id} className="relative group">
-                        <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <input 
-                            type="checkbox"
-                            checked={selectedOrders.includes(order.id)}
-                            onChange={() => toggleSelection(order.id)}
-                            className="h-4 w-4 rounded border-gray-300"
-                          />
-                        </div>
-                        <div onClick={(e) => {
-                          if (e.ctrlKey || e.metaKey) {
-                            toggleSelection(order.id);
-                            e.preventDefault();
-                          } else {
-                            handleEdit(order);
-                          }
-                        }}>
-                          <SortableWorkOrderCard workOrder={order} />
-                        </div>
+                    {columnOrders.length === 0 && isOver ? (
+                      <div className="flex flex-col items-center justify-center py-12 px-4 rounded-lg border-2 border-dashed border-blue-400 bg-blue-50/50 dark:border-blue-600 dark:bg-blue-900/20 animate-in fade-in-50 duration-200">
+                        <ClipboardList className="h-10 w-10 text-blue-500 dark:text-blue-400 mb-2" />
+                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                          Drop here
+                        </p>
                       </div>
-                    ))}
+                    ) : columnOrders.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-12 px-4">
+                        <ClipboardList className="h-12 w-12 text-slate-400 dark:text-slate-600 mb-3" />
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                          No tasks in this stage
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+                          Drag cards here or create new
+                        </p>
+                      </div>
+                    ) : (
+                      columnOrders.map((order, index) => {
+                        const isActiveCard = order.id === activeId;
+                        const isOverCard = order.id === overId;
+
+                        return (
+                          <div key={order.id} className="relative">
+                            {isOverCard && !isActiveCard && (
+                              <div className="absolute -top-1 left-0 right-0 h-1 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 shadow-lg shadow-blue-500/50 animate-in slide-in-from-top-2 duration-200" />
+                            )}
+                            <SortableWorkOrderCard 
+                              workOrder={order} 
+                              onEdit={handleEdit}
+                              onDelete={handleDelete}
+                              onClick={() => handleCardClick(order.id)}
+                            />
+                            {isOverCard &&
+                              !isActiveCard &&
+                              index === columnOrders.length - 1 && (
+                                <div className="absolute -bottom-1 left-0 right-0 h-1 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 shadow-lg shadow-blue-500/50 animate-in slide-in-from-bottom-2 duration-200" />
+                              )}
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
                 </SortableContext>
-              </div>
+              </DroppableColumn>
             );
           })}
         </div>
+
+        <DragOverlay dropAnimation={{
+          duration: 200,
+          easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+        }}>
+          {activeWorkOrder ? (
+            <div className="rotate-6 scale-105 cursor-grabbing shadow-2xl shadow-black/40 dark:shadow-black/60 animate-in zoom-in-95 duration-200">
+              <WorkOrderCard workOrder={activeWorkOrder} />
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
 
       <EditWorkOrderModal

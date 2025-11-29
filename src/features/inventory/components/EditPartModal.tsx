@@ -49,7 +49,7 @@ export function EditPartModal({ isOpen, onClose, part, onSave }: EditPartModalPr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
         <DialogHeader>
           <DialogTitle>{part ? "Edit Part" : "Add New Part"}</DialogTitle>
         </DialogHeader>

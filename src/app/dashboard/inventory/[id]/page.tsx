@@ -1,17 +1,38 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Activity, Archive, Boxes, FileUp, Package2, Pencil, TrendingDown } from "lucide-react";
+import {
+  Activity,
+  Archive,
+  Boxes,
+  FileUp,
+  Package2,
+  Pencil,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { DetailPageSkeleton } from "@/components/ui/skeleton";
 import { useModal } from "@/hooks/useModal";
+import { StockAdjustmentModal } from "@/features/inventory/components/StockAdjustmentModal";
+import { EditPartModal } from "@/features/inventory/components/EditPartModal";
+import { StockAdjustment } from "@/features/inventory/types/inventory.types";
+import { toast } from "sonner";
 
 interface Attachment {
   id: number;
@@ -47,8 +68,20 @@ const defaultComments: Comment[] = [
 ];
 
 const movements = [
-  { id: "MV-120", type: "In", qty: 25, location: "Warehouse A", date: "Mar 10" },
-  { id: "MV-121", type: "Out", qty: 10, location: "Warehouse B", date: "Mar 12" },
+  {
+    id: "MV-120",
+    type: "In",
+    qty: 25,
+    location: "Warehouse A",
+    date: "Mar 10",
+  },
+  {
+    id: "MV-121",
+    type: "Out",
+    qty: 10,
+    location: "Warehouse B",
+    date: "Mar 12",
+  },
 ];
 
 const warehouses = [
@@ -58,10 +91,17 @@ const warehouses = [
 ];
 
 export default function InventoryPartDetailsPage() {
-  const [attachments, setAttachments] = useState<Attachment[]>(defaultAttachments);
+  const [attachments, setAttachments] =
+    useState<Attachment[]>(defaultAttachments);
   const [comments, setComments] = useState<Comment[]>(defaultComments);
   const [newComment, setNewComment] = useState("");
   const { isOpen, open, close } = useModal();
+  const {
+    isOpen: isStockModalOpen,
+    open: openStockModal,
+    close: closeStockModal,
+  } = useModal();
+  const [isLoading] = useState(false); // Can be connected to actual loading state
 
   const part = useMemo(
     () => ({
@@ -76,6 +116,10 @@ export default function InventoryPartDetailsPage() {
     []
   );
 
+  if (isLoading) {
+    return <DetailPageSkeleton />;
+  }
+
   const handleFileUpload = (files: FileList | null) => {
     if (!files?.length) return;
     const uploads = Array.from(files).map((file) => ({
@@ -89,26 +133,60 @@ export default function InventoryPartDetailsPage() {
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     setComments((prev) => [
-      { id: Date.now(), author: "You", text: newComment.trim(), timestamp: "Just now" },
+      {
+        id: Date.now(),
+        author: "You",
+        text: newComment.trim(),
+        timestamp: "Just now",
+      },
       ...prev,
     ]);
+    toast.success("Comment added", {
+      description: "Your comment has been posted.",
+    });
     setNewComment("");
   };
 
-  const totalValue = useMemo(() => part.stock * part.price, [part.price, part.stock]);
+  const handleStockAdjustment = (
+    adjustment: Omit<StockAdjustment, "id" | "created_at" | "adjusted_by">
+  ) => {
+    console.log("Stock adjustment:", adjustment);
+    toast.success("Stock adjusted", {
+      description: `Stock has been ${
+        adjustment.adjustment_type === "add"
+          ? "increased"
+          : adjustment.adjustment_type === "remove"
+          ? "decreased"
+          : "updated"
+      }.`,
+    });
+    // TODO: Implement stock adjustment API call
+  };
+
+  const totalValue = useMemo(
+    () => part.stock * part.price,
+    [part.price, part.stock]
+  );
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{part.name}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {part.name}
+            </h1>
             <Badge variant="outline">SKU {part.sku}</Badge>
             <Badge className="capitalize">{part.category}</Badge>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{part.manufacturer}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {part.manufacturer}
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={openStockModal}>
+            <TrendingUp className="mr-2 h-4 w-4" /> Adjust Stock
+          </Button>
           <Button variant="outline" onClick={open}>
             <Pencil className="mr-2 h-4 w-4" /> Edit Part
           </Button>
@@ -141,31 +219,43 @@ export default function InventoryPartDetailsPage() {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Reorder Point</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Reorder Point
+                </CardTitle>
                 <Activity className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{part.reorderPoint} units</div>
+                <div className="text-2xl font-bold">
+                  {part.reorderPoint} units
+                </div>
                 <p className="text-xs text-gray-500">Threshold</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Unit Price</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Unit Price
+                </CardTitle>
                 <Package2 className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${part.price.toFixed(2)}</div>
+                <div className="text-2xl font-bold">
+                  ${part.price.toFixed(2)}
+                </div>
                 <p className="text-xs text-gray-500">Latest supplier cost</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Value
+                </CardTitle>
                 <TrendingDown className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
+                <div className="text-2xl font-bold">
+                  ${totalValue.toFixed(2)}
+                </div>
                 <p className="text-xs text-gray-500">Qty × price</p>
               </CardContent>
             </Card>
@@ -187,8 +277,17 @@ export default function InventoryPartDetailsPage() {
                 </TableHeader>
                 <TableBody>
                   {warehouses.map((location) => (
-                    <TableRow key={location.name} className={location.stock <= part.reorderPoint ? "bg-red-50/50 dark:bg-red-900/20" : undefined}>
-                      <TableCell className="font-medium">{location.name}</TableCell>
+                    <TableRow
+                      key={location.name}
+                      className={
+                        location.stock <= part.reorderPoint
+                          ? "bg-red-50/50 dark:bg-red-900/20"
+                          : undefined
+                      }
+                    >
+                      <TableCell className="font-medium">
+                        {location.name}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <span>{location.stock} units</span>
@@ -228,7 +327,11 @@ export default function InventoryPartDetailsPage() {
                     <TableRow key={move.id}>
                       <TableCell className="font-medium">{move.id}</TableCell>
                       <TableCell>
-                        <Badge variant={move.type === "In" ? "secondary" : "outline"}>{move.type}</Badge>
+                        <Badge
+                          variant={move.type === "In" ? "secondary" : "outline"}
+                        >
+                          {move.type}
+                        </Badge>
                       </TableCell>
                       <TableCell>{move.qty}</TableCell>
                       <TableCell>{move.location}</TableCell>
@@ -253,13 +356,12 @@ export default function InventoryPartDetailsPage() {
                   className="hidden"
                   onChange={(e) => handleFileUpload(e.target.files)}
                 />
-                <label htmlFor="part-files">
-                  <Button variant="outline" asChild>
-                    <span className="flex items-center">
-                      <FileUp className="mr-2 h-4 w-4" /> Upload
-                    </span>
-                  </Button>
-                </label>
+                <Button
+                  variant="outline"
+                  onClick={() => document.getElementById("part-files")?.click()}
+                >
+                  <FileUp className="mr-2 h-4 w-4" /> Upload
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-3 md:grid-cols-2">
@@ -269,7 +371,9 @@ export default function InventoryPartDetailsPage() {
                   className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700"
                 >
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{file.name}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                      {file.name}
+                    </p>
                     <p className="text-xs text-gray-500">{file.size}</p>
                   </div>
                   <Badge variant="secondary">PDF/Image</Badge>
@@ -297,12 +401,21 @@ export default function InventoryPartDetailsPage() {
               </div>
               <div className="space-y-4">
                 {comments.map((comment) => (
-                  <div key={comment.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                  <div
+                    key={comment.id}
+                    className="rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+                  >
                     <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900 dark:text-gray-100">{comment.author}</p>
-                      <span className="text-xs text-gray-500">{comment.timestamp}</span>
+                      <p className="font-medium text-gray-900 dark:text-gray-100">
+                        {comment.author}
+                      </p>
+                      <span className="text-xs text-gray-500">
+                        {comment.timestamp}
+                      </span>
                     </div>
-                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">{comment.text}</p>
+                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
+                      {comment.text}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -311,17 +424,32 @@ export default function InventoryPartDetailsPage() {
         </TabsContent>
       </Tabs>
 
-      <Modal isOpen={isOpen} onClose={close} title="Edit Part" description="Update part metadata and pricing.">
+      <Modal
+        isOpen={isOpen}
+        onClose={close}
+        title="Edit Part"
+        description="Update part metadata and pricing."
+      >
         <div className="space-y-4">
           <Input placeholder="Part name" defaultValue={part.name} />
           <Input placeholder="SKU" defaultValue={part.sku} />
-          <Input placeholder="Unit price" defaultValue={part.price.toString()} />
+          <Input
+            placeholder="Unit price"
+            defaultValue={part.price.toString()}
+          />
           <div className="flex justify-end">
             <Button onClick={close}>Save changes</Button>
           </div>
         </div>
       </Modal>
+
+      <StockAdjustmentModal
+        isOpen={isStockModalOpen}
+        onClose={closeStockModal}
+        partName={part.name}
+        currentStock={part.stock}
+        onSave={handleStockAdjustment}
+      />
     </div>
   );
 }
-
