@@ -4,15 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Wrench, AlertCircle } from "lucide-react";
 import Link from "next/link";
-
-interface VehicleMaintenanceNeeded {
-  id: string;
-  name: string;
-  plateNumber: string;
-  maintenanceType: string;
-  dueIn: string;
-  urgency: "upcoming" | "soon" | "overdue";
-}
+import { useQuery } from "@tanstack/react-query";
+import { getUpcomingMaintenance } from "@/features/reports/api/reports";
 
 const urgencyConfig = {
   upcoming: {
@@ -30,44 +23,44 @@ const urgencyConfig = {
 };
 
 export function VehiclesNeedingMaintenance() {
-  // Mock data - replace with API call
-  const vehicles: VehicleMaintenanceNeeded[] = [
-    {
-      id: "V-001",
-      name: "2020 Ford F-150",
-      plateNumber: "ABC-123",
-      maintenanceType: "Oil Change",
-      dueIn: "Overdue",
-      urgency: "overdue",
-    },
-    {
-      id: "V-012",
-      name: "2019 Honda Civic",
-      plateNumber: "XYZ-789",
-      maintenanceType: "Brake Inspection",
-      dueIn: "2 days",
-      urgency: "soon",
-    },
-    {
-      id: "V-024",
-      name: "2021 Toyota Camry",
-      plateNumber: "DEF-456",
-      maintenanceType: "Tire Rotation",
-      dueIn: "500 km",
-      urgency: "upcoming",
-    },
-    {
-      id: "V-018",
-      name: "2022 Chevrolet Silverado",
-      plateNumber: "GHI-321",
-      maintenanceType: "Filter Replacement",
-      dueIn: "1 week",
-      urgency: "upcoming",
-    },
-  ];
+  const { data, isLoading } = useQuery({
+    queryKey: ["upcoming-maintenance"],
+    queryFn: getUpcomingMaintenance,
+  });
 
-  const overdueCount = vehicles.filter((v) => v.urgency === "overdue").length;
-  const soonCount = vehicles.filter((v) => v.urgency === "soon").length;
+  // Transform API data to match component interface
+  const vehicles =
+    data?.data?.map((item: any) => ({
+      id: item.vehicle_id,
+      name: item.vehicle_name || `Vehicle ${item.vehicle_id}`,
+      plateNumber: item.plate_number || "N/A",
+      maintenanceType: item.maintenance_type || "Scheduled Maintenance",
+      dueIn: item.due_in || "Unknown",
+      urgency: item.urgency || "upcoming",
+    })) || [];
+
+  const overdueCount = vehicles.filter((v: any) => v.urgency === "overdue").length;
+  const soonCount = vehicles.filter((v: any) => v.urgency === "soon").length;
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Wrench className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              Vehicles Needing Maintenance
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
+            Loading...
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -98,8 +91,8 @@ export function VehiclesNeedingMaintenance() {
           </p>
         ) : (
           <div className="space-y-3">
-            {vehicles.map((vehicle) => {
-              const config = urgencyConfig[vehicle.urgency];
+            {vehicles.slice(0, 4).map((vehicle: any) => {
+              const config = urgencyConfig[vehicle.urgency as keyof typeof urgencyConfig];
               return (
                 <Link
                   key={vehicle.id}

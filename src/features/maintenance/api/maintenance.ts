@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import apiClient from '@/lib/api/axiosClient';
 
 export interface MaintenanceTemplate {
   id: string;
@@ -53,27 +53,27 @@ export interface UpdateMaintenancePlanRequest {
 
 // Maintenance Templates
 export const getMaintenanceTemplates = async (): Promise<MaintenanceTemplate[]> => {
-  const response = await axios.get('/maintenance/templates');
+  const response = await apiClient.get('/maintenance/templates');
   return response.data;
 };
 
 export const getMaintenanceTemplate = async (id: string): Promise<MaintenanceTemplate> => {
-  const response = await axios.get(`/maintenance/templates/${id}`);
+  const response = await apiClient.get(`/maintenance/templates/${id}`);
   return response.data;
 };
 
 export const createMaintenanceTemplate = async (data: CreateMaintenanceTemplateRequest): Promise<MaintenanceTemplate> => {
-  const response = await axios.post('/maintenance/templates', data);
+  const response = await apiClient.post('/maintenance/templates', data);
   return response.data;
 };
 
 export const updateMaintenanceTemplate = async (id: string, data: UpdateMaintenancePlanRequest): Promise<MaintenanceTemplate> => {
-  const response = await axios.put(`/maintenance/templates/${id}`, data);
+  const response = await apiClient.put(`/maintenance/templates/${id}`, data);
   return response.data;
 };
 
 export const deleteMaintenanceTemplate = async (id: string): Promise<void> => {
-  await axios.delete(`/maintenance/templates/${id}`);
+  await apiClient.delete(`/maintenance/templates/${id}`);
 };
 
 // Maintenance Plans (Vehicle specific usually, but general endpoints if available)
@@ -87,20 +87,21 @@ export const deleteMaintenanceTemplate = async (id: string): Promise<void> => {
 // Let's put them here but clearly typed.
 
 export const getMaintenancePlans = async (vehicleId: string): Promise<MaintenancePlan[]> => {
-  const response = await axios.get(`/vehicles/${vehicleId}/maintenance-plans`);
+  const response = await apiClient.get(`/vehicles/${vehicleId}/maintenance-plans`);
   return response.data;
 };
 
 export const createMaintenancePlan = async (vehicleId: string, data: CreateMaintenancePlanRequest): Promise<MaintenancePlan> => {
-  const response = await axios.post(`/vehicles/${vehicleId}/maintenance-plans`, data);
+  const response = await apiClient.post(`/vehicles/${vehicleId}/maintenance-plans`, data);
   return response.data;
 };
 
 export const updateMaintenancePlan = async (vehicleId: string, planId: string, data: UpdateMaintenancePlanRequest): Promise<MaintenancePlan> => {
-  const response = await axios.put(`/vehicles/${vehicleId}/maintenance-plans/${planId}`, data);
+  const response = await apiClient.put(`/vehicles/${vehicleId}/maintenance-plans/${planId}`, data);
   return response.data;
 };
 
 export const deleteMaintenancePlan = async (vehicleId: string, planId: string): Promise<void> => {
-  await axios.delete(`/vehicles/${vehicleId}/maintenance-plans/${planId}`);
+  await apiClient.delete(`/vehicles/${vehicleId}/maintenance-plans/${planId}`);
 };
+

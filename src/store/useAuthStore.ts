@@ -41,9 +41,17 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        // Clear cookies via API endpoint
+        fetch("/api/auth/set-cookie", {
+          method: "DELETE",
+        }).catch((error) => {
+          console.error("Failed to clear auth cookies:", error);
+        });
+
+        // Clear localStorage
         localStorage.removeItem("auth_token");
         localStorage.removeItem("refresh_token");
-        set({ user: null, token: null, isAuthenticated: false });
+        set({ user: null, token: null, refreshToken: null, isAuthenticated: false });
       },
 
       updateUser: (userData) =>

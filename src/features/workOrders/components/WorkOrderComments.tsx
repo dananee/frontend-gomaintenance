@@ -1,166 +1,256 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { MessageSquare, Send, Trash2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Send,
+  MoreVertical,
+  Trash2,
+  MessageSquare,
+  Loader2,
+  User,
+} from "lucide-react";
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
-
-interface Comment {
-  id: string;
-  author: string;
-  authorRole?: string;
-  content: string;
-  createdAt: string;
-}
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getWorkOrderComments,
+  createWorkOrderComment,
+  deleteWorkOrderComment,
+  Comment,
+} from "../api/workOrderComments";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+import { formatDateTime, getInitials } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface WorkOrderCommentsProps {
-  comments?: Comment[];
+  workOrderId: string;
 }
 
-export function WorkOrderComments({ comments = [] }: WorkOrderCommentsProps) {
-  const [newComment, setNewComment] = useState("");
-  const [localComments, setLocalComments] = useState<Comment[]>(
-    comments.length > 0
-      ? comments
-      : [
-          {
-            id: "1",
-            author: "Sarah Johnson",
-            authorRole: "Technician",
-            content:
-              "Started work on brake inspection. Found significant wear on front pads.",
-            createdAt: "2024-11-25T10:30:00Z",
-          },
-          {
-            id: "2",
-            author: "Mike Davis",
-            authorRole: "Supervisor",
-            content: "Approved parts order. Priority changed to high.",
-            createdAt: "2024-11-25T11:15:00Z",
-          },
-          {
-            id: "3",
-            author: "Sarah Johnson",
-            authorRole: "Technician",
-            content:
-              "Parts received. Will complete installation tomorrow morning.",
-            createdAt: "2024-11-26T14:20:00Z",
-          },
-        ]
-  );
+export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
+  const [commentText, setCommentText] = useState("");
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
+  const { data: comments = [], isLoading } = useQuery({
+    queryKey: ["workOrderComments", workOrderId],
+    queryFn: () => getWorkOrderComments(workOrderId),
+    enabled: !!workOrderId,
+  });
 
-    const comment: Comment = {
-      id: String(Date.now()),
-      author: "Current User",
-      authorRole: "Technician",
-      content: newComment,
-      createdAt: new Date().toISOString(),
-    };
+  const createMutation = useMutation({
+    mutationFn: (content: string) => createWorkOrderComment(workOrderId, { content }),
+    onMutate: async (newComment) => {
+      await queryClient.cancelQueries({ queryKey: ["workOrderComments", workOrderId] });
+      const previousComments = queryClient.getQueryData<Comment[]>(["workOrderComments", workOrderId]);
 
-    setLocalComments([...localComments, comment]);
-    setNewComment("");
+      if (user) {
+        const optimisticComment: Comment = {
+          id: Math.random().toString(),
+          work_order_id: workOrderId,
+          user_id: user.id,
+          content: newComment,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          user: {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            role: user.role,
+          },
+        };
+
+        queryClient.setQueryData<Comment[]>(["workOrderComments", workOrderId], (old = []) => [
+          optimisticComment,
+          ...old,
+        ]);
+      }
+
+      return { previousComments };
+    },
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(["workOrderComments", workOrderId], context?.previousComments);
+      toast.error("Failed to post comment");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["workOrderComments", workOrderId] });
+    },
+    onSuccess: () => {
+      setCommentText("");
+      toast.success("Comment posted");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (commentId: string) => deleteWorkOrderComment(workOrderId, commentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workOrderComments", workOrderId] });
+      toast.success("Comment deleted");
+    },
+    onError: () => {
+      toast.error("Failed to delete comment");
+    },
+  });
+
+  const handleSubmit = () => {
+    if (!commentText.trim()) return;
+    createMutation.mutate(commentText);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   const handleDelete = (commentId: string) => {
-    setLocalComments((prev) => prev.filter((c) => c.id !== commentId));
+    if (confirm("Delete this comment?")) {
+      deleteMutation.mutate(commentId);
+    }
   };
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Comments & Notes</CardTitle>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Communicate with team members about this work order
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Comment Input */}
-          <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-4 bg-gray-50 dark:bg-gray-900/50">
-            <form onSubmit={handleSubmit} className="space-y-3">
+    <div className="space-y-6">
+      {/* Comment Input Card */}
+      <Card className="border-none shadow-sm bg-white dark:bg-gray-950 overflow-hidden">
+        <CardContent className="p-4">
+          <div className="flex gap-4">
+            <Avatar className="h-10 w-10 border border-gray-200 dark:border-gray-800">
+              <AvatarImage src={`https://ui-avatars.com/api/?name=${user?.first_name}+${user?.last_name}&background=random`} />
+              <AvatarFallback>{user ? getInitials(`${user.first_name} ${user.last_name}`) : "U"}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 space-y-3">
               <Textarea
-                placeholder="Add a comment or note..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                rows={3}
-                className="resize-none bg-white dark:bg-gray-950"
+                placeholder="Write a comment..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="min-h-[80px] resize-none border-gray-200 dark:border-gray-800 focus-visible:ring-blue-500 bg-gray-50 dark:bg-gray-900/50"
               />
               <div className="flex justify-end">
-                <Button type="submit" size="sm" disabled={!newComment.trim()}>
-                  <Send className="mr-2 h-4 w-4" />
+                <Button 
+                  onClick={handleSubmit} 
+                  disabled={!commentText.trim() || createMutation.isPending}
+                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                >
+                  {createMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="mr-2 h-4 w-4" />
+                  )}
                   Post Comment
                 </Button>
               </div>
-            </form>
+            </div>
           </div>
-
-          {/* Comments List */}
-          {localComments.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <MessageSquare className="h-12 w-12 text-gray-400 dark:text-gray-600" />
-              <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                No comments yet
-              </p>
-              <p className="mt-2 text-xs text-gray-400">
-                Be the first to comment
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {localComments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="group rounded-lg border border-gray-200 dark:border-gray-800 p-4 transition-all hover:shadow-sm"
-                >
-                  <div className="flex gap-3">
-                    <Avatar className="h-10 w-10 flex-shrink-0">
-                      <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                        {comment.author.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-baseline gap-2 flex-wrap">
-                          <span className="font-medium text-gray-900 dark:text-gray-100">
-                            {comment.author}
-                          </span>
-                          {comment.authorRole && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-                              {comment.authorRole}
-                            </span>
-                          )}
-                          <span className="text-xs text-gray-400">
-                            {formatDate(comment.createdAt)}
-                          </span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleDelete(comment.id)}
-                          title="Delete comment"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                      <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                        {comment.content}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </CardContent>
       </Card>
+
+      {/* Comments List */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
+          <MessageSquare className="h-4 w-4 text-gray-500" />
+          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            Comments ({comments.length})
+          </h3>
+        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          </div>
+        ) : comments.length === 0 ? (
+          <div className="text-center py-12 bg-gray-50 dark:bg-gray-900/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
+            <p className="text-sm text-gray-500 dark:text-gray-400">No comments yet</p>
+            <p className="text-xs text-gray-400 mt-1">Be the first to share your thoughts</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <AnimatePresence mode="popLayout">
+              {comments.map((comment) => (
+                <motion.div
+                  key={comment.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Card className="border-none shadow-sm bg-white dark:bg-gray-950">
+                    <CardContent className="p-4">
+                      <div className="flex gap-4">
+                        <Avatar className="h-10 w-10 border border-gray-200 dark:border-gray-800">
+                          <AvatarImage src={`https://ui-avatars.com/api/?name=${comment.user?.first_name}+${comment.user?.last_name}&background=random`} />
+                          <AvatarFallback>
+                            {comment.user 
+                              ? getInitials(`${comment.user.first_name} ${comment.user.last_name}`) 
+                              : <User className="h-4 w-4" />}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">
+                                  {comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : "Unknown User"}
+                                </span>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  • {formatDateTime(comment.created_at)}
+                                </span>
+                              </div>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                {comment.user?.role || "User"}
+                              </p>
+                            </div>
+                            
+                            {user?.id === comment.user_id && (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                    <MoreVertical className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  {/* <DropdownMenuItem>
+                                    <Edit2 className="mr-2 h-4 w-4" />
+                                    Edit
+                                  </DropdownMenuItem> */}
+                                  <DropdownMenuItem 
+                                    className="text-red-600 focus:text-red-600"
+                                    onClick={() => handleDelete(comment.id)}
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
+                          </div>
+                          
+                          <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                            {comment.content}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

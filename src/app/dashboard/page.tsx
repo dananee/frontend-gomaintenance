@@ -8,8 +8,53 @@ import { TrendBadge } from "@/features/dashboard/components/TrendBadge";
 import { OverdueWorkOrders } from "@/features/dashboard/components/OverdueWorkOrders";
 import { VehiclesNeedingMaintenance } from "@/features/dashboard/components/VehiclesNeedingMaintenance";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { getVehicles } from "@/features/vehicles/api/getVehicles";
+import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
+import { getFleetAvailability } from "@/features/reports/api/reports";
 
 export default function DashboardPage() {
+  // Fetch vehicles data
+  const { data: vehiclesData } = useQuery({
+    queryKey: ["vehicles"],
+    queryFn: () => getVehicles({ page: 1, page_size: 1000 }),
+  });
+
+  // Fetch work orders data
+  const { data: workOrdersData } = useQuery({
+    queryKey: ["work-orders", "active"],
+    queryFn: () =>
+      getWorkOrders({
+        status: "in_progress",
+        page: 1,
+        page_size: 1000,
+      }),
+  });
+
+  // Fetch critical work orders (urgent priority)
+  const { data: criticalWorkOrdersData } = useQuery({
+    queryKey: ["work-orders", "critical"],
+    queryFn: () =>
+      getWorkOrders({
+        status: "pending",
+        page: 1,
+        page_size: 1000,
+      }),
+  });
+
+  // Fetch fleet availability
+  const { data: fleetAvailabilityData } = useQuery({
+    queryKey: ["fleet-availability"],
+    queryFn: getFleetAvailability,
+  });
+
+  const totalVehicles = vehiclesData?.total || 0;
+  const activeWorkOrders = workOrdersData?.total || 0;
+  const criticalIssues =
+    criticalWorkOrdersData?.data?.filter((wo) => wo.priority === "urgent")
+      .length || 0;
+  const fleetAvailability = fleetAvailabilityData?.availability_percent || 0;
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -30,9 +75,11 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                124
+                {totalVehicles}
               </div>
-              <TrendBadge value={3.2} label="from last month" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                Active fleet vehicles
+              </p>
             </CardContent>
           </Card>
         </Link>
@@ -49,9 +96,11 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                12
+                {activeWorkOrders}
               </div>
-              <TrendBadge value={-15.5} label="from last week" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                In progress
+              </p>
             </CardContent>
           </Card>
         </Link>
@@ -68,7 +117,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-                2
+                {criticalIssues}
               </div>
               <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
                 Requires immediate attention
@@ -89,9 +138,11 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                92%
+                {fleetAvailability.toFixed(0)}%
               </div>
-              <TrendBadge value={2.1} label="from last week" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                Vehicles available
+              </p>
             </CardContent>
           </Card>
         </Link>

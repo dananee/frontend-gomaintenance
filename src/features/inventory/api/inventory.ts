@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import apiClient from '@/lib/api/axiosClient';
 
 export interface Warehouse {
   id: string;
@@ -70,52 +70,52 @@ export interface CreateStockMovementRequest {
 
 // Warehouses
 export const getWarehouses = async (): Promise<Warehouse[]> => {
-  const response = await axios.get('/warehouses');
+  const response = await apiClient.get('/warehouses');
   return response.data;
 };
 
 export const getWarehouse = async (id: string): Promise<Warehouse> => {
-  const response = await axios.get(`/warehouses/${id}`);
+  const response = await apiClient.get(`/warehouses/${id}`);
   return response.data;
 };
 
 export const createWarehouse = async (data: CreateWarehouseRequest): Promise<Warehouse> => {
-  const response = await axios.post('/warehouses', data);
+  const response = await apiClient.post('/warehouses', data);
   return response.data;
 };
 
 export const updateWarehouse = async (id: string, data: UpdateWarehouseRequest): Promise<Warehouse> => {
-  const response = await axios.put(`/warehouses/${id}`, data);
+  const response = await apiClient.put(`/warehouses/${id}`, data);
   return response.data;
 };
 
 export const deleteWarehouse = async (id: string): Promise<void> => {
-  await axios.delete(`/warehouses/${id}`);
+  await apiClient.delete(`/warehouses/${id}`);
 };
 
 // Warehouse Stock
 export const getWarehouseStock = async (warehouseId: string): Promise<StockItem[]> => {
-  const response = await axios.get(`/warehouses/${warehouseId}/stock`);
+  const response = await apiClient.get(`/warehouses/${warehouseId}/stock`);
   return response.data;
 };
 
 export const addWarehouseStock = async (warehouseId: string, data: AddStockRequest): Promise<StockItem> => {
-  const response = await axios.post(`/warehouses/${warehouseId}/stock`, data);
+  const response = await apiClient.post(`/warehouses/${warehouseId}/stock`, data);
   return response.data;
 };
 
 export const updateWarehouseStock = async (warehouseId: string, stockId: string, data: UpdateStockRequest): Promise<StockItem> => {
-  const response = await axios.patch(`/warehouses/${warehouseId}/stock/${stockId}`, data);
+  const response = await apiClient.patch(`/warehouses/${warehouseId}/stock/${stockId}`, data);
   return response.data;
 };
 
 // Stock Movements
 export const getStockMovements = async (): Promise<StockMovement[]> => {
-  const response = await axios.get('/stock-movements');
+  const response = await apiClient.get('/stock-movements');
   return response.data;
 };
 
 export const createStockMovement = async (data: CreateStockMovementRequest): Promise<StockMovement> => {
-  const response = await axios.post('/stock-movements', data);
+  const response = await apiClient.post('/stock-movements', data);
   return response.data;
 };

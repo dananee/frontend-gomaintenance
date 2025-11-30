@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import apiClient from '@/lib/api/axiosClient';
 
 export interface Incident {
   id: string;
@@ -30,25 +30,26 @@ export interface UpdateIncidentRequest {
 }
 
 export const getIncidents = async (): Promise<Incident[]> => {
-  const response = await axios.get('/incidents');
+  const response = await apiClient.get('/incidents');
   return response.data;
 };
 
 export const getIncident = async (id: string): Promise<Incident> => {
-  const response = await axios.get(`/incidents/${id}`);
+  const response = await apiClient.get(`/incidents/${id}`);
   return response.data;
 };
 
 export const createIncident = async (data: CreateIncidentRequest): Promise<Incident> => {
-  const response = await axios.post('/incidents', data);
+  const response = await apiClient.post('/incidents', data);
   return response.data;
 };
 
 export const updateIncident = async (id: string, data: UpdateIncidentRequest): Promise<Incident> => {
-  const response = await axios.put(`/incidents/${id}`, data);
+  const response = await apiClient.put(`/incidents/${id}`, data);
   return response.data;
 };
 
 export const deleteIncident = async (id: string): Promise<void> => {
-  await axios.delete(`/incidents/${id}`);
+  await apiClient.delete(`/incidents/${id}`);
 };
+

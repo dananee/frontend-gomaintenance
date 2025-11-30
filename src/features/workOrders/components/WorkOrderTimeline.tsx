@@ -10,128 +10,80 @@ import {
   User,
   Clock,
   AlertCircle,
+  Loader2,
+  History,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { listWorkOrderActivity } from "../api/workOrderActivity";
+import { useParams } from "next/navigation";
+import { motion } from "framer-motion";
 
-interface TimelineEvent {
-  id: string;
-  type:
-    | "status_change"
-    | "comment"
-    | "attachment"
-    | "task_update"
-    | "assignment";
-  title: string;
-  description: string;
-  user: string;
-  timestamp: string; // Using string for mock data compatibility
-  metadata?: Record<string, unknown>;
-}
+export function WorkOrderTimeline() {
+  const params = useParams();
+  const workOrderId = params.id as string;
 
-interface WorkOrderTimelineProps {
-  events?: TimelineEvent[];
-}
+  const { data, isLoading } = useQuery({
+    queryKey: ["workOrderActivity", workOrderId],
+    queryFn: () => listWorkOrderActivity(workOrderId),
+    enabled: !!workOrderId,
+  });
 
-const eventIcons = {
-  status_change: CheckCircle2,
-  assignment: User,
-  task_update: Wrench,
-  comment: MessageSquare,
-  attachment: FileText,
-};
+  const logs = data?.data || [];
 
-const eventColors = {
-  status_change:
-    "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800",
-  assignment:
-    "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800",
-  task_update:
-    "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800",
-  comment:
-    "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700",
-  attachment:
-    "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-800",
-};
-
-export function WorkOrderTimeline({ events = [] }: WorkOrderTimelineProps) {
-  const mockEvents: TimelineEvent[] =
-    events.length > 0
-      ? events
-      : [
-          {
-            id: "1",
-            type: "status_change",
-            title: "Work order created",
-            description: "Status set to Pending",
-            user: "Admin User",
-            timestamp: "2024-11-24T09:00:00Z",
-          },
-          {
-            id: "2",
-            type: "assignment",
-            title: "Assigned to technician",
-            description: "Sarah Johnson assigned to this work order",
-            user: "Supervisor",
-            timestamp: "2024-11-24T09:15:00Z",
-          },
-          {
-            id: "3",
-            type: "status_change",
-            title: "Status changed",
-            description: "Status updated to In Progress",
-            user: "Sarah Johnson",
-            timestamp: "2024-11-25T08:30:00Z",
-          },
-          {
-            id: "4",
-            type: "comment",
-            title: "Comment added",
-            description: "Started work on brake inspection",
-            user: "Sarah Johnson",
-            timestamp: "2024-11-25T10:30:00Z",
-          },
-          {
-            id: "5",
-            type: "task_update",
-            title: "Parts added",
-            description: "Added brake pads and brake cleaner",
-            user: "Sarah Johnson",
-            timestamp: "2024-11-25T11:00:00Z",
-          },
-          {
-            id: "6",
-            type: "task_update",
-            title: "Task completed",
-            description: "Inspect brake lines marked as complete",
-            user: "Sarah Johnson",
-            timestamp: "2024-11-25T12:15:00Z",
-          },
-        ];
-
-  const getEventTypeLabel = (type: TimelineEvent["type"]) => {
-    switch (type) {
-      case "status_change":
-        return "Status";
-      case "assignment":
-        return "Assignment";
-      case "task_update":
-        return "Task";
-      case "comment":
-        return "Comment";
-      case "attachment":
-        return "Attachment";
-      default:
-        return "Event";
-    }
+  const getEventIcon = (action: string) => {
+    if (action.includes("status")) return CheckCircle2;
+    if (action.includes("assign")) return User;
+    if (action.includes("task")) return Wrench;
+    if (action.includes("comment")) return MessageSquare;
+    if (action.includes("attachment")) return FileText;
+    if (action.includes("create")) return AlertCircle;
+    return Clock;
   };
 
-  if (mockEvents.length === 0) {
+  const getEventColor = (action: string) => {
+    if (action.includes("status"))
+      return "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800";
+    if (action.includes("assign"))
+      return "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800";
+    if (action.includes("task"))
+      return "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800";
+    if (action.includes("comment"))
+      return "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700";
+    if (action.includes("attachment"))
+      return "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-800";
+    return "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700";
+  };
+
+  const formatAction = (action: string) => {
+    return action
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  if (isLoading) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Clock className="h-12 w-12 text-gray-400 dark:text-gray-600" />
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+      <Card className="border-none shadow-sm bg-white dark:bg-gray-950">
+        <CardContent className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (logs.length === 0) {
+    return (
+      <Card className="border-none shadow-sm bg-white dark:bg-gray-950">
+        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-full mb-4">
+            <History className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
             No activity yet
+          </h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+            Actions and updates performed on this work order will appear here.
           </p>
         </CardContent>
       </Card>
@@ -140,64 +92,94 @@ export function WorkOrderTimeline({ events = [] }: WorkOrderTimelineProps) {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Activity Timeline</CardTitle>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+      <Card className="border-none shadow-sm bg-white dark:bg-gray-950">
+        <CardHeader className="pb-4 border-b border-gray-100 dark:border-gray-800">
+          <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Activity Timeline
+          </CardTitle>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Complete history of all changes and activities
           </p>
         </CardHeader>
-        <CardContent>
-          <div className="relative">
+        <CardContent className="pt-8">
+          <div className="relative pl-4">
             {/* Timeline line */}
-            <div className="absolute left-5 top-0 h-full w-0.5 bg-gray-200 dark:bg-gray-800" />
+            <div className="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gray-100 dark:bg-gray-800" />
 
-            <div className="space-y-6">
-              {mockEvents.map((event, index) => {
-                const Icon = eventIcons[event.type];
-                const colorClass = eventColors[event.type];
+            <div className="space-y-8">
+              {logs.map((log, index) => {
+                const Icon = getEventIcon(log.action);
+                const colorClass = getEventColor(log.action);
 
                 return (
-                  <div key={event.id} className="relative pl-12">
+                  <motion.div
+                    key={log.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    className="relative pl-10"
+                  >
                     {/* Timeline dot */}
-                    <div
-                      className={`absolute left-2.5 top-2 flex h-6 w-6 items-center justify-center rounded-full border-2 ${colorClass}`}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
+                    <div className="absolute left-0 top-1.5 z-10 bg-white dark:bg-gray-950 p-1">
+                      <div
+                        className={`flex h-8 w-8 items-center justify-center rounded-full border ${colorClass}`}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </div>
                     </div>
 
-                    <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 transition-all hover:shadow-md">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
+                    <div className="group rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/20 p-4 transition-all hover:bg-white hover:shadow-md dark:hover:bg-gray-900">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-                              {event.title}
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                              {formatAction(log.action)}
                             </h4>
-                            <Badge variant="outline" className="text-xs">
-                              {getEventTypeLabel(event.type)}
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 font-normal bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                              {log.entity_type}
                             </Badge>
                           </div>
-                          {event.description && (
-                            <p className="mt-1.5 text-sm text-gray-600 dark:text-gray-400">
-                              {event.description}
-                            </p>
-                          )}
-                          <div className="mt-2 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{formatDate(event.timestamp)}</span>
+                          
+                          {log.changes && (
+                            <div className="mt-2 text-xs font-mono bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded p-2 text-gray-600 dark:text-gray-400 overflow-x-auto">
+                              {(() => {
+                                try {
+                                  const parsed = JSON.parse(log.changes);
+                                  return (
+                                    <div className="space-y-1">
+                                      {Object.entries(parsed).map(([key, value]) => (
+                                        <div key={key} className="flex gap-2">
+                                          <span className="font-semibold text-gray-500">{key}:</span>
+                                          <span>{String(value)}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                } catch {
+                                  return log.changes;
+                                }
+                              })()}
                             </div>
-                            {event.user && (
-                              <div className="flex items-center gap-1">
-                                <User className="h-3 w-3" />
-                                <span>{event.user}</span>
+                          )}
+
+                          <div className="mt-3 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>{formatDate(log.created_at)}</span>
+                            </div>
+                            {log.user && (
+                              <div className="flex items-center gap-1.5">
+                                <User className="h-3.5 w-3.5" />
+                                <span className="font-medium text-gray-700 dark:text-gray-300">
+                                  {log.user.first_name} {log.user.last_name}
+                                </span>
                               </div>
                             )}
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>

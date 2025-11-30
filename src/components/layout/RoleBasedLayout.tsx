@@ -3,44 +3,25 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { TechnicianLayout } from "@/layouts/TechnicianLayout";
-import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { ProgressBar } from "@/components/ui/progress-bar";
-import { isRouteAllowed } from "@/lib/rbac/routeAccess";
 
 interface RoleBasedLayoutProps {
   children: React.ReactNode;
 }
 
 export function RoleBasedLayout({ children }: RoleBasedLayoutProps) {
-  const { user, isAuthenticated } = useAuthStore();
-  const router = useRouter();
-  const pathname = usePathname();
-  const isClient = typeof window !== "undefined";
+  const { user } = useAuthStore();
 
-  useEffect(() => {
-    if (!isClient) return;
-
-    if (!isAuthenticated || !user) {
-      router.push("/login");
-      return;
-    }
-
-    const allowed = isRouteAllowed(pathname, user.role);
-
-    if (!allowed) {
-      router.push("/not-authorized");
-    }
-  }, [user, isAuthenticated, router, pathname, isClient]);
-
-  const isAllowed = isRouteAllowed(pathname, user?.role);
-
-  if (!isClient || !isAuthenticated || !user || !isAllowed) {
-    return <div className="flex h-screen items-center justify-center"><ProgressBar /></div>;
+  // Middleware ensures user is authenticated and authorized
+  // This component only needs to select the appropriate layout
+  
+  if (!user) {
+    // This should rarely happen since middleware redirects unauthenticated users
+    // But we handle it gracefully just in case
+    return null;
   }
 
-  // Cast role to string for comparison if needed, or rely on TypeScript if Role is compatible
-  if (user?.role === "technician") {
+  // Select layout based on role
+  if (user.role === "technician") {
     return <TechnicianLayout>{children}</TechnicianLayout>;
   }
 

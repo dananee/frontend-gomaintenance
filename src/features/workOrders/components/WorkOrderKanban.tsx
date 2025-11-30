@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useWorkOrders } from "../hooks/useWorkOrders";
-import { useUpdateWorkOrder } from "../hooks/useWorkOrders";
+import { useWorkOrders, useUpdateWorkOrderStatus, useDeleteWorkOrder, useUpdateWorkOrder } from "../hooks/useWorkOrders";
 import {
   DndContext,
   closestCorners,
@@ -48,7 +47,9 @@ export interface WorkOrderFilters {
 export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
   const router = useRouter();
   const { data: workOrders, isLoading } = useWorkOrders();
+  const updateStatus = useUpdateWorkOrderStatus();
   const updateWorkOrder = useUpdateWorkOrder();
+  const deleteWorkOrderMutation = useDeleteWorkOrder();
   const queryClient = useQueryClient();
   
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -114,28 +115,35 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
 
     // Optimistic update
     const previousData = queryClient.getQueryData(["workOrders"]);
-    // Optimistic update
-    queryClient.setQueryData(["workOrders"], (old: WorkOrder[] | undefined) => {
-      if (!old) return old;
-      return old.map((order) =>
-        order.id === activeId ? { ...order, status: newStatus } : order
-      );
+    queryClient.setQueryData(["workOrders"], (old: any) => {
+      if (!old?.data) return old;
+      return {
+        ...old,
+        data: old.data.map((order: WorkOrder) =>
+          order.id === activeId ? { ...order, status: newStatus } : order
+        ),
+      };
     });
 
-    // Perform mutation (removed toast from here to avoid duplicate)
-    updateWorkOrder.mutate(
+    // Perform mutation using dedicated status update hook
+    updateStatus.mutate(
       {
         id: activeId,
         status: newStatus,
       },
       {
+        onSuccess: () => {
+          toast.success("Status updated", {
+            description: `Work order moved to ${newStatus.replace("_", " ")}`,
+          });
+        },
         onError: (error) => {
           // Rollback on error
           queryClient.setQueryData(["workOrders"], previousData);
-          toast.error("Failed to update work order", {
+          toast.error("Failed to update status", {
             description: "The status change could not be saved. Please try again.",
           });
-          console.error("Failed to update work order:", error);
+          console.error("Failed to update work order status:", error);
         },
       }
     );
@@ -210,8 +218,19 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
 
   const handleDelete = (order: WorkOrder) => {
     if (confirm(`Delete work order "${order.title}"?`)) {
-      // TODO: Implement delete mutation
-      toast.info("Delete functionality not yet implemented");
+      deleteWorkOrderMutation.mutate(order.id, {
+        onSuccess: () => {
+          toast.success("Work order deleted", {
+            description: "The work order has been permanently removed.",
+          });
+        },
+        onError: (error) => {
+          toast.error("Failed to delete work order", {
+            description: "Please try again.",
+          });
+          console.error("Failed to delete work order:", error);
+        },
+      });
     }
   };
 

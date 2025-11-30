@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import apiClient from '@/lib/api/axiosClient';
 
 export interface MaintenanceCostReport {
   total_cost: number;
@@ -32,26 +32,27 @@ export interface UpcomingMaintenanceReport {
 }
 
 export const getMaintenanceCosts = async (params: { from?: string; to?: string; vehicle_id?: string }): Promise<MaintenanceCostReport> => {
-  const response = await axios.get('/reports/maintenance-costs', { params });
+  const response = await apiClient.get('/reports/maintenance-costs', { params });
   return response.data;
 };
 
 export const getFleetAvailability = async (): Promise<FleetAvailabilityReport> => {
-  const response = await axios.get('/reports/fleet-availability');
+  const response = await apiClient.get('/reports/fleet-availability');
   return response.data;
 };
 
 export const getBreakdowns = async (): Promise<BreakdownReport> => {
-  const response = await axios.get('/reports/breakdowns');
+  const response = await apiClient.get('/reports/breakdowns');
   return response.data;
 };
 
 export const getTechnicianProductivity = async (): Promise<TechnicianProductivityReport> => {
-  const response = await axios.get('/reports/technician-productivity');
+  const response = await apiClient.get('/reports/technician-productivity');
   return response.data;
 };
 
 export const getUpcomingMaintenance = async (): Promise<UpcomingMaintenanceReport> => {
-  const response = await axios.get('/reports/upcoming-maintenance');
+  const response = await apiClient.get('/reports/upcoming-maintenance');
   return response.data;
 };
+

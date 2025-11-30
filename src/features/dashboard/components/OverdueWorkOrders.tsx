@@ -4,51 +4,62 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
-
-interface OverdueWorkOrder {
-  id: string;
-  title: string;
-  vehicle: string;
-  dueDate: string;
-  daysOverdue: number;
-  priority: "low" | "medium" | "high" | "urgent";
-}
-
-const priorityVariant = {
-  low: "info" as const,
-  medium: "warning" as const,
-  high: "warning" as const,
-  urgent: "destructive" as const,
-};
+import { useQuery } from "@tanstack/react-query";
+import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
 
 export function OverdueWorkOrders() {
-  // Mock data - replace with API call
-  const overdueOrders: OverdueWorkOrder[] = [
-    {
-      id: "WO-087",
-      title: "Transmission service",
-      vehicle: "2020 Ford F-150",
-      dueDate: "2024-11-20",
-      daysOverdue: 8,
-      priority: "urgent",
-    },
-    {
-      id: "WO-092",
-      title: "Coolant flush",
-      vehicle: "2019 Honda Civic",
-      dueDate: "2024-11-23",
-      daysOverdue: 5,
-      priority: "high",
-    },
-    {
-      id: "WO-095",
-      title: "Battery replacement",
-      vehicle: "2021 Toyota Camry",
-      dueDate: "2024-11-25",
-      daysOverdue: 3,
-      priority: "medium",
-    },
-  ];
+  const { data, isLoading } = useQuery({
+    queryKey: ["work-orders", "overdue"],
+    queryFn: () =>
+      getWorkOrders({
+        page: 1,
+        page_size: 10,
+      }),
+  });
+
+  // Filter for overdue work orders (scheduled_date in the past and status not completed)
+  const overdueOrders =
+    data?.data?.filter((order) => {
+      if (!order.scheduled_date || order.status === "completed") return false;
+      const scheduledDate = new Date(order.scheduled_date);
+      const today = new Date();
+      return scheduledDate < today;
+    }) || [];
+
+  const priorityVariant = {
+    low: "info" as const,
+    medium: "warning" as const,
+    high: "warning" as const,
+    urgent: "destructive" as const,
+  };
+
+  const calculateDaysOverdue = (scheduledDate: string): number => {
+    const scheduled = new Date(scheduledDate);
+    const today = new Date();
+    const diffTime = today.getTime() - scheduled.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              Overdue Work Orders
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
+            Loading...
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -68,7 +79,7 @@ export function OverdueWorkOrders() {
           </p>
         ) : (
           <div className="space-y-3">
-            {overdueOrders.map((order) => (
+            {overdueOrders.slice(0, 5).map((order) => (
               <Link
                 key={order.id}
                 href={`/dashboard/work-orders/${order.id}`}
@@ -81,19 +92,22 @@ export function OverdueWorkOrders() {
                         <p className="font-semibold text-gray-900 dark:text-gray-100">
                           {order.title}
                         </p>
-                        <Badge variant={priorityVariant[order.priority]} className="text-xs">
+                        <Badge
+                          variant={priorityVariant[order.priority]}
+                          className="text-xs"
+                        >
                           {order.priority}
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        {order.vehicle}
+                        {order.vehicle_name || `Vehicle ID: ${order.vehicle_id}`}
                       </p>
                       <p className="text-xs text-red-600 dark:text-red-400 mt-1 font-medium">
-                        {order.daysOverdue} days overdue
+                        {calculateDaysOverdue(order.scheduled_date!)} days overdue
                       </p>
                     </div>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {order.id}
+                      {order.id.substring(0, 8)}
                     </span>
                   </div>
                 </div>
