@@ -1,24 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Activity,
-  CalendarRange,
-  FileUp,
-  Fuel,
-  Gauge,
-  MapPin,
-  Pencil,
-  User,
-  Wrench,
-} from "lucide-react";
-
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useParams, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getVehicleDetails } from "@/features/vehicles/api/getVehicleDetails";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
+import { VehicleKPICard } from "@/features/vehicles/components/VehicleKPICard";
+import { ServiceSummary } from "@/features/vehicles/components/ServiceSummary";
+import { CostTrendChart } from "@/features/dashboard/components/CostTrendChart";
+import { DowntimeChart } from "@/features/dashboard/components/DowntimeChart";
+import { WorkOrderPieChart } from "@/features/dashboard/components/WorkOrderPieChart";
+import {
+  ArrowLeft,
+  DollarSign,
+  Wrench,
+  Clock,
+  Timer,
+  Zap,
+  TrendingDown,
+  Package,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -27,450 +28,276 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { DetailPageSkeleton } from "@/components/ui/skeleton";
-import { useModal } from "@/hooks/useModal";
-import { toast } from "sonner";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface Attachment {
-  id: number;
-  name: string;
-  size: string;
-}
+export default function VehicleDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const vehicleId = params.id as string;
 
-interface Comment {
-  id: number;
-  author: string;
-  text: string;
-  timestamp: string;
-}
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["vehicle-details", vehicleId],
+    queryFn: () => getVehicleDetails(vehicleId),
+    enabled: !!vehicleId,
+  });
 
-const defaultAttachments: Attachment[] = [
-  { id: 1, name: "Registration.pdf", size: "220 KB" },
-  { id: 2, name: "Inspection-2024.png", size: "1.2 MB" },
-];
+  if (isLoading) {
+    return (
+      <div className="space-y-6 p-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-10 w-40" />
+          </div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 w-full rounded-xl" />
+          ))}
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Skeleton className="h-80 w-full rounded-xl" />
+          <Skeleton className="h-80 w-full rounded-xl" />
+        </div>
+      </div>
+    );
+  }
 
-const defaultComments: Comment[] = [
-  {
-    id: 1,
-    author: "Alex Turner",
-    text: "Scheduled for oil change next week.",
-    timestamp: "Today, 10:15 AM",
-  },
-  {
-    id: 2,
-    author: "Jordan Smith",
-    text: "Please verify tire pressure before next trip.",
-    timestamp: "Yesterday, 4:02 PM",
-  },
-];
+  if (error || !data) {
+    return (
+      <div className="flex h-96 items-center justify-center flex-col gap-4">
+        <p className="text-muted-foreground text-lg">Failed to load vehicle details</p>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    );
+  }
 
-const timeline = [
-  {
-    id: 1,
-    label: "Work order WO-214 completed",
-    by: "Alex Turner",
-    date: "Today 09:20",
-  },
-  {
-    id: 2,
-    label: "Odometer updated to 124,500 km",
-    by: "System",
-    date: "Mar 12",
-  },
-  { id: 3, label: "Assigned to route east", by: "Dispatcher", date: "Mar 8" },
-];
-
-const relatedWorkOrders = [
-  {
-    id: "WO-214",
-    issue: "Oil change + filters",
-    status: "completed",
-    due: "Today",
-  },
-  {
-    id: "WO-198",
-    issue: "Brake inspection",
-    status: "in_progress",
-    due: "Mar 20",
-  },
-];
-
-const maintenancePlans = [
-  { template: "Oil Change", nextDue: "2,500 km", date: "Apr 4" },
-  { template: "Brake Inspection", nextDue: "5,000 km", date: "May 12" },
-];
-
-export default function VehicleDetailsPage() {
-  const [attachments, setAttachments] =
-    useState<Attachment[]>(defaultAttachments);
-  const [comments, setComments] = useState<Comment[]>(defaultComments);
-  const [newComment, setNewComment] = useState("");
-  const { isOpen, open, close } = useModal();
-  const [isLoading] = useState(false); // Can be connected to actual loading state
-
-  const vehicle = useMemo(
-    () => ({
-      name: "Freightliner Cascadia",
-      status: "active",
-      licensePlate: "ABC-1234",
-      vin: "1FUJGEDR9CSBM1234",
-      odometer: "124,500 km",
-      fuelType: "Diesel",
-      location: "San Francisco Yard",
-      driver: "Jamie Doe",
-    }),
-    []
-  );
-
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-    setComments((prev) => [
-      {
-        id: Date.now(),
-        author: "You",
-        text: newComment.trim(),
-        timestamp: "Just now",
-      },
-      ...prev,
-    ]);
-    toast.success("Comment added", {
-      description: "Your comment has been posted.",
-    });
-    setNewComment("");
-  };
-
-  const handleFileUpload = (files: FileList | null) => {
-    if (!files?.length) return;
-    const uploads = Array.from(files).map((file) => ({
-      id: Date.now() + Math.random(),
-      name: file.name,
-      size: `${(file.size / 1024).toFixed(1)} KB`,
-    }));
-    setAttachments((prev) => [...uploads, ...prev]);
-    toast.success("File uploaded", {
-      description: `${uploads.length} file${
-        uploads.length > 1 ? "s" : ""
-      } uploaded successfully.`,
-    });
-  };
+  const { vehicle, metrics, serviceSummary, charts, partsUsed } = data;
 
   return (
-    <div className="space-y-6">
-      {isLoading ? (
-        <DetailPageSkeleton />
-      ) : (
-        <>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {vehicle.name}
-                </h1>
-                <Badge variant="outline" className="capitalize">
-                  {vehicle.status}
-                </Badge>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Plate {vehicle.licensePlate} · VIN {vehicle.vin}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" onClick={open}>
-                <Pencil className="mr-2 h-4 w-4" /> Edit Vehicle
-              </Button>
-              <Button>
-                <Wrench className="mr-2 h-4 w-4" /> Create Work Order
-              </Button>
-            </div>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">
+              {vehicle.year} {vehicle.make} {vehicle.model}
+            </h1>
+            <p className="text-muted-foreground">
+              {vehicle.licensePlate} • VIN: {vehicle.vin} • {vehicle.status.toUpperCase()}
+            </p>
           </div>
+        </div>
+        <div className="flex gap-2">
+          <Link href={`/dashboard/vehicles/${vehicleId}/edit`}>
+            <Button variant="outline">Edit Vehicle</Button>
+          </Link>
+          <Button>Create Work Order</Button>
+        </div>
+      </div>
 
-          <Tabs defaultValue="overview">
-            <TabsList className="grid grid-cols-5">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
-              <TabsTrigger value="attachments">Attachments</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="comments">Comments</TabsTrigger>
-            </TabsList>
+      {/* KPI Overview Grid */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Performance Metrics</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {/* A. Finance / Cost Metrics */}
+          <VehicleKPICard
+            title="Total Maintenance Cost"
+            value={`$${metrics.totalMaintenanceCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            icon={DollarSign}
+            className="bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+          <VehicleKPICard
+            title="Avg Repair Cost"
+            value={`$${metrics.averageRepairCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            subtitle="Per work order"
+            icon={Wrench}
+            className="bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+          <VehicleKPICard
+            title="Cost per KM"
+            value={`$${metrics.costPerKm.toFixed(2)}`}
+            icon={TrendingDown}
+            className="bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
 
-            <TabsContent value="overview" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Status
-                    </CardTitle>
-                    <Activity className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold capitalize">
-                      {vehicle.status}
-                    </div>
-                    <p className="text-xs text-gray-500">Updated today</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Odometer
-                    </CardTitle>
-                    <Gauge className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{vehicle.odometer}</div>
-                    <p className="text-xs text-gray-500">Auto-synced</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Fuel Type
-                    </CardTitle>
-                    <Fuel className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{vehicle.fuelType}</div>
-                    <p className="text-xs text-gray-500">Primary fuel</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Location
-                    </CardTitle>
-                    <MapPin className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{vehicle.location}</div>
-                    <p className="text-xs text-gray-500">Last check-in</p>
-                  </CardContent>
-                </Card>
+          {/* B. Performance Metrics */}
+          <VehicleKPICard
+            title="MTBF"
+            value={`${metrics.mtbf.toFixed(0)}h`}
+            subtitle="Mean Time Between Failures"
+            icon={Zap}
+            className="bg-gradient-to-br from-[#065F46] via-[#047857] to-[#059669] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+          <VehicleKPICard
+            title="Reliability Score"
+            value={`${metrics.reliabilityScore.toFixed(1)}%`}
+            icon={Zap}
+            className="bg-gradient-to-br from-[#065F46] via-[#047857] to-[#059669] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+
+          {/* C. Risk & Downtime */}
+          <VehicleKPICard
+            title="Total Downtime"
+            value={`${metrics.totalDowntimeHours.toFixed(1)}h`}
+            icon={Clock}
+            className="bg-gradient-to-br from-[#7F1D1D] via-[#B91C1C] to-[#DC2626] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+          <VehicleKPICard
+            title="MTTR"
+            value={`${metrics.mttr.toFixed(1)}h`}
+            subtitle="Mean Time To Repair"
+            icon={Timer}
+            className="bg-gradient-to-br from-[#7F1D1D] via-[#B91C1C] to-[#DC2626] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+
+          {/* D. General Info */}
+          <VehicleKPICard
+            title="Work Orders"
+            value={metrics.totalWorkOrders}
+            subtitle="Total completed"
+            icon={Wrench}
+            className="bg-gradient-to-br from-[#1E293B] via-[#334155] to-[#475569] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-white/80"
+          />
+        </div>
+      </div>
+
+      {/* Service Summary */}
+      <ServiceSummary
+        lastMaintenanceDate={serviceSummary.lastMaintenanceDate || ""}
+        lastMaintenanceCost={serviceSummary.lastMaintenanceCost}
+        nextServiceDue={serviceSummary.nextServiceDue || ""}
+        lastTechnician={serviceSummary.lastTechnicianName}
+        serviceInterval={serviceSummary.serviceInterval}
+      />
+
+      {/* Charts Section */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Analytics</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <CostTrendChart
+            data={(charts.maintenanceCostTrend || []).map((item) => ({
+              month: item.date,
+              value: item.value,
+              label: `$${item.value.toFixed(0)}`,
+            }))}
+          />
+          <DowntimeChart
+            data={(charts.downtimeTrend || []).map((item) => ({
+              month: item.date,
+              value: item.value,
+              label: `${item.value.toFixed(0)}h`,
+            }))}
+          />
+          <WorkOrderPieChart
+            data={(charts.workOrderDistribution || []).map((item) => ({
+              status: item.name,
+              count: item.value,
+              percentage: metrics.totalWorkOrders > 0 ? (item.value / metrics.totalWorkOrders) * 100 : 0,
+              color:
+                item.name === "preventive"
+                  ? "#10b981"
+                  : item.name === "corrective"
+                  ? "#f59e0b"
+                  : item.name === "breakdown"
+                  ? "#ef4444"
+                  : "#3b82f6",
+            }))}
+          />
+          <Card className="shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold">
+                Mileage Growth
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex h-[240px] items-center justify-center text-muted-foreground">
+                {(charts.mileageGrowth || []).length > 0 ? (
+                    <p>Chart data available</p> // Placeholder for actual chart if implemented later
+                ) : (
+                    <p>No mileage history available</p>
+                )}
               </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-              <div className="grid gap-4 lg:grid-cols-3">
-                <Card className="lg:col-span-2">
-                  <CardHeader>
-                    <CardTitle>Related Work Orders</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>ID</TableHead>
-                          <TableHead>Issue</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Due</TableHead>
+      {/* Parts Used & Costs */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Parts Used & Costs</h2>
+        <Card className="shadow-sm">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                    <TableHead className="font-semibold">Part Name</TableHead>
+                    <TableHead className="font-semibold">Quantity</TableHead>
+                    <TableHead className="font-semibold">Cost</TableHead>
+                    <TableHead className="font-semibold">Date Used</TableHead>
+                    <TableHead className="font-semibold">Work Order</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {partsUsed.length === 0 ? (
+                    <TableRow>
+                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                            No parts used yet
+                        </TableCell>
+                    </TableRow>
+                  ) : (
+                    partsUsed.map((part, index) => (
+                        <TableRow
+                        key={index}
+                        className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30"
+                        >
+                        <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                            <Package className="h-4 w-4 text-blue-600" />
+                            {part.partName}
+                            </div>
+                        </TableCell>
+                        <TableCell>{part.quantity}</TableCell>
+                        <TableCell className="font-medium">
+                            ${part.cost.toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                            {new Date(part.dateUsed).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                            <Link
+                            href={`/dashboard/work-orders/${part.workOrderId}`}
+                            className="text-blue-600 hover:underline dark:text-blue-400"
+                            >
+                            View Work Order
+                            </Link>
+                        </TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {relatedWorkOrders.map((wo) => (
-                          <TableRow key={wo.id}>
-                            <TableCell className="font-medium">
-                              {wo.id}
-                            </TableCell>
-                            <TableCell>{wo.issue}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  wo.status === "completed"
-                                    ? "outline"
-                                    : "secondary"
-                                }
-                                className="capitalize"
-                              >
-                                {wo.status.replace("_", " ")}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{wo.due}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Assignments</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700">
-                      <Avatar>
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium">{vehicle.driver}</p>
-                        <p className="text-sm text-gray-500">Primary driver</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <CalendarRange className="h-4 w-4" /> Next inspection: Apr
-                      4
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <User className="h-4 w-4" /> Fleet manager: Casey Lee
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="maintenance" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Maintenance Plans</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Template</TableHead>
-                        <TableHead>Next Due</TableHead>
-                        <TableHead>Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {maintenancePlans.map((plan) => (
-                        <TableRow key={plan.template}>
-                          <TableCell className="font-medium">
-                            {plan.template}
-                          </TableCell>
-                          <TableCell>{plan.nextDue}</TableCell>
-                          <TableCell>{plan.date}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="attachments" className="space-y-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Attachments</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="vehicle-files"
-                      type="file"
-                      multiple
-                      className="hidden"
-                      onChange={(e) => handleFileUpload(e.target.files)}
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() =>
-                        document.getElementById("vehicle-files")?.click()
-                      }
-                    >
-                      <FileUp className="mr-2 h-4 w-4" /> Upload
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="grid gap-3 md:grid-cols-2">
-                  {attachments.map((file) => (
-                    <div
-                      key={file.id}
-                      className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                          {file.name}
-                        </p>
-                        <p className="text-xs text-gray-500">{file.size}</p>
-                      </div>
-                      <Badge variant="secondary">PDF/Image</Badge>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="activity" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Activity Timeline</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {timeline.map((item) => (
-                    <div key={item.id} className="flex items-start gap-3">
-                      <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                          {item.label}
-                        </p>
-                        <p className="text-sm text-gray-500">{item.by}</p>
-                        <p className="text-xs text-gray-400">{item.date}</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="comments" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Comments</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <Textarea
-                      placeholder="Add a comment"
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                    />
-                    <div className="flex justify-end">
-                      <Button onClick={handleAddComment}>Post comment</Button>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    {comments.map((comment) => (
-                      <div
-                        key={comment.id}
-                        className="rounded-lg border border-gray-200 p-3 dark:border-gray-700"
-                      >
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {comment.author}
-                          </p>
-                          <span className="text-xs text-gray-500">
-                            {comment.timestamp}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
-                          {comment.text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          <Modal
-            isOpen={isOpen}
-            onClose={close}
-            title="Edit Vehicle"
-            description="Update vehicle details and assignments."
-          >
-            <div className="space-y-4">
-              <Input placeholder="Vehicle name" defaultValue={vehicle.name} />
-              <Input
-                placeholder="License plate"
-                defaultValue={vehicle.licensePlate}
-              />
-              <Input placeholder="VIN" defaultValue={vehicle.vin} />
-              <div className="flex justify-end">
-                <Button onClick={close}>Save changes</Button>
-              </div>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
             </div>
-          </Modal>
-        </>
-      )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

@@ -6,7 +6,16 @@ import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { checkPermission } from "@/lib/rbac/checkPermission";
 import { Permission } from "@/lib/rbac/permissions";
-import { LayoutDashboard, Car, ClipboardList, Package, Users, BarChart3, X, Wrench } from "lucide-react";
+import {
+  LayoutDashboard,
+  Car,
+  ClipboardList,
+  Package,
+  Users,
+  BarChart3,
+  X,
+  Wrench,
+} from "lucide-react";
 
 interface NavItem {
   name: string;
@@ -71,14 +80,24 @@ export function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-gray-200 px-6 dark:border-gray-700">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-          Fleet Maintenance
-        </h1>
+      <div className="flex h-16 items-center border-b border-gray-200 px-6 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-transparent dark:from-blue-900/10">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg">
+            <Wrench className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+              Fleet CMMS
+            </h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Maintenance Pro
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className="flex-1 space-y-2 px-3 py-6">
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -89,14 +108,42 @@ export function Sidebar() {
               href={item.href}
               onClick={() => closeMobile()}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300",
                 isActive
-                  ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                  ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30"
+                  : "text-gray-700 hover:bg-gray-100 hover:shadow-md dark:text-gray-300 dark:hover:bg-gray-800"
               )}
             >
-              <Icon className="h-5 w-5" />
-              {item.name}
+              {/* Active indicator glow */}
+              {isActive && (
+                <div className="absolute -left-1 top-1/2 h-8 w-1 -translate-y-1/2 rounded-r-full bg-blue-600 shadow-lg shadow-blue-500/50" />
+              )}
+
+              {/* Icon with background */}
+              <div
+                className={cn(
+                  "flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-300",
+                  isActive
+                    ? "bg-white/20 shadow-inner"
+                    : "bg-gray-100 dark:bg-gray-800 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30"
+                )}
+              >
+                <Icon
+                  className={cn(
+                    "h-5 w-5 transition-all duration-300",
+                    isActive
+                      ? "text-white"
+                      : "text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                  )}
+                />
+              </div>
+
+              <span className="font-semibold">{item.name}</span>
+
+              {/* Hover indicator */}
+              {!isActive && (
+                <div className="absolute right-3 h-2 w-2 rounded-full bg-blue-600 opacity-0 transition-all duration-300 group-hover:opacity-100" />
+              )}
             </Link>
           );
         })}
@@ -120,10 +167,7 @@ export function Sidebar() {
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={closeMobile}
-          />
+          <div className="absolute inset-0 bg-black/50" onClick={closeMobile} />
 
           {/* Sidebar */}
           <aside className="absolute left-0 top-0 h-full w-64 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">

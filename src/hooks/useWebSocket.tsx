@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 
 type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
@@ -25,7 +32,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
   const [lastMessage, setLastMessage] = useState<MessageEvent | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const reconnectAttempts = useRef(0);
   const subscribersRef = useRef<Set<(event: MessageEvent) => void>>(new Set());
   const token = useAuthStore((state) => state.token);
@@ -44,46 +51,65 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
     setStatus("connecting");
 
-    // Create WebSocket connection
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${process.env.NEXT_PUBLIC_API_BASE_URL || "localhost:8080"}/api/v1/notifications/ws`;
-    
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
+    try {
+      // Create WebSocket connection
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      // Extract host from API URL or use default
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+      const apiHost = apiUrl.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
 
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-      setStatus("connected");
-      reconnectAttempts.current = 0;
-    };
+      // Include token in WebSocket URL as query parameter
+      const wsUrl = `${protocol}//${apiHost}/api/v1/notifications/ws?token=${encodeURIComponent(
+        token
+      )}`;
 
-    ws.onmessage = (event) => {
-      setLastMessage(event);
-      // Notify all subscribers
-      subscribersRef.current.forEach((callback) => callback(event));
-    };
+      const ws = new WebSocket(wsUrl);
+      wsRef.current = ws;
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      ws.onopen = () => {
+        console.log("WebSocket connected");
+        setStatus("connected");
+        reconnectAttempts.current = 0;
+      };
+
+      ws.onmessage = (event) => {
+        setLastMessage(event);
+        // Notify all subscribers
+        subscribersRef.current.forEach((callback) => callback(event));
+      };
+
+      ws.onerror = () => {
+        // WebSocket connection failed - this is expected if backend is not running
+        // Silently handle the error and let onclose handle reconnection
+        setStatus("error");
+      };
+
+      ws.onclose = (event) => {
+        // Only log if connection was previously established (wasClean or code 1000)
+        if (event.wasClean || event.code === 1000) {
+          console.log("WebSocket disconnected cleanly");
+        }
+        setStatus("disconnected");
+        wsRef.current = null;
+
+        // Attempt to reconnect with exponential backoff (silently)
+        if (isAuthenticated && reconnectAttempts.current < 5) {
+          const delay = Math.min(
+            1000 * Math.pow(2, reconnectAttempts.current),
+            30000
+          );
+          reconnectAttempts.current++;
+
+          reconnectTimeoutRef.current = setTimeout(() => {
+            connect();
+          }, delay);
+        }
+      };
+    } catch (error) {
+      // WebSocket creation failed - likely due to invalid URL or browser restrictions
       setStatus("error");
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
-      setStatus("disconnected");
-      wsRef.current = null;
-
-      // Attempt to reconnect with exponential backoff
-      if (isAuthenticated && reconnectAttempts.current < 10) {
-        const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
-        reconnectAttempts.current++;
-        console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts.current})`);
-        
-        reconnectTimeoutRef.current = setTimeout(() => {
-          connect();
-        }, delay);
-      }
-    };
+    }
   }, [isAuthenticated, token]);
 
   useEffect(() => {

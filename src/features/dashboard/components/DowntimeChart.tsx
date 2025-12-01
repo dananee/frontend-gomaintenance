@@ -1,0 +1,70 @@
+"use client";
+
+import { memo, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Clock } from "lucide-react";
+import { MonthlyTrendData } from "../types/dashboardKPI.types";
+
+interface DowntimeChartProps {
+  data: MonthlyTrendData[];
+}
+
+function DowntimeChartComponent({ data }: DowntimeChartProps) {
+  const maxValue = useMemo(
+    () => Math.max(...data.map((d) => d.value)),
+    [data]
+  );
+
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Clock className="h-5 w-5 text-orange-600" />
+            <CardTitle className="text-xl font-semibold">
+              Downtime Trend
+            </CardTitle>
+          </div>
+          <span className="text-xs text-muted-foreground">Last 12 months</span>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <div className="flex h-[240px] items-end justify-between gap-2">
+            {data.map((item, index) => {
+              const height = (item.value / maxValue) * 100;
+              const isHigh = item.value > maxValue * 0.7;
+
+              return (
+                <div
+                  key={item.month}
+                  className="group flex flex-1 flex-col items-center gap-1"
+                >
+                  <div className="relative w-full">
+                    <div
+                      className={`w-full rounded-t-md transition-all duration-150 group-hover:opacity-80 ${
+                        isHigh
+                          ? "bg-gradient-to-t from-red-500 to-red-400"
+                          : "bg-gradient-to-t from-orange-500 to-orange-400"
+                      }`}
+                      style={{ height: `${height}%`, willChange: "opacity" }}
+                    >
+                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        {item.value.toFixed(0)}h
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">
+                    {item.month}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export const DowntimeChart = memo(DowntimeChartComponent);

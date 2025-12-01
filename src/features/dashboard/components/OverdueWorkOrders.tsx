@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from "lucide-react";
@@ -7,7 +8,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
 
-export function OverdueWorkOrders() {
+function OverdueWorkOrdersComponent() {
   const { data, isLoading } = useQuery({
     queryKey: ["work-orders", "overdue"],
     queryFn: () =>
@@ -18,13 +19,16 @@ export function OverdueWorkOrders() {
   });
 
   // Filter for overdue work orders (scheduled_date in the past and status not completed)
-  const overdueOrders =
-    data?.data?.filter((order) => {
-      if (!order.scheduled_date || order.status === "completed") return false;
-      const scheduledDate = new Date(order.scheduled_date);
-      const today = new Date();
-      return scheduledDate < today;
-    }) || [];
+  const overdueOrders = useMemo(
+    () =>
+      data?.data?.filter((order) => {
+        if (!order.scheduled_date || order.status === "completed") return false;
+        const scheduledDate = new Date(order.scheduled_date);
+        const today = new Date();
+        return scheduledDate < today;
+      }) || [],
+    [data]
+  );
 
   const priorityVariant = {
     low: "info" as const,
@@ -119,3 +123,5 @@ export function OverdueWorkOrders() {
     </Card>
   );
 }
+
+export const OverdueWorkOrders = memo(OverdueWorkOrdersComponent);

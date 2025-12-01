@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Wrench, AlertCircle } from "lucide-react";
@@ -22,25 +23,33 @@ const urgencyConfig = {
   },
 };
 
-export function VehiclesNeedingMaintenance() {
+function VehiclesNeedingMaintenanceComponent() {
   const { data, isLoading } = useQuery({
     queryKey: ["upcoming-maintenance"],
     queryFn: getUpcomingMaintenance,
   });
 
   // Transform API data to match component interface
-  const vehicles =
-    data?.data?.map((item: any) => ({
-      id: item.vehicle_id,
-      name: item.vehicle_name || `Vehicle ${item.vehicle_id}`,
-      plateNumber: item.plate_number || "N/A",
-      maintenanceType: item.maintenance_type || "Scheduled Maintenance",
-      dueIn: item.due_in || "Unknown",
-      urgency: item.urgency || "upcoming",
-    })) || [];
+  const vehicles = useMemo(
+    () =>
+      data?.data?.map((item: any) => ({
+        id: item.vehicle_id,
+        name: item.vehicle_name || `Vehicle ${item.vehicle_id}`,
+        plateNumber: item.plate_number || "N/A",
+        maintenanceType: item.maintenance_type || "Scheduled Maintenance",
+        dueIn: item.due_in || "Unknown",
+        urgency: item.urgency || "upcoming",
+      })) || [],
+    [data]
+  );
 
-  const overdueCount = vehicles.filter((v: any) => v.urgency === "overdue").length;
-  const soonCount = vehicles.filter((v: any) => v.urgency === "soon").length;
+  const { overdueCount, soonCount } = useMemo(
+    () => ({
+      overdueCount: vehicles.filter((v: any) => v.urgency === "overdue").length,
+      soonCount: vehicles.filter((v: any) => v.urgency === "soon").length,
+    }),
+    [vehicles]
+  );
 
   if (isLoading) {
     return (
@@ -144,3 +153,5 @@ export function VehiclesNeedingMaintenance() {
     </Card>
   );
 }
+
+export const VehiclesNeedingMaintenance = memo(VehiclesNeedingMaintenanceComponent);

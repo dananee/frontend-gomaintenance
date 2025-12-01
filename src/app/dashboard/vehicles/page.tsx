@@ -71,7 +71,7 @@ export default function VehiclesPage() {
   const hasFilters = search || statusFilter !== "all" || typeFilter !== "all";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Vehicles
@@ -82,7 +82,7 @@ export default function VehiclesPage() {
         </Button>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-4">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}

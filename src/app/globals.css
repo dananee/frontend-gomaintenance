@@ -21,3 +21,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Performance Optimizations */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1000px; /* Estimate height */
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.will-change-transform {
+  will-change: transform, opacity;
+}
+
+.optimize-scrolling {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
