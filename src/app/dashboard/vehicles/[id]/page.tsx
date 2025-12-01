@@ -256,7 +256,7 @@ export default function VehicleDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {partsUsed.length === 0 ? (
+                  {(partsUsed || []).length === 0 ? (
                     <TableRow>
                         <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                             No parts used yet
