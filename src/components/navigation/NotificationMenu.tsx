@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Bell, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Notification } from "@/features/notifications/types/notification.types";
 import { NotificationItem } from "@/features/notifications/components/NotificationItem";
 import Link from "next/link";
 import {
@@ -12,51 +10,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    title: "Low Stock Alert",
-    message: "Brake Pads (BP-123) quantity is below minimum threshold.",
-    type: "warning",
-    category: "inventory",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-  },
-  {
-    id: "2",
-    title: "Work Order Completed",
-    message: "Technician John Doe completed WO-124 for Ford F-150.",
-    type: "success",
-    category: "work_order",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-  },
-  {
-    id: "3",
-    title: "Maintenance Overdue",
-    message: "Annual Inspection for Toyota Camry is overdue by 5 days.",
-    type: "error",
-    category: "maintenance",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-  },
-];
+import { useNotifications, useMarkAllNotificationsAsRead, useMarkNotificationAsRead } from "@/features/notifications/hooks/useNotifications";
+import { useState } from "react";
 
 export function NotificationMenu() {
-  const [items, setItems] = useState<Notification[]>(mockNotifications);
   const [open, setOpen] = useState(false);
+  const { data } = useNotifications({ page: 1, page_size: 10 });
+  const markAllAsRead = useMarkAllNotificationsAsRead();
+  const markAsRead = useMarkNotificationAsRead();
 
+  const items = data?.data || [];
   const unreadCount = items.filter((item) => !item.isRead).length;
 
-  const markAll = () => {
-    setItems((prev) => prev.map((item) => ({ ...item, isRead: true })));
+  const handleMarkAll = () => {
+    markAllAsRead.mutate();
   };
 
   const handleRead = (id: string) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, isRead: true } : item))
-    );
+    markAsRead.mutate(id);
   };
 
   return (
@@ -94,7 +65,8 @@ export function NotificationMenu() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={markAll}
+            onClick={handleMarkAll}
+            disabled={markAllAsRead.isPending}
             className="text-xs h-7 px-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
           >
             <Check className="mr-1 h-3 w-3" />

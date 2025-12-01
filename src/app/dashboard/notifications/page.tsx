@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Notification } from "@/features/notifications/types/notification.types";
 import { NotificationItem } from "@/features/notifications/components/NotificationItem";
-import { mockNotifications } from "@/features/notifications/data/mockNotifications";
+import { useNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from "@/features/notifications/hooks/useNotifications";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,22 +14,26 @@ import {
 } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink } from "@/components/ui/pagination";
 import { CheckCheck, Filter, Search } from "lucide-react";
+import { useState, useMemo } from "react";
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 4;
 
+  const { data } = useNotifications({ page, page_size: pageSize });
+  const markAsRead = useMarkNotificationAsRead();
+  const markAllAsRead = useMarkAllNotificationsAsRead();
+
+  const notifications = data?.data || [];
+
   const handleRead = (id: string) => {
-    setNotifications(notifications.map(n => 
-      n.id === id ? { ...n, isRead: true } : n
-    ));
+    markAsRead.mutate(id);
   };
 
   const handleMarkAllRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+    markAllAsRead.mutate();
   };
 
   const resetPage = () => setPage(1);

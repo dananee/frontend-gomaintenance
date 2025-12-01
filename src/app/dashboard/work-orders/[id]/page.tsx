@@ -86,22 +86,6 @@ export default function WorkOrderDetailsPage() {
         
         {/* Header Section */}
         <div className="space-y-6">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-            <a href="/dashboard" className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors flex items-center gap-1">
-              <LayoutDashboard className="h-3.5 w-3.5" />
-              Dashboard
-            </a>
-            <ChevronRight className="h-4 w-4 mx-2 text-gray-400" />
-            <a href="/dashboard/work-orders" className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-              Work Orders
-            </a>
-            <ChevronRight className="h-4 w-4 mx-2 text-gray-400" />
-            <span className="text-gray-900 dark:text-gray-100 font-medium">
-              #{workOrder.id.slice(0, 8)}
-            </span>
-          </nav>
-
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div className="space-y-3 flex-1">
               <div className="flex items-center gap-3 flex-wrap">

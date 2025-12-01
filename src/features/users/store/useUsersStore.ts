@@ -17,6 +17,7 @@ export interface UserRecord {
 
 interface UsersState {
   users: UserRecord[];
+  setUsers: (users: UserRecord[]) => void;
   addUser: (user: Omit<UserRecord, "id" | "created_at">) => UserRecord;
   updateUser: (id: string, updates: Partial<UserRecord>) => void;
   suspendUser: (id: string) => void;
@@ -24,39 +25,9 @@ interface UsersState {
   deleteUser: (id: string) => void;
 }
 
-const initialUsers: UserRecord[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "admin",
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "manager",
-    status: "active",
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    role: "technician",
-    status: "active",
-  },
-  {
-    id: "4",
-    name: "Sarah Wilson",
-    email: "sarah@example.com",
-    role: "viewer",
-    status: "inactive",
-  },
-];
-
 export const useUsersStore = create<UsersState>((set, get) => ({
-  users: initialUsers,
+  users: [],
+  setUsers: (users) => set({ users }),
   addUser: (user) => {
     const newUser: UserRecord = {
       ...user,
