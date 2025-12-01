@@ -134,11 +134,11 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
     <div className={cn("relative", className)}>
       <div
         className={cn(
-          "flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 shadow-sm transition-colors hover:border-blue-500 focus-within:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300",
-          focused && "ring-2 ring-blue-100 dark:ring-blue-900/40"
+          "flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-600 shadow-sm transition-all duration-200 hover:border-blue-500/30 hover:bg-white hover:shadow-md focus-within:border-blue-500/50 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10 dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-300 dark:hover:bg-gray-900 dark:focus-within:bg-gray-900",
+          focused && "w-full scale-[1.02] border-blue-500/50 shadow-lg ring-4 ring-blue-500/10"
         )}
       >
-        <Search className="h-4 w-4" />
+        <Search className={cn("h-4 w-4 transition-colors", focused ? "text-blue-500" : "text-gray-400")} />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -150,12 +150,14 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
             setFocused(false);
             setTimeout(() => setDropdownOpen(false), 100);
           }}
-          placeholder="Search vehicles, work orders, parts, users..."
-          className="h-auto border-none bg-transparent px-0 text-sm focus-visible:ring-0"
+          placeholder="Search vehicles, work orders, parts..."
+          className="h-auto border-none bg-transparent px-0 text-sm placeholder:text-gray-400 focus-visible:ring-0"
         />
-        <kbd className="ml-auto hidden rounded border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs font-mono text-gray-600 sm:inline-block dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
-          /
-        </kbd>
+        <div className="flex items-center gap-1">
+          <kbd className="hidden rounded-md border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-bold text-gray-400 shadow-sm sm:inline-block dark:border-gray-800 dark:bg-gray-950 dark:text-gray-500">
+            /
+          </kbd>
+        </div>
       </div>
 
       {showDropdown && (

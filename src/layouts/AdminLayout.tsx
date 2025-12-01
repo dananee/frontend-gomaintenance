@@ -2,6 +2,7 @@ import { Sidebar } from "@/components/navigation/Sidebar";
 import { TopBar } from "@/components/navigation/TopBar";
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 
+
 interface AdminLayoutProps {
   children: React.ReactNode;
 }

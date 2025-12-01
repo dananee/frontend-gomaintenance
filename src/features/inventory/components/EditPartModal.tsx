@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -19,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Part } from "../types/inventory.types";
+import { useSuppliers } from "@/features/inventory/hooks/useSupplierMutations";
 
 interface EditPartModalProps {
   isOpen: boolean;
@@ -28,7 +30,7 @@ interface EditPartModalProps {
 }
 
 export function EditPartModal({ isOpen, onClose, part, onSave }: EditPartModalProps) {
-  const { register, handleSubmit, setValue } = useForm<Partial<Part>>({
+  const { register, handleSubmit, setValue, watch, reset } = useForm<Partial<Part>>({
     defaultValues: part || {
       name: "",
       part_number: "",
@@ -41,6 +43,30 @@ export function EditPartModal({ isOpen, onClose, part, onSave }: EditPartModalPr
       description: "",
     },
   });
+
+  // Reset form when part prop changes
+  useEffect(() => {
+    if (part) {
+      reset(part);
+    } else {
+      reset({
+        name: "",
+        part_number: "",
+        category: "",
+        location: "",
+        quantity: 0,
+        min_quantity: 5,
+        cost: 0,
+        supplier: "",
+        description: "",
+      });
+    }
+  }, [part, reset]);
+
+  // Fetch suppliers for the dropdown
+  const { data: suppliersData, isLoading: isLoadingSuppliers } = useSuppliers();
+  const suppliers = suppliersData?.data || [];
+  const currentSupplier = watch("supplier");
 
   const onSubmit = (data: Partial<Part>) => {
     onSave(data);
@@ -120,7 +146,26 @@ export function EditPartModal({ isOpen, onClose, part, onSave }: EditPartModalPr
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Supplier</label>
-            <Input {...register("supplier")} placeholder="e.g. AutoParts Inc." />
+            <Select 
+              value={currentSupplier} 
+              onValueChange={(val) => setValue("supplier", val)}
+              disabled={isLoadingSuppliers}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={isLoadingSuppliers ? "Loading suppliers..." : "Select supplier"} />
+              </SelectTrigger>
+              <SelectContent>
+                {suppliers.length > 0 ? (
+                  suppliers.map((supplier) => (
+                    <SelectItem key={supplier.id} value={supplier.name}>
+                      {supplier.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>No suppliers found</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

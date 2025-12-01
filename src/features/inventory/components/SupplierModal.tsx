@@ -46,7 +46,7 @@ export function SupplierModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[550px]">
+      <DialogContent className="sm:max-w-[550px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
         <DialogHeader>
           <DialogTitle>
             {supplier ? "Edit Supplier" : "Add New Supplier"}

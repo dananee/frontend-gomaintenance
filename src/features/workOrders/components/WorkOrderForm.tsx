@@ -85,6 +85,7 @@ export function WorkOrderForm({ onSuccess, onCancel }: WorkOrderFormProps) {
       <Input
         label="Scheduled Date"
         type="datetime-local"
+        step="60" // Enable seconds/24h format support
         {...register("scheduled_date")}
         error={errors.scheduled_date?.message}
       />

@@ -70,7 +70,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[550px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader className="space-y-2">
             <DialogTitle>Add User</DialogTitle>

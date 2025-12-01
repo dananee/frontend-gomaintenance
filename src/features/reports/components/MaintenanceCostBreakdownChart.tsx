@@ -54,7 +54,7 @@ export function MaintenanceCostBreakdownChart({
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              ${totalCost.toLocaleString()}
+              {totalCost.toLocaleString()} MAD
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Total Cost
@@ -85,7 +85,7 @@ export function MaintenanceCostBreakdownChart({
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `$${value}`}
+                tickFormatter={(value) => `${value} MAD`}
               />
               <Tooltip
                 contentStyle={{
@@ -93,7 +93,7 @@ export function MaintenanceCostBreakdownChart({
                   border: "1px solid #e5e7eb",
                   borderRadius: "8px",
                 }}
-                formatter={(value: number) => `$${value.toLocaleString()}`}
+                formatter={(value: number) => `${value.toLocaleString()} MAD`}
               />
               <Legend />
               <Bar
@@ -129,8 +129,7 @@ export function MaintenanceCostBreakdownChart({
               <p className="text-xs text-gray-500 dark:text-gray-400">Labor</p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              $
-              {data.reduce((sum, item) => sum + item.labor, 0).toLocaleString()}
+              {data.reduce((sum, item) => sum + item.labor, 0).toLocaleString()} MAD
             </p>
           </div>
           <div className="text-center">
@@ -139,8 +138,7 @@ export function MaintenanceCostBreakdownChart({
               <p className="text-xs text-gray-500 dark:text-gray-400">Parts</p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              $
-              {data.reduce((sum, item) => sum + item.parts, 0).toLocaleString()}
+              {data.reduce((sum, item) => sum + item.parts, 0).toLocaleString()} MAD
             </p>
           </div>
           <div className="text-center">
@@ -149,8 +147,7 @@ export function MaintenanceCostBreakdownChart({
               <p className="text-xs text-gray-500 dark:text-gray-400">Other</p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              $
-              {data.reduce((sum, item) => sum + item.other, 0).toLocaleString()}
+              {data.reduce((sum, item) => sum + item.other, 0).toLocaleString()} MAD
             </p>
           </div>
         </div>

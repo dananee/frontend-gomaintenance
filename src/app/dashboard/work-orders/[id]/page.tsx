@@ -346,6 +346,7 @@ export default function WorkOrderDetailsPage() {
                 placeholder="Due date" 
                 defaultValue={workOrder.scheduled_date || ""} 
                 type="datetime-local"
+                step="60" // Enable seconds/24h format support
               />
             </div>
             <div className="flex justify-end pt-4">

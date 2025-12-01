@@ -2,6 +2,7 @@ import { Home, Wrench, Package, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface TechnicianLayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,9 @@ export function TechnicianLayout({ children }: TechnicianLayoutProps) {
   return (
     <div className="flex h-screen flex-col bg-gray-50 dark:bg-gray-900">
       {/* Main content */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       <main className="flex-1 overflow-y-auto pb-20">
         {children}
       </main>

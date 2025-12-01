@@ -3,6 +3,7 @@
 import { PartsTable } from "@/features/inventory/components/PartsTable";
 import { EditPartModal } from "@/features/inventory/components/EditPartModal";
 import { useParts } from "@/features/inventory/hooks/useParts";
+import { useCreatePart, useUpdatePart, useDeletePart } from "@/features/inventory/hooks/usePartMutations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -22,6 +23,9 @@ import { toast } from "sonner";
 
 export default function InventoryPage() {
   const { data: parts, isLoading } = useParts();
+  const createPartMutation = useCreatePart();
+  const updatePartMutation = useUpdatePart();
+  const deletePartMutation = useDeletePart();
   const [search, setSearch] = useState("");
   const [warehouse, setWarehouse] = useState("all");
   const [category, setCategory] = useState("all");
@@ -83,15 +87,50 @@ export default function InventoryPage() {
   };
 
   const handleSave = (partData: Partial<Part>) => {
-    console.log("Saving part:", partData);
-    // Here we would call the mutation to create or update the part
     const isEditing = !!editingPart;
-    toast.success(isEditing ? "Part updated" : "Part created", {
-      description: isEditing
-        ? "Part information has been updated successfully."
-        : "New part has been added to your inventory.",
-    });
-    setIsModalOpen(false);
+    
+    if (isEditing && editingPart?.id) {
+      // Update existing part
+      updatePartMutation.mutate(
+        {
+          id: editingPart.id,
+          data: {
+            part_number: partData.part_number,
+            name: partData.name,
+            description: partData.description,
+            brand: partData.brand,
+            unit_price: partData.unit_price || partData.cost,
+          },
+        },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false);
+          },
+        }
+      );
+    } else {
+      // Create new part
+      createPartMutation.mutate(
+        {
+          part_number: partData.part_number!,
+          name: partData.name!,
+          description: partData.description,
+          brand: partData.brand,
+          unit_price: partData.unit_price || partData.cost || 0,
+        },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false);
+          },
+        }
+      );
+    }
+  };
+
+  const handleDelete = (part: Part) => {
+    if (confirm(`Are you sure you want to delete "${part.name}"?`)) {
+      deletePartMutation.mutate(part.id);
+    }
   };
 
   return (
@@ -155,11 +194,10 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                $
                 {totalValue.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                })}
+                })} MAD
               </div>
               <p className="text-xs text-gray-500">Inventory worth</p>
             </CardContent>
@@ -259,6 +297,7 @@ export default function InventoryPage() {
             parts={paginatedParts}
             isLoading={isLoading}
             onEdit={handleEdit}
+            onDelete={handleDelete}
           />
           {filteredParts.length > 0 && (
             <Pagination

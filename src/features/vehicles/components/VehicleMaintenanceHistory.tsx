@@ -117,7 +117,7 @@ export function VehicleMaintenanceHistory({
                         {record.cost && (
                           <div className="flex items-center gap-1">
                             <DollarSign className="h-3.5 w-3.5" />
-                            <span>${record.cost.toFixed(2)}</span>
+                            <span>{record.cost.toFixed(2)} MAD</span>
                           </div>
                         )}
                       </div>

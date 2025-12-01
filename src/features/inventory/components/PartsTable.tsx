@@ -13,16 +13,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
-import { AlertTriangle, Edit, Package } from "lucide-react";
+import { AlertTriangle, Edit, Package, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 interface PartsTableProps {
   parts: Part[];
   isLoading: boolean;
   onEdit?: (part: Part) => void;
+  onDelete?: (part: Part) => void;
 }
 
-export function PartsTable({ parts, isLoading, onEdit }: PartsTableProps) {
+export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTableProps) {
   if (isLoading) {
     return <TableSkeleton rows={5} />;
   }
@@ -133,17 +134,33 @@ export function PartsTable({ parts, isLoading, onEdit }: PartsTableProps) {
                     {formatCurrency(totalValue)}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEdit?.(part);
-                      }}
-                      title="Edit part"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit?.(part);
+                        }}
+                        title="Edit part"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      {onDelete && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(part);
+                          }}
+                          title="Delete part"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );

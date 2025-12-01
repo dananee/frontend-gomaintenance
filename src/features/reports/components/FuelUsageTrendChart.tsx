@@ -73,7 +73,7 @@ export function FuelUsageTrendChart({
               Total Cost
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              ${totalCost.toLocaleString()}
+              {totalCost.toLocaleString()} MAD
             </p>
           </div>
           <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
@@ -129,7 +129,7 @@ export function FuelUsageTrendChart({
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `$${value}`}
+                tickFormatter={(value) => `${value} MAD`}
               />
               <Tooltip
                 contentStyle={{
@@ -139,7 +139,7 @@ export function FuelUsageTrendChart({
                 }}
                 formatter={(value: number, name: string) => {
                   if (name === "Cost")
-                    return [`$${value.toLocaleString()}`, name];
+                    return [`${value.toLocaleString()} MAD`, name];
                   if (name === "MPG") return [value.toFixed(1), name];
                   return [`${value.toLocaleString()} gal`, name];
                 }}

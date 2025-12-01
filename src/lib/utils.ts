@@ -29,14 +29,15 @@ export function formatDateTime(date: string | Date): string {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: false, // Force 24-hour format
   });
 }
 
 /**
- * Format currency
+ * Format currency (Moroccan Dirham)
  */
-export function formatCurrency(amount: number, currency: string = "USD"): string {
-  return new Intl.NumberFormat("en-US", {
+export function formatCurrency(amount: number, currency: string = "MAD"): string {
+  return new Intl.NumberFormat("fr-MA", {
     style: "currency",
     currency,
   }).format(amount);
