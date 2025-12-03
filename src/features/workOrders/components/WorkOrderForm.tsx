@@ -10,10 +10,17 @@ import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
 interface WorkOrderFormProps {
   onSuccess: () => void;
   onCancel: () => void;
+  vehicleId?: string;
 }
 
-export function WorkOrderForm({ onSuccess, onCancel }: WorkOrderFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateWorkOrderDTO>();
+export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateWorkOrderDTO>({
+    defaultValues: vehicleId ? { vehicle_id: vehicleId } : undefined,
+  });
   const { mutate: createWorkOrder, isPending } = useCreateWorkOrder();
   const { data: vehiclesData } = useVehicles();
 
