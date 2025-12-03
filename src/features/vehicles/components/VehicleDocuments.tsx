@@ -2,129 +2,74 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, Image as ImageIcon, Download, Trash2 } from "lucide-react";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  size: string;
-  uploadedAt: string;
-  url?: string;
-}
+import { Download, FileText, Trash2, Upload } from "lucide-react";
+import { VehicleDocument } from "@/features/vehicles/api/vehicleDocuments";
 
 interface VehicleDocumentsProps {
-  vehicleId: string;
-  documents?: Document[];
+  documents: VehicleDocument[];
+  onUpload: () => void;
+  onDelete: (docId: string) => void;
+  isDeleting?: boolean;
 }
 
-export function VehicleDocuments({ vehicleId, documents = [] }: VehicleDocumentsProps) {
-  const mockDocuments: Document[] = documents.length > 0 ? documents : [
-    {
-      id: "1",
-      name: "Registration.pdf",
-      type: "pdf",
-      size: "2.4 MB",
-      uploadedAt: "2024-11-01",
-    },
-    {
-      id: "2",
-      name: "Insurance Card.png",
-      type: "image",
-      size: "856 KB",
-      uploadedAt: "2024-10-15",
-    },
-    {
-      id: "3",
-      name: "Inspection Report.pdf",
-      type: "pdf",
-      size: "1.2 MB",
-      uploadedAt: "2024-09-20",
-    },
-  ];
-
-  const handleUpload = () => {
-    // TODO: Implement file upload
-    console.log("Upload clicked for vehicle:", vehicleId);
-  };
-
-  const handleDownload = (doc: Document) => {
-    // TODO: Implement file download
-    console.log("Download:", doc.name);
-  };
-
-  const handleDelete = (doc: Document) => {
-    // TODO: Implement file delete
-    console.log("Delete:", doc.name);
-  };
-
-  const getFileIcon = (type: string) => {
-    switch (type) {
-      case "pdf":
-        return <FileText className="h-5 w-5 text-red-500" />;
-      case "image":
-        return <ImageIcon className="h-5 w-5 text-blue-500" />;
-      default:
-        return <FileText className="h-5 w-5 text-gray-500" />;
-    }
-  };
-
+export function VehicleDocuments({
+  documents,
+  onUpload,
+  onDelete,
+  isDeleting,
+}: VehicleDocumentsProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Upload and manage vehicle documents, certificates, and inspection reports
+        <p className="text-sm text-muted-foreground">
+          Upload insurance, registration, and inspection paperwork for this vehicle.
         </p>
-        <Button onClick={handleUpload} size="sm">
+        <Button size="sm" onClick={onUpload}>
           <Upload className="mr-2 h-4 w-4" />
           Upload Document
         </Button>
       </div>
 
-      {mockDocuments.length === 0 ? (
+      {documents.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileText className="h-12 w-12 text-gray-400 dark:text-gray-600" />
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              No documents uploaded yet
-            </p>
-            <Button onClick={handleUpload} variant="outline" className="mt-4" size="sm">
+          <CardContent className="flex flex-col items-center justify-center gap-3 py-10 text-center text-muted-foreground">
+            <FileText className="h-10 w-10" />
+            <p className="text-sm">No documents uploaded yet.</p>
+            <Button onClick={onUpload} size="sm" variant="outline">
               <Upload className="mr-2 h-4 w-4" />
-              Upload Your First Document
+              Upload your first document
             </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-3">
-          {mockDocuments.map((doc) => (
-            <Card key={doc.id} className="transition-shadow hover:shadow-md">
+          {documents.map((doc) => (
+            <Card key={doc.id} className="transition-shadow hover:shadow-sm">
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
-                  {getFileIcon(doc.type)}
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <FileText className="h-5 w-5" />
+                  </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                      {doc.name}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {doc.size} • Uploaded {doc.uploadedAt}
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{doc.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {doc.type} • Uploaded {new Date(doc.uploaded_at).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDownload(doc)}
-                    title="Download"
-                  >
-                    <Download className="h-4 w-4" />
+                  <Button asChild variant="ghost" size="icon" title="Download">
+                    <a href={doc.file_url} target="_blank" rel="noreferrer">
+                      <Download className="h-4 w-4" />
+                    </a>
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleDelete(doc)}
-                    title="Delete"
-                    className="text-red-600 hover:text-red-700 dark:text-red-400"
+                    className="text-destructive"
+                    onClick={() => onDelete(doc.id)}
+                    disabled={isDeleting}
+                    title="Delete document"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

@@ -41,6 +41,23 @@ export type VehicleDetailsResponse = {
     dateUsed: string;
     workOrderId: string;
   }>;
+  maintenanceHistory?: Array<{
+    id: string;
+    type: string;
+    description: string;
+    date: string;
+    mileage: number;
+    cost?: number;
+    status: "completed" | "cancelled";
+    technician?: string;
+  }>;
+  activityLog?: Array<{
+    id: string;
+    title: string;
+    description?: string;
+    date: string;
+    type?: string;
+  }>;
 };
 
 export const getVehicleDetails = async (
