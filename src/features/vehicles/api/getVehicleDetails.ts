@@ -3,11 +3,11 @@ import { apiClient } from "@/lib/api/axiosClient";
 export type VehicleDetailsResponse = {
   vehicle: {
     id: string;
-    make: string;
+    brand: string;
     model: string;
     year: number;
     vin: string;
-    licensePlate: string;
+    plate_number: string;
     status: string;
     mileage: number;
   };

@@ -17,6 +17,12 @@ export interface GetVehiclesResponse {
 }
 
 export const getVehicles = async (params: GetVehiclesParams = {}): Promise<GetVehiclesResponse> => {
-  const response = await apiClient.get<GetVehiclesResponse>("/vehicles", { params });
+  const response = await apiClient.get<GetVehiclesResponse>("/vehicles", { 
+    params: {
+      ...params,
+      include_kpis: true,
+    }
+  });
   return response.data;
 };
+

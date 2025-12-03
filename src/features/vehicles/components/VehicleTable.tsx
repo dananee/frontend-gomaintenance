@@ -60,12 +60,12 @@ export function VehicleTable({
           </TableHeader>
           <TableBody>
             {vehicles.map((vehicle, index) => {
-              // Mock KPI data - will be replaced with real API data
-              const maintenanceCost = Math.floor(5000 + Math.random() * 15000);
-              const downtime = Math.floor(10 + Math.random() * 50);
-              const daysUntilService = Math.floor(5 + Math.random() * 90);
-              const healthScore = Math.floor(60 + Math.random() * 40);
-              const woCount = Math.floor(5 + Math.random() * 25);
+              // Use real KPI data from API or fallback to defaults
+              const maintenanceCost = vehicle.kpis?.total_maintenance_cost ?? 0;
+              const downtime = vehicle.kpis?.total_downtime_hours ?? 0;
+              const daysUntilService = vehicle.kpis?.days_until_service ?? null;
+              const healthScore = vehicle.kpis?.health_score ?? 100;
+              const woCount = vehicle.kpis?.work_order_count ?? 0;
 
               return (
                 <TableRow
@@ -93,25 +93,29 @@ export function VehicleTable({
                     {(vehicle.current_km || 0).toLocaleString()} km
                   </TableCell>
                   <TableCell className="font-medium">
-                    ${maintenanceCost.toLocaleString()}
+                    ${maintenanceCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                   <TableCell>
                     <span className="text-orange-600 dark:text-orange-400">
-                      {downtime}h
+                      {downtime.toFixed(1)}h
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span
-                      className={`text-sm ${
-                        daysUntilService < 15
-                          ? "text-red-600 dark:text-red-400 font-medium"
-                          : daysUntilService < 30
-                          ? "text-yellow-600 dark:text-yellow-400"
-                          : "text-green-600 dark:text-green-400"
-                      }`}
-                    >
-                      {daysUntilService} days
-                    </span>
+                    {daysUntilService !== null ? (
+                      <span
+                        className={`text-sm ${
+                          daysUntilService < 15
+                            ? "text-red-600 dark:text-red-400 font-medium"
+                            : daysUntilService < 30
+                            ? "text-yellow-600 dark:text-yellow-400"
+                            : "text-green-600 dark:text-green-400"
+                        }`}
+                      >
+                        {daysUntilService} days
+                      </span>
+                    ) : (
+                      <span className="text-sm text-gray-400">No service scheduled</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -125,12 +129,12 @@ export function VehicleTable({
                                 ? "bg-yellow-500"
                                 : "bg-red-500"
                             }`}
-                            style={{ width: `${healthScore}%` }}
+                            style={{ width: `${Math.min(healthScore, 100)}%` }}
                           />
                         </div>
                       </div>
                       <span className="text-sm font-medium">
-                        {healthScore}%
+                        {healthScore.toFixed(0)}%
                       </span>
                     </div>
                   </TableCell>

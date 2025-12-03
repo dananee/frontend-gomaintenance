@@ -63,8 +63,8 @@ export function ServiceSummary({
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-lg bg-gradient-to-br from-blue-50 to-blue-100/50 p-4 border border-blue-200">
-              <p className="text-xs text-muted-foreground uppercase mb-2">
+            <div className="rounded-lg bg-white p-4 border border-blue-300">
+              <p className="text-xs text-gray-900 font-bold uppercase mb-2">
                 Next Service Due
               </p>
               <p className="text-2xl font-bold text-blue-600">

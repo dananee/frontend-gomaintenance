@@ -1,143 +1,147 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TemplateTable } from "@/features/maintenance/components/TemplateTable";
+import { TemplateForm } from "@/features/maintenance/components/TemplateForm";
+import {
+  useMaintenanceTemplates,
+  useCreateMaintenanceTemplate,
+  useUpdateMaintenanceTemplate,
+  useDeleteMaintenanceTemplate,
+} from "@/features/maintenance/hooks/useMaintenanceTemplates";
+import { MaintenanceTemplate } from "@/features/maintenance/types/maintenanceTemplate.types";
 import { Button } from "@/components/ui/button";
-import { MaintenanceTemplateForm } from "@/features/maintenance/components/MaintenanceTemplateForm";
-import { MaintenanceTemplate } from "@/features/maintenance/types/maintenance.types";
-import { Plus, FileText, Clock, Trash2, Edit } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Modal } from "@/components/ui/modal";
+import { useModal } from "@/hooks/useModal";
+import { Plus, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function MaintenanceTemplatesPage() {
-  const [isCreating, setIsCreating] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const { data, isLoading } = useMaintenanceTemplates();
+  const { isOpen, open, close } = useModal();
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<MaintenanceTemplate | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // Mock data
-  const [templates, setTemplates] = useState<MaintenanceTemplate[]>([
-    {
-      id: "1",
-      name: "Basic Oil Change",
-      description: "Standard oil change and filter replacement",
-      vehicle_types: ["truck", "van"],
-      intervals: [{ type: "distance", value: 5000, unit: "km" }],
-      tasks: ["Drain oil", "Replace oil filter", "Fill new oil", "Check fluid levels"],
-      created_at: "2024-01-01",
-      updated_at: "2024-01-01",
-    },
-    {
-      id: "2",
-      name: "Annual Inspection",
-      description: "Comprehensive yearly vehicle inspection",
-      vehicle_types: ["all"],
-      intervals: [{ type: "time", value: 12, unit: "months" }],
-      tasks: ["Check brakes", "Inspect tires", "Test battery", "Check lights", "Inspect suspension"],
-      created_at: "2024-01-15",
-      updated_at: "2024-01-15",
-    },
-  ]);
+  const createMutation = useCreateMaintenanceTemplate();
+  const updateMutation = useUpdateMaintenanceTemplate();
+  const deleteMutation = useDeleteMaintenanceTemplate();
 
-  const handleCreate = (data: Partial<MaintenanceTemplate>) => {
-    const newTemplate: MaintenanceTemplate = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: data.name || "New Template",
-      description: data.description,
-      vehicle_types: data.vehicle_types || [],
-      intervals: data.intervals || [],
-      tasks: data.tasks || [],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    setTemplates([...templates, newTemplate]);
-    setIsCreating(false);
+  const handleCreate = () => {
+    setSelectedTemplate(null);
+    open();
   };
 
-  const handleUpdate = (data: Partial<MaintenanceTemplate>) => {
-    if (!editingId) return;
-    setTemplates(templates.map(t => t.id === editingId ? { ...t, ...data } as MaintenanceTemplate : t));
-    setEditingId(null);
+  const handleEdit = (template: MaintenanceTemplate) => {
+    setSelectedTemplate(template);
+    open();
   };
 
-  const handleDelete = (id: string) => {
-    setTemplates(templates.filter(t => t.id !== id));
+  const handleSubmit = async (formData: any) => {
+    try {
+      if (selectedTemplate) {
+        await updateMutation.mutateAsync({
+          id: selectedTemplate.id,
+          data: formData,
+        });
+        toast.success("Template updated successfully");
+      } else {
+        await createMutation.mutateAsync(formData);
+        toast.success("Template created successfully");
+      }
+      close();
+    } catch (error) {
+      toast.error("Failed to save template");
+    }
   };
 
-  if (isCreating) {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <MaintenanceTemplateForm 
-          onSubmit={handleCreate} 
-          onCancel={() => setIsCreating(false)} 
-        />
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    if (!deleteId) return;
 
-  if (editingId) {
-    const template = templates.find(t => t.id === editingId);
-    return (
-      <div className="max-w-2xl mx-auto">
-        <MaintenanceTemplateForm 
-          initialData={template}
-          onSubmit={handleUpdate} 
-          onCancel={() => setEditingId(null)} 
-        />
-      </div>
-    );
-  }
+    try {
+      await deleteMutation.mutateAsync(deleteId);
+      toast.success("Template deleted successfully");
+      setDeleteId(null);
+    } catch (error) {
+      toast.error("Failed to delete template");
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Maintenance Templates</h1>
-          <p className="text-gray-500 dark:text-gray-400">Manage preventive maintenance schedules and checklists</p>
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard/maintenance">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Maintenance Templates
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              Create and manage preventive maintenance templates
+            </p>
+          </div>
         </div>
-        <Button onClick={() => setIsCreating(true)}>
+        <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
           Create Template
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {templates.map((template) => (
-          <Card key={template.id} className="flex flex-col">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{template.name}</CardTitle>
-                <Badge variant="outline" className="capitalize">
-                  {template.intervals[0].type.replace("_", " ")}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col gap-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                {template.description}
-              </p>
-              
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Clock className="h-4 w-4" />
-                <span>Every {template.intervals[0].value} {template.intervals[0].unit}</span>
-              </div>
+      <TemplateTable
+        templates={data?.data || []}
+        isLoading={isLoading}
+        onEdit={handleEdit}
+        onDelete={(id) => setDeleteId(id)}
+      />
 
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <FileText className="h-4 w-4" />
-                <span>{template.tasks.length} tasks defined</span>
-              </div>
+      <Modal
+        isOpen={isOpen}
+        onClose={close}
+        title={selectedTemplate ? "Edit Template" : "Create Template"}
+      >
+        <TemplateForm
+          initialData={selectedTemplate || undefined}
+          onSubmit={handleSubmit}
+          onCancel={close}
+          isSubmitting={createMutation.isPending || updateMutation.isPending}
+        />
+      </Modal>
 
-              <div className="mt-auto pt-4 flex gap-2 justify-end border-t border-gray-100 dark:border-gray-800">
-                <Button variant="ghost" size="sm" onClick={() => setEditingId(template.id)}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(template.id)}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Template</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this template? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

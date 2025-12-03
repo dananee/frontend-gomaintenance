@@ -89,10 +89,10 @@ export default function VehicleDetailPage() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold">
-              {vehicle.year} {vehicle.make} {vehicle.model}
+              {vehicle.year} {vehicle.brand} {vehicle.model}
             </h1>
             <p className="text-muted-foreground">
-              {vehicle.licensePlate} • VIN: {vehicle.vin} • {vehicle.status.toUpperCase()}
+              {vehicle.plate_number} • VIN: {vehicle.vin} • {vehicle.status.toUpperCase()}
             </p>
           </div>
         </div>
@@ -113,23 +113,23 @@ export default function VehicleDetailPage() {
             title="Total Maintenance Cost"
             value={`$${metrics.totalMaintenanceCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             icon={DollarSign}
-            className="bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-purple-200"
           />
           <VehicleKPICard
             title="Avg Repair Cost"
             value={`$${metrics.averageRepairCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             subtitle="Per work order"
             icon={Wrench}
-            className="bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#6366F1] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-indigo-200"
           />
           <VehicleKPICard
             title="Cost per KM"
             value={`$${metrics.costPerKm.toFixed(2)}`}
             icon={TrendingDown}
-            className="bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#3B82F6] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-blue-200"
           />
 
           {/* B. Performance Metrics */}
@@ -138,15 +138,15 @@ export default function VehicleDetailPage() {
             value={`${metrics.mtbf.toFixed(0)}h`}
             subtitle="Mean Time Between Failures"
             icon={Zap}
-            className="bg-gradient-to-br from-[#065F46] via-[#047857] to-[#059669] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#10B981] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-emerald-200"
           />
           <VehicleKPICard
             title="Reliability Score"
             value={`${metrics.reliabilityScore.toFixed(1)}%`}
             icon={Zap}
-            className="bg-gradient-to-br from-[#065F46] via-[#047857] to-[#059669] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#14B8A6] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-teal-200"
           />
 
           {/* C. Risk & Downtime */}
@@ -154,16 +154,16 @@ export default function VehicleDetailPage() {
             title="Total Downtime"
             value={`${metrics.totalDowntimeHours.toFixed(1)}h`}
             icon={Clock}
-            className="bg-gradient-to-br from-[#7F1D1D] via-[#B91C1C] to-[#DC2626] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#F97316] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-orange-200"
           />
           <VehicleKPICard
             title="MTTR"
             value={`${metrics.mttr.toFixed(1)}h`}
             subtitle="Mean Time To Repair"
             icon={Timer}
-            className="bg-gradient-to-br from-[#7F1D1D] via-[#B91C1C] to-[#DC2626] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#F43F5E] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-rose-200"
           />
 
           {/* D. General Info */}
@@ -172,8 +172,8 @@ export default function VehicleDetailPage() {
             value={metrics.totalWorkOrders}
             subtitle="Total completed"
             icon={Wrench}
-            className="bg-gradient-to-br from-[#1E293B] via-[#334155] to-[#475569] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
-            iconClassName="text-white/80"
+            className="bg-[#64748B] text-white shadow-lg/20 hover:scale-[1.01] transition-transform duration-200"
+            iconClassName="text-slate-200"
           />
         </div>
       </div>

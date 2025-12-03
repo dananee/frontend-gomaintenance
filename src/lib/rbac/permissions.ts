@@ -34,6 +34,8 @@ export const rolePermissions: Record<Role, Permission[]> = {
     "view_reports",
     "manage_reports",
     "view_costs",
+    "view_maintenance",
+    "manage_maintenance",
   ],
   manager: [
     "view_users",
@@ -45,6 +47,8 @@ export const rolePermissions: Record<Role, Permission[]> = {
     "view_inventory",
     "view_reports",
     "view_costs",
+    "view_maintenance",
+    "manage_maintenance",
   ],
   technician: [
     "view_vehicles",
