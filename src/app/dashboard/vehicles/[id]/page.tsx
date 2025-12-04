@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/premium-tabs";
 import { VehicleMaintenancePlans } from "@/features/vehicles/components/VehicleMaintenancePlans";
 import { CreateMaintenancePlanModal } from "@/features/vehicles/components/CreateMaintenancePlanModal";
 import {
@@ -58,6 +58,7 @@ import {
   CreateMaintenancePlanRequest,
   VehicleMaintenancePlan,
 } from "@/features/vehicles/api/vehiclePlans";
+import { AddVehicleDocumentRequest } from "@/features/vehicles/api/vehicleDocuments";
 
 export default function VehicleDetailPage() {
   const params = useParams();
@@ -86,6 +87,41 @@ export default function VehicleDetailPage() {
   const { mutate: deleteDocument, isPending: isDeletingDocument } = useDeleteVehicleDocument(vehicleId);
 
   const { mutate: updateUsage, isPending: isUpdatingUsage } = useUpdateVehicleUsage(vehicleId);
+
+  const maintenanceRecords = useMemo(() => {
+    if (!data) return [];
+    const { maintenanceHistory, serviceSummary, vehicle } = data;
+    const records = maintenanceHistory ? [...maintenanceHistory] : [];
+
+    if (!maintenanceHistory?.length && serviceSummary.lastMaintenanceDate) {
+      records.push({
+        id: "last-service",
+        type: "Service",
+        description: serviceSummary.lastTechnicianName || "Maintenance completed",
+        date: serviceSummary.lastMaintenanceDate,
+        mileage: vehicle.mileage,
+        cost: serviceSummary.lastMaintenanceCost,
+        status: "completed" as const,
+      });
+    }
+
+    return records;
+  }, [data]);
+
+  const activityEvents = useMemo(() => {
+    if (!data) return [];
+    const { activityLog, partsUsed } = data;
+    return [
+      ...(activityLog || []),
+      ...(partsUsed || []).map((part, index) => ({
+        id: `part-${index}`,
+        title: `Part used: ${part.partName}`,
+        description: `Work order ${part.workOrderId} • Qty ${part.quantity} • $${part.cost.toLocaleString()}`,
+        date: part.dateUsed,
+        type: "parts",
+      })),
+    ];
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -122,39 +158,7 @@ export default function VehicleDetailPage() {
     );
   }
 
-  const { vehicle, metrics, serviceSummary, charts, partsUsed, maintenanceHistory, activityLog } = data;
-
-  const maintenanceRecords = useMemo(() => {
-    const records = maintenanceHistory ? [...maintenanceHistory] : [];
-
-    if (!maintenanceHistory?.length && serviceSummary.lastMaintenanceDate) {
-      records.push({
-        id: "last-service",
-        type: "Service",
-        description: serviceSummary.lastTechnicianName || "Maintenance completed",
-        date: serviceSummary.lastMaintenanceDate,
-        mileage: vehicle.mileage,
-        cost: serviceSummary.lastMaintenanceCost,
-        status: "completed" as const,
-      });
-    }
-
-    return records;
-  }, [maintenanceHistory, serviceSummary.lastMaintenanceCost, serviceSummary.lastMaintenanceDate, serviceSummary.lastTechnicianName, vehicle.mileage]);
-
-  const activityEvents = useMemo(
-    () => [
-      ...(activityLog || []),
-      ...(partsUsed || []).map((part, index) => ({
-        id: `part-${index}`,
-        title: `Part used: ${part.partName}`,
-        description: `Work order ${part.workOrderId} • Qty ${part.quantity} • $${part.cost.toLocaleString()}`,
-        date: part.dateUsed,
-        type: "parts",
-      })),
-    ],
-    [activityLog, partsUsed]
-  );
+  const { vehicle, metrics, serviceSummary, charts, partsUsed } = data!;
 
   const handlePlanSubmit = (payload: CreateMaintenancePlanRequest) => {
     if (selectedPlan) {
@@ -188,7 +192,7 @@ export default function VehicleDetailPage() {
     });
   };
 
-  const handleUpload = (payload: { name: string; type: string; file_url: string }) => {
+  const handleUpload = (payload: AddVehicleDocumentRequest) => {
     uploadDocument(payload, {
       onSuccess: () => {
         toast.success("Document uploaded");
@@ -242,13 +246,35 @@ export default function VehicleDetailPage() {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 md:w-auto md:grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="plans">Maintenance Plans</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="mb-6 border-b pb-1">
+          <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0">
+            <TabsTrigger 
+              value="overview" 
+              className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              Overview
+            </TabsTrigger>
+            <TabsTrigger 
+              value="plans" 
+              className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              Maintenance Plans
+            </TabsTrigger>
+            <TabsTrigger 
+              value="documents" 
+              className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              Documents
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              History
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="space-y-6">
           <div>

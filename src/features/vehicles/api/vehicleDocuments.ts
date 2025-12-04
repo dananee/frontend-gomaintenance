@@ -3,14 +3,18 @@ import apiClient from "@/lib/api/axiosClient";
 export interface VehicleDocument {
   id: string;
   vehicle_id: string;
-  type: string;
+  document_type: string;
+  file_name: string;
+  file_size?: number;
   name: string;
   file_url: string;
   uploaded_at: string;
 }
 
 export interface AddVehicleDocumentRequest {
-  type: string;
+  document_type: string;
+  file_name: string;
+  file_size?: number;
   name: string;
   file_url: string;
 }

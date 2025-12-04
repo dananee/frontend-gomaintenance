@@ -45,6 +45,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getVehicles } from "@/features/vehicles/api/getVehicles";
 import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
 import { getFleetAvailability } from "@/features/reports/api/reports";
+import { getScheduledMaintenance } from "@/features/maintenance/api/maintenanceDashboard";
 
 export default function DashboardPage() {
   // Fetch vehicles data
@@ -75,6 +76,12 @@ export default function DashboardPage() {
       }),
   });
 
+  // Fetch critical maintenance events
+  const { data: criticalMaintenanceData } = useQuery({
+    queryKey: ["maintenance", "critical"],
+    queryFn: () => getScheduledMaintenance({}),
+  });
+
   // Fetch fleet availability
   const { data: fleetAvailabilityData } = useQuery({
     queryKey: ["fleet-availability"],
@@ -86,9 +93,14 @@ export default function DashboardPage() {
 
   const totalVehicles = vehiclesData?.total || 0;
   const activeWorkOrders = workOrdersData?.total || 0;
-  const criticalIssues =
-    criticalWorkOrdersData?.data?.filter((wo) => wo.priority === "urgent")
-      .length || 0;
+  
+  // Count critical issues from both work orders and maintenance events
+  const urgentWorkOrders = criticalWorkOrdersData?.data?.filter((wo) => wo.priority === "urgent").length || 0;
+  const criticalMaintenanceEvents = criticalMaintenanceData?.filter(
+    (event) => event.priority === "critical" || event.priority === "high"
+  ).length || 0;
+  const criticalIssues = urgentWorkOrders + criticalMaintenanceEvents;
+  
   const fleetAvailability = fleetAvailabilityData?.availability_percent || 0;
 
   return (

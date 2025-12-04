@@ -12,6 +12,7 @@ export interface VehicleMaintenancePlan {
   next_service_km: number;
   next_service_date: string;
   is_active: boolean;
+  priority?: string;
   created_at: string;
   updated_at: string;
   template?: {
@@ -27,6 +28,7 @@ export interface CreateMaintenancePlanRequest {
   interval_months: number;
   last_service_km?: number;
   last_service_date?: string;
+  priority?: string;
 }
 
 export const getVehicleMaintenancePlans = async (

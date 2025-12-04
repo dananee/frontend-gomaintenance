@@ -15,10 +15,15 @@ export const useScheduledMaintenance = (
   });
 };
 
-export const useActiveMaintenancePlans = () => {
+export const useActiveMaintenancePlans = (
+  filters?: {
+    assets?: string[];
+    statuses?: string[];
+  }
+) => {
   return useQuery({
-    queryKey: ["maintenance", "plans", "active"],
-    queryFn: getActiveMaintenancePlans,
+    queryKey: ["maintenance", "plans", "active", filters],
+    queryFn: () => getActiveMaintenancePlans(filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

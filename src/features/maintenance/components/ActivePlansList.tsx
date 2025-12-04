@@ -49,112 +49,121 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
         title="No active maintenance plans"
         description="Maintenance plans are created from individual vehicle pages. Go to a vehicle's detail page and create a recurring maintenance plan based on a template."
         actionLabel="View Vehicles"
-        onAction={() => window.location.href = "/dashboard/vehicles"}
+        onAction={() => (window.location.href = "/dashboard/vehicles")}
       />
     );
   }
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {plans.map((plan) => (
-        <Card
-          key={plan.id}
-          className="group relative overflow-hidden transition-all hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800"
-        >
-          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
-                >
-                  {plan.vehicle.type}
-                </Badge>
-                <span className="text-xs text-gray-500 font-mono">
-                  {plan.vehicle.plate_number}
-                </span>
-              </div>
-              <CardTitle className="text-base font-semibold text-gray-900 dark:text-white line-clamp-1">
-                {plan.vehicle.brand} {plan.vehicle.model}
-              </CardTitle>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>View Details</DropdownMenuItem>
-                <DropdownMenuItem>Edit Plan</DropdownMenuItem>
-                <DropdownMenuItem className="text-red-600">
-                  Deactivate
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Template
-              </h4>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                {plan.template.name}
-              </p>
-            </div>
+      {plans.map((plan) => {
+        // Safety check for vehicle data
+        if (!plan.vehicle || !plan.template) {
+          console.warn("Invalid plan data:", plan);
+          return null;
+        }
 
-            <div className="space-y-3">
-              {/* Next Due Date */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2 text-gray-500">
-                  <Calendar className="h-4 w-4" />
-                  <span>Next Due</span>
+        return (
+          <Card
+            key={plan.id}
+            className="group relative overflow-hidden transition-all hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800"
+          >
+            <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
+                  >
+                    {plan.vehicle.type || "N/A"}
+                  </Badge>
+                  <span className="text-xs text-gray-500 font-mono">
+                    {plan.vehicle.plate_number || "N/A"}
+                  </span>
                 </div>
-                <span
-                  className={
-                    plan.next_due_date && new Date(plan.next_due_date) < new Date()
-                      ? "text-red-600 font-medium"
-                      : "text-gray-900 dark:text-white font-medium"
-                  }
-                >
-                  {plan.next_due_date
-                    ? new Date(plan.next_due_date).toLocaleDateString()
-                    : "Not scheduled"}
-                </span>
+                <CardTitle className="text-base font-semibold text-gray-900 dark:text-white line-clamp-1">
+                  {plan.vehicle.brand || ""} {plan.vehicle.model || ""}
+                </CardTitle>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit Plan</DropdownMenuItem>
+                  <DropdownMenuItem className="text-red-600">
+                    Deactivate
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  Template
+                </h4>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {plan.template.name || "Unknown Template"}
+                </p>
               </div>
 
-              {/* Next Due Mileage */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2 text-gray-500">
-                  <Gauge className="h-4 w-4" />
-                  <span>Due at KM</span>
+              <div className="space-y-3">
+                {/* Next Due Date */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Calendar className="h-4 w-4" />
+                    <span>Next Due</span>
+                  </div>
+                  <span
+                    className={
+                      plan.next_due_date &&
+                      new Date(plan.next_due_date) < new Date()
+                        ? "text-red-600 font-medium"
+                        : "text-gray-900 dark:text-white font-medium"
+                    }
+                  >
+                    {plan.next_due_date
+                      ? new Date(plan.next_due_date).toLocaleDateString()
+                      : "Not scheduled"}
+                  </span>
                 </div>
-                <span className="text-gray-900 dark:text-white font-medium">
-                  {plan.next_due_mileage?.toLocaleString() || "N/A"}
-                </span>
-              </div>
 
-              {/* Status Indicator */}
-              <div className="mt-4 flex items-center gap-2 rounded-lg bg-gray-50 p-2 dark:bg-gray-800/50">
-                {plan.status === "active" ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                ) : (
-                  <AlertCircle className="h-4 w-4 text-yellow-500" />
-                )}
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                  {plan.status === "active"
-                    ? "Plan is active and monitoring"
-                    : "Plan requires attention"}
-                </span>
+                {/* Next Due Mileage */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Gauge className="h-4 w-4" />
+                    <span>Due at KM</span>
+                  </div>
+                  <span className="text-gray-900 dark:text-white font-medium">
+                    {plan.next_due_mileage?.toLocaleString() || "N/A"}
+                  </span>
+                </div>
+
+                {/* Status Indicator */}
+                <div className="mt-4 flex items-center gap-2 rounded-lg bg-gray-50 p-2 dark:bg-gray-800/50">
+                  {plan.is_active ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4 text-yellow-500" />
+                  )}
+                  <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                    {plan.is_active
+                      ? "Plan is active and monitoring"
+                      : "Plan requires attention"}
+                  </span>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }

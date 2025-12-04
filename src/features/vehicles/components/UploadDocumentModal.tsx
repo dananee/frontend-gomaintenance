@@ -41,16 +41,23 @@ export function UploadDocumentModal({
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <Input
           label="Document Name"
-          placeholder="Insurance Card"
+          placeholder="Insurance Card 2024"
           {...register("name", { required: "Document name is required" })}
           error={errors.name?.message}
         />
 
         <Input
+          label="File Name"
+          placeholder="insurance_card.pdf"
+          {...register("file_name", { required: "File name is required" })}
+          error={errors.file_name?.message}
+        />
+
+        <Input
           label="Type"
           placeholder="insurance"
-          {...register("type", { required: "Type is required" })}
-          error={errors.type?.message}
+          {...register("document_type", { required: "Type is required" })}
+          error={errors.document_type?.message}
         />
 
         <Input

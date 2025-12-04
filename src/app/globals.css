@@ -25,7 +25,8 @@ body {
 /* Performance Optimizations */
 .content-visibility-auto {
   content-visibility: auto;
-  contain-intrinsic-size: 1px 1000px; /* Estimate height */
+  contain-intrinsic-size: 1px 1000px;
+  /* Estimate height */
 }
 
 .gpu-accelerated {
@@ -41,4 +42,31 @@ body {
 .optimize-scrolling {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+}
+
+/* Subtle pulse animation for high-priority events */
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

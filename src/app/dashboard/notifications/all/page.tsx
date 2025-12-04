@@ -8,7 +8,7 @@ import { Notification } from "@/features/notifications/types/notification.types"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink } from "@/components/ui/pagination";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -135,17 +135,13 @@ export default function AllNotificationsPage() {
         <p className="text-sm text-gray-500">
           Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filtered.length)} of {filtered.length}
         </p>
-        <Pagination>
-          <PaginationContent>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink isActive={index + 1 === page} onClick={() => setPage(index + 1)}>
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </PaginationContent>
-        </Pagination>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          pageSize={pageSize}
+          totalItems={filtered.length}
+        />
       </div>
     </div>
   );

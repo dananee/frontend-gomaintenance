@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { NotificationItem } from "@/features/notifications/components/NotificationItem";
 import { useNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from "@/features/notifications/hooks/useNotifications";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink } from "@/components/ui/pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { CheckCheck, Filter, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 
@@ -60,9 +60,9 @@ export default function NotificationsPage() {
           <p className="text-gray-500 dark:text-gray-400">Manage your alerts and updates</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button asChild variant="ghost">
-            <Link href="/dashboard/notifications/all">View all</Link>
-          </Button>
+          <Link href="/dashboard/notifications/all" className={buttonVariants({ variant: "ghost" })}>
+            View all
+          </Link>
           <Button variant="outline" onClick={handleMarkAllRead}>
             <CheckCheck className="mr-2 h-4 w-4" />
             Mark all as read
@@ -123,17 +123,13 @@ export default function NotificationsPage() {
         <p className="text-sm text-gray-500">
           Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filteredNotifications.length)} of {filteredNotifications.length}
         </p>
-        <Pagination>
-          <PaginationContent>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink isActive={index + 1 === page} onClick={() => setPage(index + 1)}>
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </PaginationContent>
-        </Pagination>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          pageSize={pageSize}
+          totalItems={filteredNotifications.length}
+        />
       </div>
     </div>
   );
