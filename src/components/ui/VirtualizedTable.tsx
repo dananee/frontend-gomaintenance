@@ -1,7 +1,8 @@
 "use client";
 
 import React, { memo, CSSProperties } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
+// @ts-expect-error - react-window types not fully compatible with React 19
+import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {
   Table,
@@ -43,26 +44,33 @@ interface VirtualizedTableProps<T> {
   emptyMessage?: string;
 }
 
+interface RowData<T> {
+  items: T[];
+  columns: VirtualizedTableColumn<T>[];
+  onRowClick?: (item: T, index: number) => void;
+  rowClassName?: (item: T, index: number) => string;
+}
+
+interface RowProps<T> {
+  index: number;
+  style: CSSProperties;
+  data: RowData<T>;
+}
+
 // Memoized row component to prevent unnecessary re-renders
 const TableRowComponent = memo(<T,>({
   index,
   style,
   data,
-}: ListChildComponentProps<{
-  items: T[];
-  columns: VirtualizedTableColumn<T>[];
-  onRowClick?: (item: T, index: number) => void;
-  rowClassName?: (item: T, index: number) => string;
-}>) => {
+}: RowProps<T>) => {
   const { items, columns, onRowClick, rowClassName } = data;
   const item = items[index];
 
   return (
     <div style={style}>
       <TableRow
-        className={`transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30 ${
-          onRowClick ? "cursor-pointer" : ""
-        } ${rowClassName ? rowClassName(item, index) : ""}`}
+        className={`transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30 ${onRowClick ? "cursor-pointer" : ""
+          } ${rowClassName ? rowClassName(item, index) : ""}`}
         onClick={() => onRowClick?.(item, index)}
       >
         {columns.map((column: VirtualizedTableColumn<T>) => (
@@ -157,4 +165,4 @@ function VirtualizedTableComponent<T>({
 // Export memoized version to prevent unnecessary re-renders
 export const VirtualizedTable = memo(VirtualizedTableComponent) as <T>(
   props: VirtualizedTableProps<T>
-) => JSX.Element;
+) => React.JSX.Element;

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getMaintenanceTemplates, MaintenanceTemplate, deleteMaintenanceTemplate } from '../api/maintenance';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2, Edit } from 'lucide-react';
-import { Link } from 'react-router-dom'; // Assuming react-router-dom, check navigation
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -12,12 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 export const MaintenanceTemplatesList = () => {
   const [templates, setTemplates] = useState<MaintenanceTemplate[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   const fetchTemplates = async () => {
     try {
@@ -25,11 +24,7 @@ export const MaintenanceTemplatesList = () => {
       setTemplates(data);
     } catch (error) {
       console.error('Failed to fetch templates', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load maintenance templates',
-        variant: 'destructive',
-      });
+      toast.error('Failed to load maintenance templates');
     } finally {
       setLoading(false);
     }
@@ -43,18 +38,11 @@ export const MaintenanceTemplatesList = () => {
     if (!confirm('Are you sure you want to delete this template?')) return;
     try {
       await deleteMaintenanceTemplate(id);
-      toast({
-        title: 'Success',
-        description: 'Template deleted successfully',
-      });
+      toast.success('Template deleted successfully');
       fetchTemplates();
     } catch (error) {
       console.error('Failed to delete template', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to delete template',
-        variant: 'destructive',
-      });
+      toast.error('Failed to delete template');
     }
   };
 
@@ -65,7 +53,7 @@ export const MaintenanceTemplatesList = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold tracking-tight">Maintenance Templates</h2>
         <Button asChild>
-          <Link to="/maintenance/templates/new">
+          <Link href="/maintenance/templates/new">
             <Plus className="mr-2 h-4 w-4" />
             New Template
           </Link>
@@ -102,7 +90,7 @@ export const MaintenanceTemplatesList = () => {
                     <TableCell>
                       <div className="flex space-x-2">
                         <Button variant="ghost" size="icon" asChild>
-                          <Link to={`/maintenance/templates/${template.id}/edit`}>
+                          <Link href={`/maintenance/templates/${template.id}/edit`}>
                             <Edit className="h-4 w-4" />
                           </Link>
                         </Button>
