@@ -4,7 +4,7 @@ import { WorkOrder, WorkOrderPriority, WorkOrderStatus } from "../types/workOrde
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 import { Calendar, MoreVertical, Edit, Trash2, Clock, PlayCircle, CheckCircle, XCircle } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,9 +34,9 @@ const priorityBadgeColors: Record<WorkOrderPriority, string> = {
   urgent: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
-const statusConfig: Record<WorkOrderStatus, { 
-  color: string; 
-  bgColor: string; 
+const statusConfig: Record<WorkOrderStatus, {
+  color: string;
+  bgColor: string;
   icon: React.ElementType;
   label: string;
 }> = {
@@ -68,9 +68,9 @@ const statusConfig: Record<WorkOrderStatus, {
 
 export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrderCardProps) {
   const StatusIcon = statusConfig[workOrder.status].icon;
-  
+
   return (
-    <Card 
+    <Card
       className={`cursor-pointer transition-all duration-200 hover:shadow-xl hover:scale-[1.01] ${priorityColors[workOrder.priority]} relative group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm`}
     >
       {/* Three-dot menu */}
@@ -117,16 +117,16 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
               {workOrder.priority}
             </span>
           </div>
-          
+
           <p className="line-clamp-2 text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
             {workOrder.description || workOrder.title}
           </p>
         </CardHeader>
-        
+
         <CardContent className="p-4 py-3 space-y-2.5">
           <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
             <Calendar className="h-3.5 w-3.5" />
-            <span className="font-medium">Due: {workOrder.scheduled_date ? formatDate(workOrder.scheduled_date) : "No date"}</span>
+            <span className="font-medium">Due: {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : "No date"}</span>
           </div>
           {workOrder.assigned_to_name && (
             <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
             </div>
           )}
         </CardContent>
-        
+
         <CardFooter className="flex items-center justify-between border-t border-slate-100 p-3 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span className="capitalize font-medium">{workOrder.type}</span>
           <span className="font-mono text-xs opacity-60">#{workOrder.id.slice(0, 6)}</span>

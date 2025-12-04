@@ -13,7 +13,7 @@ import {
   Loader2,
   History,
 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 import { useQuery } from "@tanstack/react-query";
 import { listWorkOrderActivity } from "../api/workOrderActivity";
 import { useParams } from "next/navigation";
@@ -139,7 +139,7 @@ export function WorkOrderTimeline() {
                               {log.entity_type}
                             </Badge>
                           </div>
-                          
+
                           {log.changes && (
                             <div className="mt-2 text-xs font-mono bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded p-2 text-gray-600 dark:text-gray-400 overflow-x-auto">
                               {(() => {
@@ -165,7 +165,7 @@ export function WorkOrderTimeline() {
                           <div className="mt-3 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                             <div className="flex items-center gap-1.5">
                               <Clock className="h-3.5 w-3.5" />
-                              <span>{formatDate(log.created_at)}</span>
+                              <span>{formatDateShort(log.created_at)}</span>
                             </div>
                             {log.user && (
                               <div className="flex items-center gap-1.5">

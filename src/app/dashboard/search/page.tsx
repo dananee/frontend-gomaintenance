@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ interface SearchResult {
   url: string;
 }
 
-const categoryIcons: Record<SearchCategory, JSX.Element> = {
+const categoryIcons: Record<SearchCategory, ReactNode> = {
   vehicle: <Truck className="h-4 w-4 text-blue-600" />,
   work_order: <Wrench className="h-4 w-4 text-orange-600" />,
   part: <Package className="h-4 w-4 text-green-600" />,
@@ -98,78 +98,72 @@ export default function SearchResultsPage() {
         className="space-y-4">
         <TabsList className="flex flex-wrap gap-2">
           <TabsTrigger value="all">All</TabsTrigger>
-          {Object.entries(categoryLabels).map(([value, label]) => (
-            <TabsTrigger key={value} value={value}>
+          {Object.entries(categoryLabels).map(([key, label]) => (
+            <TabsTrigger key={key} value={key as SearchCategory}>
               {label}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        <TabsContent value="all" className="space-y-4">
-          {results.length === 0 ? (
-            <Card>
-              <CardContent className="py-8 text-center text-gray-500">No results found.</CardContent>
-            </Card>
-          ) : (
-            Object.entries(groupedResults).map(([group, items]) => (
-              <Card key={group}>
-                <CardHeader className="flex flex-row items-center gap-2">
-                  {categoryIcons[group as SearchCategory]}
-                  <CardTitle>{categoryLabels[group as SearchCategory]}</CardTitle>
-                </CardHeader>
-                <CardContent className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {items.map((result) => (
-                    <Link
-                      key={result.id}
-                      href={result.url}
-                      className="flex items-center justify-between py-3 transition-colors hover:text-blue-600"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">{result.title}</p>
+        <TabsContent value="all" className="space-y-8">
+          {results.length === 0 && (
+            <div className="py-12 text-center text-gray-500">
+              No results found for "{query}"
+            </div>
+          )}
+          
+          {Object.entries(groupedResults).map(([category, categoryResults]) => (
+            <div key={category} className="space-y-4">
+              <h3 className="flex items-center gap-2 text-lg font-semibold capitalize">
+                {categoryIcons[category as SearchCategory]}
+                {categoryLabels[category as SearchCategory]}
+                <Badge variant="secondary" className="ml-2">{categoryResults.length}</Badge>
+              </h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {categoryResults.map((result) => (
+                  <Link key={result.id} href={result.url} className="block">
+                    <Card className="h-full transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                      <CardHeader>
+                        <CardTitle className="text-base text-blue-600 hover:underline">
+                          {result.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
                         {result.subtitle && (
                           <p className="text-sm text-gray-500 dark:text-gray-400">{result.subtitle}</p>
                         )}
-                      </div>
-                      <Badge variant="outline">{categoryLabels[result.category]}</Badge>
-                    </Link>
-                  ))}
-                </CardContent>
-              </Card>
-            ))
-          )}
+                        <div className="mt-2 flex items-center gap-2 text-xs text-gray-400">
+                          <span className="capitalize">{result.category.replace("_", " ")}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </TabsContent>
 
-        {Object.entries(categoryLabels).map(([value, label]) => (
-          <TabsContent key={value} value={value}>
-            {groupedResults[value as SearchCategory]?.length ? (
-              <Card>
-                <CardHeader className="flex flex-row items-center gap-2">
-                  {categoryIcons[value as SearchCategory]}
-                  <CardTitle>{label}</CardTitle>
-                </CardHeader>
-                <CardContent className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {groupedResults[value as SearchCategory]!.map((result) => (
-                    <Link
-                      key={result.id}
-                      href={result.url}
-                      className="flex items-center justify-between py-3 transition-colors hover:text-blue-600"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">{result.title}</p>
+        {Object.keys(categoryLabels).map((category) => (
+          <TabsContent key={category} value={category}>
+             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {groupedResults[category as SearchCategory]?.map((result) => (
+                  <Link key={result.id} href={result.url} className="block">
+                    <Card className="h-full transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                      <CardHeader>
+                        <CardTitle className="text-base text-blue-600 hover:underline">
+                          {result.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
                         {result.subtitle && (
                           <p className="text-sm text-gray-500 dark:text-gray-400">{result.subtitle}</p>
                         )}
-                      </div>
-                      <Badge variant="outline">{label}</Badge>
-                    </Link>
-                  ))}
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="py-8 text-center text-gray-500">No {label.toLowerCase()} found.</CardContent>
-              </Card>
-            )}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )) ?? <div className="col-span-full py-8 text-center text-gray-500">No results in this category</div>}
+              </div>
           </TabsContent>
         ))}
       </Tabs>

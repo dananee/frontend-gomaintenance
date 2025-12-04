@@ -8,6 +8,7 @@ import {
   Wrench,
   Clock,
 } from "lucide-react";
+import { formatCurrency, formatDateLong } from "@/lib/formatters";
 
 interface MaintenanceEvent {
   id: string;
@@ -110,11 +111,7 @@ export function MaintenanceTimeline({ events }: MaintenanceTimelineProps) {
                         </h4>
                       </div>
                       <p className="text-xs text-muted-foreground mb-2">
-                        {new Date(event.date).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                        {formatDateLong(event.date)}
                       </p>
                       <div className="flex flex-wrap gap-3 text-xs">
                         <span
@@ -124,7 +121,7 @@ export function MaintenanceTimeline({ events }: MaintenanceTimelineProps) {
                             event.type.slice(1)}
                         </span>
                         <span className="text-muted-foreground">
-                          💰 ${event.cost.toLocaleString()}
+                          💰 {formatCurrency(event.cost)}
                         </span>
                         <span className="text-muted-foreground">
                           ⏱️ {event.duration}h

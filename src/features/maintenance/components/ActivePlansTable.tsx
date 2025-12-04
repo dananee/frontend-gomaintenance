@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDateShort } from "@/lib/formatters";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ActiveMaintenancePlan } from "../types/maintenanceDashboard.types";
@@ -52,7 +54,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
   // Filter plans based on search
   const filteredPlans = plans.filter((plan) => {
     if (!plan.vehicle || !plan.template) return false;
-    
+
     const searchLower = searchTerm.toLowerCase();
     return (
       plan.vehicle.plate_number?.toLowerCase().includes(searchLower) ||
@@ -207,7 +209,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
                                 : "text-gray-900 dark:text-white"
                             )}
                           >
-                            {new Date(plan.next_due_date).toLocaleDateString()}
+                            {formatDateShort(plan.next_due_date)}
                           </span>
                         </div>
                       )}
@@ -239,14 +241,14 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => handleRunNow(plan.id)}
                           disabled={runPlanNow.isPending}
                         >
                           <Play className="mr-2 h-4 w-4" />
                           Run Now
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => handlePauseResume(plan)}
                           disabled={pausePlan.isPending || resumePlan.isPending}
                         >

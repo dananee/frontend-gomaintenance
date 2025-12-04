@@ -18,13 +18,14 @@ import {
 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  listWorkOrderAttachments, 
-  addWorkOrderAttachment, 
-  deleteWorkOrderAttachment 
+import {
+  listWorkOrderAttachments,
+  addWorkOrderAttachment,
+  deleteWorkOrderAttachment
 } from "../api/workOrderAttachments";
 import { toast } from "sonner";
-import { formatDate, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface WorkOrderAttachmentsProps {
@@ -118,7 +119,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
 
   const formatSafeDate = (dateString: string) => {
     try {
-      return formatDate(dateString);
+      return formatDateShort(dateString);
     } catch (e) {
       return "Unknown date";
     }
@@ -146,8 +147,8 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
                 Manage photos, documents, and invoices
               </p>
             </div>
-            <Button 
-              onClick={handleUpload} 
+            <Button
+              onClick={handleUpload}
               variant="outline"
               className="shadow-sm"
               disabled={uploadMutation.isPending}
@@ -171,8 +172,8 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
             onClick={handleUpload}
             className={`
               relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer
-              ${isDragging 
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" 
+              ${isDragging
+                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
                 : "border-gray-200 dark:border-gray-800 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-900/50"
               }
             `}

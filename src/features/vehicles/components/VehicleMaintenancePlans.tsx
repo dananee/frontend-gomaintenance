@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDateShort } from "@/lib/formatters";
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -185,7 +187,7 @@ export function VehicleMaintenancePlans({
                       )}>
                         <Calendar className="h-3.5 w-3.5" />
                         <span>
-                          Due: {plan.next_service_date ? new Date(plan.next_service_date).toLocaleDateString() : "—"}
+                          Due: {plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}
                           {plan.next_service_km ? ` or ${plan.next_service_km.toLocaleString()} km` : ""}
                         </span>
                       </div>
@@ -259,19 +261,19 @@ export function VehicleMaintenancePlans({
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Last Service</p>
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-3.5 w-3.5 text-gray-400" />
-                        <span>{plan.last_service_date ? new Date(plan.last_service_date).toLocaleDateString() : "Never"}</span>
+                        <span>{plan.last_service_date ? formatDateShort(plan.last_service_date) : "Never"}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <Gauge className="h-3.5 w-3.5 text-gray-400" />
                         <span>{plan.last_service_km ? `${plan.last_service_km.toLocaleString()} km` : "0 km"}</span>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-1">
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Next Due</p>
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-3.5 w-3.5 text-gray-400" />
-                        <span>{plan.next_service_date ? new Date(plan.next_service_date).toLocaleDateString() : "—"}</span>
+                        <span>{plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <Gauge className="h-3.5 w-3.5 text-gray-400" />
@@ -280,7 +282,7 @@ export function VehicleMaintenancePlans({
                     </div>
 
                     <div className="flex items-end justify-end gap-2">
-                       <Button
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={(e) => {

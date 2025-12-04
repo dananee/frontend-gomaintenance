@@ -22,7 +22,8 @@ import {
 } from "../api/workOrderComments";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { formatDateTime, getInitials } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
+import { formatDateTime } from "@/lib/formatters";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -138,8 +139,8 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                 className="min-h-[80px] resize-none border-gray-200 dark:border-gray-800 focus-visible:ring-blue-500 bg-gray-50 dark:bg-gray-900/50"
               />
               <div className="flex justify-end">
-                <Button 
-                  onClick={handleSubmit} 
+                <Button
+                  onClick={handleSubmit}
                   disabled={!commentText.trim() || createMutation.isPending}
                   className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                 >
@@ -192,8 +193,8 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                         <Avatar className="h-10 w-10 border border-gray-200 dark:border-gray-800">
                           <AvatarImage src={`https://ui-avatars.com/api/?name=${comment.user?.first_name}+${comment.user?.last_name}&background=random`} />
                           <AvatarFallback>
-                            {comment.user 
-                              ? getInitials(`${comment.user.first_name} ${comment.user.last_name}`) 
+                            {comment.user
+                              ? getInitials(`${comment.user.first_name} ${comment.user.last_name}`)
                               : <User className="h-4 w-4" />}
                           </AvatarFallback>
                         </Avatar>
@@ -212,7 +213,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                                 {comment.user?.role || "User"}
                               </p>
                             </div>
-                            
+
                             {user?.id === comment.user_id && (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -225,7 +226,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                                     <Edit2 className="mr-2 h-4 w-4" />
                                     Edit
                                   </DropdownMenuItem> */}
-                                  <DropdownMenuItem 
+                                  <DropdownMenuItem
                                     className="text-red-600 focus:text-red-600"
                                     onClick={() => handleDelete(comment.id)}
                                   >
@@ -236,7 +237,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                               </DropdownMenu>
                             )}
                           </div>
-                          
+
                           <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
                             {comment.content}
                           </div>

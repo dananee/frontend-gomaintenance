@@ -80,17 +80,17 @@ export function EditWorkOrderModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>
-              <Input 
-                id="title" 
-                {...register("title", { required: "Title is required" })} 
-                placeholder="e.g. Brake Inspection" 
+              <Input
+                id="title"
+                {...register("title", { required: "Title is required" })}
+                placeholder="e.g. Brake Inspection"
               />
               {/* Error handling would go here */}
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
-              <Select 
+              <Select
                 onValueChange={(value) => setValue("type", value as any)}
                 defaultValue={workOrder?.type || "preventive"}
               >
@@ -105,13 +105,13 @@ export function EditWorkOrderModal({
               </Select>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea 
-              id="description" 
-              {...register("description")} 
-              placeholder="Describe the issue or maintenance required..." 
+            <Textarea
+              id="description"
+              {...register("description")}
+              placeholder="Describe the issue or maintenance required..."
               className="h-20"
             />
           </div>
@@ -119,7 +119,7 @@ export function EditWorkOrderModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="priority">Priority</Label>
-              <Select 
+              <Select
                 onValueChange={(value) => setValue("priority", value as WorkOrderPriority)}
                 defaultValue={workOrder?.priority || "medium"}
               >
@@ -137,7 +137,7 @@ export function EditWorkOrderModal({
 
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <Select 
+              <Select
                 onValueChange={(value) => setValue("status", value as WorkOrderStatus)}
                 defaultValue={workOrder?.status || "pending"}
               >
@@ -157,7 +157,7 @@ export function EditWorkOrderModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="assigned_to">Assignee</Label>
-              <Select 
+              <Select
                 onValueChange={(value) => setValue("assigned_to", value)}
                 defaultValue={workOrder?.assigned_to || ""}
               >
@@ -175,7 +175,7 @@ export function EditWorkOrderModal({
 
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Select 
+              <Select
                 onValueChange={(value) => setValue("category", value)}
                 defaultValue={workOrder?.category || ""}
               >
@@ -196,33 +196,33 @@ export function EditWorkOrderModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="estimated_duration">Est. Time (Hours)</Label>
-              <Input 
-                id="estimated_duration" 
+              <Input
+                id="estimated_duration"
                 type="number"
                 step="0.5"
-                {...register("estimated_duration", { valueAsNumber: true })} 
-                placeholder="e.g. 2.5" 
+                {...register("estimated_duration", { valueAsNumber: true })}
+                placeholder="e.g. 2.5"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="estimated_cost">Est. Cost ($)</Label>
-              <Input 
-                id="estimated_cost" 
+              <Label htmlFor="estimated_cost">Est. Cost (MAD)</Label>
+              <Input
+                id="estimated_cost"
                 type="number"
                 step="0.01"
-                {...register("estimated_cost", { valueAsNumber: true })} 
-                placeholder="0.00" 
+                {...register("estimated_cost", { valueAsNumber: true })}
+                placeholder="0.00"
               />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="notes">Additional Notes</Label>
-            <Textarea 
-              id="notes" 
-              {...register("notes")} 
-              placeholder="Any additional notes or instructions..." 
+            <Textarea
+              id="notes"
+              {...register("notes")}
+              placeholder="Any additional notes or instructions..."
               className="h-20"
             />
           </div>

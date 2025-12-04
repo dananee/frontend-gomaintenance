@@ -9,41 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format date to locale string
- */
-export function formatDate(date: string | Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-/**
- * Format date and time
- */
-export function formatDateTime(date: string | Date): string {
-  return new Date(date).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false, // Force 24-hour format
-  });
-}
-
-/**
- * Format currency (Moroccan Dirham)
- */
-export function formatCurrency(amount: number, currency: string = "MAD"): string {
-  return new Intl.NumberFormat("fr-MA", {
-    style: "currency",
-    currency,
-  }).format(amount);
-}
-
-/**
  * Format number with thousand separators
  */
 export function formatNumber(num: number): string {

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { MaintenancePlan, MaintenanceTemplate } from "@/features/maintenance/types/maintenance.types";
 import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 
 interface MaintenancePlanCardProps {
   plan: MaintenancePlan;
@@ -17,7 +17,7 @@ interface MaintenancePlanCardProps {
 
 export function MaintenancePlanCard({ plan, template, currentMileage, onComplete }: MaintenancePlanCardProps) {
   const interval = template.intervals[0];
-  
+
   // Calculate progress
   let progress = 0;
   let remaining = 0;
@@ -32,7 +32,7 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
     isOverdue = remaining < 0;
   } else if (interval.type === "time") {
     // Simplified time calculation for demo
-    progress = 75; 
+    progress = 75;
     isOverdue = plan.status === "overdue";
   }
 
@@ -67,7 +67,7 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
               <div>
                 <p className="text-xs text-gray-500">Last Performed</p>
                 <p className="font-medium">
-                  {plan.last_performed_date ? formatDate(plan.last_performed_date) : "Never"}
+                  {plan.last_performed_date ? formatDateShort(plan.last_performed_date) : "Never"}
                 </p>
               </div>
             </div>
@@ -76,9 +76,9 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
               <div>
                 <p className="text-xs text-gray-500">Next Due</p>
                 <p className={`font-medium ${isOverdue ? "text-red-600" : ""}`}>
-                  {interval.type === "distance" 
+                  {interval.type === "distance"
                     ? `${(plan.last_performed_mileage || 0) + interval.value} km`
-                    : formatDate(plan.next_due_date || "")}
+                    : formatDateShort(plan.next_due_date || "")}
                 </p>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, DollarSign, User, Wrench } from "lucide-react";
+import { formatCurrency } from "@/lib/formatters";
 
 interface ServiceSummaryProps {
   lastMaintenanceDate: string;
@@ -47,7 +48,7 @@ export function ServiceSummary({
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-green-600" />
                 <p className="font-medium">
-                  ${lastMaintenanceCost.toLocaleString()}
+                  {formatCurrency(lastMaintenanceCost)}
                 </p>
               </div>
             </div>
@@ -63,11 +64,11 @@ export function ServiceSummary({
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-lg bg-white p-4 border border-blue-300">
-              <p className="text-xs text-gray-900 font-bold uppercase mb-2">
+            <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm dark:border-blue-900/50 dark:from-blue-900/20 dark:to-transparent">
+              <p className="text-xs font-semibold uppercase tracking-wider text-blue-600/80 dark:text-blue-400 mb-2">
                 Next Service Due
               </p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-3xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
                 {nextServiceDue}
               </p>
             </div>

@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 
 interface ActivityLog {
   id: string;
@@ -89,7 +89,7 @@ export function VehicleActivityLog({ activities = [], }: VehicleActivityLogProps
                     </div>
                   </div>
                   <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{formatDate(activity.timestamp)}</span>
+                    <span>{formatDateShort(activity.timestamp)}</span>
                     {activity.user && (
                       <>
                         <span>•</span>

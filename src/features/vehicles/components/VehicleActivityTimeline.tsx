@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity } from "lucide-react";
+import { formatDateTime } from "@/lib/formatters";
 
 interface VehicleActivityEvent {
   id: string;
@@ -55,7 +56,7 @@ export function VehicleActivityTimeline({ events = [] }: VehicleActivityTimeline
                     <p className="text-sm text-muted-foreground">{event.description}</p>
                   )}
                   <p className="text-xs text-muted-foreground">
-                    {new Date(event.date).toLocaleString()}
+                    {formatDateTime(event.date)}
                   </p>
                 </div>
               </div>

@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Wrench, DollarSign } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort, formatCurrency } from "@/lib/formatters";
 
 interface MaintenanceRecord {
   id: string;
@@ -108,7 +108,7 @@ export function VehicleMaintenanceHistory({
                       <div className="mt-3 flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3.5 w-3.5" />
-                          <span>{formatDate(record.date)}</span>
+                          <span>{formatDateShort(record.date)}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Wrench className="h-3.5 w-3.5" />
@@ -117,7 +117,7 @@ export function VehicleMaintenanceHistory({
                         {record.cost && (
                           <div className="flex items-center gap-1">
                             <DollarSign className="h-3.5 w-3.5" />
-                            <span>{record.cost.toFixed(2)} MAD</span>
+                            <span>{formatCurrency(record.cost)}</span>
                           </div>
                         )}
                       </div>

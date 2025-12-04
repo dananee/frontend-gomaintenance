@@ -10,7 +10,12 @@ import { WebSocketProvider } from "@/hooks/useWebSocket";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        storageKey="app-theme"
+      >
         <WebSocketProvider>
           {children}
           <Toaster richColors position="top-right" />

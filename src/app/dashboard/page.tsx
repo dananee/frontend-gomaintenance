@@ -23,7 +23,7 @@ import { Suspense, lazy } from "react";
 import { TrendBadge } from "@/features/dashboard/components/TrendBadge";
 import { OverdueWorkOrders } from "@/features/dashboard/components/OverdueWorkOrders";
 import { VehiclesNeedingMaintenance } from "@/features/dashboard/components/VehiclesNeedingMaintenance";
-import { DashboardKPICard } from "@/features/dashboard/components/DashboardKPICard";
+import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
 
 // Lazy load charts
 const CostChart = lazy(() => import("@/features/reports/components/CostChart").then(module => ({ default: module.CostChart })));
@@ -93,14 +93,14 @@ export default function DashboardPage() {
 
   const totalVehicles = vehiclesData?.total || 0;
   const activeWorkOrders = workOrdersData?.total || 0;
-  
+
   // Count critical issues from both work orders and maintenance events
   const urgentWorkOrders = criticalWorkOrdersData?.data?.filter((wo) => wo.priority === "urgent").length || 0;
   const criticalMaintenanceEvents = criticalMaintenanceData?.filter(
     (event) => event.priority === "critical" || event.priority === "high"
   ).length || 0;
   const criticalIssues = urgentWorkOrders + criticalMaintenanceEvents;
-  
+
   const fleetAvailability = fleetAvailabilityData?.availability_percent || 0;
 
   return (
@@ -113,144 +113,152 @@ export default function DashboardPage() {
       {kpiData && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {/* Financial KPIs - Purple/Blue Gradient */}
-          <DashboardKPICard
-            title="Total Fleet Value"
-            value={`$${(kpiData.fleet_kpis.total_fleet_value / 1000).toFixed(
-              0
-            )}K`}
-            subtitle="Total asset value"
-            icon={DollarSign}
-            colorScheme="purple"
-            href="/dashboard/vehicles"
-          />
-          <DashboardKPICard
-            title="Maintenance Cost YTD"
-            value={`$${(
-              kpiData.fleet_kpis.total_maintenance_cost_ytd / 1000
-            ).toFixed(0)}K`}
-            subtitle="Year to date"
-            icon={Wrench}
-            colorScheme="purple"
-            trend={kpiData.fleet_kpis.total_maintenance_cost_ytd_trend}
-            href="/dashboard/reports?type=cost"
-          />
-          <DashboardKPICard
-            title="Total Cost of Ownership"
-            value={`$${(
-              kpiData.fleet_kpis.total_cost_of_ownership / 1000
-            ).toFixed(0)}K`}
-            subtitle="Fleet TCO"
-            icon={DollarSign}
-            colorScheme="purple"
-            href="/dashboard/reports?type=tco"
-          />
+          <Link href="/dashboard/vehicles">
+            <PremiumMetricCard
+              title="Total Fleet Value"
+              value={`$${(kpiData.fleet_kpis.total_fleet_value / 1000).toFixed(
+                0
+              )}K`}
+              subtitle="Total asset value"
+              icon={DollarSign}
+              variant="purple"
+            />
+          </Link>
+          <Link href="/dashboard/reports?type=cost">
+            <PremiumMetricCard
+              title="Maintenance Cost YTD"
+              value={`$${(
+                kpiData.fleet_kpis.total_maintenance_cost_ytd / 1000
+              ).toFixed(0)}K`}
+              subtitle="Year to date"
+              icon={Wrench}
+              variant="purple"
+              trend={kpiData.fleet_kpis.total_maintenance_cost_ytd_trend}
+            />
+          </Link>
+          <Link href="/dashboard/reports?type=tco">
+            <PremiumMetricCard
+              title="Total Cost of Ownership"
+              value={`$${(
+                kpiData.fleet_kpis.total_cost_of_ownership / 1000
+              ).toFixed(0)}K`}
+              subtitle="Fleet TCO"
+              icon={DollarSign}
+              variant="purple"
+            />
+          </Link>
 
           {/* Performance KPIs - Green/Blue Gradient */}
-          <DashboardKPICard
+          <PremiumMetricCard
             title="Fleet Efficiency"
             value={`${kpiData.fleet_kpis.fleet_efficiency_score}%`}
             subtitle="Overall performance"
             icon={Activity}
-            colorScheme="green"
+            variant="green"
             trend={kpiData.fleet_kpis.fleet_efficiency_trend}
           />
-          <DashboardKPICard
+          <PremiumMetricCard
             title="Scheduled vs Corrective"
             value={`${kpiData.fleet_kpis.scheduled_vs_corrective_ratio.toFixed(
               1
             )}:1`}
             subtitle="Maintenance ratio"
             icon={BarChart3}
-            colorScheme="green"
+            variant="green"
             trend={kpiData.fleet_kpis.scheduled_vs_corrective_trend}
           />
 
           {/* Risk KPIs - Orange/Red Gradient */}
-          <DashboardKPICard
-            title="Downtime (Month)"
-            value={`${kpiData.fleet_kpis.total_downtime_hours_month}h`}
-            subtitle="Total hours"
-            icon={Clock}
-            colorScheme="orange"
-            trend={kpiData.fleet_kpis.total_downtime_hours_month_trend}
-            href="/dashboard/vehicles?status=maintenance"
-          />
-          <DashboardKPICard
+          <Link href="/dashboard/vehicles?status=maintenance">
+            <PremiumMetricCard
+              title="Downtime (Month)"
+              value={`${kpiData.fleet_kpis.total_downtime_hours_month}h`}
+              subtitle="Total hours"
+              icon={Clock}
+              variant="orange"
+              trend={kpiData.fleet_kpis.total_downtime_hours_month_trend}
+            />
+          </Link>
+          <PremiumMetricCard
             title="Avg Downtime / Vehicle"
             value={`${kpiData.fleet_kpis.avg_downtime_per_vehicle.toFixed(1)}h`}
             subtitle="Per vehicle"
             icon={Clock}
-            colorScheme="orange"
+            variant="orange"
             trend={kpiData.fleet_kpis.avg_downtime_per_vehicle_trend}
           />
 
           {/* Availability KPIs - Cyan/Blue Gradient */}
-          <DashboardKPICard
+          <PremiumMetricCard
             title="MTTR"
             value={`${kpiData.fleet_kpis.fleet_mttr}h`}
             subtitle="Mean Time To Repair"
             icon={Timer}
-            colorScheme="cyan"
+            variant="teal"
           />
-          <DashboardKPICard
+          <PremiumMetricCard
             title="MTBF"
             value={`${kpiData.fleet_kpis.fleet_mtbf}h`}
             subtitle="Between failures"
             icon={Zap}
-            colorScheme="cyan"
+            variant="teal"
           />
-          <DashboardKPICard
+          <PremiumMetricCard
             title="Avg Cost / Vehicle"
             value={`$${kpiData.fleet_kpis.avg_maintenance_cost_per_vehicle.toLocaleString()}`}
             subtitle="Per vehicle"
             icon={TrendingUp}
-            colorScheme="cyan"
+            variant="teal"
             trend={kpiData.fleet_kpis.avg_cost_per_vehicle_trend}
           />
 
           {/* Additional Premium KPIs - Row 2 */}
-          <DashboardKPICard
-            title="WO SLA Compliance"
-            value={`${kpiData.fleet_kpis.work_order_sla_compliance.toFixed(
-              1
-            )}%`}
-            subtitle="On-time completion"
-            icon={Target}
-            colorScheme="green"
-            trend={kpiData.fleet_kpis.work_order_sla_compliance_trend}
-            href="/dashboard/work-orders?filter=sla"
-          />
-          <DashboardKPICard
-            title="Fleet Health Score"
-            value={`${kpiData.fleet_kpis.global_fleet_health_score}%`}
-            subtitle="Overall fleet status"
-            icon={Shield}
-            colorScheme="blue"
-            trend={kpiData.fleet_kpis.global_fleet_health_trend}
-            href="/dashboard/vehicles?view=health"
-          />
-          <DashboardKPICard
-            title="WO Completion Rate"
-            value={`${kpiData.fleet_kpis.work_order_completion_rate_week.toFixed(
-              1
-            )}%`}
-            subtitle="This week"
-            icon={CheckCircle2}
-            colorScheme="green"
-            trend={kpiData.fleet_kpis.work_order_completion_rate_trend}
-            href="/dashboard/work-orders"
-          />
-          <DashboardKPICard
-            title="PM Compliance"
-            value={`${kpiData.fleet_kpis.preventive_maintenance_compliance.toFixed(
-              1
-            )}%`}
-            subtitle="Preventive maintenance"
-            icon={Gauge}
-            colorScheme="purple"
-            trend={kpiData.fleet_kpis.preventive_maintenance_compliance_trend}
-            href="/dashboard/maintenance?type=preventive"
-          />
+          <Link href="/dashboard/work-orders?filter=sla">
+            <PremiumMetricCard
+              title="WO SLA Compliance"
+              value={`${kpiData.fleet_kpis.work_order_sla_compliance.toFixed(
+                1
+              )}%`}
+              subtitle="On-time completion"
+              icon={Target}
+              variant="green"
+              trend={kpiData.fleet_kpis.work_order_sla_compliance_trend}
+            />
+          </Link>
+          <Link href="/dashboard/vehicles?view=health">
+            <PremiumMetricCard
+              title="Fleet Health Score"
+              value={`${kpiData.fleet_kpis.global_fleet_health_score}%`}
+              subtitle="Overall fleet status"
+              icon={Shield}
+              variant="blue"
+              trend={kpiData.fleet_kpis.global_fleet_health_trend}
+            />
+          </Link>
+          <Link href="/dashboard/work-orders">
+            <PremiumMetricCard
+              title="WO Completion Rate"
+              value={`${kpiData.fleet_kpis.work_order_completion_rate_week.toFixed(
+                1
+              )}%`}
+              subtitle="This week"
+              icon={CheckCircle2}
+              variant="green"
+              trend={kpiData.fleet_kpis.work_order_completion_rate_trend}
+            />
+          </Link>
+          <Link href="/dashboard/maintenance?type=preventive">
+            <PremiumMetricCard
+              title="PM Compliance"
+              value={`${kpiData.fleet_kpis.preventive_maintenance_compliance.toFixed(
+                1
+              )}%`}
+              subtitle="Preventive maintenance"
+              icon={Gauge}
+              variant="purple"
+              trend={kpiData.fleet_kpis.preventive_maintenance_compliance_trend}
+            />
+          </Link>
         </div>
       )}
 
@@ -266,90 +274,46 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Replaced with PremiumMetricCard */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/vehicles">
-          <Card className="group cursor-pointer border-blue-200 transition-all hover:border-blue-400 hover:shadow-lg dark:border-blue-900/50 dark:hover:border-blue-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Total Vehicles
-              </CardTitle>
-              <div className="rounded-lg bg-blue-100 p-2 transition-colors group-hover:bg-blue-200 dark:bg-blue-900/30 dark:group-hover:bg-blue-900/50">
-                <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {totalVehicles}
-              </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Active fleet vehicles
-              </p>
-            </CardContent>
-          </Card>
+          <PremiumMetricCard
+            title="Total Vehicles"
+            value={totalVehicles}
+            subtitle="Active fleet vehicles"
+            icon={Truck}
+            variant="blue"
+          />
         </Link>
 
         <Link href="/dashboard/work-orders">
-          <Card className="group cursor-pointer border-orange-200 transition-all hover:border-orange-400 hover:shadow-lg dark:border-orange-900/50 dark:hover:border-orange-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Active Work Orders
-              </CardTitle>
-              <div className="rounded-lg bg-orange-100 p-2 transition-colors group-hover:bg-orange-200 dark:bg-orange-900/30 dark:group-hover:bg-orange-900/50">
-                <Wrench className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {activeWorkOrders}
-              </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                In progress
-              </p>
-            </CardContent>
-          </Card>
+          <PremiumMetricCard
+            title="Active Work Orders"
+            value={activeWorkOrders}
+            subtitle="In progress"
+            icon={Wrench}
+            variant="orange"
+          />
         </Link>
 
         <Link href="/dashboard/maintenance">
-          <Card className="group cursor-pointer border-red-200 transition-all hover:border-red-400 hover:shadow-lg dark:border-red-900/50 dark:hover:border-red-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Critical Issues
-              </CardTitle>
-              <div className="rounded-lg bg-red-100 p-2 transition-colors group-hover:bg-red-200 dark:bg-red-900/30 dark:group-hover:bg-red-900/50">
-                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-                {criticalIssues}
-              </div>
-              <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                Requires immediate attention
-              </p>
-            </CardContent>
-          </Card>
+          <PremiumMetricCard
+            title="Critical Issues"
+            value={criticalIssues}
+            subtitle="Requires immediate attention"
+            icon={AlertTriangle}
+            variant="rose"
+          />
         </Link>
 
         <Link href="/dashboard/reports">
-          <Card className="group cursor-pointer border-green-200 transition-all hover:border-green-400 hover:shadow-lg dark:border-green-900/50 dark:hover:border-green-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Fleet Availability
-              </CardTitle>
-              <div className="rounded-lg bg-green-100 p-2 transition-colors group-hover:bg-green-200 dark:bg-green-900/30 dark:group-hover:bg-green-900/50">
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                {fleetAvailability.toFixed(0)}%
-              </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Vehicles available
-              </p>
-            </CardContent>
-          </Card>
+          <PremiumMetricCard
+            title="Fleet Availability"
+            value={`${fleetAvailability.toFixed(0)}%`}
+            subtitle="Vehicles available"
+            icon={CheckCircle}
+            variant="green"
+          />
         </Link>
       </div>
 

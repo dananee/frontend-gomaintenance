@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
 import { CalendarHeader } from "./CalendarHeader";
-import { MaintenanceEvent } from "./MaintenanceEvent";
+import { CompactDayEvents } from "./CompactDayEvents";
 import { EventDrawer } from "./EventDrawer";
 
 interface MaintenanceCalendarV2Props {
@@ -28,14 +28,14 @@ interface MaintenanceCalendarV2Props {
   onDateChange: (date: Date) => void;
 }
 
-export function MaintenanceCalendarV2({ 
-  events = [], 
+export function MaintenanceCalendarV2({
+  events = [],
   isLoading,
   currentDate,
-  onDateChange 
+  onDateChange
 }: MaintenanceCalendarV2Props) {
   const [selectedEvent, setSelectedEvent] = useState<ScheduledMaintenanceEvent | null>(null);
-  
+
   const nextMonth = () => onDateChange(addMonths(currentDate, 1));
   const prevMonth = () => onDateChange(subMonths(currentDate, 1));
   const goToToday = () => onDateChange(new Date());
@@ -103,11 +103,8 @@ export function MaintenanceCalendarV2({
               const isCurrentMonth = isSameMonth(day, currentDate);
               const isTodayDate = isToday(day);
               const isWeekendDay = isWeekend(day);
-              const hasMultipleEvents = dayEvents.length > 2;
-              const visibleEvents = hasMultipleEvents ? dayEvents.slice(0, 2) : dayEvents;
-              const remainingCount = dayEvents.length - visibleEvents.length;
               const hasHighPriority = dayEvents.some(e => e.priority === "high" || e.priority === "critical");
-              
+
               return (
                 <div
                   key={day.toString()}
@@ -129,8 +126,8 @@ export function MaintenanceCalendarV2({
                         isTodayDate
                           ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white ring-2 ring-blue-500/30 shadow-md shadow-blue-500/30"
                           : isCurrentMonth
-                          ? "text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
-                          : "text-gray-400 dark:text-gray-600"
+                            ? "text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            : "text-gray-400 dark:text-gray-600"
                       )}
                     >
                       {format(day, "d")}
@@ -138,7 +135,7 @@ export function MaintenanceCalendarV2({
                     {dayEvents.length > 0 && (
                       <span className={cn(
                         "text-[10px] font-medium px-1.5 py-0.5 rounded-full transition-all",
-                        hasHighPriority 
+                        hasHighPriority
                           ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                           : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
                       )}>
@@ -147,22 +144,11 @@ export function MaintenanceCalendarV2({
                     )}
                   </div>
 
-                  <div className="space-y-1 overflow-y-auto max-h-[100px] scrollbar-hide">
-                    {visibleEvents.map((event) => (
-                      <MaintenanceEvent
-                        key={event.id}
-                        event={event}
-                        onClick={handleEventClick}
-                      />
-                    ))}
-                    
-                    {/* "+X more" badge */}
-                    {remainingCount > 0 && (
-                      <div className="text-[10px] font-medium text-gray-500 dark:text-gray-400 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded px-1.5 py-0.5 text-center shadow-sm">
-                        +{remainingCount} more
-                      </div>
-                    )}
-                  </div>
+                  <CompactDayEvents
+                    events={dayEvents}
+                    date={day}
+                    onEventClick={handleEventClick}
+                  />
                 </div>
               );
             })}

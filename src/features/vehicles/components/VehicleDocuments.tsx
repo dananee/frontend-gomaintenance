@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDateShort } from "@/lib/formatters";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, FileText, Trash2, Upload, File, Image as ImageIcon, FileSpreadsheet } from "lucide-react";
@@ -99,7 +101,7 @@ export function VehicleDocuments({
                           {doc.file_name || doc.name || "Untitled Document"}
                         </span>
                         <span className="text-xs text-muted-foreground md:hidden">
-                          {formatFileSize(doc.file_size)} • {new Date(doc.uploaded_at).toLocaleDateString()}
+                          {formatFileSize(doc.file_size)} • {formatDateShort(doc.uploaded_at)}
                         </span>
                       </div>
                     </div>
@@ -113,7 +115,7 @@ export function VehicleDocuments({
                     {formatFileSize(doc.file_size)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new Date(doc.uploaded_at).toLocaleDateString()}
+                    {formatDateShort(doc.uploaded_at)}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">

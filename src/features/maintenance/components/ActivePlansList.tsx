@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDateShort } from "@/lib/formatters";
+
 import { ActiveMaintenancePlan } from "../types/maintenanceDashboard.types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -124,13 +126,13 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
                   <span
                     className={
                       plan.next_due_date &&
-                      new Date(plan.next_due_date) < new Date()
+                        new Date(plan.next_due_date) < new Date()
                         ? "text-red-600 font-medium"
                         : "text-gray-900 dark:text-white font-medium"
                     }
                   >
                     {plan.next_due_date
-                      ? new Date(plan.next_due_date).toLocaleDateString()
+                      ? formatDateShort(plan.next_due_date)
                       : "Not scheduled"}
                   </span>
                 </div>

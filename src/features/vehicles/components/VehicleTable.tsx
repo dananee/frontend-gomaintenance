@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/ui/skeleton";
 import { Edit, Trash2, Eye, TrendingUp, TrendingDown } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 import Link from "next/link";
 
 interface VehicleTableProps {
@@ -78,13 +79,12 @@ export function VehicleTable({
                   <TableCell>{vehicle.plate_number}</TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
-                        vehicle.status === "active"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : vehicle.status === "maintenance"
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${vehicle.status === "active"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                        : vehicle.status === "maintenance"
                           ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
                           : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
-                      }`}
+                        }`}
                     >
                       {vehicle.status}
                     </span>
@@ -93,7 +93,7 @@ export function VehicleTable({
                     {(vehicle.current_km || 0).toLocaleString()} km
                   </TableCell>
                   <TableCell className="font-medium">
-                    ${maintenanceCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatCurrency(maintenanceCost)}
                   </TableCell>
                   <TableCell>
                     <span className="text-orange-600 dark:text-orange-400">
@@ -103,13 +103,12 @@ export function VehicleTable({
                   <TableCell>
                     {daysUntilService !== null ? (
                       <span
-                        className={`text-sm ${
-                          daysUntilService < 15
-                            ? "text-red-600 dark:text-red-400 font-medium"
-                            : daysUntilService < 30
+                        className={`text-sm ${daysUntilService < 15
+                          ? "text-red-600 dark:text-red-400 font-medium"
+                          : daysUntilService < 30
                             ? "text-yellow-600 dark:text-yellow-400"
                             : "text-green-600 dark:text-green-400"
-                        }`}
+                          }`}
                       >
                         {daysUntilService} days
                       </span>
@@ -122,13 +121,12 @@ export function VehicleTable({
                       <div className="flex-1">
                         <div className="h-2 w-16 rounded-full bg-gray-200 dark:bg-gray-700">
                           <div
-                            className={`h-2 rounded-full transition-all ${
-                              healthScore >= 80
-                                ? "bg-green-500"
-                                : healthScore >= 60
+                            className={`h-2 rounded-full transition-all ${healthScore >= 80
+                              ? "bg-green-500"
+                              : healthScore >= 60
                                 ? "bg-yellow-500"
                                 : "bg-red-500"
-                            }`}
+                              }`}
                             style={{ width: `${Math.min(healthScore, 100)}%` }}
                           />
                         </div>

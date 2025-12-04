@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { formatCurrency, formatDateShort } from "@/lib/formatters";
 
 interface Part {
   id: string;
@@ -115,7 +116,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
       part.name,
       part.quantity,
       part.cost,
-      new Date(part.date).toLocaleDateString(),
+      formatDateShort(part.date),
       part.workOrderId,
     ]);
 
@@ -232,9 +233,8 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
               {filteredAndSortedParts.map((part, index) => (
                 <TableRow
                   key={part.id}
-                  className={`cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30 ${
-                    index % 2 === 0 ? "bg-white dark:bg-gray-900/20" : ""
-                  }`}
+                  className={`cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30 ${index % 2 === 0 ? "bg-white dark:bg-gray-900/20" : ""
+                    }`}
                 >
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
@@ -244,10 +244,10 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
                   </TableCell>
                   <TableCell>{part.quantity}</TableCell>
                   <TableCell className="font-medium">
-                    ${part.cost.toLocaleString()}
+                    {formatCurrency(part.cost)}
                   </TableCell>
                   <TableCell>
-                    {new Date(part.date).toLocaleDateString()}
+                    {formatDateShort(part.date)}
                   </TableCell>
                   <TableCell>
                     <Link
@@ -267,7 +267,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
                 </TableCell>
                 <TableCell>{totalQuantity}</TableCell>
                 <TableCell className="text-green-600 dark:text-green-400">
-                  ${totalCost.toLocaleString()}
+                  {formatCurrency(totalCost)}
                 </TableCell>
                 <TableCell colSpan={2}></TableCell>
               </TableRow>

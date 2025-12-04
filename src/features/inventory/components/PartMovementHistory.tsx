@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, ArrowUp, Package } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 
 interface StockMovement {
   id: string;
@@ -143,7 +143,7 @@ export function PartMovementHistory({ movements = [] }: PartMovementHistoryProps
                         </div>
                       </div>
                       <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span>{formatDate(movement.createdAt)}</span>
+                        <span>{formatDateShort(movement.createdAt)}</span>
                         {movement.createdBy && (
                           <>
                             <span>•</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { formatCurrency, formatDateShort } from "@/lib/formatters";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -8,7 +9,7 @@ import Link from "next/link";
 import { getVehicleDetails, VehicleDetailsResponse } from "@/features/vehicles/api/getVehicleDetails";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { VehicleKPICard } from "@/features/vehicles/components/VehicleKPICard";
+import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
 import { ServiceSummary } from "@/features/vehicles/components/ServiceSummary";
 import { CostTrendChart } from "@/features/dashboard/components/CostTrendChart";
 import { DowntimeChart } from "@/features/dashboard/components/DowntimeChart";
@@ -116,7 +117,7 @@ export default function VehicleDetailPage() {
       ...(partsUsed || []).map((part, index) => ({
         id: `part-${index}`,
         title: `Part used: ${part.partName}`,
-        description: `Work order ${part.workOrderId} • Qty ${part.quantity} • $${part.cost.toLocaleString()}`,
+        description: `Work order ${part.workOrderId} • Qty ${part.quantity} • ${formatCurrency(part.cost)}`,
         date: part.dateUsed,
         type: "parts",
       })),
@@ -249,26 +250,26 @@ export default function VehicleDetailPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="mb-6 border-b pb-1">
           <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0">
-            <TabsTrigger 
-              value="overview" 
+            <TabsTrigger
+              value="overview"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               Overview
             </TabsTrigger>
-            <TabsTrigger 
-              value="plans" 
+            <TabsTrigger
+              value="plans"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               Maintenance Plans
             </TabsTrigger>
-            <TabsTrigger 
-              value="documents" 
+            <TabsTrigger
+              value="documents"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               Documents
             </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
+            <TabsTrigger
+              value="history"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               History
@@ -280,65 +281,57 @@ export default function VehicleDetailPage() {
           <div>
             <h2 className="mb-4 text-xl font-semibold">Performance Metrics</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="Total Maintenance Cost"
-                value={`$${metrics.totalMaintenanceCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                value={formatCurrency(metrics.totalMaintenanceCost)}
                 icon={DollarSign}
-                className="bg-[#7C3AED] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-purple-200"
+                variant="purple"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="Avg Repair Cost"
-                value={`$${metrics.averageRepairCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                value={formatCurrency(metrics.averageRepairCost)}
                 subtitle="Per work order"
                 icon={Wrench}
-                className="bg-[#6366F1] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-indigo-200"
+                variant="indigo"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="Cost per KM"
-                value={`$${metrics.costPerKm.toFixed(2)}`}
+                value={formatCurrency(metrics.costPerKm)}
                 icon={TrendingDown}
-                className="bg-[#3B82F6] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-blue-200"
+                variant="blue"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="MTBF"
                 value={`${metrics.mtbf.toFixed(0)}h`}
                 subtitle="Mean Time Between Failures"
                 icon={Zap}
-                className="bg-[#10B981] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-emerald-200"
+                variant="green"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="Reliability Score"
                 value={`${metrics.reliabilityScore.toFixed(1)}%`}
                 icon={Zap}
-                className="bg-[#14B8A6] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-teal-200"
+                variant="teal"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="Total Downtime"
                 value={`${metrics.totalDowntimeHours.toFixed(1)}h`}
                 icon={Clock}
-                className="bg-[#F97316] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-orange-200"
+                variant="orange"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="MTTR"
                 value={`${metrics.mttr.toFixed(1)}h`}
                 subtitle="Mean Time To Repair"
                 icon={Timer}
-                className="bg-[#F43F5E] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-rose-200"
+                variant="rose"
               />
-              <VehicleKPICard
+              <PremiumMetricCard
                 title="Work Orders"
                 value={metrics.totalWorkOrders}
                 subtitle="Total completed"
                 icon={Wrench}
-                className="bg-[#64748B] text-white shadow-lg/20 transition-transform duration-200 hover:scale-[1.01]"
-                iconClassName="text-slate-200"
+                variant="slate"
               />
             </div>
           </div>
@@ -358,7 +351,7 @@ export default function VehicleDetailPage() {
                 data={(charts.maintenanceCostTrend || []).map((item) => ({
                   month: item.date,
                   value: item.value,
-                  label: `$${item.value.toFixed(0)}`,
+                  label: formatCurrency(item.value),
                 }))}
               />
               <DowntimeChart
@@ -377,10 +370,10 @@ export default function VehicleDetailPage() {
                     item.name === "preventive"
                       ? "#10b981"
                       : item.name === "corrective"
-                      ? "#f59e0b"
-                      : item.name === "breakdown"
-                      ? "#ef4444"
-                      : "#3b82f6",
+                        ? "#f59e0b"
+                        : item.name === "breakdown"
+                          ? "#ef4444"
+                          : "#3b82f6",
                 }))}
               />
               <Card className="shadow-sm">
@@ -435,8 +428,8 @@ export default function VehicleDetailPage() {
                               </div>
                             </TableCell>
                             <TableCell>{part.quantity}</TableCell>
-                            <TableCell className="font-medium">${part.cost.toLocaleString()}</TableCell>
-                            <TableCell>{new Date(part.dateUsed).toLocaleDateString()}</TableCell>
+                            <TableCell className="font-medium">{formatCurrency(part.cost)}</TableCell>
+                            <TableCell>{formatDateShort(part.dateUsed)}</TableCell>
                             <TableCell>
                               <Link
                                 href={`/dashboard/work-orders/${part.workOrderId}`}

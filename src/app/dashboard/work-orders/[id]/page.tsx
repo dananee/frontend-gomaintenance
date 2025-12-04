@@ -32,14 +32,14 @@ import { WorkOrderAttachments } from "@/features/workOrders/components/WorkOrder
 import { WorkOrderTimeline } from "@/features/workOrders/components/WorkOrderTimeline";
 import { WorkOrderComments } from "@/features/workOrders/components/WorkOrderComments";
 import { useWorkOrder } from "@/features/workOrders/hooks/useWorkOrder";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 import { motion } from "framer-motion";
 
 export default function WorkOrderDetailsPage() {
   const params = useParams();
   const workOrderId = params.id as string;
   const { isOpen, open, close } = useModal();
-  
+
   const { data: workOrder, isLoading } = useWorkOrder(workOrderId);
 
   if (isLoading) {
@@ -83,7 +83,7 @@ export default function WorkOrderDetailsPage() {
   return (
     <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950/50 pb-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8 py-6">
-        
+
         {/* Header Section */}
         <div className="space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -92,20 +92,20 @@ export default function WorkOrderDetailsPage() {
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                   {workOrder.title}
                 </h1>
-                <Badge 
-                  variant="secondary" 
+                <Badge
+                  variant="secondary"
                   className={`capitalize px-3 py-1 text-sm font-medium border ${getStatusColor(workOrder.status)}`}
                 >
                   {workOrder.status.replace("_", " ")}
                 </Badge>
-                <Badge 
+                <Badge
                   variant="outline"
                   className={`capitalize px-3 py-1 text-sm font-medium ${getPriorityColor(workOrder.priority)}`}
                 >
                   {workOrder.priority} Priority
                 </Badge>
               </div>
-              
+
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                   <Wrench className="h-4 w-4" />
@@ -116,7 +116,7 @@ export default function WorkOrderDetailsPage() {
                 <div className="flex items-center gap-2">
                   <CalendarRange className="h-4 w-4" />
                   <span>
-                    Due {workOrder.scheduled_date ? formatDate(workOrder.scheduled_date) : "No date"}
+                    Due {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : "No date"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -142,36 +142,36 @@ export default function WorkOrderDetailsPage() {
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="w-full justify-start border-b border-gray-200 dark:border-gray-800 bg-transparent p-0 h-auto rounded-none space-x-6 overflow-x-auto flex-nowrap">
-            <TabsTrigger 
-              value="overview" 
+            <TabsTrigger
+              value="overview"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <LayoutDashboard className="h-4 w-4 mr-2" />
               Overview
             </TabsTrigger>
-            <TabsTrigger 
-              value="tasks" 
+            <TabsTrigger
+              value="tasks"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <CheckCircle2 className="h-4 w-4 mr-2" />
               Tasks
             </TabsTrigger>
-            <TabsTrigger 
-              value="attachments" 
+            <TabsTrigger
+              value="attachments"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <Paperclip className="h-4 w-4 mr-2" />
               Attachments
             </TabsTrigger>
-            <TabsTrigger 
-              value="activity" 
+            <TabsTrigger
+              value="activity"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <Activity className="h-4 w-4 mr-2" />
               Activity
             </TabsTrigger>
-            <TabsTrigger 
-              value="comments" 
+            <TabsTrigger
+              value="comments"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <MessageSquare className="h-4 w-4 mr-2" />
@@ -200,7 +200,7 @@ export default function WorkOrderDetailsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {workOrder.scheduled_date ? formatDate(workOrder.scheduled_date) : "No date"}
+                    {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : "No date"}
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Target completion</p>
                 </CardContent>
@@ -270,7 +270,7 @@ export default function WorkOrderDetailsPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 {workOrder.description && (
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
@@ -281,7 +281,7 @@ export default function WorkOrderDetailsPage() {
                     </div>
                   </div>
                 )}
-                
+
                 {workOrder.notes && (
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Additional Notes</label>
@@ -326,9 +326,9 @@ export default function WorkOrderDetailsPage() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Due Date</label>
-              <Input 
-                placeholder="Due date" 
-                defaultValue={workOrder.scheduled_date || ""} 
+              <Input
+                placeholder="Due date"
+                defaultValue={workOrder.scheduled_date || ""}
                 type="datetime-local"
                 step="60" // Enable seconds/24h format support
               />

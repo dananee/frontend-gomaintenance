@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDate } from "@/lib/utils";
+import { formatDateShort } from "@/lib/formatters";
 import { CheckCircle, Wrench, User, LogIn, Settings } from "lucide-react";
 
 interface ActivityLog {
@@ -113,7 +113,7 @@ export function UserActivityLog({ activities = [] }: UserActivityLogProps) {
                     </p>
                   )}
                   <span className="mt-1 text-xs text-gray-400">
-                    {formatDate(activity.timestamp)}
+                    {formatDateShort(activity.timestamp)}
                   </span>
                 </div>
               </div>

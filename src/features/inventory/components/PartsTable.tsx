@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/ui/skeleton";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 import { AlertTriangle, Edit, Package, Trash2 } from "lucide-react";
 import Link from "next/link";
 
@@ -67,13 +67,12 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTablePro
               return (
                 <TableRow
                   key={part.id}
-                  className={`cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${
-                    isCriticalStock
+                  className={`cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${isCriticalStock
                       ? "bg-red-50/50 dark:bg-red-900/10 border-l-4 border-l-red-500"
                       : isLowStock
-                      ? "bg-yellow-50/50 dark:bg-yellow-900/10 border-l-4 border-l-yellow-500"
-                      : ""
-                  }`}
+                        ? "bg-yellow-50/50 dark:bg-yellow-900/10 border-l-4 border-l-yellow-500"
+                        : ""
+                    }`}
                 >
                   <TableCell className="font-medium">
                     <Link
@@ -112,13 +111,12 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTablePro
                   <TableCell className="text-right">
                     <div className="flex flex-col items-end">
                       <span
-                        className={`font-semibold ${
-                          isCriticalStock
+                        className={`font-semibold ${isCriticalStock
                             ? "text-red-600 dark:text-red-400"
                             : isLowStock
-                            ? "text-yellow-600 dark:text-yellow-400"
-                            : "text-gray-900 dark:text-gray-100"
-                        }`}
+                              ? "text-yellow-600 dark:text-yellow-400"
+                              : "text-gray-900 dark:text-gray-100"
+                          }`}
                       >
                         {part.quantity}
                       </span>
