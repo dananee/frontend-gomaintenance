@@ -21,9 +21,9 @@ interface WebSocketContextValue {
 
 const defaultContext: WebSocketContextValue = {
   status: "disconnected",
-  send: () => {},
+  send: () => { },
   lastMessage: null,
-  subscribe: () => () => {},
+  subscribe: () => () => { },
 };
 
 const WebSocketContext = createContext<WebSocketContextValue>(defaultContext);
@@ -39,7 +39,15 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const connect = useCallback(() => {
-    if (!isAuthenticated || !token) {
+    // Validate authentication state and token
+    if (!isAuthenticated) {
+      console.log("WebSocket: Not authenticated, skipping connection");
+      setStatus("disconnected");
+      return;
+    }
+
+    if (!token || token.trim() === "") {
+      console.error("WebSocket: Token is missing or empty, cannot connect");
       setStatus("disconnected");
       return;
     }
@@ -64,6 +72,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         token
       )}`;
 
+      console.log("WebSocket: Connecting to", `${protocol}//${apiHost}/api/v1/notifications/ws`);
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 

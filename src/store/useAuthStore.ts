@@ -33,11 +33,27 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
 
       login: (user, token, refreshToken) => {
+        if (!token) {
+          console.error("Attempted to login with empty token");
+          throw new Error("Cannot login: token is required");
+        }
+        if (!user) {
+          console.error("Attempted to login with empty user");
+          throw new Error("Cannot login: user is required");
+        }
+
+        console.log("Storing auth token in localStorage and Zustand...");
         localStorage.setItem("auth_token", token);
         if (refreshToken) {
           localStorage.setItem("refresh_token", refreshToken);
         }
+
         set({ user, token, refreshToken: refreshToken ?? null, isAuthenticated: true });
+        console.log("Auth state updated successfully", {
+          userId: user.id,
+          userEmail: user.email,
+          isAuthenticated: true
+        });
       },
 
       logout: () => {
