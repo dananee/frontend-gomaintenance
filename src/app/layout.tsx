@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ProgressBar } from "@/components/ui/progress-bar";
@@ -24,10 +25,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <GlobalErrorBoundary>
           <Providers>
-            <ProgressBar />
+            <Suspense fallback={null}>
+              <ProgressBar />
+            </Suspense>
             <OfflineIndicatorClient />
             {children}
-            <Toaster />
+
           </Providers>
         </GlobalErrorBoundary>
       </body>

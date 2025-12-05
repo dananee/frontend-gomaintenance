@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/ui/skeleton";
 import { Edit, Trash2, Eye, TrendingUp, TrendingDown } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+
 import { formatCurrency } from "@/lib/formatters";
 import Link from "next/link";
 
