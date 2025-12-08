@@ -104,5 +104,253 @@
                 "subtitle": "Véhicules disponibles"
             }
         }
+    },
+    "inventory": {
+        "title": "Inventaire",
+        "subtitle": "Gérez les pièces, les niveaux de stock et les fournisseurs",
+        "actions": {
+            "suppliers": "Fournisseurs",
+            "addPart": "Ajouter une pièce",
+            "addFirstPart": "Ajoutez votre première pièce",
+            "manageSuppliers": "Gérer les fournisseurs",
+            "clearFilters": "Réinitialiser les filtres",
+            "deleteConfirm": "Voulez-vous vraiment supprimer « {name} » ?"
+        },
+        "stats": {
+            "totalParts": {
+                "title": "Total des pièces",
+                "description": "Dans l’inventaire"
+            },
+            "lowStock": {
+                "title": "Stock faible",
+                "description": "À réapprovisionner"
+            },
+            "totalValue": {
+                "title": "Valeur totale",
+                "description": "Valeur de l’inventaire"
+            },
+            "categories": {
+                "title": "Catégories",
+                "description": "Catégories de pièces"
+            }
+        },
+        "filters": {
+            "searchPlaceholder": "Rechercher des pièces ou un SKU",
+            "allCategories": "Toutes les catégories",
+            "allWarehouses": "Tous les entrepôts",
+            "lowStockOnly": "Stock faible uniquement",
+            "categories": {
+                "engine": "Moteur",
+                "brakes": "Freins",
+                "tires": "Pneus",
+                "filters": "Filtres",
+                "fluids": "Fluides"
+            },
+            "warehouses": {
+                "shelfA1": "Étagère A-1",
+                "shelfB2": "Étagère B-2"
+            }
+        },
+        "emptyStates": {
+            "noParts": {
+                "title": "Aucune pièce dans l’inventaire",
+                "description": "Commencez par ajouter votre première pièce pour suivre les niveaux de stock, les coûts et les informations fournisseurs."
+            },
+            "notFound": {
+                "title": "Aucune pièce trouvée",
+                "description": "Aucune pièce ne correspond à vos filtres. Essayez de modifier vos critères de recherche ou vos filtres."
+            }
+        },
+        "details": {
+            "adjustStock": "Ajuster le stock",
+            "editPart": "Modifier la pièce",
+            "exportCSV": "Exporter en CSV",
+            "upload": "Téléverser",
+            "tabs": {
+                "overview": "Aperçu",
+                "stock": "Stock",
+                "movements": "Mouvements",
+                "attachments": "Pièces jointes",
+                "comments": "Commentaires"
+            },
+            "overview": {
+                "onHand": {
+                    "title": "En stock",
+                    "description": "Dans tous les entrepôts"
+                },
+                "reorderPoint": {
+                    "title": "Point de commande",
+                    "description": "Seuil"
+                },
+                "unitPrice": {
+                    "title": "Prix unitaire",
+                    "description": "Dernier coût fournisseur"
+                },
+                "totalValue": {
+                    "title": "Valeur totale",
+                    "description": "Qté × prix"
+                }
+            },
+            "stock": {
+                "title": "Stock en entrepôt",
+                "location": "Emplacement",
+                "stock": "Stock",
+                "lowStock": "Stock faible"
+            },
+            "movements": {
+                "title": "Mouvements de stock",
+                "id": "ID",
+                "type": "Type",
+                "quantity": "Quantité",
+                "location": "Emplacement",
+                "date": "Date"
+            },
+            "attachments": {
+                "title": "Pièces jointes"
+            },
+            "comments": {
+                "title": "Commentaires",
+                "placeholder": "Ajouter un commentaire",
+                "post": "Publier le commentaire",
+                "toasts": {
+                    "added": {
+                        "title": "Commentaire ajouté",
+                        "description": "Votre commentaire a été publié."
+                    }
+                }
+            },
+            "editModal": {
+                "title": "Modifier la pièce",
+                "description": "Mettre à jour les métadonnées et le prix de la pièce.",
+                "fields": {
+                    "name": "Nom de la pièce",
+                    "sku": "SKU",
+                    "price": "Prix unitaire"
+                },
+                "save": "Enregistrer les modifications"
+            },
+            "stockAdjustment": {
+                "toasts": {
+                    "success": {
+                        "title": "Stock ajusté",
+                        "description": "Le stock a été {type}."
+                    }
+                },
+                "types": {
+                    "increased": "augmenté",
+                    "decreased": "diminué",
+                    "updated": "mis à jour"
+                }
+            }
+        }
+    },
+    "suppliers": {
+        "title": "Fournisseurs",
+        "subtitle": "Gérez vos fournisseurs et vos contacts",
+        "actions": {
+            "addSupplier": "Ajouter un fournisseur",
+            "deleteConfirm": "Voulez-vous vraiment supprimer ce fournisseur ?"
+        },
+        "filters": {
+            "searchPlaceholder": "Rechercher des fournisseurs..."
+        }
+    },
+    "maintenance": {
+        "dashboard": {
+            "title": "Maintenance",
+            "subtitle": "Gérez les programmes de maintenance préventive et les plans actifs",
+            "actions": {
+                "templates": "Modèles",
+                "schedule": "Planifier une maintenance"
+            },
+            "tabs": {
+                "calendar": "Calendrier",
+                "activePlans": "Plans actifs"
+            },
+            "modals": {
+                "schedule": {
+                    "title": "Planifier une maintenance"
+                }
+            }
+        },
+        "templates": {
+            "title": "Modèles de maintenance",
+            "subtitle": "Créer et gérer des modèles de maintenance préventive",
+            "actions": {
+                "create": "Créer un modèle",
+                "delete": "Supprimer",
+                "cancel": "Annuler"
+            },
+            "modals": {
+                "create": "Créer un modèle",
+                "edit": "Modifier le modèle"
+            },
+            "alerts": {
+                "delete": {
+                    "title": "Supprimer le modèle",
+                    "description": "Êtes-vous sûr de vouloir supprimer ce modèle ? Cette action est irréversible."
+                }
+            },
+            "toasts": {
+                "createSuccess": "Modèle créé avec succès",
+                "updateSuccess": "Modèle mis à jour avec succès",
+                "saveError": "Échec de l’enregistrement du modèle",
+                "deleteSuccess": "Modèle supprimé avec succès",
+                "deleteError": "Échec de la suppression du modèle"
+            }
+        }
+    },
+     "notifications": {
+    "common": {
+      "categories": {
+        "work_order": "Ordres de travail",
+        "inventory": "Inventaire",
+        "maintenance": "Maintenance",
+        "system": "Système"
+      }
+    },
+    "dashboard": {
+      "title": "Notifications",
+      "subtitle": "Gérez vos alertes et mises à jour",
+      "actions": {
+        "viewAll": "Voir tout",
+        "markAllRead": "Tout marquer comme lu"
+      },
+      "filters": {
+        "searchPlaceholder": "Rechercher des notifications...",
+        "filterBy": "Filtrer par",
+        "options": {
+          "all": "Toutes les notifications",
+          "unread": "Non lues uniquement"
+        }
+      },
+      "empty": "Aucune notification ne correspond à vos critères.",
+      "pagination": "Affichage {start}-{end} sur {total}"
+    },
+    "all": {
+      "title": "Toutes les notifications",
+      "subtitle": "Historique complet avec filtres, pagination et actions groupées.",
+      "actions": {
+        "markAllRead": "Tout marquer comme lu",
+        "backToDashboard": "Retour au tableau de bord"
+      },
+      "sections": {
+        "filters": "Filtres",
+        "stream": "Flux de notifications",
+        "summary": "Résumé"
+      },
+      "filters": {
+        "searchPlaceholder": "Rechercher par titre ou message",
+        "filterByType": "Filtrer par type",
+        "options": {
+          "all": "Toutes les catégories"
+        }
+      },
+      "stats": {
+        "unread": "Non lues",
+        "total": "Total"
+      },
+      "empty": "Aucune notification ne correspond à vos filtres."
     }
+  }
 }

@@ -15,8 +15,11 @@ import {
 import { Pagination } from "@/components/ui/pagination";
 import { CheckCheck, Filter, Search } from "lucide-react";
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 export default function NotificationsPage() {
+  const t = useTranslations("notifications.dashboard");
+  const tCommon = useTranslations("notifications.common");
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -56,16 +59,16 @@ export default function NotificationsPage() {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notifications</h1>
-          <p className="text-gray-500 dark:text-gray-400">Manage your alerts and updates</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/dashboard/notifications/all" className={buttonVariants({ variant: "ghost" })}>
-            View all
+            {t("actions.viewAll")}
           </Link>
           <Button variant="outline" onClick={handleMarkAllRead}>
             <CheckCheck className="mr-2 h-4 w-4" />
-            Mark all as read
+            {t("actions.markAllRead")}
           </Button>
         </div>
       </div>
@@ -74,7 +77,7 @@ export default function NotificationsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Search notifications..."
+            placeholder={t("filters.searchPlaceholder")}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -89,15 +92,15 @@ export default function NotificationsPage() {
         }}>
           <SelectTrigger className="w-[180px]">
             <Filter className="mr-2 h-4 w-4" />
-            <SelectValue placeholder="Filter by" />
+            <SelectValue placeholder={t("filters.filterBy")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Notifications</SelectItem>
-            <SelectItem value="unread">Unread Only</SelectItem>
-            <SelectItem value="work_order">Work Orders</SelectItem>
-            <SelectItem value="inventory">Inventory</SelectItem>
-            <SelectItem value="maintenance">Maintenance</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectItem value="all">{t("filters.options.all")}</SelectItem>
+            <SelectItem value="unread">{t("filters.options.unread")}</SelectItem>
+            <SelectItem value="work_order">{tCommon("categories.work_order")}</SelectItem>
+            <SelectItem value="inventory">{tCommon("categories.inventory")}</SelectItem>
+            <SelectItem value="maintenance">{tCommon("categories.maintenance")}</SelectItem>
+            <SelectItem value="system">{tCommon("categories.system")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -114,14 +117,18 @@ export default function NotificationsPage() {
           ))
         ) : (
           <div className="text-center py-12 text-gray-500">
-            No notifications found matching your criteria.
+            {t("empty")}
           </div>
         )}
       </div>
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-500">
-          Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, filteredNotifications.length)} of {filteredNotifications.length}
+          {t("pagination", {
+            start: (page - 1) * pageSize + 1,
+            end: Math.min(page * pageSize, filteredNotifications.length),
+            total: filteredNotifications.length
+          })}
         </p>
         <Pagination
           currentPage={page}

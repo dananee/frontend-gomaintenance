@@ -33,6 +33,7 @@ import { StockAdjustmentModal } from "@/features/inventory/components/StockAdjus
 import { EditPartModal } from "@/features/inventory/components/EditPartModal";
 import { StockAdjustment } from "@/features/inventory/types/inventory.types";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface Attachment {
   id: number;
@@ -91,6 +92,7 @@ const warehouses = [
 ];
 
 export default function InventoryPartDetailsPage() {
+  const t = useTranslations("inventory.details");
   const [attachments, setAttachments] =
     useState<Attachment[]>(defaultAttachments);
   const [comments, setComments] = useState<Comment[]>(defaultComments);
@@ -141,8 +143,8 @@ export default function InventoryPartDetailsPage() {
       },
       ...prev,
     ]);
-    toast.success("Comment added", {
-      description: "Your comment has been posted.",
+    toast.success(t("comments.toasts.added.title"), {
+      description: t("comments.toasts.added.description"),
     });
     setNewComment("");
   };
@@ -151,14 +153,17 @@ export default function InventoryPartDetailsPage() {
     adjustment: Omit<StockAdjustment, "id" | "created_at" | "adjusted_by">
   ) => {
     console.log("Stock adjustment:", adjustment);
-    toast.success("Stock adjusted", {
-      description: `Stock has been ${
-        adjustment.adjustment_type === "add"
-          ? "increased"
-          : adjustment.adjustment_type === "remove"
-          ? "decreased"
-          : "updated"
-      }.`,
+    const adjustmentType =
+      adjustment.adjustment_type === "add"
+        ? t("stockAdjustment.types.increased")
+        : adjustment.adjustment_type === "remove"
+        ? t("stockAdjustment.types.decreased")
+        : t("stockAdjustment.types.updated");
+
+    toast.success(t("stockAdjustment.toasts.success.title"), {
+      description: t("stockAdjustment.toasts.success.description", {
+        type: adjustmentType,
+      }),
     });
     // TODO: Implement stock adjustment API call
   };
@@ -185,42 +190,42 @@ export default function InventoryPartDetailsPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={openStockModal}>
-            <TrendingUp className="mr-2 h-4 w-4" /> Adjust Stock
+            <TrendingUp className="mr-2 h-4 w-4" /> {t("adjustStock")}
           </Button>
           <Button variant="outline" onClick={open}>
-            <Pencil className="mr-2 h-4 w-4" /> Edit Part
+            <Pencil className="mr-2 h-4 w-4" /> {t("editPart")}
           </Button>
           <Button>
-            <Archive className="mr-2 h-4 w-4" /> Export CSV
+            <Archive className="mr-2 h-4 w-4" /> {t("exportCSV")}
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="overview">
         <TabsList className="grid grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="stock">Stock</TabsTrigger>
-          <TabsTrigger value="movements">Movements</TabsTrigger>
-          <TabsTrigger value="attachments">Attachments</TabsTrigger>
-          <TabsTrigger value="comments">Comments</TabsTrigger>
+          <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
+          <TabsTrigger value="stock">{t("tabs.stock")}</TabsTrigger>
+          <TabsTrigger value="movements">{t("tabs.movements")}</TabsTrigger>
+          <TabsTrigger value="attachments">{t("tabs.attachments")}</TabsTrigger>
+          <TabsTrigger value="comments">{t("tabs.comments")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">On Hand</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("overview.onHand.title")}</CardTitle>
                 <Boxes className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{part.stock} units</div>
-                <p className="text-xs text-gray-500">Across all warehouses</p>
+                <p className="text-xs text-gray-500">{t("overview.onHand.description")}</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Reorder Point
+                  {t("overview.reorderPoint.title")}
                 </CardTitle>
                 <Activity className="h-4 w-4 text-gray-400" />
               </CardHeader>
@@ -228,13 +233,13 @@ export default function InventoryPartDetailsPage() {
                 <div className="text-2xl font-bold">
                   {part.reorderPoint} units
                 </div>
-                <p className="text-xs text-gray-500">Threshold</p>
+                <p className="text-xs text-gray-500">{t("overview.reorderPoint.description")}</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Unit Price
+                  {t("overview.unitPrice.title")}
                 </CardTitle>
                 <Package2 className="h-4 w-4 text-gray-400" />
               </CardHeader>
@@ -242,13 +247,13 @@ export default function InventoryPartDetailsPage() {
                 <div className="text-2xl font-bold">
                   ${part.price.toFixed(2)}
                 </div>
-                <p className="text-xs text-gray-500">Latest supplier cost</p>
+                <p className="text-xs text-gray-500">{t("overview.unitPrice.description")}</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Value
+                  {t("overview.totalValue.title")}
                 </CardTitle>
                 <TrendingDown className="h-4 w-4 text-gray-400" />
               </CardHeader>
@@ -256,7 +261,7 @@ export default function InventoryPartDetailsPage() {
                 <div className="text-2xl font-bold">
                   ${totalValue.toFixed(2)}
                 </div>
-                <p className="text-xs text-gray-500">Qty × price</p>
+                <p className="text-xs text-gray-500">{t("overview.totalValue.description")}</p>
               </CardContent>
             </Card>
           </div>
@@ -265,14 +270,14 @@ export default function InventoryPartDetailsPage() {
         <TabsContent value="stock" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Warehouse Stock</CardTitle>
+              <CardTitle>{t("stock.title")}</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Stock</TableHead>
+                    <TableHead>{t("stock.location")}</TableHead>
+                    <TableHead>{t("stock.stock")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -293,7 +298,7 @@ export default function InventoryPartDetailsPage() {
                           <span>{location.stock} units</span>
                           {location.stock <= part.reorderPoint && (
                             <Badge variant="destructive" className="text-xs">
-                              Low stock
+                              {t("stock.lowStock")}
                             </Badge>
                           )}
                         </div>
@@ -309,17 +314,17 @@ export default function InventoryPartDetailsPage() {
         <TabsContent value="movements" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Stock Movements</CardTitle>
+              <CardTitle>{t("movements.title")}</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>{t("movements.id")}</TableHead>
+                    <TableHead>{t("movements.type")}</TableHead>
+                    <TableHead>{t("movements.quantity")}</TableHead>
+                    <TableHead>{t("movements.location")}</TableHead>
+                    <TableHead>{t("movements.date")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -347,7 +352,7 @@ export default function InventoryPartDetailsPage() {
         <TabsContent value="attachments" className="space-y-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Attachments</CardTitle>
+              <CardTitle>{t("attachments.title")}</CardTitle>
               <div className="flex items-center gap-2">
                 <Input
                   id="part-files"
@@ -360,7 +365,7 @@ export default function InventoryPartDetailsPage() {
                   variant="outline"
                   onClick={() => document.getElementById("part-files")?.click()}
                 >
-                  <FileUp className="mr-2 h-4 w-4" /> Upload
+                  <FileUp className="mr-2 h-4 w-4" /> {t("upload")}
                 </Button>
               </div>
             </CardHeader>
@@ -386,17 +391,17 @@ export default function InventoryPartDetailsPage() {
         <TabsContent value="comments" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Comments</CardTitle>
+              <CardTitle>{t("comments.title")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <Textarea
-                  placeholder="Add a comment"
+                  placeholder={t("comments.placeholder")}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
                 <div className="flex justify-end">
-                  <Button onClick={handleAddComment}>Post comment</Button>
+                  <Button onClick={handleAddComment}>{t("comments.post")}</Button>
                 </div>
               </div>
               <div className="space-y-4">
@@ -427,18 +432,18 @@ export default function InventoryPartDetailsPage() {
       <Modal
         isOpen={isOpen}
         onClose={close}
-        title="Edit Part"
-        description="Update part metadata and pricing."
+        title={t("editModal.title")}
+        description={t("editModal.description")}
       >
         <div className="space-y-4">
-          <Input placeholder="Part name" defaultValue={part.name} />
-          <Input placeholder="SKU" defaultValue={part.sku} />
+          <Input placeholder={t("editModal.fields.name")} defaultValue={part.name} />
+          <Input placeholder={t("editModal.fields.sku")} defaultValue={part.sku} />
           <Input
-            placeholder="Unit price"
+            placeholder={t("editModal.fields.price")}
             defaultValue={part.price.toString()}
           />
           <div className="flex justify-end">
-            <Button onClick={close}>Save changes</Button>
+            <Button onClick={close}>{t("editModal.save")}</Button>
           </div>
         </div>
       </Modal>

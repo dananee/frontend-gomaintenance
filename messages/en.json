@@ -104,5 +104,253 @@
                 "subtitle": "Vehicles available"
             }
         }
+    },
+    "inventory": {
+        "title": "Inventory",
+        "subtitle": "Manage parts, stock levels, and suppliers",
+        "actions": {
+            "suppliers": "Suppliers",
+            "addPart": "Add Part",
+            "addFirstPart": "Add Your First Part",
+            "manageSuppliers": "Manage Suppliers",
+            "clearFilters": "Clear Filters",
+            "deleteConfirm": "Are you sure you want to delete \"{name}\"?"
+        },
+        "stats": {
+            "totalParts": {
+                "title": "Total Parts",
+                "description": "In inventory"
+            },
+            "lowStock": {
+                "title": "Low Stock",
+                "description": "Need reorder"
+            },
+            "totalValue": {
+                "title": "Total Value",
+                "description": "Inventory worth"
+            },
+            "categories": {
+                "title": "Categories",
+                "description": "Part categories"
+            }
+        },
+        "filters": {
+            "searchPlaceholder": "Search parts or SKU",
+            "allCategories": "All categories",
+            "allWarehouses": "All warehouses",
+            "lowStockOnly": "Low stock only",
+            "categories": {
+                "engine": "Engine",
+                "brakes": "Brakes",
+                "tires": "Tires",
+                "filters": "Filters",
+                "fluids": "Fluids"
+            },
+            "warehouses": {
+                "shelfA1": "Shelf A-1",
+                "shelfB2": "Shelf B-2"
+            }
+        },
+        "emptyStates": {
+            "noParts": {
+                "title": "No parts in inventory",
+                "description": "Get started by adding your first part to track inventory levels, costs, and supplier information."
+            },
+            "notFound": {
+                "title": "No parts found",
+                "description": "No parts match your current filters. Try adjusting your search criteria or filters."
+            }
+        },
+        "details": {
+            "adjustStock": "Adjust Stock",
+            "editPart": "Edit Part",
+            "exportCSV": "Export CSV",
+            "upload": "Upload",
+            "tabs": {
+                "overview": "Overview",
+                "stock": "Stock",
+                "movements": "Movements",
+                "attachments": "Attachments",
+                "comments": "Comments"
+            },
+            "overview": {
+                "onHand": {
+                    "title": "On Hand",
+                    "description": "Across all warehouses"
+                },
+                "reorderPoint": {
+                    "title": "Reorder Point",
+                    "description": "Threshold"
+                },
+                "unitPrice": {
+                    "title": "Unit Price",
+                    "description": "Latest supplier cost"
+                },
+                "totalValue": {
+                    "title": "Total Value",
+                    "description": "Qty × price"
+                }
+            },
+            "stock": {
+                "title": "Warehouse Stock",
+                "location": "Location",
+                "stock": "Stock",
+                "lowStock": "Low stock"
+            },
+            "movements": {
+                "title": "Stock Movements",
+                "id": "ID",
+                "type": "Type",
+                "quantity": "Quantity",
+                "location": "Location",
+                "date": "Date"
+            },
+            "attachments": {
+                "title": "Attachments"
+            },
+            "comments": {
+                "title": "Comments",
+                "placeholder": "Add a comment",
+                "post": "Post comment",
+                "toasts": {
+                    "added": {
+                        "title": "Comment added",
+                        "description": "Your comment has been posted."
+                    }
+                }
+            },
+            "editModal": {
+                "title": "Edit Part",
+                "description": "Update part metadata and pricing.",
+                "fields": {
+                    "name": "Part name",
+                    "sku": "SKU",
+                    "price": "Unit price"
+                },
+                "save": "Save changes"
+            },
+            "stockAdjustment": {
+                "toasts": {
+                    "success": {
+                        "title": "Stock adjusted",
+                        "description": "Stock has been {type}."
+                    }
+                },
+                "types": {
+                    "increased": "increased",
+                    "decreased": "decreased",
+                    "updated": "updated"
+                }
+            }
+        },
+        "suppliers": {
+            "title": "Suppliers",
+            "subtitle": "Manage your suppliers and contacts",
+            "actions": {
+                "addSupplier": "Add Supplier",
+                "deleteConfirm": "Are you sure you want to delete this supplier?"
+            },
+            "filters": {
+                "searchPlaceholder": "Search suppliers..."
+            }
+        }
+    },
+    "maintenance": {
+        "dashboard": {
+            "title": "Maintenance",
+            "subtitle": "Manage preventive maintenance schedules and active plans",
+            "actions": {
+                "templates": "Templates",
+                "schedule": "Schedule Maintenance"
+            },
+            "tabs": {
+                "calendar": "Calendar",
+                "activePlans": "Active Plans"
+            },
+            "modals": {
+                "schedule": {
+                    "title": "Schedule Maintenance"
+                }
+            }
+        },
+        "templates": {
+            "title": "Maintenance Templates",
+            "subtitle": "Create and manage preventive maintenance templates",
+            "actions": {
+                "create": "Create Template",
+                "delete": "Delete",
+                "cancel": "Cancel"
+            },
+            "modals": {
+                "create": "Create Template",
+                "edit": "Edit Template"
+            },
+            "alerts": {
+                "delete": {
+                    "title": "Delete Template",
+                    "description": "Are you sure you want to delete this template? This action cannot be undone."
+                }
+            },
+            "toasts": {
+                "createSuccess": "Template created successfully",
+                "updateSuccess": "Template updated successfully",
+                "saveError": "Failed to save template",
+                "deleteSuccess": "Template deleted successfully",
+                "deleteError": "Failed to delete template"
+            }
+        }
+    },
+    "notifications": {
+        "common": {
+            "categories": {
+                "work_order": "Work Orders",
+                "inventory": "Inventory",
+                "maintenance": "Maintenance",
+                "system": "System"
+            }
+        },
+        "dashboard": {
+            "title": "Notifications",
+            "subtitle": "Manage your alerts and updates",
+            "actions": {
+                "viewAll": "View all",
+                "markAllRead": "Mark all as read"
+            },
+            "filters": {
+                "searchPlaceholder": "Search notifications...",
+                "filterBy": "Filter by",
+                "options": {
+                    "all": "All Notifications",
+                    "unread": "Unread Only"
+                }
+            },
+            "empty": "No notifications found matching your criteria.",
+            "pagination": "Showing {start}-{end} of {total}"
+        },
+        "all": {
+            "title": "All notifications",
+            "subtitle": "Full history with filters, pagination, and bulk controls.",
+            "actions": {
+                "markAllRead": "Mark everything read",
+                "backToDashboard": "Back to dashboard"
+            },
+            "sections": {
+                "filters": "Filters",
+                "stream": "Notification stream",
+                "summary": "Summary"
+            },
+            "filters": {
+                "searchPlaceholder": "Search by title or message",
+                "filterByType": "Filter by type",
+                "options": {
+                    "all": "All categories"
+                }
+            },
+            "stats": {
+                "unread": "Unread",
+                "total": "Total"
+            },
+            "empty": "No notifications match your filters."
+        }
     }
 }

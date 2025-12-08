@@ -104,5 +104,253 @@
                 "subtitle": "المركبات المتاحة"
             }
         }
+    },
+    "inventory": {
+        "title": "المخزون",
+        "subtitle": "إدارة القطع ومستويات المخزون والمورّدين",
+        "actions": {
+            "suppliers": "المورّدون",
+            "addPart": "إضافة قطعة",
+            "addFirstPart": "أضف أول قطعة",
+            "manageSuppliers": "إدارة المورّدين",
+            "clearFilters": "مسح عوامل التصفية",
+            "deleteConfirm": "هل أنت متأكد أنك تريد حذف \"{name}\"؟"
+        },
+        "stats": {
+            "totalParts": {
+                "title": "إجمالي القطع",
+                "description": "في المخزون"
+            },
+            "lowStock": {
+                "title": "مخزون منخفض",
+                "description": "يحتاج إلى إعادة طلب"
+            },
+            "totalValue": {
+                "title": "القيمة الإجمالية",
+                "description": "قيمة المخزون"
+            },
+            "categories": {
+                "title": "الفئات",
+                "description": "فئات القطع"
+            }
+        },
+        "filters": {
+            "searchPlaceholder": "البحث عن قطع أو SKU",
+            "allCategories": "جميع الفئات",
+            "allWarehouses": "جميع المستودعات",
+            "lowStockOnly": "المخزون المنخفض فقط",
+            "categories": {
+                "engine": "المحرّك",
+                "brakes": "الفرامل",
+                "tires": "الإطارات",
+                "filters": "المرشّحات",
+                "fluids": "السوائل"
+            },
+            "warehouses": {
+                "shelfA1": "الرف A-1",
+                "shelfB2": "الرف B-2"
+            }
+        },
+        "emptyStates": {
+            "noParts": {
+                "title": "لا توجد قطع في المخزون",
+                "description": "ابدأ بإضافة أول قطعة لتتبّع مستويات المخزون والتكاليف ومعلومات المورّدين."
+            },
+            "notFound": {
+                "title": "لم يتم العثور على قطع",
+                "description": "لا توجد قطع مطابقة لعوامل التصفية الحالية. جرّب تعديل معايير البحث أو التصفية."
+            }
+        },
+        "details": {
+            "adjustStock": "تعديل المخزون",
+            "editPart": "تعديل القطعة",
+            "exportCSV": "تصدير CSV",
+            "upload": "رفع ملف",
+            "tabs": {
+                "overview": "نظرة عامة",
+                "stock": "المخزون",
+                "movements": "حركات المخزون",
+                "attachments": "المرفقات",
+                "comments": "التعليقات"
+            },
+            "overview": {
+                "onHand": {
+                    "title": "المتوفر",
+                    "description": "في جميع المستودعات"
+                },
+                "reorderPoint": {
+                    "title": "نقطة إعادة الطلب",
+                    "description": "الحد الأدنى"
+                },
+                "unitPrice": {
+                    "title": "السعر للوحدة",
+                    "description": "آخر تكلفة من المورّد"
+                },
+                "totalValue": {
+                    "title": "القيمة الإجمالية",
+                    "description": "الكمية × السعر"
+                }
+            },
+            "stock": {
+                "title": "مخزون المستودعات",
+                "location": "الموقع",
+                "stock": "المخزون",
+                "lowStock": "مخزون منخفض"
+            },
+            "movements": {
+                "title": "حركات المخزون",
+                "id": "المعرف",
+                "type": "النوع",
+                "quantity": "الكمية",
+                "location": "الموقع",
+                "date": "التاريخ"
+            },
+            "attachments": {
+                "title": "المرفقات"
+            },
+            "comments": {
+                "title": "التعليقات",
+                "placeholder": "أضف تعليقًا",
+                "post": "نشر التعليق",
+                "toasts": {
+                    "added": {
+                        "title": "تمت إضافة التعليق",
+                        "description": "تم نشر تعليقك بنجاح."
+                    }
+                }
+            },
+            "editModal": {
+                "title": "تعديل القطعة",
+                "description": "تحديث بيانات القطعة وتسعيرها.",
+                "fields": {
+                    "name": "اسم القطعة",
+                    "sku": "SKU",
+                    "price": "السعر للوحدة"
+                },
+                "save": "حفظ التغييرات"
+            },
+            "stockAdjustment": {
+                "toasts": {
+                    "success": {
+                        "title": "تم تعديل المخزون",
+                        "description": "تم {type} المخزون."
+                    }
+                },
+                "types": {
+                    "increased": "زيادته",
+                    "decreased": "إنقاصه",
+                    "updated": "تحديثه"
+                }
+            }
+        }
+    },
+    "suppliers": {
+        "title": "المورّدون",
+        "subtitle": "إدارة المورّدين وجهات الاتصال",
+        "actions": {
+            "addSupplier": "إضافة مورّد",
+            "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا المورّد؟"
+        },
+        "filters": {
+            "searchPlaceholder": "البحث عن المورّدين..."
+        }
+    },
+    "maintenance": {
+        "dashboard": {
+            "title": "الصيانة",
+            "subtitle": "إدارة جداول الصيانة الوقائية وخطط الصيانة النشطة",
+            "actions": {
+                "templates": "القوالب",
+                "schedule": "جدولة الصيانة"
+            },
+            "tabs": {
+                "calendar": "التقويم",
+                "activePlans": "الخطط النشطة"
+            },
+            "modals": {
+                "schedule": {
+                    "title": "جدولة الصيانة"
+                }
+            }
+        },
+        "templates": {
+            "title": "قوالب الصيانة",
+            "subtitle": "إنشاء وإدارة قوالب الصيانة الوقائية",
+            "actions": {
+                "create": "إنشاء قالب",
+                "delete": "حذف",
+                "cancel": "إلغاء"
+            },
+            "modals": {
+                "create": "إنشاء قالب",
+                "edit": "تعديل القالب"
+            },
+            "alerts": {
+                "delete": {
+                    "title": "حذف القالب",
+                    "description": "هل أنت متأكد أنك تريد حذف هذا القالب؟ لا يمكن التراجع عن هذا الإجراء."
+                }
+            },
+            "toasts": {
+                "createSuccess": "تم إنشاء القالب بنجاح",
+                "updateSuccess": "تم تحديث القالب بنجاح",
+                "saveError": "فشل حفظ القالب",
+                "deleteSuccess": "تم حذف القالب بنجاح",
+                "deleteError": "فشل حذف القالب"
+            }
+        }
+    },
+    "notifications": {
+        "common": {
+            "categories": {
+                "work_order": "أوامر العمل",
+                "inventory": "المخزون",
+                "maintenance": "الصيانة",
+                "system": "النظام"
+            }
+        },
+        "dashboard": {
+            "title": "الإشعارات",
+            "subtitle": "إدارة التنبيهات والتحديثات الخاصة بك",
+            "actions": {
+                "viewAll": "عرض الكل",
+                "markAllRead": "تعيين الكل كمقروء"
+            },
+            "filters": {
+                "searchPlaceholder": "البحث في الإشعارات...",
+                "filterBy": "التصفية حسب",
+                "options": {
+                    "all": "جميع الإشعارات",
+                    "unread": "غير المقروءة فقط"
+                }
+            },
+            "empty": "لا توجد إشعارات مطابقة لمعايير البحث.",
+            "pagination": "عرض {start}-{end} من {total}"
+        },
+        "all": {
+            "title": "جميع الإشعارات",
+            "subtitle": "سجل كامل مع عوامل تصفية، ترقيم صفحات، وضوابط مجمّعة.",
+            "actions": {
+                "markAllRead": "تعيين كل الإشعارات كمقروءة",
+                "backToDashboard": "العودة إلى لوحة التحكم"
+            },
+            "sections": {
+                "filters": "عوامل التصفية",
+                "stream": "سجل الإشعارات",
+                "summary": "الملخص"
+            },
+            "filters": {
+                "searchPlaceholder": "البحث حسب العنوان أو الرسالة",
+                "filterByType": "التصفية حسب النوع",
+                "options": {
+                    "all": "جميع الفئات"
+                }
+            },
+            "stats": {
+                "unread": "غير المقروءة",
+                "total": "الإجمالي"
+            },
+            "empty": "لا توجد إشعارات مطابقة لعوامل التصفية."
+        }
     }
 }
