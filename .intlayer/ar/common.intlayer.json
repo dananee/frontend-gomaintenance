@@ -1,0 +1,36 @@
+{
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "overview": "نظرة عامة",
+    "maintenance": "الصيانة",
+    "inventory": "المخزون",
+    "reports": "التقارير",
+    "settings": "الإعدادات"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "vehicles": "المركبات",
+    "workOrders": "أوامر العمل",
+    "parts": "القطع",
+    "users": "المستخدمين",
+    "notifications": "الإشعارات"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "تسجيل",
+    "forgotPassword": "نسيت كلمة المرور"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "بحث",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجاح"
+  }
+}

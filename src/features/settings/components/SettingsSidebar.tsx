@@ -3,50 +3,57 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { 
-  User, 
-  Building, 
-  Palette, 
-  Shield, 
-  Bell, 
-  Link as LinkIcon 
+import {
+  User,
+  Building,
+  Palette,
+  Shield,
+  Bell,
+  Link as LinkIcon,
 } from "lucide-react";
 
-const settingsNavItems = [
+interface SettingsSidebarProps {
+  locale: string;
+}
+
+const getSettingsNavItems = (locale: string) => [
   {
     title: "Profile",
-    href: "/dashboard/settings/profile",
+    href: `/${locale}/dashboard/settings/profile`,
     icon: User,
   },
   {
     title: "Company",
-    href: "/dashboard/settings/company",
+    href: `/${locale}/dashboard/settings/company`,
     icon: Building,
   },
   {
     title: "Branding",
-    href: "/dashboard/settings/branding",
+    href: `/${locale}/dashboard/settings/branding`,
     icon: Palette,
   },
   {
     title: "Roles & Permissions",
-    href: "/dashboard/settings/roles",
+    href: `/${locale}/dashboard/settings/roles`,
     icon: Shield,
   },
   {
     title: "Notifications",
-    href: "/dashboard/settings/notifications",
+    href: `/${locale}/dashboard/settings/notifications`,
     icon: Bell,
   },
   {
     title: "Integrations",
-    href: "/dashboard/settings/integrations",
+    href: `/${locale}/dashboard/settings/integrations`,
     icon: LinkIcon,
   },
 ];
 
-export function SettingsSidebar() {
+export function SettingsSidebar({
+  locale = "en",
+}: Partial<SettingsSidebarProps>) {
   const pathname = usePathname();
+  const settingsNavItems = getSettingsNavItems(locale);
 
   return (
     <nav className="flex flex-col space-y-1 w-64 shrink-0">

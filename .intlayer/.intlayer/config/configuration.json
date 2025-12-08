@@ -1,0 +1,125 @@
+{
+  "internationalization": {
+    "locales": [
+      "en",
+      "fr",
+      "ar"
+    ],
+    "requiredLocales": [
+      "en",
+      "fr",
+      "ar"
+    ],
+    "strictMode": "inclusive",
+    "defaultLocale": "fr"
+  },
+  "routing": {
+    "mode": "prefix-all",
+    "storage": [
+      "cookie",
+      "header"
+    ],
+    "basePath": ""
+  },
+  "content": {
+    "fileExtensions": [
+      ".intlayer.json",
+      ".intlayer.ts",
+      ".intlayer.tsx"
+    ],
+    "baseDir": ".intlayer",
+    "excludedPath": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.intlayer/**",
+      "**/.next/**",
+      "**/.nuxt/**",
+      "**/.expo/**",
+      "**/.vercel/**",
+      "**/.turbo/**",
+      "**/.tanstack/**"
+    ],
+    "watch": true,
+    "contentDir": [
+      ".intlayer"
+    ],
+    "moduleAugmentationDir": ".intlayer\\.intlayer\\types",
+    "unmergedDictionariesDir": ".intlayer\\.intlayer\\unmerged_dictionary",
+    "remoteDictionariesDir": ".intlayer\\.intlayer\\remote_dictionary",
+    "dictionariesDir": ".intlayer\\.intlayer\\dictionary",
+    "dynamicDictionariesDir": ".intlayer\\.intlayer\\dynamic_dictionary",
+    "fetchDictionariesDir": ".intlayer\\.intlayer\\fetch_dictionary",
+    "typesDir": ".intlayer\\.intlayer\\types",
+    "mainDir": ".intlayer\\.intlayer\\main",
+    "configDir": ".intlayer\\.intlayer\\config",
+    "cacheDir": ".intlayer\\.intlayer\\cache",
+    "watchedFilesPattern": [
+      "/**/*.intlayer.json",
+      "/**/*.intlayer.ts",
+      "/**/*.intlayer.tsx"
+    ],
+    "watchedFilesPatternWithPath": [
+      ".intlayer/**/*.intlayer.json",
+      ".intlayer/**/*.intlayer.ts",
+      ".intlayer/**/*.intlayer.tsx"
+    ],
+    "outputFilesPatternWithPath": ".intlayer/.intlayer/dictionary/**/*.json"
+  },
+  "editor": {
+    "applicationURL": "",
+    "editorURL": "http://localhost:8000",
+    "cmsURL": "https://intlayer.org",
+    "backendURL": "https://back.intlayer.org",
+    "port": 8000,
+    "enabled": true,
+    "dictionaryPriorityStrategy": "local_first",
+    "liveSync": true,
+    "liveSyncPort": 4000,
+    "liveSyncURL": "http://localhost:4000"
+  },
+  "log": {
+    "mode": "default",
+    "prefix": "\u001b[38;5;239m[intlayer] \u001b[0m"
+  },
+  "ai": {},
+  "build": {
+    "importMode": "static",
+    "traversePattern": [
+      "**/*.{js,ts,mjs,cjs,jsx,tsx,mjx,cjx,vue,svelte,svte}",
+      "!**/node_modules/**"
+    ],
+    "outputFormat": [
+      "cjs",
+      "esm"
+    ],
+    "cache": true
+  },
+  "compiler": {
+    "enabled": true,
+    "transformPattern": [
+      "**/*.{ts,tsx,jsx,js,cjs,mjs,mjx,cjx,svelte,vue}"
+    ],
+    "excludePattern": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.next/**",
+      "**/.nuxt/**",
+      "**/.expo/**",
+      "**/.vercel/**",
+      "**/.turbo/**",
+      "**/.tanstack/**",
+      "**/*.stories.ts",
+      "**/*.test.ts"
+    ],
+    "outputDir": "./compiler"
+  },
+  "dictionary": {
+    "fill": true
+  },
+  "metadata": {
+    "name": "Intlayer",
+    "version": "7.3.11",
+    "doc": "https://intlayer.org/docs"
+  }
+}

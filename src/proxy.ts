@@ -97,6 +97,9 @@ async function verifyToken(token: string): Promise<JWTPayload | null> {
     return payload as unknown as JWTPayload;
   } catch (error) {
     console.error("JWT verification failed:", error);
+    console.error(
+      "Tip: Ensure the JWT_SECRET in your .env file matches the secret used by your backend to sign tokens."
+    );
     return null;
   }
 }
@@ -124,7 +127,10 @@ export async function proxy(request: NextRequest) {
   }
 
   // Protected routes (dashboard and API routes)
-  if (pathname.startsWith("/dashboard") || (pathname.startsWith("/api") && !pathname.startsWith("/api/auth"))) {
+  if (
+    pathname.startsWith("/dashboard") ||
+    (pathname.startsWith("/api") && !pathname.startsWith("/api/auth"))
+  ) {
     // Redirect to login if no token
     if (!token) {
       const loginUrl = new URL("/login", request.url);

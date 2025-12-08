@@ -1,0 +1,36 @@
+{
+  "dashboard": {
+    "title": "Tableau de bord",
+    "overview": "Aperçu",
+    "maintenance": "Maintenance",
+    "inventory": "Inventaire",
+    "reports": "Rapports",
+    "settings": "Paramètres"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "vehicles": "Véhicules",
+    "workOrders": "Ordres de travail",
+    "parts": "Pièces",
+    "users": "Utilisateurs",
+    "notifications": "Notifications"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "Inscription",
+    "forgotPassword": "Mot de passe oublié"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  }
+}

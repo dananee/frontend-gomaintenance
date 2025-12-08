@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { getMyRequests } from '@/api/parts';
 import { WorkOrderPartRequest } from '@/types/parts';
-import { StatusBadge } from '../components/StatusTimeline';
+import { StatusBadge } from '@/features/parts/components/StatusTimeline';
 import { Search, Package, Calendar, FileText } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 

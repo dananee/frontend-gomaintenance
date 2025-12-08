@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronRight, Calendar, User, Package, FileText, CheckCircle2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getStatusColor, getStatusDisplayName } from '@/types/parts';
+import { getStatusColor, getStatusDisplayName, PartRequestStatus } from '@/types/parts';
 
 interface PremiumPartRequestsTableProps {
     requests: WorkOrderPartRequest[];
@@ -28,7 +28,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
         setExpandedRows(newExpanded);
     };
 
-    const getStatusBadgeClasses = (status: string) => {
+    const getStatusBadgeClasses = (status: PartRequestStatus) => {
         const color = getStatusColor(status);
         return `inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${color}`;
     };

@@ -7,6 +7,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { Toaster } from "@/components/ui/sonner";
 import { GlobalErrorBoundary } from "@/components/layout/GlobalErrorBoundary";
 import { OfflineIndicatorClient } from "@/features/offline/components/OfflineIndicatorClient";
+// import { IntlayerClient } from "next-intlayer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,7 +31,6 @@ export default function RootLayout({
             </Suspense>
             <OfflineIndicatorClient />
             {children}
-
           </Providers>
         </GlobalErrorBoundary>
       </body>
