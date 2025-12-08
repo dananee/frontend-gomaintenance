@@ -1,0 +1,108 @@
+{
+    "login": {
+        "title": "Login",
+        "description": "Enter your email and password to access your account",
+        "fields": {
+            "email": {
+                "label": "Email",
+                "placeholder": "name@example.com"
+            },
+            "password": {
+                "label": "Password"
+            }
+        },
+        "errors": {
+            "invalidCredentials": "Invalid credentials"
+        },
+        "actions": {
+            "submit": "Sign In"
+        }
+    },
+    "authLayout": {
+        "title": "Fleet Maintenance",
+        "subtitle": "Manage your fleet efficiently"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "kpis": {
+            "totalFleetValue": {
+                "title": "Total Fleet Value",
+                "subtitle": "Total asset value"
+            },
+            "maintenanceCostYTD": {
+                "title": "Maintenance Cost YTD",
+                "subtitle": "Year to date"
+            },
+            "totalCostOfOwnership": {
+                "title": "Total Cost of Ownership",
+                "subtitle": "Fleet TCO"
+            },
+            "fleetEfficiency": {
+                "title": "Fleet Efficiency",
+                "subtitle": "Overall performance"
+            },
+            "scheduledVsCorrective": {
+                "title": "Scheduled vs Corrective",
+                "subtitle": "Maintenance ratio"
+            },
+            "downtimeMonth": {
+                "title": "Downtime (Month)",
+                "subtitle": "Total hours"
+            },
+            "avgDowntimeVehicle": {
+                "title": "Avg Downtime / Vehicle",
+                "subtitle": "Per vehicle"
+            },
+            "mttr": {
+                "title": "MTTR",
+                "subtitle": "Mean Time To Repair"
+            },
+            "mtbf": {
+                "title": "MTBF",
+                "subtitle": "Between failures"
+            },
+            "avgCostVehicle": {
+                "title": "Avg Cost / Vehicle",
+                "subtitle": "Per vehicle"
+            },
+            "woSlaCompliance": {
+                "title": "WO SLA Compliance",
+                "subtitle": "On-time completion"
+            },
+            "fleetHealthScore": {
+                "title": "Fleet Health Score",
+                "subtitle": "Overall fleet status"
+            },
+            "woCompletionRate": {
+                "title": "WO Completion Rate",
+                "subtitle": "This week"
+            },
+            "pmCompliance": {
+                "title": "PM Compliance",
+                "subtitle": "Preventive maintenance"
+            }
+        },
+        "sections": {
+            "fleetAnalytics": "Fleet Analytics",
+            "predictiveAI": "Predictive Analytics & AI Insights"
+        },
+        "stats": {
+            "totalVehicles": {
+                "title": "Total Vehicles",
+                "subtitle": "Active fleet vehicles"
+            },
+            "activeWorkOrders": {
+                "title": "Active Work Orders",
+                "subtitle": "In progress"
+            },
+            "criticalIssues": {
+                "title": "Critical Issues",
+                "subtitle": "Requires immediate attention"
+            },
+            "fleetAvailability": {
+                "title": "Fleet Availability",
+                "subtitle": "Vehicles available"
+            }
+        }
+    }
+}

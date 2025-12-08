@@ -1,0 +1,108 @@
+{
+    "login": {
+        "title": "Connexion",
+        "description": "Saisissez votre adresse e-mail et votre mot de passe pour accéder à votre compte",
+        "fields": {
+            "email": {
+                "label": "Adresse e-mail",
+                "placeholder": "nom@exemple.com"
+            },
+            "password": {
+                "label": "Mot de passe"
+            }
+        },
+        "errors": {
+            "invalidCredentials": "Identifiants incorrects"
+        },
+        "actions": {
+            "submit": "Se connecter"
+        }
+    },
+    "authLayout": {
+        "title": "Gestion de flotte",
+        "subtitle": "Gérez votre flotte efficacement"
+    },
+    "dashboard": {
+        "title": "Tableau de bord",
+        "kpis": {
+            "totalFleetValue": {
+                "title": "Valeur totale de la flotte",
+                "subtitle": "Valeur totale des actifs"
+            },
+            "maintenanceCostYTD": {
+                "title": "Coût de maintenance cumul annuel",
+                "subtitle": "Depuis le début de l’année"
+            },
+            "totalCostOfOwnership": {
+                "title": "Coût total de possession",
+                "subtitle": "TCO de la flotte"
+            },
+            "fleetEfficiency": {
+                "title": "Efficacité de la flotte",
+                "subtitle": "Performance globale"
+            },
+            "scheduledVsCorrective": {
+                "title": "Préventive vs corrective",
+                "subtitle": "Ratio de maintenance"
+            },
+            "downtimeMonth": {
+                "title": "Temps d’arrêt (mois)",
+                "subtitle": "Heures totales"
+            },
+            "avgDowntimeVehicle": {
+                "title": "Temps d’arrêt moyen / véhicule",
+                "subtitle": "Par véhicule"
+            },
+            "mttr": {
+                "title": "MTTR",
+                "subtitle": "Temps moyen de réparation"
+            },
+            "mtbf": {
+                "title": "MTBF",
+                "subtitle": "Temps moyen entre pannes"
+            },
+            "avgCostVehicle": {
+                "title": "Coût moyen / véhicule",
+                "subtitle": "Par véhicule"
+            },
+            "woSlaCompliance": {
+                "title": "Conformité SLA des OT",
+                "subtitle": "Respect des délais"
+            },
+            "fleetHealthScore": {
+                "title": "Indice de santé de la flotte",
+                "subtitle": "État global de la flotte"
+            },
+            "woCompletionRate": {
+                "title": "Taux de clôture des OT",
+                "subtitle": "Cette semaine"
+            },
+            "pmCompliance": {
+                "title": "Conformité PM",
+                "subtitle": "Maintenance préventive"
+            }
+        },
+        "sections": {
+            "fleetAnalytics": "Analyse de la flotte",
+            "predictiveAI": "Analytique prédictive & IA"
+        },
+        "stats": {
+            "totalVehicles": {
+                "title": "Total des véhicules",
+                "subtitle": "Véhicules actifs"
+            },
+            "activeWorkOrders": {
+                "title": "Ordres de travail actifs",
+                "subtitle": "En cours"
+            },
+            "criticalIssues": {
+                "title": "Problèmes critiques",
+                "subtitle": "Intervention immédiate requise"
+            },
+            "fleetAvailability": {
+                "title": "Disponibilité de la flotte",
+                "subtitle": "Véhicules disponibles"
+            }
+        }
+    }
+}

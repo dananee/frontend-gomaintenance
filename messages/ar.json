@@ -1,0 +1,108 @@
+{
+    "login": {
+        "title": "تسجيل الدخول",
+        "description": "أدخل بريدك الإلكتروني وكلمة المرور للوصول إلى حسابك",
+        "fields": {
+            "email": {
+                "label": "البريد الإلكتروني",
+                "placeholder": "name@example.com"
+            },
+            "password": {
+                "label": "كلمة المرور"
+            }
+        },
+        "errors": {
+            "invalidCredentials": "بيانات تسجيل الدخول غير صحيحة"
+        },
+        "actions": {
+            "submit": "تسجيل الدخول"
+        }
+    },
+    "authLayout": {
+        "title": "إدارة الأسطول",
+        "subtitle": "قم بإدارة أسطولك بكفاءة"
+    },
+    "dashboard": {
+        "title": "لوحة التحكم",
+        "kpis": {
+            "totalFleetValue": {
+                "title": "إجمالي قيمة الأسطول",
+                "subtitle": "القيمة الإجمالية للأصول"
+            },
+            "maintenanceCostYTD": {
+                "title": "تكلفة الصيانة التراكمية السنوية",
+                "subtitle": "منذ بداية السنة"
+            },
+            "totalCostOfOwnership": {
+                "title": "إجمالي تكلفة الملكية",
+                "subtitle": "تكلفة امتلاك الأسطول"
+            },
+            "fleetEfficiency": {
+                "title": "كفاءة الأسطول",
+                "subtitle": "الأداء العام"
+            },
+            "scheduledVsCorrective": {
+                "title": "الصيانة الوقائية مقابل التصحيحية",
+                "subtitle": "نسبة الصيانة"
+            },
+            "downtimeMonth": {
+                "title": "وقت التوقف (شهريًا)",
+                "subtitle": "إجمالي الساعات"
+            },
+            "avgDowntimeVehicle": {
+                "title": "متوسط التوقف لكل مركبة",
+                "subtitle": "لكل مركبة"
+            },
+            "mttr": {
+                "title": "MTTR",
+                "subtitle": "متوسط زمن الإصلاح"
+            },
+            "mtbf": {
+                "title": "MTBF",
+                "subtitle": "متوسط الزمن بين الأعطال"
+            },
+            "avgCostVehicle": {
+                "title": "متوسط التكلفة لكل مركبة",
+                "subtitle": "لكل مركبة"
+            },
+            "woSlaCompliance": {
+                "title": "الالتزام باتفاقية مستوى الخدمة لأوامر العمل",
+                "subtitle": "الإنجاز في الوقت المحدد"
+            },
+            "fleetHealthScore": {
+                "title": "مؤشر سلامة الأسطول",
+                "subtitle": "الحالة العامة للأسطول"
+            },
+            "woCompletionRate": {
+                "title": "معدل إغلاق أوامر العمل",
+                "subtitle": "هذا الأسبوع"
+            },
+            "pmCompliance": {
+                "title": "الالتزام بالصيانة الوقائية",
+                "subtitle": "الصيانة الدورية"
+            }
+        },
+        "sections": {
+            "fleetAnalytics": "تحليلات الأسطول",
+            "predictiveAI": "التحليلات التنبؤية ورؤى الذكاء الاصطناعي"
+        },
+        "stats": {
+            "totalVehicles": {
+                "title": "إجمالي المركبات",
+                "subtitle": "مركبات الأسطول النشطة"
+            },
+            "activeWorkOrders": {
+                "title": "أوامر العمل النشطة",
+                "subtitle": "قيد التنفيذ"
+            },
+            "criticalIssues": {
+                "title": "مشكلات حرجة",
+                "subtitle": "تتطلب تدخلًا فوريًا"
+            },
+            "fleetAvailability": {
+                "title": "جاهزية الأسطول",
+                "subtitle": "المركبات المتاحة"
+            }
+        }
+    }
+}
