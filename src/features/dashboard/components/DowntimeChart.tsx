@@ -4,12 +4,15 @@ import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { MonthlyTrendData } from "../types/dashboardKPI.types";
+import { useTranslations } from "next-intl";
 
 interface DowntimeChartProps {
   data: MonthlyTrendData[];
 }
 
 function DowntimeChartComponent({ data }: DowntimeChartProps) {
+  const t = useTranslations("features.dashboard.downtime");
+
   const maxValue = useMemo(
     () => Math.max(...data.map((d) => d.value)),
     [data]
@@ -22,10 +25,10 @@ function DowntimeChartComponent({ data }: DowntimeChartProps) {
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-orange-600" />
             <CardTitle className="text-xl font-semibold">
-              Downtime Trend
+              {t("title")}
             </CardTitle>
           </div>
-          <span className="text-xs text-muted-foreground">Last 12 months</span>
+          <span className="text-xs text-muted-foreground">{t("subtitle")}</span>
         </div>
       </CardHeader>
       <CardContent>

@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface SLAComplianceProps {
   onTime: number;
@@ -17,6 +18,8 @@ function SLAComplianceChartComponent({
   breached,
   totalWOs,
 }: SLAComplianceProps) {
+  const t = useTranslations("features.dashboard.sla");
+
   const complianceRate = useMemo(
     () => ((onTime / totalWOs) * 100).toFixed(1),
     [onTime, totalWOs]
@@ -36,7 +39,7 @@ function SLAComplianceChartComponent({
         <div className="flex items-center gap-2">
           <Target className="h-5 w-5 text-purple-600" />
           <CardTitle className="text-xl font-semibold">
-            SLA Compliance
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>
@@ -73,7 +76,7 @@ function SLAComplianceChartComponent({
                 <p className="text-3xl font-bold text-green-600 dark:text-green-400">
                   {complianceRate}%
                 </p>
-                <p className="text-xs text-muted-foreground">On Time</p>
+                <p className="text-xs text-muted-foreground">{t("onTime")}</p>
               </div>
             </div>
           </div>
@@ -83,7 +86,7 @@ function SLAComplianceChartComponent({
             <div className="flex items-center justify-between rounded-lg bg-green-50 p-3 dark:bg-green-900/20">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm font-medium">On Time</span>
+                <span className="text-sm font-medium">{t("onTime")}</span>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-green-600 dark:text-green-400">
@@ -98,7 +101,7 @@ function SLAComplianceChartComponent({
             <div className="flex items-center justify-between rounded-lg bg-yellow-50 p-3 dark:bg-yellow-900/20">
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-                <span className="text-sm font-medium">Delayed</span>
+                <span className="text-sm font-medium">{t("delayed")}</span>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
@@ -111,7 +114,7 @@ function SLAComplianceChartComponent({
             <div className="flex items-center justify-between rounded-lg bg-red-50 p-3 dark:bg-red-900/20">
               <div className="flex items-center gap-2">
                 <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-                <span className="text-sm font-medium">Breached</span>
+                <span className="text-sm font-medium">{t("breached")}</span>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-red-600 dark:text-red-400">

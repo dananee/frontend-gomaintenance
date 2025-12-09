@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Calendar, Gauge, TrendingUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PredictiveMaintenanceProps {
   predictedFailureInDays: number;
@@ -18,6 +19,7 @@ export function PredictiveMaintenanceCard({
   riskLevel,
   recommendations,
 }: PredictiveMaintenanceProps) {
+  const t = useTranslations("features.vehicles.kpis.predictive");
   const kmUntilOilChange = nextOilChangeKm - currentKm;
 
   const getRiskColor = (level: string) => {
@@ -56,7 +58,7 @@ export function PredictiveMaintenanceCard({
         <div className="flex items-center gap-2">
           <AlertTriangle className={`h-5 w-5 ${colors.icon}`} />
           <CardTitle className="text-xl font-semibold">
-            Predictive Maintenance
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>
@@ -68,14 +70,14 @@ export function PredictiveMaintenanceCard({
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <p className="text-xs font-medium uppercase text-muted-foreground">
-                  Predicted Failure
+                  {t("predictedFailure")}
                 </p>
               </div>
               <p className={`text-3xl font-bold ${colors.text}`}>
-                {predictedFailureInDays} days
+                {t("days", { days: predictedFailureInDays })}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Based on usage patterns
+                {t("basedOn")}
               </p>
             </div>
 
@@ -83,14 +85,14 @@ export function PredictiveMaintenanceCard({
               <div className="flex items-center gap-2 mb-2">
                 <Gauge className="h-4 w-4 text-green-600 dark:text-green-400" />
                 <p className="text-xs font-medium uppercase text-muted-foreground">
-                  Next Oil Change
+                  {t("nextOilChange")}
                 </p>
               </div>
               <p className="text-3xl font-bold text-green-600 dark:text-green-400">
                 {kmUntilOilChange.toLocaleString()}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                km remaining ({nextOilChangeKm.toLocaleString()} km)
+                {t("kmRemaining", { km: nextOilChangeKm.toLocaleString() })}
               </p>
             </div>
           </div>
@@ -98,7 +100,7 @@ export function PredictiveMaintenanceCard({
           {/* Risk Assessment */}
           <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800/50">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-semibold">Risk Assessment</p>
+              <p className="text-sm font-semibold">{t("riskAssessment")}</p>
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${colors.text} bg-current/10`}
               >
@@ -127,7 +129,7 @@ export function PredictiveMaintenanceCard({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-              <p className="text-sm font-semibold">AI Recommendations</p>
+              <p className="text-sm font-semibold">{t("aiRecommendations")}</p>
             </div>
             <ul className="space-y-2">
               {recommendations.map((rec, index) => (

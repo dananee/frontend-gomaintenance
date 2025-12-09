@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Award, TrendingUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface TechnicianPerformance {
   name: string;
@@ -18,13 +19,15 @@ interface TechnicianPerformanceChartProps {
 function TechnicianPerformanceChartComponent({
   data,
 }: TechnicianPerformanceChartProps) {
+  const t = useTranslations("features.dashboard.techPerformance");
+
   return (
     <Card className="shadow-md">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
           <Users className="h-5 w-5 text-blue-600" />
           <CardTitle className="text-xl font-semibold">
-            Technician Performance
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>
@@ -46,7 +49,7 @@ function TechnicianPerformanceChartComponent({
                     {tech.name}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {tech.completed_wos} WOs • {tech.avg_time.toFixed(1)}h avg
+                    {tech.completed_wos} {t("wos")} • {tech.avg_time.toFixed(1)}h {t("avg")}
                   </p>
                 </div>
               </div>
@@ -57,7 +60,7 @@ function TechnicianPerformanceChartComponent({
                   </p>
                   <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
                     <TrendingUp className="h-3 w-3" />
-                    <span>Efficiency</span>
+                    <span>{t("efficiency")}</span>
                   </div>
                 </div>
                 {index === 0 && <Award className="h-6 w-6 text-yellow-500" />}

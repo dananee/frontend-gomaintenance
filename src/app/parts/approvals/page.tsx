@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getPendingApprovals, approvePartRequest, rejectPartRequest } from '@/api/parts';
 import { WorkOrderPartRequest } from '@/types/parts';
-import { StatusBadge } from '../components/StatusTimeline';
 import { Check, X, Search, Package, AlertCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 export default function SupervisorApprovalPage() {
+    const t = useTranslations('partRequests.approvals');
     const [requests, setRequests] = useState<WorkOrderPartRequest[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -50,7 +51,7 @@ export default function SupervisorApprovalPage() {
     };
 
     const handleReject = async (requestId: string) => {
-        const reason = prompt('Please provide a reason for rejection:');
+        const reason = prompt(t('prompts.rejectReason'));
         if (!reason) return;
 
         setProcessingId(requestId);
@@ -83,8 +84,8 @@ export default function SupervisorApprovalPage() {
                         <Package className="h-8 w-8 text-indigo-600" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Part Request Approvals</h1>
-                        <p className="text-gray-500">Review and approve pending part requests</p>
+                        <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+                        <p className="text-gray-500">{t('subtitle')}</p>
                     </div>
                 </div>
             </div>
@@ -96,7 +97,7 @@ export default function SupervisorApprovalPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
                             type="text"
-                            placeholder="Search by part name, SKU, or work order..."
+                            placeholder={t('searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10"
@@ -111,7 +112,7 @@ export default function SupervisorApprovalPage() {
                     <CardContent className="pt-6">
                         <div className="flex items-center space-x-2 text-red-600">
                             <AlertCircle className="h-5 w-5" />
-                            <span>{error}</span>
+                            <span>{error || t('error')}</span>
                         </div>
                     </CardContent>
                 </Card>
@@ -127,9 +128,9 @@ export default function SupervisorApprovalPage() {
                     <CardContent className="py-12">
                         <div className="text-center">
                             <Package className="mx-auto h-12 w-12 text-gray-400" />
-                            <h3 className="mt-4 text-lg font-medium text-gray-900">No pending approvals</h3>
+                            <h3 className="mt-4 text-lg font-medium text-gray-900">{t('noPendingApprovals')}</h3>
                             <p className="mt-2 text-sm text-gray-500">
-                                All part requests have been processed.
+                                {t('allProcessed')}
                             </p>
                         </div>
                     </CardContent>
@@ -148,30 +149,30 @@ export default function SupervisorApprovalPage() {
                                             </div>
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-900">
-                                                    {request.part?.name || 'Unknown Part'}
-                                                </h3>
+                                                {request.part?.name || t('fallback.unknownPart')}
+                                            </h3>
                                                 <p className="text-sm text-gray-500">
-                                                    SKU: {request.part?.part_number || 'N/A'} • Quantity: {request.quantity}
-                                                </p>
+                                                {t('fields.sku')}: {request.part?.part_number || t('fallback.na')} • {t('fields.quantity')}: {request.quantity}
+                                            </p>
                                             </div>
                                         </div>
 
                                         {/* Request Details */}
                                         <div className="grid grid-cols-3 gap-4 text-sm">
                                             <div>
-                                                <span className="text-gray-500">Work Order:</span>
+                                                <span className="text-gray-500">{t('fields.workOrder')}:</span>
                                                 <span className="ml-2 font-mono text-gray-900">
                                                     {request.work_order_id.slice(0, 8)}...
                                                 </span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Requested by:</span>
+                                                <span className="text-gray-500">{t('fields.requestedBy')}:</span>
                                                 <span className="ml-2 font-medium text-gray-900">
                                                     {request.requested_by?.first_name} {request.requested_by?.last_name}
                                                 </span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Requested:</span>
+                                                <span className="text-gray-500">{t('fields.requested')}:</span>
                                                 <span className="ml-2 text-gray-900">
                                                     {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
                                                 </span>
@@ -194,7 +195,7 @@ export default function SupervisorApprovalPage() {
                                             className="bg-green-600 hover:bg-green-700"
                                         >
                                             <Check className="h-4 w-4 mr-2" />
-                                            Approve
+                                            {t('actions.approve')}
                                         </Button>
                                         <Button
                                             onClick={() => handleReject(request.id)}
@@ -203,7 +204,7 @@ export default function SupervisorApprovalPage() {
                                             className="border-red-300 text-red-600 hover:bg-red-50"
                                         >
                                             <X className="h-4 w-4 mr-2" />
-                                            Reject
+                                            {t('actions.reject')}
                                         </Button>
                                     </div>
                                 </div>
@@ -221,17 +222,17 @@ export default function SupervisorApprovalPage() {
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={page === 1}
                     >
-                        Previous
+                        {t('actions.previous')}
                     </Button>
                     <span className="text-sm text-gray-600">
-                        Page {page} of {Math.ceil(total / 20)}
+                        {t('pagination', { page, total: Math.ceil(total / 20) })}
                     </span>
                     <Button
                         variant="outline"
                         onClick={() => setPage((p) => p + 1)}
                         disabled={page >= Math.ceil(total / 20)}
                     >
-                        Next
+                        {t('actions.next')}
                     </Button>
                 </div>
             )}

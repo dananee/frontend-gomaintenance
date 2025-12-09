@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { UpdateVehicleUsageRequest } from "@/features/vehicles/api/updateVehicleUsage";
+import { useTranslations } from "next-intl";
 
 interface UpdateUsageModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ export function UpdateUsageModal({
   isSubmitting,
   currentKm,
 }: UpdateUsageModalProps) {
+  const t = useTranslations("features.vehicles.form");
   const {
     register,
     handleSubmit,
@@ -46,19 +48,19 @@ export function UpdateUsageModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Update Usage"
-      description="Record new mileage or engine hours to keep vehicle utilization accurate."
+      title={t("updateTitle")}
+      description={t("updateDesc")}
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <Input
-          label="Current Mileage (km)"
+          label={t("currentMileage")}
           type="number"
           min={0}
           {...register("current_km", { valueAsNumber: true, min: 0 })}
           error={errors.current_km?.message}
         />
         <Input
-          label="Engine Hours"
+          label={t("engineHours")}
           type="number"
           min={0}
           {...register("current_engine_hours", { valueAsNumber: true, min: 0 })}
@@ -67,10 +69,10 @@ export function UpdateUsageModal({
 
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button type="submit" isLoading={isSubmitting}>
-            Save Usage
+            {t("saveUsage")}
           </Button>
         </div>
       </form>

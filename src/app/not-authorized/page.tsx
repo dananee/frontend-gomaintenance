@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function NotAuthorizedPage() {
   const router = useRouter();
+  const t = useTranslations("notAuthorized");
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
@@ -14,17 +16,17 @@ export default function NotAuthorizedPage() {
           <ShieldAlert className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
         <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Access Denied
+          {t("title")}
         </h2>
         <p className="mb-6 text-gray-500 dark:text-gray-400">
-          You do not have permission to access this page. Please contact your administrator if you believe this is an error.
+          {t("description")}
         </p>
         <div className="flex gap-4">
           <Button onClick={() => router.back()} variant="outline">
-            Go Back
+            {t("actions.goBack")}
           </Button>
           <Button onClick={() => router.push("/dashboard")}>
-            Go to Dashboard
+            {t("actions.goToDashboard")}
           </Button>
         </div>
       </div>

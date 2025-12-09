@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity } from "lucide-react";
 import { formatDateTime } from "@/lib/formatters";
+import { useTranslations } from "next-intl";
 
 interface VehicleActivityEvent {
   id: string;
@@ -18,6 +19,10 @@ interface VehicleActivityTimelineProps {
 }
 
 export function VehicleActivityTimeline({ events = [] }: VehicleActivityTimelineProps) {
+  const t = useTranslations("features.vehicles.activity"); // Using activity namespace as it fits best, though keys are generic
+  // Alternatively could use features.vehicles.maintenance.timelineTitle if appropriate, but let's stick to what we have or generic keys.
+  // Actually, I should use "features.vehicles.activity" for title.
+
   const sortedEvents = [...events].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -27,13 +32,13 @@ export function VehicleActivityTimeline({ events = [] }: VehicleActivityTimeline
       <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
           <Activity className="h-5 w-5 text-primary" />
-          <CardTitle className="text-xl font-semibold">Activity Timeline</CardTitle>
+          <CardTitle className="text-xl font-semibold">{t("title")}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
         {sortedEvents.length === 0 ? (
           <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-            No activity recorded for this vehicle yet.
+            {t("noActivity")}
           </div>
         ) : (
           <div className="space-y-4">

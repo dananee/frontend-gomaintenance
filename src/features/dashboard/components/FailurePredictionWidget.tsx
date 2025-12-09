@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, AlertTriangle, TrendingUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface FailurePrediction {
   vehicle_id: string;
@@ -20,6 +21,8 @@ interface FailurePredictionWidgetProps {
 function FailurePredictionWidgetComponent({
   predictions,
 }: FailurePredictionWidgetProps) {
+  const t = useTranslations("features.dashboard.failurePrediction");
+
   const getRiskColor = useMemo(
     () => (score: number) => {
       if (score >= 75)
@@ -67,10 +70,10 @@ function FailurePredictionWidgetComponent({
             </div>
             <div>
               <CardTitle className="text-xl font-semibold">
-                AI Failure Predictions
+                {t("title")}
               </CardTitle>
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-                Machine learning risk assessment
+                {t("subtitle")}
               </p>
             </div>
           </div>
@@ -79,7 +82,7 @@ function FailurePredictionWidgetComponent({
               {avgConfidence}%
             </p>
             <p className="text-xs text-gray-600 dark:text-gray-400">
-              Confidence
+              {t("confidence")}
             </p>
           </div>
         </div>
@@ -104,14 +107,14 @@ function FailurePredictionWidgetComponent({
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs font-medium ${colors.badge}`}
                       >
-                        {prediction.risk_score}% Risk
+                        {t("riskBadge", { score: prediction.risk_score })}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                          Component
+                          {t("component")}
                         </p>
                         <p className="font-medium text-gray-900 dark:text-gray-100">
                           {prediction.component}
@@ -119,10 +122,10 @@ function FailurePredictionWidgetComponent({
                       </div>
                       <div>
                         <p className="text-xs text-gray-600 dark:text-gray-400">
-                          Predicted Failure
+                          {t("predictedFailure")}
                         </p>
-                        <p className="font-bold ${colors.text}">
-                          {prediction.predicted_failure_days} days
+                        <p className={`font-bold ${colors.text}`}>
+                          {t("days", { days: prediction.predicted_failure_days })}
                         </p>
                       </div>
                     </div>
@@ -162,7 +165,7 @@ function FailurePredictionWidgetComponent({
                       </div>
                     </div>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                      AI Score
+                      {t("aiScore")}
                     </p>
                   </div>
                 </div>
@@ -176,11 +179,11 @@ function FailurePredictionWidgetComponent({
           <div className="flex items-center gap-2 text-xs">
             <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             <span className="font-medium text-purple-900 dark:text-purple-300">
-              Model trained on 10,000+ maintenance records
+              {t("modelInfo")}
             </span>
           </div>
           <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-            Predictions update daily based on usage patterns and sensor data
+            {t("modelDesc")}
           </p>
         </div>
       </CardContent>

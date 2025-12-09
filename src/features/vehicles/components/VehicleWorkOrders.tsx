@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ClipboardCheck } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface WorkOrder {
   id: string;
@@ -34,6 +35,8 @@ const priorityVariant = {
 export function VehicleWorkOrders({
   workOrders = [],
 }: VehicleWorkOrdersProps) {
+  const t = useTranslations("features.vehicles.workOrders");
+
   const mockWorkOrders: WorkOrder[] = workOrders.length > 0 ? workOrders : [
     {
       id: "WO-124",
@@ -64,7 +67,7 @@ export function VehicleWorkOrders({
         <CardContent className="flex flex-col items-center justify-center py-12">
           <ClipboardCheck className="h-12 w-12 text-gray-400 dark:text-gray-600" />
           <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            No work orders for this vehicle
+            {t("noWorkOrders")}
           </p>
         </CardContent>
       </Card>
@@ -74,7 +77,7 @@ export function VehicleWorkOrders({
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        All work orders associated with this vehicle
+        {t("subtitle")}
       </p>
 
       <div className="grid gap-3">
@@ -94,7 +97,7 @@ export function VehicleWorkOrders({
                     </div>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       {wo.id}
-                      {wo.scheduledDate && ` • Scheduled: ${wo.scheduledDate}`}
+                      {wo.scheduledDate && ` • ${t("scheduled")}: ${wo.scheduledDate}`}
                     </p>
                   </div>
                   <Badge variant={statusVariant[wo.status]}>

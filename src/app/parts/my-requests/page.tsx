@@ -8,8 +8,10 @@ import { WorkOrderPartRequest } from '@/types/parts';
 import { StatusBadge } from '../components/StatusTimeline';
 import { Search, Package, Calendar, FileText } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 export default function RequestHistoryPage() {
+    const t = useTranslations('partRequests.myRequests');
     const [requests, setRequests] = useState<WorkOrderPartRequest[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -52,8 +54,8 @@ export default function RequestHistoryPage() {
                         <FileText className="h-8 w-8 text-indigo-600" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">My Part Requests</h1>
-                        <p className="text-gray-500">View your part request history</p>
+                        <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+                        <p className="text-gray-500">{t('subtitle')}</p>
                     </div>
                 </div>
             </div>
@@ -65,7 +67,7 @@ export default function RequestHistoryPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
                             type="text"
-                            placeholder="Search by part name, SKU, or status..."
+                            placeholder={t('searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10"
@@ -84,9 +86,9 @@ export default function RequestHistoryPage() {
                     <CardContent className="py-12">
                         <div className="text-center">
                             <Package className="mx-auto h-12 w-12 text-gray-400" />
-                            <h3 className="mt-4 text-lg font-medium text-gray-900">No requests found</h3>
+                            <h3 className="mt-4 text-lg font-medium text-gray-900">{t('empty.title')}</h3>
                             <p className="mt-2 text-sm text-gray-500">
-                                You haven't requested any parts yet.
+                                {t('empty.description')}
                             </p>
                         </div>
                     </CardContent>
@@ -108,7 +110,7 @@ export default function RequestHistoryPage() {
                                                     {request.part?.name || 'Unknown Part'}
                                                 </h3>
                                                 <p className="text-sm text-gray-500">
-                                                    SKU: {request.part?.part_number || 'N/A'} • Qty: {request.quantity}
+                                                    {t('fields.sku')}: {request.part?.part_number || 'N/A'} • {t('fields.qty')}: {request.quantity}
                                                 </p>
                                             </div>
                                         </div>
@@ -121,7 +123,7 @@ export default function RequestHistoryPage() {
                                             </div>
                                             {request.approved_by && (
                                                 <div>
-                                                    Approved by: {request.approved_by.first_name} {request.approved_by.last_name}
+                                                    {t('fields.approvedBy')}: {request.approved_by.first_name} {request.approved_by.last_name}
                                                 </div>
                                             )}
                                         </div>
@@ -136,7 +138,7 @@ export default function RequestHistoryPage() {
                                         {/* Rejection Reason */}
                                         {request.rejection_reason && (
                                             <div className="p-3 bg-red-50 rounded-lg text-sm text-red-600">
-                                                <strong>Rejected:</strong> {request.rejection_reason}
+                                                <strong>{t('fields.rejected')}:</strong> {request.rejection_reason}
                                             </div>
                                         )}
                                     </div>
@@ -158,17 +160,17 @@ export default function RequestHistoryPage() {
                         disabled={page === 1}
                         className="px-4 py-2 border rounded-lg disabled:opacity-50"
                     >
-                        Previous
+                        {t('../approvals.actions.previous')}
                     </button>
                     <span className="text-sm text-gray-600">
-                        Page {page} of {Math.ceil(total / 20)}
+                        {t('../approvals.pagination', { page, total: Math.ceil(total / 20) })}
                     </span>
                     <button
                         onClick={() => setPage((p) => p + 1)}
                         disabled={page >= Math.ceil(total / 20)}
                         className="px-4 py-2 border rounded-lg disabled:opacity-50"
                     >
-                        Next
+                        {t('../approvals.actions.next')}
                     </button>
                 </div>
             )}

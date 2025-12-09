@@ -376,8 +376,8 @@ export default function DashboardPage() {
 
       {/* Widgets Row */}
       <div className="grid gap-6 md:grid-cols-2">
-        <OverdueWorkOrders />
-        <VehiclesNeedingMaintenance />
+        <OverdueWorkOrders data={kpiData?.overdue_work_orders || []} />
+        <VehiclesNeedingMaintenance data={kpiData?.vehicles_needing_maintenance || []} />
       </div>
 
       {/* Charts Grid */}

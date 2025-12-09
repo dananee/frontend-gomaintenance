@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import { formatDateShort } from "@/lib/formatters";
+import { useTranslations } from "next-intl";
 
 interface ActivityLog {
   id: string;
@@ -17,6 +18,10 @@ interface VehicleActivityLogProps {
 }
 
 export function VehicleActivityLog({ activities = [], }: VehicleActivityLogProps) {
+  const t = useTranslations("features.vehicles.activity");
+  
+  // Note: We might want to translate these mock activities too, 
+  // but for now we focus on the static UI elements.
   const mockActivities: ActivityLog[] = activities.length > 0 ? activities : [
     {
       id: "1",
@@ -54,7 +59,7 @@ export function VehicleActivityLog({ activities = [], }: VehicleActivityLogProps
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Activity className="h-12 w-12 text-gray-400 dark:text-gray-600" />
           <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            No activity logs available
+            {t("noLogs")}
           </p>
         </CardContent>
       </Card>
@@ -64,7 +69,7 @@ export function VehicleActivityLog({ activities = [], }: VehicleActivityLogProps
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Complete activity history for this vehicle
+        {t("historyTitle")}
       </p>
 
       <div className="space-y-3">

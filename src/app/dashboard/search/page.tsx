@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Truck, Wrench, Package, User, FileText } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 type SearchCategory = "vehicle" | "work_order" | "part" | "user" | "page";
 
@@ -28,20 +29,21 @@ const categoryIcons: Record<SearchCategory, ReactNode> = {
   page: <FileText className="h-4 w-4 text-gray-600" />,
 };
 
-const categoryLabels: Record<SearchCategory, string> = {
-  vehicle: "Vehicles",
-  work_order: "Work Orders",
-  part: "Parts",
-  user: "Users",
-  page: "Pages",
-};
-
 export default function SearchResultsPage() {
+  const t = useTranslations("search");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [activeTab, setActiveTab] = useState<SearchCategory | "all">("all");
+
+  const categoryLabels: Record<SearchCategory, string> = {
+    vehicle: t("tabs.vehicle"),
+    work_order: t("tabs.work_order"),
+    part: t("tabs.part"),
+    user: t("tabs.user"),
+    page: t("tabs.page"),
+  };
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -68,15 +70,15 @@ export default function SearchResultsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Search results</h1>
-          <p className="text-gray-500 dark:text-gray-400">Browse results by category with a full page view.</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{t("subtitle")}</p>
         </div>
-        <Badge variant="secondary" className="w-fit">Press / or ⌘K to search anywhere</Badge>
+        <Badge variant="secondary" className="w-fit">{t("quickSearch")}</Badge>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Search</CardTitle>
+          <CardTitle>{t("cardTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
@@ -85,11 +87,11 @@ export default function SearchResultsPage() {
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search vehicles, work orders, parts, users, and pages"
+                placeholder={t("placeholder")}
                 className="pl-9"
               />
             </div>
-            <Button type="submit">Update results</Button>
+            <Button type="submit">{t("update")}</Button>
           </form>
         </CardContent>
       </Card>
@@ -97,7 +99,7 @@ export default function SearchResultsPage() {
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as SearchCategory | "all")}
         className="space-y-4">
         <TabsList className="flex flex-wrap gap-2">
-          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="all">{t("tabs.all")}</TabsTrigger>
           {Object.entries(categoryLabels).map(([key, label]) => (
             <TabsTrigger key={key} value={key as SearchCategory}>
               {label}
@@ -108,7 +110,7 @@ export default function SearchResultsPage() {
         <TabsContent value="all" className="space-y-8">
           {results.length === 0 && (
             <div className="py-12 text-center text-gray-500">
-              No results found for "{query}"
+              {t("empty.query", { query })}
             </div>
           )}
           
@@ -162,7 +164,7 @@ export default function SearchResultsPage() {
                       </CardContent>
                     </Card>
                   </Link>
-                )) ?? <div className="col-span-full py-8 text-center text-gray-500">No results in this category</div>}
+                )) ?? <div className="col-span-full py-8 text-center text-gray-500">{t("empty.category")}</div>}
               </div>
           </TabsContent>
         ))}

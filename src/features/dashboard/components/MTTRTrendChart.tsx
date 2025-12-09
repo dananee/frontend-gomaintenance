@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Timer } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface MTTRTrendData {
   month: string;
@@ -14,6 +15,8 @@ interface MTTRTrendChartProps {
 }
 
 function MTTRTrendChartComponent({ data }: MTTRTrendChartProps) {
+  const t = useTranslations("features.dashboard.mttr");
+
   const maxValue = useMemo(
     () => Math.max(...data.map((d) => d.mttr)),
     [data]
@@ -30,14 +33,14 @@ function MTTRTrendChartComponent({ data }: MTTRTrendChartProps) {
           <div className="flex items-center gap-2">
             <Timer className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             <CardTitle className="text-xl font-semibold">
-              MTTR Trend (12 Months)
+              {t("title")}
             </CardTitle>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">
               {avgMTTR}h
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">Average</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{t("average")}</p>
           </div>
         </div>
       </CardHeader>

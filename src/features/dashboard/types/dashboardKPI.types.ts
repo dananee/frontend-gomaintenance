@@ -52,10 +52,28 @@ export interface FleetHealthScore {
   status: "excellent" | "good" | "fair" | "poor" | "critical";
 }
 
+export interface OverdueWorkOrderKPI {
+  id: string;
+  title: string;
+  due_date: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  assigned_to?: string;
+}
+
+export interface MaintenanceVehicleKPI {
+  id: string;
+  name: string;
+  service_type: string;
+  urgency: "upcoming" | "soon" | "overdue";
+  due_in?: string;
+}
+
 export interface DashboardKPIResponse {
   fleet_kpis: FleetKPIs;
   cost_trend_12months: MonthlyTrendData[];
   downtime_trend_12months: MonthlyTrendData[];
+  overdue_work_orders: OverdueWorkOrderKPI[];
+  vehicles_needing_maintenance: MaintenanceVehicleKPI[];
   work_order_distribution: WorkOrderStatusDistribution[];
   fleet_health: FleetHealthScore;
   top_fault_types: { type: string; count: number; color: string }[];

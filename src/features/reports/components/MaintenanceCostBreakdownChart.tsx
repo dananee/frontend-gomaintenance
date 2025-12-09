@@ -11,6 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 interface MaintenanceCostBreakdownChartProps {
   data?: Array<{
@@ -35,6 +36,7 @@ export function MaintenanceCostBreakdownChart({
   data = defaultData,
   dateRange,
 }: MaintenanceCostBreakdownChartProps) {
+  const t = useTranslations("features.reports.breakdown");
   const totalCost = data.reduce(
     (sum, item) => sum + item.labor + item.parts + item.other,
     0
@@ -45,7 +47,7 @@ export function MaintenanceCostBreakdownChart({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Maintenance Cost Breakdown</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
             {dateRange && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {dateRange}
@@ -57,7 +59,7 @@ export function MaintenanceCostBreakdownChart({
               {totalCost.toLocaleString()} MAD
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Total Cost
+              {t("totalCost")}
             </p>
           </div>
         </div>
@@ -101,21 +103,21 @@ export function MaintenanceCostBreakdownChart({
                 stackId="a"
                 fill="#3b82f6"
                 radius={[0, 0, 0, 0]}
-                name="Labor"
+                name={t("labor")}
               />
               <Bar
                 dataKey="parts"
                 stackId="a"
                 fill="#f97316"
                 radius={[0, 0, 0, 0]}
-                name="Parts"
+                name={t("parts")}
               />
               <Bar
                 dataKey="other"
                 stackId="a"
                 fill="#8b5cf6"
                 radius={[4, 4, 0, 0]}
-                name="Other"
+                name={t("other")}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -126,7 +128,7 @@ export function MaintenanceCostBreakdownChart({
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="h-3 w-3 rounded-sm bg-blue-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">Labor</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t("labor")}</p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {data.reduce((sum, item) => sum + item.labor, 0).toLocaleString()} MAD
@@ -135,7 +137,7 @@ export function MaintenanceCostBreakdownChart({
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="h-3 w-3 rounded-sm bg-orange-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">Parts</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t("parts")}</p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {data.reduce((sum, item) => sum + item.parts, 0).toLocaleString()} MAD
@@ -144,7 +146,7 @@ export function MaintenanceCostBreakdownChart({
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="h-3 w-3 rounded-sm bg-purple-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">Other</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t("other")}</p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {data.reduce((sum, item) => sum + item.other, 0).toLocaleString()} MAD

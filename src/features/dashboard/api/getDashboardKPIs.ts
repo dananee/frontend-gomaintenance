@@ -39,6 +39,7 @@ export const getDashboardKPIs = async (): Promise<DashboardKPIResponse> => {
     maintenance_trends: { date: string; count: number; cost: number }[];
     top_vehicles: any[];
     upcoming_maintenance: any[];
+    overdue_work_orders: any[];
     cost_breakdown: { category: string; amount: number; percentage: number }[];
   }
 
@@ -82,6 +83,20 @@ export const getDashboardKPIs = async (): Promise<DashboardKPIResponse> => {
       count: s.count,
       percentage: 0, // Calculate if needed
       color: s.status === 'completed' ? '#10B981' : s.status === 'in_progress' ? '#3B82F6' : '#F59E0B'
+    })),
+    overdue_work_orders: (data.overdue_work_orders || []).map((wo: any) => ({
+      id: wo.id,
+      title: wo.title || "Untitled Issue",
+      due_date: wo.due_date || new Date().toISOString(),
+      priority: wo.priority || "medium",
+      assigned_to: wo.assigned_to
+    })),
+    vehicles_needing_maintenance: (data.upcoming_maintenance || []).map((v: any) => ({
+      id: v.id || v.vehicle_id,
+      name: v.name || v.vehicle_name || "Unknown Vehicle",
+      service_type: v.service_type || "General Maintenance",
+      urgency: v.urgency || "upcoming",
+      due_in: v.due_in
     })),
     fleet_health: {
       overall_score: 88,

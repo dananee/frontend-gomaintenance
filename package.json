@@ -36,6 +36,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
     "frontend-maintenance": ".",
+    "frontend-maintenance": ".",
     "idb": "^8.0.3",
     "jose": "^6.1.2",
     "lucide-react": "^0.555.0",

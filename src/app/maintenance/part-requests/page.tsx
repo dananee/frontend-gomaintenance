@@ -12,8 +12,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getStatusColor, getStatusDisplayName } from '@/types/parts';
 import type { WorkOrderPartRequest } from '@/types/parts';
+import { useTranslations } from 'next-intl';
 
 export default function SupervisorApprovalPage() {
+    const t = useTranslations('partRequests.approvals');
     const [searchQuery, setSearchQuery] = useState('');
     const [page, setPage] = useState(1);
     const [selectedRequest, setSelectedRequest] = useState<WorkOrderPartRequest | null>(null);
@@ -78,9 +80,9 @@ export default function SupervisorApprovalPage() {
                     </div>
                     <div>
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            Part Request Approvals
+                            {t('title')}
                         </h1>
-                        <p className="text-gray-500 mt-1">Review and approve pending part requests</p>
+                        <p className="text-gray-500 mt-1">{t('subtitle')}</p>
                     </div>
                 </div>
             </motion.div>
@@ -97,7 +99,7 @@ export default function SupervisorApprovalPage() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                             <Input
                                 type="text"
-                                placeholder="Search by part name, SKU, or work order..."
+                                placeholder={t('searchPlaceholder')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10 bg-white/50 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
@@ -113,7 +115,7 @@ export default function SupervisorApprovalPage() {
                     <CardContent className="pt-6">
                         <div className="flex items-center space-x-2 text-red-600">
                             <AlertCircle className="h-5 w-5" />
-                            <span>Failed to load pending approvals. Please try again.</span>
+                            <span>{t('error')}</span>
                         </div>
                     </CardContent>
                 </Card>
@@ -126,7 +128,7 @@ export default function SupervisorApprovalPage() {
                         <div className="inline-flex p-4 bg-indigo-50 rounded-full mb-4">
                             <Package className="h-12 w-12 text-indigo-600 animate-pulse" />
                         </div>
-                        <p className="text-gray-600">Loading pending approvals...</p>
+                        <p className="text-gray-600">{t('loading')}</p>
                     </div>
                 </div>
             ) : !filteredRequests || filteredRequests.length === 0 ? (
@@ -140,9 +142,9 @@ export default function SupervisorApprovalPage() {
                                 <div className="inline-flex p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl mb-6">
                                     <ClipboardCheck className="h-16 w-16 text-green-400" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">All caught up!</h3>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('empty.title')}</h3>
                                 <p className="text-gray-500 max-w-sm mx-auto">
-                                    There are no pending part requests to review at this time.
+                                    {t('empty.description')}
                                 </p>
                             </div>
                         </CardContent>
@@ -173,7 +175,7 @@ export default function SupervisorApprovalPage() {
                                                             {request.part?.name || 'Unknown Part'}
                                                         </h3>
                                                         <p className="text-sm text-gray-500">
-                                                            SKU: {request.part?.part_number || 'N/A'} • Quantity: {request.quantity}
+                                                            {t('fields.sku')}: {request.part?.part_number || 'N/A'} • {t('fields.quantity')}: {request.quantity}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -181,19 +183,19 @@ export default function SupervisorApprovalPage() {
                                                 {/* Request Details */}
                                                 <div className="grid grid-cols-3 gap-4 text-sm">
                                                     <div className="p-3 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-500 block mb-1">Work Order</span>
+                                                        <span className="text-gray-500 block mb-1">{t('fields.workOrder')}</span>
                                                         <span className="font-mono font-semibold text-gray-900">
                                                             {request.work_order_id.slice(0, 8)}...
                                                         </span>
                                                     </div>
                                                     <div className="p-3 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-500 block mb-1">Requested by</span>
+                                                        <span className="text-gray-500 block mb-1">{t('fields.requestedBy')}</span>
                                                         <span className="font-semibold text-gray-900">
                                                             {request.requested_by?.first_name} {request.requested_by?.last_name}
                                                         </span>
                                                     </div>
                                                     <div className="p-3 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-500 block mb-1">Requested</span>
+                                                        <span className="text-gray-500 block mb-1">{t('fields.requested')}</span>
                                                         <span className="text-gray-900">
                                                             {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
                                                         </span>
@@ -204,7 +206,7 @@ export default function SupervisorApprovalPage() {
                                                 {request.notes && (
                                                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
                                                         <p className="text-sm text-blue-900">
-                                                            <strong>Notes:</strong> {request.notes}
+                                                            <strong>{t('fields.notes')}:</strong> {request.notes}
                                                         </p>
                                                     </div>
                                                 )}
@@ -221,7 +223,7 @@ export default function SupervisorApprovalPage() {
                                                     className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
                                                 >
                                                     <Check className="h-4 w-4 mr-2" />
-                                                    Approve
+                                                    {t('actions.approve')}
                                                     <Sparkles className="h-3 w-3 ml-2" />
                                                 </Button>
                                                 <Button
@@ -234,7 +236,7 @@ export default function SupervisorApprovalPage() {
                                                     className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
                                                 >
                                                     <X className="h-4 w-4 mr-2" />
-                                                    Reject
+                                                    {t('actions.reject')}
                                                 </Button>
                                             </div>
                                         </div>
@@ -260,10 +262,10 @@ export default function SupervisorApprovalPage() {
                         disabled={page === 1}
                         className="border-gray-300"
                     >
-                        Previous
+                        {t('actions.previous')}
                     </Button>
                     <span className="text-sm text-gray-600 px-4">
-                        Page {page} of {Math.ceil(data.total / 20)}
+                        {t('pagination', { page, total: Math.ceil(data.total / 20) })}
                     </span>
                     <Button
                         variant="outline"
@@ -271,7 +273,7 @@ export default function SupervisorApprovalPage() {
                         disabled={page >= Math.ceil(data.total / 20)}
                         className="border-gray-300"
                     >
-                        Next
+                        {t('actions.next')}
                     </Button>
                 </motion.div>
             )}

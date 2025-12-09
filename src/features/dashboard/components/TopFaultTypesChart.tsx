@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface FaultType {
   type: string;
@@ -15,6 +16,8 @@ interface TopFaultTypesChartProps {
 }
 
 function TopFaultTypesChartComponent({ data }: TopFaultTypesChartProps) {
+  const t = useTranslations("features.dashboard.topFaults");
+
   const maxCount = useMemo(
     () => Math.max(...data.map((d) => d.count)),
     [data]
@@ -26,7 +29,7 @@ function TopFaultTypesChartComponent({ data }: TopFaultTypesChartProps) {
         <div className="flex items-center gap-2">
           <AlertCircle className="h-5 w-5 text-red-600" />
           <CardTitle className="text-xl font-semibold">
-            Top 5 Fault Types
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>

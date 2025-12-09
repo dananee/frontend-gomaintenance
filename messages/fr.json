@@ -105,6 +105,141 @@
             }
         }
     },
+    "features": {
+        "dashboard": {
+            "priorities": {
+                "low": "Basse",
+                "medium": "Moyenne",
+                "high": "Haute",
+                "urgent": "Urgente"
+            },
+            "urgency": {
+                "upcoming": "À venir",
+                "soon": "Bientôt",
+                "overdue": "En retard"
+            },
+            "fleetHealth": {
+                "title": "Score de santé de la flotte",
+                "healthy": "Sain",
+                "due": "Dû",
+                "critical": "Critique",
+                "clickToView": "Cliquez pour voir le rapport complet →"
+            },
+            "overdueWorkOrders": {
+                "title": "Ordres de travail en retard",
+                "loading": "Chargement...",
+                "empty": "Aucun ordre de travail en retard",
+                "daysOverdue": "{days} j de retard"
+            },
+            "upcomingMaintenance": {
+                "title": "Véhicules nécessitant maintenance",
+                "loading": "Chargement...",
+                "empty": "Tous les véhicules sont à jour",
+                "overdueBadge": "{count} en retard",
+                "soonBadge": "{count} bientôt",
+                "due": "Dû le : {date}"
+            },
+            "costForecast": {
+                "title": "Prévision des coûts (6 mois)",
+                "avgPredicted": "Moy. prévue",
+                "actual": "Réel",
+                "predicted": "Prévu",
+                "aiLabel": "IA"
+            },
+            "costTrend": {
+                "title": "Tendance des coûts de maintenance",
+                "subtitle": "12 derniers mois"
+            },
+            "downtime": {
+                "title": "Tendance temps d'arrêt",
+                "subtitle": "12 derniers mois"
+            },
+            "failurePrediction": {
+                "title": "Prédictions de pannes IA",
+                "subtitle": "Évaluation des risques ML",
+                "confidence": "Confiance",
+                "riskBadge": "{score}% Risque",
+                "component": "Composant",
+                "predictedFailure": "Panne prévue",
+                "aiScore": "Score IA",
+                "days": "{days} jours",
+                "modelInfo": "Modèle entraîné sur +10k enregistrements",
+                "modelDesc": "Prédictions mises à jour quotidiennement"
+            },
+            "mttr": {
+                "title": "Tendance MTTR (12 mois)",
+                "average": "Moyenne"
+            },
+            "sla": {
+                "title": "Conformité SLA",
+                "onTime": "À l'heure",
+                "delayed": "Retardé",
+                "breached": "Manqué"
+            },
+            "techPerformance": {
+                "title": "Performance techniciens",
+                "wos": "OT",
+                "avg": "moy",
+                "efficiency": "Efficacité"
+            },
+            "topFaults": {
+                "title": "Top 5 types de défauts"
+            },
+            "trend": {
+                "fromLastMonth": "vs mois dernier"
+            },
+            "woDistribution": {
+                "title": "Distribution des ordres de travail",
+                "total": "Total OT"
+            },
+            "workload": {
+                "title": "Charge de travail techniciens",
+                "subtitle": "Ordres de travail par technicien par mois",
+                "legend": "Charge :",
+                "levels": {
+                    "low": "Faible",
+                    "medium": "Moyenne",
+                    "high": "Élevée",
+                    "critical": "Critique"
+                }
+            }
+        },
+        "reports": {
+            "availability": {
+                "title": "Disponibilité de la flotte",
+                "active": "Actif",
+                "inMaintenance": "En maintenance",
+                "inactive": "Inactif",
+                "loading": "Chargement des données...",
+                "noData": "Aucune donnée disponible"
+            },
+            "cost": {
+                "title": "Coûts de maintenance (6 derniers mois)",
+                "loading": "Chargement des coûts...",
+                "total": "Coût Total",
+                "labor": "Coût Main d'œuvre",
+                "parts": "Coût Pièces",
+                "external": "Services Externes",
+                "workOrders": "Total Ordres de Travail"
+            },
+            "fuel": {
+                "title": "Tendance Consommation Carburant",
+                "totalGallons": "Total Gallons",
+                "totalCost": "Coût Total",
+                "avgMpg": "Moy. MPG",
+                "usage": "Utilisation",
+                "cost": "Coût",
+                "mpg": "MPG"
+            },
+            "breakdown": {
+                "title": "Répartition des Coûts de Maintenance",
+                "totalCost": "Coût Total",
+                "labor": "Main d'œuvre",
+                "parts": "Pièces",
+                "other": "Autre"
+            }
+        }
+    },
     "inventory": {
         "title": "Inventaire",
         "subtitle": "Gérez les pièces, les niveaux de stock et les fournisseurs",
@@ -300,57 +435,572 @@
             }
         }
     },
-     "notifications": {
-    "common": {
-      "categories": {
-        "work_order": "Ordres de travail",
-        "inventory": "Inventaire",
-        "maintenance": "Maintenance",
-        "system": "Système"
-      }
-    },
-    "dashboard": {
-      "title": "Notifications",
-      "subtitle": "Gérez vos alertes et mises à jour",
-      "actions": {
-        "viewAll": "Voir tout",
-        "markAllRead": "Tout marquer comme lu"
-      },
-      "filters": {
-        "searchPlaceholder": "Rechercher des notifications...",
-        "filterBy": "Filtrer par",
-        "options": {
-          "all": "Toutes les notifications",
-          "unread": "Non lues uniquement"
+    "notifications": {
+        "common": {
+            "categories": {
+                "work_order": "Ordres de travail",
+                "inventory": "Inventaire",
+                "maintenance": "Maintenance",
+                "system": "Système"
+            }
+        },
+        "dashboard": {
+            "title": "Notifications",
+            "subtitle": "Gérez vos alertes et mises à jour",
+            "actions": {
+                "viewAll": "Voir tout",
+                "markAllRead": "Tout marquer comme lu"
+            },
+            "filters": {
+                "searchPlaceholder": "Rechercher des notifications...",
+                "filterBy": "Filtrer par",
+                "options": {
+                    "all": "Toutes les notifications",
+                    "unread": "Non lues uniquement"
+                }
+            },
+            "empty": "Aucune notification ne correspond à vos critères.",
+            "pagination": "Affichage {start}-{end} sur {total}"
+        },
+        "all": {
+            "title": "Toutes les notifications",
+            "subtitle": "Historique complet avec filtres, pagination et actions groupées.",
+            "actions": {
+                "markAllRead": "Tout marquer comme lu",
+                "backToDashboard": "Retour au tableau de bord"
+            },
+            "sections": {
+                "filters": "Filtres",
+                "stream": "Flux de notifications",
+                "summary": "Résumé"
+            },
+            "filters": {
+                "searchPlaceholder": "Rechercher par titre ou message",
+                "filterByType": "Filtrer par type",
+                "options": {
+                    "all": "Toutes les catégories"
+                }
+            },
+            "stats": {
+                "unread": "Non lues",
+                "total": "Total"
+            },
+            "empty": "Aucune notification ne correspond à vos filtres."
         }
-      },
-      "empty": "Aucune notification ne correspond à vos critères.",
-      "pagination": "Affichage {start}-{end} sur {total}"
     },
-    "all": {
-      "title": "Toutes les notifications",
-      "subtitle": "Historique complet avec filtres, pagination et actions groupées.",
-      "actions": {
-        "markAllRead": "Tout marquer comme lu",
-        "backToDashboard": "Retour au tableau de bord"
-      },
-      "sections": {
-        "filters": "Filtres",
-        "stream": "Flux de notifications",
-        "summary": "Résumé"
-      },
-      "filters": {
-        "searchPlaceholder": "Rechercher par titre ou message",
-        "filterByType": "Filtrer par type",
-        "options": {
-          "all": "Toutes les catégories"
+    "reports": {
+        "title": "Rapports",
+        "subtitle": "Analyses de flotte et indicateurs de performance",
+        "actions": {
+            "exportCSV": "Exporter en CSV",
+            "exportPDF": "Exporter en PDF",
+            "clear": "Réinitialiser"
+        },
+        "filters": {
+            "startDate": "Date de début",
+            "endDate": "Date de fin",
+            "showingDataFor": "Affichage des données pour :"
+        },
+        "toasts": {
+            "exportPDF": {
+                "title": "Export PDF",
+                "description": "Génération du rapport PDF...",
+                "successTitle": "PDF généré",
+                "successDescription": "Votre rapport a été téléchargé."
+            },
+            "exportCSV": {
+                "title": "Export CSV",
+                "description": "Génération du fichier CSV...",
+                "successTitle": "CSV téléchargé",
+                "successDescription": "Vos données ont été exportées."
+            }
         }
-      },
-      "stats": {
-        "unread": "Non lues",
-        "total": "Total"
-      },
-      "empty": "Aucune notification ne correspond à vos filtres."
+    },
+    "search": {
+        "title": "Résultats de recherche",
+        "subtitle": "Parcourez les résultats par catégorie en vue plein écran.",
+        "quickSearch": "Appuyez sur / ou ⌘K pour rechercher partout",
+        "cardTitle": "Rechercher",
+        "placeholder": "Rechercher véhicules, ordres de travail, pièces, utilisateurs et pages",
+        "update": "Mettre à jour les résultats",
+        "tabs": {
+            "all": "Tous",
+            "vehicle": "Véhicules",
+            "work_order": "Ordres de travail",
+            "part": "Pièces",
+            "user": "Utilisateurs",
+            "page": "Pages"
+        },
+        "empty": {
+            "query": "Aucun résultat trouvé pour « {query} »",
+            "category": "Aucun résultat dans cette catégorie"
+        }
+    },
+    "settings": {
+        "title": "Paramètres",
+        "subtitle": "Gérez votre compte et les préférences de votre espace de travail"
+    },
+    "users": {
+        "title": "Utilisateurs",
+        "actions": {
+            "add": "Ajouter un utilisateur",
+            "addFirst": "Ajoutez votre premier utilisateur",
+            "reactivate": "Réactiver",
+            "suspend": "Suspendre",
+            "edit": "Modifier le profil",
+            "invite": "Inviter / Renvoyer"
+        },
+        "errors": {
+            "loadFailed": "Échec du chargement des utilisateurs",
+            "generic": "Une erreur s’est produite lors du chargement des utilisateurs",
+            "notFound": "Utilisateur introuvable"
+        },
+        "empty": {
+            "title": "Aucun utilisateur pour le moment",
+            "description": "Ajoutez des membres pour gérer votre flotte. Attribuez des rôles, suivez les activités et collaborez efficacement."
+        },
+        "details": {
+            "overview": "Aperçu",
+            "roles": "Rôles et permissions",
+            "skills": "Compétences et certifications",
+            "activity": "Activité",
+            "attachments": "Pièces jointes",
+            "notes": "Notes",
+            "information": {
+                "title": "Informations utilisateur",
+                "subtitle": "Données personnelles et coordonnées",
+                "email": "Email",
+                "phone": "Téléphone",
+                "jobTitle": "Titre du poste",
+                "department": "Département",
+                "site": "Site",
+                "shift": "Quart",
+                "joined": "Rejoint le",
+                "lastActive": "Dernière activité"
+            },
+            "performance": {
+                "title": "Indicateurs de performance",
+                "subtitle": "Indicateurs clés et productivité",
+                "completedWOs": "OT complétés",
+                "avgCompletion": "Durée moyenne",
+                "mttr": "MTTR",
+                "backlog": "Arriéré",
+                "productivity": "Productivité",
+                "vsLastMonth": "+12 % vs mois dernier",
+                "perWorkOrder": "Par ordre de travail",
+                "meanTimeToRepair": "Temps moyen de réparation",
+                "pendingTasks": "Tâches en attente"
+            },
+            "assignedWorkOrders": {
+                "title": "Ordres de travail assignés",
+                "subtitle": "Affectations actuelles et tâches à venir",
+                "active": "{count} actif(s)",
+                "due": "Échéance"
+            }
+        },
+        "toasts": {
+            "filesUploaded": {
+                "title": "Fichiers téléversés",
+                "description": "{count} fichier(s) téléversé(s) avec succès."
+            },
+            "suspended": {
+                "title": "Utilisateur suspendu",
+                "description": "{name} a été suspendu."
+            },
+            "reactivated": {
+                "title": "Utilisateur réactivé",
+                "description": "{name} a été réactivé."
+            },
+            "noteAdded": "Note ajoutée avec succès",
+            "invitationSent": {
+                "title": "Invitation envoyée",
+                "description": "Email d’invitation envoyé à {email}"
+            },
+            "fileDeleted": "Fichier supprimé"
+        }
     }
-  }
+,
+"vehicles": {
+    "title": "Véhicules",
+    "actions": {
+        "add": "Ajouter un véhicule",
+        "addFirst": "Ajoutez votre premier véhicule",
+        "clearFilters": "Réinitialiser les filtres",
+        "updateUsage": "Mettre à jour l’utilisation",
+        "edit": "Modifier le véhicule",
+        "createWorkOrder": "Créer un ordre de travail"
+    },
+    "filters": {
+        "searchPlaceholder": "Rechercher par nom ou plaque",
+        "status": {
+            "all": "Tous les statuts",
+            "active": "Actif",
+            "maintenance": "Maintenance",
+            "retired": "Retiré"
+        },
+        "type": {
+            "all": "Tous les types",
+            "truck": "Camion",
+            "van": "Fourgon",
+            "car": "Voiture"
+        }
+    },
+    "empty": {
+        "title": "Aucun véhicule pour le moment",
+        "description": "Ajoutez votre premier véhicule pour commencer à gérer votre flotte : maintenance, affectations et performances.",
+        "notFoundTitle": "Aucun véhicule trouvé",
+        "notFoundDescription": "Aucun véhicule ne correspond à vos filtres. Essayez d’ajuster les critères."
+    },
+    "toasts": {
+        "deleted": {
+            "title": "Véhicule supprimé",
+            "description": "Le véhicule a été retiré de votre flotte."
+        },
+        "updated": {
+            "title": "Véhicule mis à jour",
+            "description": "Les informations du véhicule ont été mises à jour."
+        },
+        "created": {
+            "title": "Véhicule créé",
+            "description": "Un nouveau véhicule a été ajouté à votre flotte."
+        }
+    },
+    "details": {
+        "tabs": {
+            "overview": "Aperçu",
+            "plans": "Plans de maintenance",
+            "documents": "Documents",
+            "history": "Historique"
+        },
+        "metrics": {
+            "title": "Indicateurs de performance",
+            "totalCost": "Coût total de maintenance",
+            "avgRepair": "Coût moyen de réparation",
+            "perWorkOrder": "Par ordre de travail",
+            "costPerKm": "Coût par km",
+            "mtbf": "MTBF",
+            "meanTimeBetweenFailures": "Temps moyen entre pannes",
+            "reliability": "Indice de fiabilité",
+            "downtime": "Temps d'arrêt total",
+            "mttr": "MTTR",
+            "meanTimeToRepair": "Temps moyen de réparation",
+            "workOrders": "Ordres de travail",
+            "totalCompleted": "Total complétés"
+        },
+        "analytics": {
+            "title": "Analyses",
+            "mileageGrowth": "Évolution du kilométrage",
+            "available": "Données de graphique disponibles",
+            "unavailable": "Aucun historique de kilométrage disponible"
+        },
+        "parts": {
+            "title": "Pièces utilisées et coûts",
+            "name": "Nom de la pièce",
+            "quantity": "Quantité",
+            "cost": "Coût",
+            "date": "Date d’utilisation",
+            "workOrder": "Ordre de travail",
+            "empty": "Aucune pièce utilisée",
+            "viewWorkOrder": "Voir l’ordre de travail"
+        },
+        "table": {
+            "headers": {
+                "vehicle": "Véhicule",
+                "plate": "Immatriculation",
+                "status": "Statut",
+                "mileage": "Kilométrage",
+                "totalCost": "Coût Maint. Total",
+                "downtime": "Temps d'arrêt",
+                "nextService": "Prochaine Révision",
+                "healthScore": "Score Santé",
+                "woCount": "Nb OT",
+                "actions": "Actions",
+                "partName": "Nom Pièce",
+                "quantity": "Quantité",
+                "cost": "Coût",
+                "dateUsed": "Date Utilisation",
+                "workOrder": "Ordre de Travail"
+            },
+            "noData": "Aucun véhicule trouvé",
+            "noService": "Aucune révision prévue",
+            "days": "{days} jours",
+            "title": "Pièces Utilisées & Coûts",
+            "exportCSV": "Exporter CSV",
+            "filterName": "Filtrer par nom de pièce...",
+            "clear": "Effacer",
+            "totalParts": "Total ({count} pièces)"
+        },
+        "form": {
+            "createTitle": "Créer Plan de Maintenance",
+            "editTitle": "Modifier Plan de Maintenance",
+            "description": "Configurez des intervalles de service récurrents pour maintenir ce véhicule à jour.",
+            "brand": "Marque",
+            "model": "Modèle",
+            "year": "Année",
+            "type": "Type",
+            "plate": "Immatriculation",
+            "vin": "VIN",
+            "status": "Statut",
+            "updateTitle": "Mettre à jour l'Utilisation",
+            "updateDesc": "Enregistrez le nouveau kilométrage ou les heures moteur pour garder l'utilisation précise.",
+            "currentMileage": "Kilométrage Actuel (km)",
+            "engineHours": "Heures Moteur",
+            "saveUsage": "Enregistrer",
+            "cancel": "Annuler",
+            "save": "Enregistrer",
+            "create": "Créer Plan",
+            "update": "Mettre à jour",
+            "createVehicle": "Créer Véhicule",
+            "template": "Modèle de Maintenance",
+            "templateRequired": "Le modèle est requis",
+            "templateDesc": "Les intervalles du modèle rempliront automatiquement les champs ci-dessous.",
+            "serviceIntervals": "Intervalles de Service",
+            "intervalKm": "Intervalle (KM)",
+            "intervalMonths": "Intervalle (Mois)",
+            "intervalError": "Au moins un intervalle (KM ou Mois) doit être supérieur à 0",
+            "lastServiceInfo": "Dernière Info Service",
+            "lastServiceKm": "Dernier Service KM",
+            "lastServiceDate": "Date Dernier Service",
+            "selectTemplate": "Sélectionner un modèle...",
+            "searchTemplates": "Chercher modèles...",
+            "noTemplates": "Aucun modèle trouvé."
+        },
+        "kpis": {
+            "predictive": {
+                "title": "Maintenance Prédictive",
+                "predictedFailure": "Panne Prévue",
+                "days": "{days} jours",
+                "basedOn": "Basé sur les modèles d'utilisation",
+                "nextOilChange": "Prochaine Vidange",
+                "kmRemaining": "km restants ({km} km)",
+                "riskAssessment": "Évaluation des Risques",
+                "aiRecommendations": "Recommandations IA"
+            },
+            "serviceSummary": {
+                "title": "Résumé Service",
+                "lastMaintenance": "Dernière Maintenance",
+                "lastCost": "Dernier Coût",
+                "lastTechnician": "Dernier Technicien",
+                "nextServiceDue": "Prochain Service Dû",
+                "serviceInterval": "Intervalle Service"
+            }
+        },
+        "documents": {
+            "title": "Documents Véhicule",
+            "subtitle": "Gérer les assurances, cartes grises et rapports d'inspection",
+            "upload": "Téléverser Document",
+            "noDocs": "Aucun document téléversé",
+            "noDocsDesc": "Gardez tous vos dossiers de véhicule au même endroit.",
+            "name": "Nom Document",
+            "type": "Type",
+            "size": "Taille",
+            "uploaded": "Téléversé",
+            "actions": "Actions",
+            "untitled": "Document Sans Titre",
+            "modalTitle": "Téléverser Document",
+            "modalDesc": "Joindre cartes d'assurance, immatriculations et rapports",
+            "fileName": "Nom Fichier",
+            "fileUrl": "URL Fichier"
+        },
+        "maintenance": {
+            "plansTitle": "Plans Actifs",
+            "plansSubtitle": "Gérer les calendriers de maintenance récurrents",
+            "newPlan": "Nouveau Plan",
+            "noPlans": "Aucun Plan de Maintenance",
+            "noPlansDesc": "Configurez des calendriers de maintenance récurrents.",
+            "createFirst": "Créer Premier Plan",
+            "customPlan": "Plan Personnalisé",
+            "paused": "En Pause",
+            "every": "Tous les {value}",
+            "due": "Dû le : {date}",
+            "lastService": "Dernier Service",
+            "nextDue": "Prochain Dû",
+            "editConfig": "Modifier Config",
+            "deletePlan": "Supprimer Plan",
+            "runNow": "Exécuter Maintenant",
+            "resumePlan": "Reprendre Plan",
+            "pausePlan": "Mettre en Pause",
+            "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce plan ?",
+            "historyTitle": "Historique complet de maintenance pour ce véhicule",
+            "noHistory": "Aucun historique disponible",
+            "timelineTitle": "Chronologie Maintenance",
+            "technician": "Technicien : {name}",
+            "types": {
+                "preventive": "Préventif",
+                "corrective": "Correctif",
+                "emergency": "Urgent",
+                "scheduled": "Planifié"
+            }
+        },
+        "activity": {
+            "title": "Chronologie Activité",
+            "historyTitle": "Historique complet d'activité pour ce véhicule",
+            "noActivity": "Aucune activité enregistrée pour l'instant.",
+            "noLogs": "Aucun journal d'activité disponible"
+        },
+        "workOrders": {
+            "title": "Tous les ordres de travail associés à ce véhicule",
+            "noWos": "Aucun ordre de travail pour ce véhicule",
+            "scheduled": "Prévu : {date}"
+        }
+    }
+},
+"workOrders": {
+    "title": "Ordres de travail",
+    "actions": {
+        "new": "Nouvel ordre de travail",
+        "edit": "Modifier les détails",
+        "markComplete": "Marquer comme terminé",
+        "goBack": "Retour",
+        "saveChanges": "Enregistrer les modifications"
+    },
+    "filters": {
+        "searchPlaceholder": "Rechercher par ID ou titre",
+        "priority": {
+            "all": "Toutes priorités",
+            "high": "Haute",
+            "medium": "Moyenne",
+            "low": "Basse"
+        },
+        "status": {
+            "all": "Tous les statuts",
+            "pending": "En attente",
+            "inProgress": "En cours",
+            "completed": "Terminé"
+        }
+    },
+    "toasts": {
+        "created": {
+            "title": "Ordre de travail créé",
+            "description": "Un nouvel ordre de travail a été créé et assigné."
+        }
+    },
+    "details": {
+        "notFound": {
+            "title": "Ordre de travail introuvable",
+            "description": "Impossible de localiser l’ordre de travail demandé."
+        },
+        "tabs": {
+            "overview": "Aperçu",
+            "tasks": "Tâches",
+            "attachments": "Pièces jointes",
+            "activity": "Activité",
+            "comments": "Commentaires"
+        },
+        "cards": {
+            "status": {
+                "title": "Statut",
+                "description": "Étape actuelle du workflow"
+            },
+            "dueDate": {
+                "title": "Date d'échéance",
+                "description": "Objectif de finalisation",
+                "none": "Aucune date"
+            },
+            "vehicle": {
+                "title": "Véhicule",
+                "description": "Actif associé",
+                "unknown": "Inconnu"
+            },
+            "assignee": {
+                "title": "Assigné à",
+                "role": "Technicien",
+                "unassigned": "Non assigné"
+            },
+            "details": {
+                "title": "Détails et description",
+                "type": "Type d’ordre de travail",
+                "priority": "Niveau de priorité",
+                "description": "Description",
+                "notes": "Notes supplémentaires"
+            }
+        },
+        "modal": {
+            "title": "Modifier l’ordre de travail",
+            "description": "Mettre à jour le statut, l’assignataire ou la date d’échéance.",
+            "titleLabel": "Titre",
+            "dueDateLabel": "Date d'échéance"
+        }
+    }
+},
+"forbidden": {
+    "error": "Erreur 403",
+    "title": "Accès interdit",
+    "description": "Vous n’avez pas la permission d’accéder à cette page. Vérifiez vos permissions ou contactez un administrateur.",
+    "actions": {
+        "switchAccount": "Changer de compte",
+        "backToDashboard": "Retour au tableau de bord"
+    }
+},
+"partRequests": {
+    "approvals": {
+        "title": "Approbations de demandes de pièces",
+        "subtitle": "Vérifiez et approuvez les demandes de pièces en attente",
+        "searchPlaceholder": "Rechercher par nom de pièce, SKU ou ordre de travail...",
+        "loading": "Chargement des approbations en attente...",
+        "error": "Échec du chargement des approbations en attente. Veuillez réessayer.",
+        "empty": {
+            "title": "Tout est à jour !",
+            "description": "Aucune demande de pièce en attente de révision."
+        },
+        "noPendingApprovals": "Aucune approbation en attente",
+        "allProcessed": "Toutes les demandes de pièces ont été traitées.",
+        "actions": {
+            "approve": "Approuver",
+            "reject": "Rejeter",
+            "previous": "Précédent",
+            "next": "Suivant"
+        },
+        "fields": {
+            "workOrder": "Ordre de travail",
+            "requestedBy": "Demandé par",
+            "requested": "Demandé le",
+            "notes": "Notes",
+            "sku": "SKU",
+            "quantity": "Quantité"
+        },
+        "pagination": "Page {page} sur {total}"
+    },
+    "myRequests": {
+        "title": "Mes demandes de pièces",
+        "subtitle": "Consultez l’historique de vos demandes de pièces",
+        "searchPlaceholder": "Rechercher par nom de pièce, SKU ou statut...",
+        "empty": {
+            "title": "Aucune demande trouvée",
+            "description": "Vous n’avez encore demandé aucune pièce."
+        },
+        "fields": {
+            "approvedBy": "Approuvé par",
+            "rejected": "Rejetée",
+            "qty": "Qté"
+        }
+    }
+},
+"notAuthorized": {
+    "title": "Accès refusé",
+    "description": "Vous n’avez pas la permission d’accéder à cette page. Contactez votre administrateur si vous pensez qu’il s’agit d’une erreur.",
+    "actions": {
+        "goBack": "Retour",
+        "goToDashboard": "Aller au tableau de bord"
+    }
+},
+"errorPage": {
+    "title": "Un problème est survenu !",
+    "defaultMessage": "Une erreur inattendue s’est produite. Veuillez réessayer.",
+    "actions": {
+        "reloadPage": "Recharger la page",
+        "tryAgain": "Réessayer"
+    }
+},
+"notFoundPage": {
+    "title": "404",
+    "description": "Page introuvable",
+    "actions": {
+        "backToDashboard": "Retour au tableau de bord",
+        "viewWorkOrders": "Voir les ordres de travail"
+    }
+},
+"homePage": {
+    "redirecting": "Redirection..."
+}
 }

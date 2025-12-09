@@ -13,6 +13,7 @@ import {
   Area,
   AreaChart,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 interface FuelUsageTrendChartProps {
   data?: Array<{
@@ -37,6 +38,7 @@ export function FuelUsageTrendChart({
   data = defaultData,
   dateRange,
 }: FuelUsageTrendChartProps) {
+  const t = useTranslations("features.reports.fuel");
   const totalUsage = data.reduce((sum, item) => sum + item.usage, 0);
   const totalCost = data.reduce((sum, item) => sum + item.cost, 0);
   const avgMpg = (
@@ -48,7 +50,7 @@ export function FuelUsageTrendChart({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Fuel Usage Trends</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
             {dateRange && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {dateRange}
@@ -62,7 +64,7 @@ export function FuelUsageTrendChart({
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-              Total Gallons
+              {t("totalGallons")}
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {totalUsage.toLocaleString()}
@@ -70,7 +72,7 @@ export function FuelUsageTrendChart({
           </div>
           <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-              Total Cost
+              {t("totalCost")}
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {totalCost.toLocaleString()} MAD
@@ -78,7 +80,7 @@ export function FuelUsageTrendChart({
           </div>
           <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-              Avg MPG
+              {t("avgMpg")}
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {avgMpg}
@@ -138,10 +140,10 @@ export function FuelUsageTrendChart({
                   borderRadius: "8px",
                 }}
                 formatter={(value: number, name: string) => {
-                  if (name === "Cost")
-                    return [`${value.toLocaleString()} MAD`, name];
-                  if (name === "MPG") return [value.toFixed(1), name];
-                  return [`${value.toLocaleString()} gal`, name];
+                  if (name === "Cost" || name === t("cost"))
+                    return [`${value.toLocaleString()} MAD`, t("cost")];
+                  if (name === "MPG" || name === t("mpg")) return [value.toFixed(1), t("mpg")];
+                  return [`${value.toLocaleString()} gal`, t("usage")];
                 }}
               />
               <Legend />
@@ -153,7 +155,7 @@ export function FuelUsageTrendChart({
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorUsage)"
-                name="Usage (gal)"
+                name={t("usage")}
               />
               <Line
                 yAxisId="right"
@@ -162,7 +164,7 @@ export function FuelUsageTrendChart({
                 stroke="#10b981"
                 strokeWidth={2}
                 dot={{ r: 4 }}
-                name="Cost"
+                name={t("cost")}
               />
               <Line
                 yAxisId="left"
@@ -172,7 +174,7 @@ export function FuelUsageTrendChart({
                 strokeWidth={2}
                 strokeDasharray="5 5"
                 dot={{ r: 4 }}
-                name="MPG"
+                name={t("mpg")}
               />
             </AreaChart>
           </ResponsiveContainer>

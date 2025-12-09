@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, DollarSign, User, Wrench } from "lucide-react";
 import { formatCurrency } from "@/lib/formatters";
+import { useTranslations } from "next-intl";
 
 interface ServiceSummaryProps {
   lastMaintenanceDate: string;
@@ -19,13 +20,15 @@ export function ServiceSummary({
   lastTechnician,
   serviceInterval,
 }: ServiceSummaryProps) {
+  const t = useTranslations("features.vehicles.kpis.serviceSummary");
+
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
           <Wrench className="h-5 w-5 text-primary" />
           <CardTitle className="text-xl font-semibold">
-            Service Summary
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>
@@ -34,7 +37,7 @@ export function ServiceSummary({
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground uppercase mb-1">
-                Last Maintenance
+                {t("lastMaintenance")}
               </p>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-blue-600" />
@@ -43,7 +46,7 @@ export function ServiceSummary({
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase mb-1">
-                Last Cost
+                {t("lastCost")}
               </p>
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-green-600" />
@@ -54,7 +57,7 @@ export function ServiceSummary({
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase mb-1">
-                Last Technician
+                {t("lastTechnician")}
               </p>
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-purple-600" />
@@ -66,7 +69,7 @@ export function ServiceSummary({
           <div className="space-y-4">
             <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm dark:border-blue-900/50 dark:from-blue-900/20 dark:to-transparent">
               <p className="text-xs font-semibold uppercase tracking-wider text-blue-600/80 dark:text-blue-400 mb-2">
-                Next Service Due
+                {t("nextServiceDue")}
               </p>
               <p className="text-3xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
                 {nextServiceDue}
@@ -74,7 +77,7 @@ export function ServiceSummary({
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase mb-1">
-                Service Interval
+                {t("serviceInterval")}
               </p>
               <p className="font-medium">{serviceInterval}</p>
             </div>

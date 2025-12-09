@@ -12,8 +12,10 @@ import { Pagination } from "@/components/ui/pagination";
 import { useModal } from "@/hooks/useModal";
 import { Plus, Truck } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function VehiclesPage() {
+  const t = useTranslations("vehicles");
   const { data, isLoading } = useVehicles();
   const { isOpen, open, close } = useModal();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
@@ -34,10 +36,10 @@ export default function VehiclesPage() {
   };
 
   const handleSuccess = () => {
-    toast.success(selectedVehicle ? "Vehicle updated" : "Vehicle created", {
+    toast.success(selectedVehicle ? t("toasts.updated.title") : t("toasts.created.title"), {
       description: selectedVehicle
-        ? "Vehicle information has been updated successfully."
-        : "New vehicle has been added to your fleet.",
+        ? t("toasts.updated.description")
+        : t("toasts.created.description"),
     });
     close();
     // Refetch handled by React Query invalidation
@@ -74,11 +76,11 @@ export default function VehiclesPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Vehicles
+          {t("title")}
         </h1>
         <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Vehicle
+          {t("actions.add")}
         </Button>
       </div>
 
@@ -86,7 +88,7 @@ export default function VehiclesPage() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name or plate"
+          placeholder={t("filters.searchPlaceholder")}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         />
         <select
@@ -94,20 +96,20 @@ export default function VehiclesPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
-          <option value="all">All status</option>
-          <option value="active">Active</option>
-          <option value="maintenance">Maintenance</option>
-          <option value="retired">Retired</option>
+          <option value="all">{t("filters.status.all")}</option>
+          <option value="active">{t("filters.status.active")}</option>
+          <option value="maintenance">{t("filters.status.maintenance")}</option>
+          <option value="retired">{t("filters.status.retired")}</option>
         </select>
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
-          <option value="all">All types</option>
-          <option value="truck">Truck</option>
-          <option value="van">Van</option>
-          <option value="car">Car</option>
+          <option value="all">{t("filters.type.all")}</option>
+          <option value="truck">{t("filters.type.truck")}</option>
+          <option value="van">{t("filters.type.van")}</option>
+          <option value="car">{t("filters.type.car")}</option>
         </select>
       </div>
 
@@ -115,10 +117,10 @@ export default function VehiclesPage() {
         <div className="rounded-lg border border-gray-200 dark:border-gray-700">
           <EmptyState
             icon={Truck}
-            title="No vehicles yet"
-            description="Get started by adding your first vehicle to the fleet. Track maintenance, assignments, and performance all in one place."
+            title={t("empty.title")}
+            description={t("empty.description")}
             action={{
-              label: "Add Your First Vehicle",
+              label: t("actions.addFirst"),
               onClick: handleCreate,
             }}
           />
@@ -127,10 +129,10 @@ export default function VehiclesPage() {
         <div className="rounded-lg border border-gray-200 dark:border-gray-700">
           <EmptyState
             icon={Truck}
-            title="No vehicles found"
-            description="No vehicles match your current filters. Try adjusting your search criteria or filters."
+            title={t("empty.notFoundTitle")}
+            description={t("empty.notFoundDescription")}
             action={{
-              label: "Clear Filters",
+              label: t("actions.clearFilters"),
               onClick: () => {
                 setSearch("");
                 setStatusFilter("all");
@@ -138,7 +140,7 @@ export default function VehiclesPage() {
               },
             }}
             secondaryAction={{
-              label: "Add Vehicle",
+              label: t("actions.add"),
               onClick: handleCreate,
             }}
           />
@@ -150,8 +152,8 @@ export default function VehiclesPage() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={(id) => {
-              toast.success("Vehicle deleted", {
-                description: "Vehicle has been removed from your fleet.",
+              toast.success(t("toasts.deleted.title"), {
+                description: t("toasts.deleted.description"),
               });
               console.log("Delete", id);
             }}
@@ -175,7 +177,7 @@ export default function VehiclesPage() {
       <Modal
         isOpen={isOpen}
         onClose={close}
-        title={selectedVehicle ? "Edit Vehicle" : "Add New Vehicle"}
+        title={selectedVehicle ? t("actions.edit") : t("actions.add")}
       >
         <VehicleForm
           initialData={selectedVehicle || undefined}
