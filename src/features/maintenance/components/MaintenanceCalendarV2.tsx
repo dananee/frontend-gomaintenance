@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useState, useMemo } from "react";
 import {
   format,
@@ -34,6 +36,7 @@ export function MaintenanceCalendarV2({
   currentDate,
   onDateChange
 }: MaintenanceCalendarV2Props) {
+  const t = useTranslations("maintenance.calendar.weekdays");
   const [selectedEvent, setSelectedEvent] = useState<ScheduledMaintenanceEvent | null>(null);
 
   const nextMonth = () => onDateChange(addMonths(currentDate, 1));
@@ -86,7 +89,7 @@ export function MaintenanceCalendarV2({
         <div className="flex-1">
           {/* Weekday Headers */}
           <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900/50">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+            {[t("sun"), t("mon"), t("tue"), t("wed"), t("thu"), t("fri"), t("sat")].map((day) => (
               <div
                 key={day}
                 className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"

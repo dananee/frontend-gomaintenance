@@ -22,6 +22,19 @@
         "title": "Fleet Maintenance",
         "subtitle": "Manage your fleet efficiently"
     },
+    "navigation": {
+        "sidebar": {
+            "dashboard": "Dashboard",
+            "vehicles": "Vehicles",
+            "workOrders": "Work Orders",
+            "maintenance": "Maintenance",
+            "inventory": "Inventory",
+            "users": "Users",
+            "reports": "Reports",
+            "title": "Fleet CMMS",
+            "subtitle": "Maintenance Pro"
+        }
+    },
     "dashboard": {
         "title": "Dashboard",
         "kpis": {
@@ -237,6 +250,13 @@
                 "labor": "Labor",
                 "parts": "Parts",
                 "other": "Other"
+            }
+        },
+        "vehicles": {
+            "maintenance": {
+                "noHistory": "No maintenance history available",
+                "historyTitle": "Maintenance History",
+                "technician": "Technician"
             }
         }
     },
@@ -641,7 +661,8 @@
                 "all": "All types",
                 "truck": "Truck",
                 "van": "Van",
-                "car": "Car"
+                "car": "Car",
+                "unknown": "Unknown"
             }
         },
         "empty": {
@@ -671,15 +692,37 @@
                 "documents": "Documents",
                 "history": "History"
             },
+            "performanceMetrics": {
+                "title": "Performance Metrics"
+            },
+            "analytics": {
+                "title": "Analytics",
+                "mileageGrowth": "Mileage Growth",
+                "chartDataAvailable": "Chart data available",
+                "noMileageHistory": "No mileage history available"
+            },
+            "partsUsed": {
+                "title": "Parts Used & Costs",
+                "partName": "Part Name",
+                "quantity": "Quantity",
+                "cost": "Cost",
+                "dateUsed": "Date Used",
+                "workOrder": "Work Order",
+                "noPartsUsed": "No parts used yet",
+                "viewWorkOrder": "View Work Order"
+            },
             "metrics": {
                 "title": "Performance Metrics",
                 "totalCost": "Total Maintenance Cost",
                 "avgRepair": "Avg Repair Cost",
+                "avgRepairCost": "Avg Repair Cost",
                 "perWorkOrder": "Per work order",
                 "costPerKm": "Cost per KM",
                 "mtbf": "MTBF",
                 "meanTimeBetweenFailures": "Mean Time Between Failures",
+                "reliabilityScore": "Reliability Score",
                 "reliability": "Reliability Score",
+                "totalDowntime": "Total Downtime",
                 "downtime": "Total Downtime",
                 "mttr": "MTTR",
                 "meanTimeToRepair": "Mean Time To Repair",
@@ -810,7 +853,7 @@
                 "createFirst": "Create First Plan",
                 "customPlan": "Custom Plan",
                 "paused": "Paused",
-                "every": "Every {value}",
+                "every": "Every",
                 "due": "Due: {date}",
                 "lastService": "Last Service",
                 "nextDue": "Next Due",
@@ -980,6 +1023,127 @@
                 "rejected": "Rejected",
                 "qty": "Qty"
             }
+        },
+        "maintenance": {
+            "dashboard": {
+                "activePlansTitle": "Active Maintenance Plans",
+                "noActivePlans": "No active maintenance plans",
+                "emptyDescription": "Maintenance plans are created from individual vehicle pages. Go to a vehicle's detail page and create a recurring maintenance plan based on a template.",
+                "viewVehicles": "View Vehicles",
+                "viewDetails": "View Details",
+                "editPlan": "Edit Plan",
+                "deactivate": "Deactivate",
+                "template": "Template",
+                "nextDue": "Next Due",
+                "notScheduled": "Not scheduled",
+                "dueAtKm": "Due at KM",
+                "activeStatus": "Plan is active and monitoring",
+                "attentionStatus": "Plan requires attention"
+            },
+            "calendar": {
+                "today": "Today",
+                "event": "event",
+                "events": "events",
+                "weekdays": {
+                    "sun": "Sun",
+                    "mon": "Mon",
+                    "tue": "Tue",
+                    "wed": "Wed",
+                    "thu": "Thu",
+                    "fri": "Fri",
+                    "sat": "Sat"
+                }
+            },
+            "table": {
+                "searchPlaceholder": "Search plans...",
+                "noPlansFound": "No plans found",
+                "plan": "plan",
+                "plans": "plans",
+                "headers": {
+                    "asset": "Asset",
+                    "planName": "Plan Name",
+                    "recurrence": "Recurrence",
+                    "nextDue": "Next Due",
+                    "status": "Status"
+                },
+                "actions": {
+                    "runNow": "Run Now",
+                    "pause": "Pause",
+                    "resume": "Resume",
+                    "viewVehicle": "View Vehicle",
+                    "delete": "Delete",
+                    "confirmDelete": "Are you sure you want to delete this maintenance plan?"
+                },
+                "recurrence": {
+                    "daily": "Daily",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly",
+                    "everyDays": "Every {days} days",
+                    "everyKm": "Every {km} km",
+                    "everyHours": "Every {hours} hours",
+                    "custom": "Custom"
+                },
+                "status": {
+                    "active": "Active",
+                    "inactive": "Inactive"
+                },
+                "pagination": {
+                    "showing": "Showing",
+                    "to": "to",
+                    "of": "of",
+                    "page": "Page",
+                    "previous": "Previous",
+                    "next": "Next"
+                }
+            },
+            "card": {
+                "progress": "Progress",
+                "lastPerformed": "Last Performed",
+                "nextDue": "Next Due",
+                "never": "Never",
+                "overdue": "Overdue",
+                "active": "Active",
+                "markCompleted": "Mark as Completed"
+            },
+            "form": {
+                "scheduleTitle": "Schedule Maintenance",
+                "editTemplate": "Edit Template",
+                "createTemplate": "Create Maintenance Template",
+                "templateName": "Template Name",
+                "description": "Description",
+                "intervalRules": "Interval Rules",
+                "type": "Type",
+                "value": "Value",
+                "taskChecklist": "Task Checklist",
+                "addTask": "Add Task",
+                "saveTemplate": "Save Template",
+                "cancel": "Cancel",
+                "create": "Schedule Maintenance",
+                "vehicle": "Vehicle",
+                "selectVehicle": "Select a vehicle",
+                "selectTemplate": "Select a template (optional)",
+                "scheduledDate": "Scheduled Date",
+                "priority": "Priority",
+                "assignTo": "Assign To (Optional)",
+                "estimatedCost": "Estimated Cost",
+                "notes": "Notes",
+                "optional": "(Optional)",
+                "selectTechnician": "Select technician (optional)",
+                "task": "Task",
+                "items": {
+                    "distance": "Distance (km)",
+                    "time": "Time (months)",
+                    "engineHours": "Engine Hours"
+                },
+                "priorities": {
+                    "low": "Low",
+                    "medium": "Medium",
+                    "high": "High",
+                    "critical": "Critical"
+                },
+                "success": "Maintenance scheduled successfully",
+                "error": "Failed to schedule maintenance"
+            }
         }
     },
     "notAuthorized": {
@@ -1008,5 +1172,18 @@
     },
     "homePage": {
         "redirecting": "Redirecting..."
+    },
+    "components": {
+        "pagination": {
+            "showing": "Showing",
+            "to": "to",
+            "of": "of",
+            "results": "results",
+            "rowsPerPage": "Rows per page:"
+        },
+        "confirmDialog": {
+            "defaultConfirm": "Confirm",
+            "defaultCancel": "Cancel"
+        }
     }
 }

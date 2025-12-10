@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { formatDateShort } from "@/lib/formatters";
 
 import { ActiveMaintenancePlan } from "../types/maintenanceDashboard.types";
@@ -31,6 +32,7 @@ interface ActivePlansListProps {
 }
 
 export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
+  const t = useTranslations("maintenance.dashboard");
   if (isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -48,9 +50,9 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
     return (
       <EmptyState
         icon={ClipboardList}
-        title="No active maintenance plans"
-        description="Maintenance plans are created from individual vehicle pages. Go to a vehicle's detail page and create a recurring maintenance plan based on a template."
-        actionLabel="View Vehicles"
+        title={t("noActivePlans")}
+        description={t("emptyDescription")}
+        actionLabel={t("viewVehicles")}
         onAction={() => (window.location.href = "/dashboard/vehicles")}
       />
     );
@@ -98,10 +100,10 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit Plan</DropdownMenuItem>
+                  <DropdownMenuItem>{t("viewDetails")}</DropdownMenuItem>
+                  <DropdownMenuItem>{t("editPlan")}</DropdownMenuItem>
                   <DropdownMenuItem className="text-red-600">
-                    Deactivate
+                    {t("deactivate")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -109,7 +111,7 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
             <CardContent>
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  Template
+                  {t("template")}
                 </h4>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">
                   {plan.template.name || "Unknown Template"}
@@ -121,7 +123,7 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2 text-gray-500">
                     <Calendar className="h-4 w-4" />
-                    <span>Next Due</span>
+                    <span>{t("nextDue")}</span>
                   </div>
                   <span
                     className={
@@ -133,7 +135,7 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
                   >
                     {plan.next_due_date
                       ? formatDateShort(plan.next_due_date)
-                      : "Not scheduled"}
+                      : t("notScheduled")}
                   </span>
                 </div>
 
@@ -141,7 +143,7 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2 text-gray-500">
                     <Gauge className="h-4 w-4" />
-                    <span>Due at KM</span>
+                    <span>{t("dueAtKm")}</span>
                   </div>
                   <span className="text-gray-900 dark:text-white font-medium">
                     {plan.next_due_mileage?.toLocaleString() || "N/A"}
@@ -157,8 +159,8 @@ export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
                   )}
                   <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                     {plan.is_active
-                      ? "Plan is active and monitoring"
-                      : "Plan requires attention"}
+                      ? t("activeStatus")
+                      : t("attentionStatus")}
                   </span>
                 </div>
               </div>

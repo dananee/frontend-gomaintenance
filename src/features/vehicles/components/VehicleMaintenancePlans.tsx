@@ -45,7 +45,7 @@ export function VehicleMaintenancePlans({
   onEdit,
   onDelete,
 }: VehicleMaintenancePlansProps) {
-  const t = useTranslations("features.vehicles.maintenance");
+  const t = useTranslations("vehicles.details.maintenance");
   const { runPlanNow, pausePlan, resumePlan } = useMaintenanceMutations();
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
@@ -124,9 +124,9 @@ export function VehicleMaintenancePlans({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">{t("activePlans")}</h2>
+          <h2 className="text-lg font-semibold">{t("plansTitle")}</h2>
           <p className="text-sm text-muted-foreground">
-            {t("plansDesc")}
+            {t("plansSubtitle")}
           </p>
         </div>
         <Button onClick={onCreate} size="sm">

@@ -19,7 +19,7 @@ interface VehicleActivityTimelineProps {
 }
 
 export function VehicleActivityTimeline({ events = [] }: VehicleActivityTimelineProps) {
-  const t = useTranslations("features.vehicles.activity"); // Using activity namespace as it fits best, though keys are generic
+  const t = useTranslations("vehicles.details.activity"); // Using activity namespace as it fits best, though keys are generic
   // Alternatively could use features.vehicles.maintenance.timelineTitle if appropriate, but let's stick to what we have or generic keys.
   // Actually, I should use "features.vehicles.activity" for title.
 

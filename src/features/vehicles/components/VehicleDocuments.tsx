@@ -28,7 +28,7 @@ export function VehicleDocuments({
   onDelete,
   isDeleting,
 }: VehicleDocumentsProps) {
-  const t = useTranslations("features.vehicles.documents");
+  const t = useTranslations("vehicles.details.documents");
 
   const getFileIcon = (type: string) => {
     if (type.includes("image")) return <ImageIcon className="h-5 w-5 text-purple-600" />;

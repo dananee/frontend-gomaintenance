@@ -22,12 +22,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { MaintenancePlan } from "../../types/vehicle.types";
-
+import { CreateMaintenancePlanRequest, VehicleMaintenancePlan } from "../api/vehiclePlans";
+ 
 interface CreateMaintenancePlanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  plan?: MaintenancePlan; // If provided, we are editing
+  plan?: VehicleMaintenancePlan; // If provided, we are editing
+  onSubmit: (payload: CreateMaintenancePlanRequest) => void;
 }
 
 interface FormData {
@@ -42,8 +43,9 @@ export function CreateMaintenancePlanModal({
   isOpen,
   onClose,
   plan,
+  onSubmit,
 }: CreateMaintenancePlanModalProps) {
-  const t = useTranslations("features.vehicles.form");
+  const t = useTranslations("vehicles.details.form");
   const {
     register,
     handleSubmit,
@@ -77,14 +79,18 @@ export function CreateMaintenancePlanModal({
     t.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const onSubmit = async (data: FormData) => {
+  const handleFormSubmit = async (data: FormData) => {
     // Validate that at least one interval is set
     if (!data.interval_km && !data.interval_months) {
       return; // Or show error
     }
 
     console.log("Submitting:", data);
-    // TODO: Implement API call
+    onSubmit({
+        ...data,
+        interval_km: data.interval_km || 0,
+        interval_months: data.interval_months || 0
+    });
     onClose();
   };
 
@@ -111,7 +117,7 @@ export function CreateMaintenancePlanModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 py-4">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="template" className="text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -237,7 +243,7 @@ export function CreateMaintenancePlanModal({
               {t("cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting || !selectedTemplate || hasIntervalError} className="px-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white">
-              {plan ? t("save") : t("create")}
+              {isSubmitting ? "..." : plan ? t("save") : t("create")}
             </Button>
           </DialogFooter>
         </form>

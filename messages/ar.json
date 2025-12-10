@@ -22,6 +22,19 @@
         "title": "إدارة الأسطول",
         "subtitle": "قم بإدارة أسطولك بكفاءة"
     },
+    "navigation": {
+        "sidebar": {
+            "dashboard": "لوحة التحكم",
+            "vehicles": "المركبات",
+            "workOrders": "أوامر العمل",
+            "maintenance": "الصيانة",
+            "inventory": "المخزون",
+            "users": "المستخدمون",
+            "reports": "التقارير",
+            "title": "Fleet CMMS",
+            "subtitle": "Maintenance Pro"
+        }
+    },
     "dashboard": {
         "title": "لوحة التحكم",
         "kpis": {
@@ -238,6 +251,13 @@
                 "parts": "القطع",
                 "other": "أخرى"
             }
+        },
+        "vehicles": {
+            "maintenance": {
+                "noHistory": "لا يوجد سجل صيانة متاح",
+                "historyTitle": "سجل الصيانة",
+                "technician": "فني"
+            }
         }
     },
     "inventory": {
@@ -433,6 +453,110 @@
                 "deleteSuccess": "تم حذف القالب بنجاح",
                 "deleteError": "فشل حذف القالب"
             }
+        },
+        "calendar": {
+            "today": "اليوم",
+            "event": "حدث",
+            "events": "أحداث",
+            "weekdays": {
+                "sun": "أحد",
+                "mon": "إثنين",
+                "tue": "ثلاثاء",
+                "wed": "أربعاء",
+                "thu": "خميس",
+                "fri": "جمعة",
+                "sat": "سبت"
+            }
+        },
+        "table": {
+            "searchPlaceholder": "بحث عن خطط...",
+            "noPlansFound": "لم يتم العثور على خطط",
+            "plan": "خطة",
+            "plans": "خطط",
+            "headers": {
+                "asset": "الأصل",
+                "planName": "اسم الخطة",
+                "recurrence": "التكرار",
+                "nextDue": "الاستحقاق التالي",
+                "status": "الحالة"
+            },
+            "actions": {
+                "runNow": "تشغيل الآن",
+                "pause": "إيقاف مؤقت",
+                "resume": "استئناف",
+                "viewVehicle": "عرض المركبة",
+                "delete": "حذف",
+                "confirmDelete": "هل أنت متأكد أنك تريد حذف خطة الصيانة هذه؟"
+            },
+            "recurrence": {
+                "daily": "يومي",
+                "weekly": "أسبوعي",
+                "monthly": "شهري",
+                "everyDays": "كل {days} أيام",
+                "everyKm": "كل {km} كم",
+                "everyHours": "كل {hours} ساعة",
+                "custom": "مخصص"
+            },
+            "status": {
+                "active": "نشط",
+                "inactive": "غير نشط"
+            },
+            "pagination": {
+                "showing": "عرض",
+                "to": "إلى",
+                "of": "من",
+                "page": "صفحة",
+                "previous": "السابق",
+                "next": "التالي"
+            }
+        },
+        "card": {
+            "progress": "التقدم",
+            "lastPerformed": "آخر تنفيذ",
+            "nextDue": "الاستحقاق التالي",
+            "never": "أبداً",
+            "overdue": "متأخر",
+            "active": "نشط",
+            "markCompleted": "تحديد كمكتمل"
+        },
+        "form": {
+            "scheduleTitle": "جدولة الصيانة",
+            "editTemplate": "تعديل القالب",
+            "createTemplate": "إنشاء قالب صيانة",
+            "templateName": "اسم القالب",
+            "description": "الوصف",
+            "intervalRules": "قواعد الفاصل الزمني",
+            "type": "النوع",
+            "value": "القيمة",
+            "taskChecklist": "قائمة مهام",
+            "addTask": "إضافة مهمة",
+            "saveTemplate": "حفظ القالب",
+            "cancel": "إلغاء",
+            "create": "جدولة الصيانة",
+            "vehicle": "المركبة",
+            "selectVehicle": "اختر مركبة",
+            "selectTemplate": "اختر قالباً (اختياري)",
+            "scheduledDate": "التاريخ المجدول",
+            "priority": "الأولوية",
+            "assignTo": "تعيين إلى (اختياري)",
+            "estimatedCost": "التكلفة التقديرية",
+            "notes": "ملاحظات",
+            "optional": "(اختياري)",
+            "selectTechnician": "اختر فنياً (اختياري)",
+            "task": "مهمة",
+            "items": {
+                "distance": "المسافة (كم)",
+                "time": "الوقت (أشهر)",
+                "engineHours": "ساعات المحرك"
+            },
+            "priorities": {
+                "low": "منخفض",
+                "medium": "متوسط",
+                "high": "عالي",
+                "critical": "حرج"
+            },
+            "success": "تمت جدولة الصيانة بنجاح",
+            "error": "فشل في جدولة الصيانة"
         }
     },
     "notifications": {
@@ -641,7 +765,8 @@
                 "all": "كل الأنواع",
                 "truck": "شاحنة",
                 "van": "فان",
-                "car": "سيارة"
+                "car": "سيارة",
+                "unknown": "غير معروف"
             }
         },
         "empty": {
@@ -666,20 +791,42 @@
         },
         "details": {
             "tabs": {
-                "overview": "نظرة عامة",
+                "عام": "نظرة عامة",
                 "plans": "خطط الصيانة",
                 "documents": "المستندات",
                 "history": "التاريخ"
+            },
+            "performanceMetrics": {
+                "title": "مقاييس الأداء"
+            },
+            "analytics": {
+                "title": "التحليلات",
+                "mileageGrowth": "نمو المسافة المقطوعة",
+                "chartDataAvailable": "بيانات الرسم البياني متاحة",
+                "noMileageHistory": "لا يوجد سجل للمسافة المقطوعة"
+            },
+            "partsUsed": {
+                "title": "القطع المستخدمة والتكاليف",
+                "partName": "اسم القطعة",
+                "quantity": "الكمية",
+                "cost": "التكلفة",
+                "dateUsed": "تاريخ الاستخدام",
+                "workOrder": "أمر العمل",
+                "noPartsUsed": "لم يتم استخدام أي قطع بعد",
+                "viewWorkOrder": "عرض أمر العمل"
             },
             "metrics": {
                 "title": "مقاييس الأداء",
                 "totalCost": "إجمالي تكلفة الصيانة",
                 "avgRepair": "متوسط تكلفة الإصلاح",
+                "avgRepairCost": "متوسط تكلفة الإصلاح",
                 "perWorkOrder": "لكل أمر عمل",
                 "costPerKm": "التكلفة لكل كم",
                 "mtbf": "MTBF",
                 "meanTimeBetweenFailures": "متوسط الوقت بين الأعطال",
+                "reliabilityScore": "درجة الموثوقية",
                 "reliability": "درجة الموثوقية",
+                "totalDowntime": "إجمالي وقت التوقف",
                 "downtime": "إجمالي وقت التوقف",
                 "mttr": "MTTR",
                 "meanTimeToRepair": "متوسط وقت الإصلاح",
@@ -810,7 +957,7 @@
                 "createFirst": "إنشاء أول خطة",
                 "customPlan": "خطة مخصصة",
                 "paused": "متوقف مؤقتاً",
-                "every": "كل {value}",
+                "every": "كل",
                 "due": "مستحق: {date}",
                 "lastService": "آخر خدمة",
                 "nextDue": "الاستحقاق القادم",
@@ -973,6 +1120,127 @@
                 "rejected": "مرفوض",
                 "qty": "الكمية"
             }
+        },
+        "maintenance": {
+            "dashboard": {
+                "activePlansTitle": "خطط الصيانة النشطة",
+                "noActivePlans": "لا توجد خطط صيانة نشطة",
+                "emptyDescription": "يتم إنشاء خطط الصيانة من صفحات المركبات الفردية. انتقل إلى صفحة تفاصيل المركبة وأنشئ خطة صيانة متكررة بناءً على قالب.",
+                "viewVehicles": "عرض المركبات",
+                "viewDetails": "عرض التفاصيل",
+                "editPlan": "تعديل الخطة",
+                "deactivate": "تعطيل",
+                "template": "قالب",
+                "nextDue": "الاستحقاق التالي",
+                "notScheduled": "غير مجدول",
+                "dueAtKm": "مستحق عند كم",
+                "activeStatus": "الخطة نشطة وتتم مراقبتها",
+                "attentionStatus": "الخطة تحتاج إلى اهتمام"
+            },
+            "calendar": {
+                "today": "اليوم",
+                "event": "حدث",
+                "events": "أحداث",
+                "weekdays": {
+                    "sun": "أحد",
+                    "mon": "إثنين",
+                    "tue": "ثلاثاء",
+                    "wed": "أربعاء",
+                    "thu": "خميس",
+                    "fri": "جمعة",
+                    "sat": "سبت"
+                }
+            },
+            "table": {
+                "searchPlaceholder": "بحث عن خطط...",
+                "noPlansFound": "لم يتم العثور على خطط",
+                "plan": "خطة",
+                "plans": "خطط",
+                "headers": {
+                    "asset": "الأصل",
+                    "planName": "اسم الخطة",
+                    "recurrence": "التكرار",
+                    "nextDue": "الاستحقاق التالي",
+                    "status": "الحالة"
+                },
+                "actions": {
+                    "runNow": "تشغيل الآن",
+                    "pause": "إيقاف مؤقت",
+                    "resume": "استئناف",
+                    "viewVehicle": "عرض المركبة",
+                    "delete": "حذف",
+                    "confirmDelete": "هل أنت متأكد أنك تريد حذف خطة الصيانة هذه؟"
+                },
+                "recurrence": {
+                    "daily": "يومي",
+                    "weekly": "أسبوعي",
+                    "monthly": "شهري",
+                    "everyDays": "كل {days} أيام",
+                    "everyKm": "كل {km} كم",
+                    "everyHours": "كل {hours} ساعة",
+                    "custom": "مخصص"
+                },
+                "status": {
+                    "active": "نشط",
+                    "inactive": "غير نشط"
+                },
+                "pagination": {
+                    "showing": "عرض",
+                    "to": "إلى",
+                    "of": "من",
+                    "page": "صفحة",
+                    "previous": "السابق",
+                    "next": "التالي"
+                }
+            },
+            "card": {
+                "progress": "التقدم",
+                "lastPerformed": "آخر تنفيذ",
+                "nextDue": "الاستحقاق التالي",
+                "never": "أبداً",
+                "overdue": "متأخر",
+                "active": "نشط",
+                "markCompleted": "تحديد كمكتمل"
+            },
+            "form": {
+                "scheduleTitle": "جدولة الصيانة",
+                "editTemplate": "تعديل القالب",
+                "createTemplate": "إنشاء قالب صيانة",
+                "templateName": "اسم القالب",
+                "description": "الوصف",
+                "intervalRules": "قواعد الفاصل الزمني",
+                "type": "النوع",
+                "value": "القيمة",
+                "taskChecklist": "قائمة مهام",
+                "addTask": "إضافة مهمة",
+                "saveTemplate": "حفظ القالب",
+                "cancel": "إلغاء",
+                "create": "جدولة الصيانة",
+                "vehicle": "المركبة",
+                "selectVehicle": "اختر مركبة",
+                "selectTemplate": "اختر قالباً (اختياري)",
+                "scheduledDate": "التاريخ المجدول",
+                "priority": "الأولوية",
+                "assignTo": "تعيين إلى (اختياري)",
+                "estimatedCost": "التكلفة التقديرية",
+                "notes": "ملاحظات",
+                "optional": "(اختياري)",
+                "selectTechnician": "اختر فنياً (اختياري)",
+                "task": "مهمة",
+                "items": {
+                    "distance": "المسافة (كم)",
+                    "time": "الوقت (أشهر)",
+                    "engineHours": "ساعات المحرك"
+                },
+                "priorities": {
+                    "low": "منخفض",
+                    "medium": "متوسط",
+                    "high": "عالي",
+                    "critical": "حرج"
+                },
+                "success": "تمت جدولة الصيانة بنجاح",
+                "error": "فشل في جدولة الصيانة"
+            }
         }
     },
     "notAuthorized": {
@@ -1001,5 +1269,18 @@
     },
     "homePage": {
         "redirecting": "جارٍ إعادة التوجيه..."
+    },
+    "components": {
+        "pagination": {
+            "showing": "عرض",
+            "to": "إلى",
+            "of": "من",
+            "results": "نتائج",
+            "rowsPerPage": "صفوف لكل صفحة:"
+        },
+        "confirmDialog": {
+            "defaultConfirm": "تأكيد",
+            "defaultCancel": "إلغاء"
+        }
     }
 }

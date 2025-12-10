@@ -23,7 +23,7 @@ export function UpdateUsageModal({
   isSubmitting,
   currentKm,
 }: UpdateUsageModalProps) {
-  const t = useTranslations("features.vehicles.form");
+  const t = useTranslations("vehicles.details.form");
   const {
     register,
     handleSubmit,

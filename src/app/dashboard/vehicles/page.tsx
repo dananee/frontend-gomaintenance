@@ -151,7 +151,7 @@ export default function VehiclesPage() {
             vehicles={paginatedVehicles}
             isLoading={isLoading}
             onEdit={handleEdit}
-            onDelete={(id) => {
+            onDelete={(id: string) => {
               toast.success(t("toasts.deleted.title"), {
                 description: t("toasts.deleted.description"),
               });

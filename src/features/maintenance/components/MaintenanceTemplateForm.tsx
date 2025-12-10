@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,7 @@ interface MaintenanceTemplateFormProps {
 }
 
 export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: MaintenanceTemplateFormProps) {
+  const t = useTranslations("maintenance.form");
   const [tasks, setTasks] = useState<string[]>(initialData?.tasks || [""]);
   
   const { register, handleSubmit, setValue } = useForm<Partial<MaintenanceTemplate>>({
@@ -54,25 +56,25 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{initialData ? "Edit Template" : "Create Maintenance Template"}</CardTitle>
+        <CardTitle>{initialData ? t("editTemplate") : t("createTemplate")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Template Name</label>
+            <label className="text-sm font-medium">{t("templateName")}</label>
             <Input {...register("name", { required: true })} placeholder="e.g., Oil Change Service A" />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Description</label>
+            <label className="text-sm font-medium">{t("description")}</label>
             <Textarea {...register("description")} placeholder="Describe the maintenance procedure..." />
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Interval Rules</h3>
+            <h3 className="text-sm font-medium">{t("intervalRules")}</h3>
             <div className="flex gap-4 items-end">
               <div className="flex-1 space-y-2">
-                <label className="text-xs text-gray-500">Type</label>
+                <label className="text-xs text-gray-500">{t("type")}</label>
                 <Select 
                   defaultValue="distance" 
                   onValueChange={(val) => setValue("intervals.0.type", val as MaintenanceIntervalType)}
@@ -81,14 +83,14 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="distance">Distance (km)</SelectItem>
-                    <SelectItem value="time">Time (months)</SelectItem>
-                    <SelectItem value="engine_hours">Engine Hours</SelectItem>
+                    <SelectItem value="distance">{t("items.distance")}</SelectItem>
+                    <SelectItem value="time">{t("items.time")}</SelectItem>
+                    <SelectItem value="engine_hours">{t("items.engineHours")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex-1 space-y-2">
-                <label className="text-xs text-gray-500">Value</label>
+                <label className="text-xs text-gray-500">{t("value")}</label>
                 <Input 
                   type="number" 
                   {...register("intervals.0.value", { valueAsNumber: true })} 
@@ -99,10 +101,10 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">Task Checklist</h3>
+              <h3 className="text-sm font-medium">{t("taskChecklist")}</h3>
               <Button type="button" variant="outline" size="sm" onClick={handleAddTask}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Task
+                {t("addTask")}
               </Button>
             </div>
             <div className="space-y-2">
@@ -111,7 +113,7 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
                   <Input 
                     value={task} 
                     onChange={(e) => handleTaskChange(index, e.target.value)}
-                    placeholder={`Task ${index + 1}`}
+                    placeholder={`${t("task")} ${index + 1}`}
                   />
                   <Button 
                     type="button" 
@@ -128,8 +130,8 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-            <Button type="submit">Save Template</Button>
+            <Button type="button" variant="outline" onClick={onCancel}>{t("cancel")}</Button>
+            <Button type="submit">{t("saveTemplate")}</Button>
           </div>
         </form>
       </CardContent>

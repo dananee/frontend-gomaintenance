@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Button } from "./button";
 import {
   ChevronLeft,
@@ -23,6 +26,7 @@ export function Pagination({
   totalItems,
   onPageSizeChange,
 }: PaginationProps) {
+  const t = useTranslations("components.pagination");
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
@@ -61,14 +65,14 @@ export function Pagination({
     <div className="flex flex-col gap-4 px-2 py-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
         <div className="text-sm text-gray-700 dark:text-gray-300">
-          Showing <span className="font-medium">{startItem}</span> to{" "}
-          <span className="font-medium">{endItem}</span> of{" "}
-          <span className="font-medium">{totalItems}</span> results
+          {t("showing")} <span className="font-medium">{startItem}</span> {t("to")}{" "}
+          <span className="font-medium">{endItem}</span> {t("of")}{" "}
+          <span className="font-medium">{totalItems}</span> {t("results")}
         </div>
         {onPageSizeChange && (
           <div className="flex items-center gap-2">
             <label className="text-sm text-gray-700 dark:text-gray-300">
-              Rows per page:
+              {t("rowsPerPage")}
             </label>
             <select
               value={pageSize}

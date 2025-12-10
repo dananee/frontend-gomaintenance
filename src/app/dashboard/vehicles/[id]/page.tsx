@@ -257,7 +257,9 @@ export default function VehicleDetailPage() {
             <span>•</span>
             <span>{vehicle.year}</span>
             <span>•</span>
-            <span className="capitalize">{t(`filters.type.${vehicle.type}`) || vehicle.type}</span>
+            <span className="capitalize">
+              {vehicle.type ? t(`filters.type.${vehicle.type}`) : t('filters.type.unknown')}
+            </span>
           </p>
         </div>
 

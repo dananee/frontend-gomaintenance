@@ -27,11 +27,13 @@ import { useTranslations } from "next-intl";
 interface VehicleTableProps {
   vehicles: Vehicle[];
   isLoading: boolean;
+  onEdit: (vehicle: Vehicle) => void;
+  onDelete: (id: string) => void;
 }
 
 export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
   const router = useRouter();
-  const t = useTranslations("features.vehicles.table");
+  const t = useTranslations("vehicles.details.table");
 
   if (isLoading) {
     return <div className="p-8 text-center">{t("noData")}</div>;

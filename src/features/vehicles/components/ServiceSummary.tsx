@@ -20,7 +20,7 @@ export function ServiceSummary({
   lastTechnician,
   serviceInterval,
 }: ServiceSummaryProps) {
-  const t = useTranslations("features.vehicles.kpis.serviceSummary");
+  const t = useTranslations("vehicles.details.kpis.serviceSummary");
 
   return (
     <Card className="shadow-sm">

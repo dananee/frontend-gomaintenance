@@ -20,8 +20,8 @@ export function UploadDocumentModal({
   onSubmit,
   isSubmitting,
 }: UploadDocumentModalProps) {
-  const t = useTranslations("features.vehicles.documents");
-  const tForm = useTranslations("features.vehicles.form");
+  const t = useTranslations("vehicles.details.documents");
+  const tForm = useTranslations("vehicles.details.form");
   const {
     register,
     handleSubmit,
