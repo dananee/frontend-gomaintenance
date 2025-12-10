@@ -1,68 +1,62 @@
 "use client";
 
-import { memo, useCallback, useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import {
-  Activity,
-  CheckCircle2,
-  AlertCircle,
-  AlertTriangle,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
-import { FleetHealthScore as FleetHealthScoreType } from "../types/dashboardKPI.types";
+import { memo, useMemo } from "react";
+import { Card, CardContent, CardTitle, CardHeader, CardFooter } from "@/components/ui/card";
+import { Activity } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+interface FleetHealthData {
+  overall_score: number;
+  healthy_vehicles: number;
+  maintenance_due: number;
+  critical_vehicles: number;
+  status: "excellent" | "good" | "fair" | "poor" | "critical";
+}
 
 interface FleetHealthScoreProps {
-  data: FleetHealthScoreType;
+  data: FleetHealthData;
   previousScore?: number;
   onClick?: () => void;
 }
 
-const getStatusColor = (status: string) => {
+function getStatusColor(status: FleetHealthData["status"]) {
   switch (status) {
     case "excellent":
-      return "text-green-600";
     case "good":
-      return "text-blue-600";
+      return "text-green-600 dark:text-green-400";
     case "fair":
-      return "text-yellow-600";
+      return "text-yellow-600 dark:text-yellow-400";
     case "poor":
-      return "text-orange-600";
+      return "text-orange-600 dark:text-orange-400";
     case "critical":
-      return "text-red-600";
+      return "text-red-600 dark:text-red-400";
     default:
-      return "text-gray-600";
+      return "text-gray-600 dark:text-gray-400";
   }
-};
+}
 
-const getStatusBg = (status: string) => {
+function getStatusBg(status: FleetHealthData["status"]) {
   switch (status) {
     case "excellent":
-      return "from-green-50 to-green-100/50";
     case "good":
-      return "from-blue-50 to-blue-100/50";
+      return "from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 border-green-200 dark:border-green-800/30";
     case "fair":
-      return "from-yellow-50 to-yellow-100/50";
+      return "from-yellow-50 to-orange-50 dark:from-yellow-900/10 dark:to-orange-900/10 border-yellow-200 dark:border-yellow-800/30";
     case "poor":
-      return "from-orange-50 to-orange-100/50";
+      return "from-orange-50 to-red-50 dark:from-orange-900/10 dark:to-red-900/10 border-orange-200 dark:border-orange-800/30";
     case "critical":
-      return "from-red-50 to-red-100/50";
+      return "from-red-50 to-rose-50 dark:from-red-900/10 dark:to-rose-900/10 border-red-200 dark:border-red-800/30";
     default:
-      return "from-gray-50 to-gray-100/50";
+      return "bg-card";
   }
-};
+}
 
 function FleetHealthScoreComponent({
   data,
   previousScore = 84,
   onClick,
 }: FleetHealthScoreProps) {
+  const t = useTranslations("features.dashboard.fleetHealth");
   const statusColor = useMemo(() => getStatusColor(data.status), [data.status]);
   const statusBg = useMemo(() => getStatusBg(data.status), [data.status]);
   const scoreDiff = useMemo(() => data.overall_score - previousScore, [data.overall_score, previousScore]);
@@ -78,99 +72,67 @@ function FleetHealthScoreComponent({
         <div className="flex items-center gap-2">
           <Activity className={`h-5 w-5 ${statusColor}`} />
           <CardTitle className="text-xl font-semibold">
-            Fleet Health Score
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {/* Score Circle with Glow */}
-          <div className="flex flex-col items-center">
-            <div className="relative h-32 w-32">
-
-              <svg className="rotate-[-90deg] h-full w-full relative z-10">
-                {/* Background circle */}
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  className="text-gray-200 dark:text-gray-700"
-                />
-                {/* Progress circle */}
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  strokeDasharray={`${
-                    (data.overall_score / 100) * 351.86
-                  } 351.86`}
-                  className={`${statusColor} transition-all duration-500`}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <p className={`text-4xl font-bold ${statusColor}`}>
-                  {data.overall_score}
-                </p>
-                <p className="text-xs text-muted-foreground uppercase">
-                  {data.status}
-                </p>
-                {/* Trend Arrow */}
-                {scoreDiff !== 0 && (
-                  <div
-                    className={`flex items-center gap-1 mt-1 text-xs font-medium ${
-                      hasImproved
-                        ? "text-green-600 dark:text-green-400"
-                        : "text-red-600 dark:text-red-400"
-                    }`}
-                  >
-                    {hasImproved ? (
-                      <TrendingUp className="h-3 w-3" />
-                    ) : (
-                      <TrendingDown className="h-3 w-3" />
-                    )}
-                    <span>{Math.abs(scoreDiff)}</span>
-                  </div>
-                )}
-              </div>
+        <div className="flex items-end justify-between">
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className={`text-5xl font-bold ${statusColor}`}>
+                {data.overall_score}
+              </span>
+              <span className="text-sm font-medium text-muted-foreground">
+                / 100
+              </span>
+            </div>
+            <div className="mt-1 flex items-center gap-1">
+              <span
+                className={`text-sm font-bold ${
+                  hasImproved ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {hasImproved ? "+" : ""}
+                {scoreDiff}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                vs last month
+              </span>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-1">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <p className="text-2xl font-bold">{data.healthy_vehicles}</p>
-              </div>
-              <p className="text-xs text-muted-foreground">Healthy</p>
+          <div className="flex gap-4">
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-green-50 p-2 dark:bg-green-900/20">
+              <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                {data.healthy_vehicles}
+              </span>
+              <span className="text-xs font-medium text-green-800 dark:text-green-300">
+                {t("healthy")}
+              </span>
             </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-1">
-                <AlertCircle className="h-4 w-4 text-yellow-600" />
-                <p className="text-2xl font-bold">{data.maintenance_due}</p>
-              </div>
-              <p className="text-xs text-muted-foreground">Due</p>
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-yellow-50 p-2 dark:bg-yellow-900/20">
+              <span className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                {data.maintenance_due}
+              </span>
+              <span className="text-xs font-medium text-yellow-800 dark:text-yellow-300">
+                {t("due")}
+              </span>
             </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-1">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
-                <p className="text-2xl font-bold">{data.critical_vehicles}</p>
-              </div>
-              <p className="text-xs text-muted-foreground">Critical</p>
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-red-50 p-2 dark:bg-red-900/20">
+              <span className="text-2xl font-bold text-red-600 dark:text-red-400">
+                {data.critical_vehicles}
+              </span>
+              <span className="text-xs font-medium text-red-800 dark:text-red-300">
+                {t("critical")}
+              </span>
             </div>
           </div>
         </div>
       </CardContent>
       <CardFooter className="pt-0">
         <p className="text-xs text-center w-full text-muted-foreground hover:text-primary transition-colors">
-          Click to view full health report →
+          {t("clickToView")}
         </p>
       </CardFooter>
     </Card>

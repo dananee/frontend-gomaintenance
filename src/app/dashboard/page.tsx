@@ -24,21 +24,74 @@ import { TrendBadge } from "@/features/dashboard/components/TrendBadge";
 import { OverdueWorkOrders } from "@/features/dashboard/components/OverdueWorkOrders";
 import { VehiclesNeedingMaintenance } from "@/features/dashboard/components/VehiclesNeedingMaintenance";
 import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
+import { useTranslations } from "next-intl";
 
 // Lazy load charts
-const CostChart = lazy(() => import("@/features/reports/components/CostChart").then(module => ({ default: module.CostChart })));
-const AvailabilityChart = lazy(() => import("@/features/reports/components/AvailabilityChart").then(module => ({ default: module.AvailabilityChart })));
-const CostTrendChart = lazy(() => import("@/features/dashboard/components/CostTrendChart").then(module => ({ default: module.CostTrendChart })));
-const DowntimeChart = lazy(() => import("@/features/dashboard/components/DowntimeChart").then(module => ({ default: module.DowntimeChart })));
-const WorkOrderPieChart = lazy(() => import("@/features/dashboard/components/WorkOrderPieChart").then(module => ({ default: module.WorkOrderPieChart })));
-const FleetHealthScore = lazy(() => import("@/features/dashboard/components/FleetHealthScore").then(module => ({ default: module.FleetHealthScore })));
-const TopFaultTypesChart = lazy(() => import("@/features/dashboard/components/TopFaultTypesChart").then(module => ({ default: module.TopFaultTypesChart })));
-const TechnicianPerformanceChart = lazy(() => import("@/features/dashboard/components/TechnicianPerformanceChart").then(module => ({ default: module.TechnicianPerformanceChart })));
-const SLAComplianceChart = lazy(() => import("@/features/dashboard/components/SLAComplianceChart").then(module => ({ default: module.SLAComplianceChart })));
-const MTTRTrendChart = lazy(() => import("@/features/dashboard/components/MTTRTrendChart").then(module => ({ default: module.MTTRTrendChart })));
-const CostForecastChart = lazy(() => import("@/features/dashboard/components/CostForecastChart").then(module => ({ default: module.CostForecastChart })));
-const WorkloadHeatmap = lazy(() => import("@/features/dashboard/components/WorkloadHeatmap").then(module => ({ default: module.WorkloadHeatmap })));
-const FailurePredictionWidget = lazy(() => import("@/features/dashboard/components/FailurePredictionWidget").then(module => ({ default: module.FailurePredictionWidget })));
+const CostChart = lazy(() =>
+  import("@/features/reports/components/CostChart").then((module) => ({
+    default: module.CostChart,
+  }))
+);
+const AvailabilityChart = lazy(() =>
+  import("@/features/reports/components/AvailabilityChart").then((module) => ({
+    default: module.AvailabilityChart,
+  }))
+);
+const CostTrendChart = lazy(() =>
+  import("@/features/dashboard/components/CostTrendChart").then((module) => ({
+    default: module.CostTrendChart,
+  }))
+);
+const DowntimeChart = lazy(() =>
+  import("@/features/dashboard/components/DowntimeChart").then((module) => ({
+    default: module.DowntimeChart,
+  }))
+);
+const WorkOrderPieChart = lazy(() =>
+  import("@/features/dashboard/components/WorkOrderPieChart").then(
+    (module) => ({ default: module.WorkOrderPieChart })
+  )
+);
+const FleetHealthScore = lazy(() =>
+  import("@/features/dashboard/components/FleetHealthScore").then((module) => ({
+    default: module.FleetHealthScore,
+  }))
+);
+const TopFaultTypesChart = lazy(() =>
+  import("@/features/dashboard/components/TopFaultTypesChart").then(
+    (module) => ({ default: module.TopFaultTypesChart })
+  )
+);
+const TechnicianPerformanceChart = lazy(() =>
+  import("@/features/dashboard/components/TechnicianPerformanceChart").then(
+    (module) => ({ default: module.TechnicianPerformanceChart })
+  )
+);
+const SLAComplianceChart = lazy(() =>
+  import("@/features/dashboard/components/SLAComplianceChart").then(
+    (module) => ({ default: module.SLAComplianceChart })
+  )
+);
+const MTTRTrendChart = lazy(() =>
+  import("@/features/dashboard/components/MTTRTrendChart").then((module) => ({
+    default: module.MTTRTrendChart,
+  }))
+);
+const CostForecastChart = lazy(() =>
+  import("@/features/dashboard/components/CostForecastChart").then(
+    (module) => ({ default: module.CostForecastChart })
+  )
+);
+const WorkloadHeatmap = lazy(() =>
+  import("@/features/dashboard/components/WorkloadHeatmap").then((module) => ({
+    default: module.WorkloadHeatmap,
+  }))
+);
+const FailurePredictionWidget = lazy(() =>
+  import("@/features/dashboard/components/FailurePredictionWidget").then(
+    (module) => ({ default: module.FailurePredictionWidget })
+  )
+);
 import { useDashboardKPIs } from "@/features/dashboard/hooks/useDashboardKPIs";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -95,18 +148,22 @@ export default function DashboardPage() {
   const activeWorkOrders = workOrdersData?.total || 0;
 
   // Count critical issues from both work orders and maintenance events
-  const urgentWorkOrders = criticalWorkOrdersData?.data?.filter((wo) => wo.priority === "urgent").length || 0;
-  const criticalMaintenanceEvents = criticalMaintenanceData?.filter(
-    (event) => event.priority === "critical" || event.priority === "high"
-  ).length || 0;
+  const urgentWorkOrders =
+    criticalWorkOrdersData?.data?.filter((wo) => wo.priority === "urgent")
+      .length || 0;
+  const criticalMaintenanceEvents =
+    criticalMaintenanceData?.filter(
+      (event) => event.priority === "critical" || event.priority === "high"
+    ).length || 0;
   const criticalIssues = urgentWorkOrders + criticalMaintenanceEvents;
 
   const fleetAvailability = fleetAvailabilityData?.availability_percent || 0;
+  const t = useTranslations("dashboard");
 
   return (
     <div className="space-y-6 p-6">
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-        Dashboard
+        {t("title")}
       </h1>
 
       {/* Fleet KPIs */}
@@ -115,22 +172,22 @@ export default function DashboardPage() {
           {/* Financial KPIs - Purple/Blue Gradient */}
           <Link href="/dashboard/vehicles">
             <PremiumMetricCard
-              title="Total Fleet Value"
+              title={t("kpis.totalFleetValue.title")}
               value={`$${(kpiData.fleet_kpis.total_fleet_value / 1000).toFixed(
                 0
               )}K`}
-              subtitle="Total asset value"
+              subtitle={t("kpis.totalFleetValue.subtitle")}
               icon={DollarSign}
               variant="purple"
             />
           </Link>
           <Link href="/dashboard/reports?type=cost">
             <PremiumMetricCard
-              title="Maintenance Cost YTD"
+              title={t("kpis.maintenanceCostYTD.title")}
               value={`$${(
                 kpiData.fleet_kpis.total_maintenance_cost_ytd / 1000
               ).toFixed(0)}K`}
-              subtitle="Year to date"
+              subtitle={t("kpis.maintenanceCostYTD.subtitle")}
               icon={Wrench}
               variant="purple"
               trend={kpiData.fleet_kpis.total_maintenance_cost_ytd_trend}
@@ -138,11 +195,11 @@ export default function DashboardPage() {
           </Link>
           <Link href="/dashboard/reports?type=tco">
             <PremiumMetricCard
-              title="Total Cost of Ownership"
+              title={t("kpis.totalCostOfOwnership.title")}
               value={`$${(
                 kpiData.fleet_kpis.total_cost_of_ownership / 1000
               ).toFixed(0)}K`}
-              subtitle="Fleet TCO"
+              subtitle={t("kpis.totalCostOfOwnership.subtitle")}
               icon={DollarSign}
               variant="purple"
             />
@@ -150,19 +207,19 @@ export default function DashboardPage() {
 
           {/* Performance KPIs - Green/Blue Gradient */}
           <PremiumMetricCard
-            title="Fleet Efficiency"
+            title={t("kpis.fleetEfficiency.title")}
             value={`${kpiData.fleet_kpis.fleet_efficiency_score}%`}
-            subtitle="Overall performance"
+            subtitle={t("kpis.fleetEfficiency.subtitle")}
             icon={Activity}
             variant="green"
             trend={kpiData.fleet_kpis.fleet_efficiency_trend}
           />
           <PremiumMetricCard
-            title="Scheduled vs Corrective"
+            title={t("kpis.scheduledVsCorrective.title")}
             value={`${kpiData.fleet_kpis.scheduled_vs_corrective_ratio.toFixed(
               1
             )}:1`}
-            subtitle="Maintenance ratio"
+            subtitle={t("kpis.scheduledVsCorrective.subtitle")}
             icon={BarChart3}
             variant="green"
             trend={kpiData.fleet_kpis.scheduled_vs_corrective_trend}
@@ -171,18 +228,18 @@ export default function DashboardPage() {
           {/* Risk KPIs - Orange/Red Gradient */}
           <Link href="/dashboard/vehicles?status=maintenance">
             <PremiumMetricCard
-              title="Downtime (Month)"
+              title={t("kpis.downtimeMonth.title")}
               value={`${kpiData.fleet_kpis.total_downtime_hours_month}h`}
-              subtitle="Total hours"
+              subtitle={t("kpis.downtimeMonth.subtitle")}
               icon={Clock}
               variant="orange"
               trend={kpiData.fleet_kpis.total_downtime_hours_month_trend}
             />
           </Link>
           <PremiumMetricCard
-            title="Avg Downtime / Vehicle"
+            title={t("kpis.avgDowntimeVehicle.title")}
             value={`${kpiData.fleet_kpis.avg_downtime_per_vehicle.toFixed(1)}h`}
-            subtitle="Per vehicle"
+            subtitle={t("kpis.avgDowntimeVehicle.subtitle")}
             icon={Clock}
             variant="orange"
             trend={kpiData.fleet_kpis.avg_downtime_per_vehicle_trend}
@@ -190,23 +247,23 @@ export default function DashboardPage() {
 
           {/* Availability KPIs - Cyan/Blue Gradient */}
           <PremiumMetricCard
-            title="MTTR"
+            title={t("kpis.mttr.title")}
             value={`${kpiData.fleet_kpis.fleet_mttr}h`}
-            subtitle="Mean Time To Repair"
+            subtitle={t("kpis.mttr.subtitle")}
             icon={Timer}
             variant="teal"
           />
           <PremiumMetricCard
-            title="MTBF"
+            title={t("kpis.mtbf.title")}
             value={`${kpiData.fleet_kpis.fleet_mtbf}h`}
-            subtitle="Between failures"
+            subtitle={t("kpis.mtbf.subtitle")}
             icon={Zap}
             variant="teal"
           />
           <PremiumMetricCard
-            title="Avg Cost / Vehicle"
+            title={t("kpis.avgCostVehicle.title")}
             value={`$${kpiData.fleet_kpis.avg_maintenance_cost_per_vehicle.toLocaleString()}`}
-            subtitle="Per vehicle"
+            subtitle={t("kpis.avgCostVehicle.subtitle")}
             icon={TrendingUp}
             variant="teal"
             trend={kpiData.fleet_kpis.avg_cost_per_vehicle_trend}
@@ -215,11 +272,11 @@ export default function DashboardPage() {
           {/* Additional Premium KPIs - Row 2 */}
           <Link href="/dashboard/work-orders?filter=sla">
             <PremiumMetricCard
-              title="WO SLA Compliance"
+              title={t("kpis.woSlaCompliance.title")}
               value={`${kpiData.fleet_kpis.work_order_sla_compliance.toFixed(
                 1
               )}%`}
-              subtitle="On-time completion"
+              subtitle={t("kpis.woSlaCompliance.subtitle")}
               icon={Target}
               variant="green"
               trend={kpiData.fleet_kpis.work_order_sla_compliance_trend}
@@ -227,9 +284,9 @@ export default function DashboardPage() {
           </Link>
           <Link href="/dashboard/vehicles?view=health">
             <PremiumMetricCard
-              title="Fleet Health Score"
+              title={t("kpis.fleetHealthScore.title")}
               value={`${kpiData.fleet_kpis.global_fleet_health_score}%`}
-              subtitle="Overall fleet status"
+              subtitle={t("kpis.fleetHealthScore.subtitle")}
               icon={Shield}
               variant="blue"
               trend={kpiData.fleet_kpis.global_fleet_health_trend}
@@ -237,11 +294,11 @@ export default function DashboardPage() {
           </Link>
           <Link href="/dashboard/work-orders">
             <PremiumMetricCard
-              title="WO Completion Rate"
+              title={t("kpis.woCompletionRate.title")}
               value={`${kpiData.fleet_kpis.work_order_completion_rate_week.toFixed(
                 1
               )}%`}
-              subtitle="This week"
+              subtitle={t("kpis.woCompletionRate.subtitle")}
               icon={CheckCircle2}
               variant="green"
               trend={kpiData.fleet_kpis.work_order_completion_rate_trend}
@@ -249,11 +306,11 @@ export default function DashboardPage() {
           </Link>
           <Link href="/dashboard/maintenance?type=preventive">
             <PremiumMetricCard
-              title="PM Compliance"
+              title={t("kpis.pmCompliance.title")}
               value={`${kpiData.fleet_kpis.preventive_maintenance_compliance.toFixed(
                 1
               )}%`}
-              subtitle="Preventive maintenance"
+              subtitle={t("kpis.pmCompliance.subtitle")}
               icon={Gauge}
               variant="purple"
               trend={kpiData.fleet_kpis.preventive_maintenance_compliance_trend}
@@ -269,7 +326,7 @@ export default function DashboardPage() {
         </div>
         <div className="relative flex justify-center">
           <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text px-4 text-sm font-semibold text-transparent">
-            Fleet Analytics
+            {t("sections.fleetAnalytics")}
           </span>
         </div>
       </div>
@@ -278,9 +335,9 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/vehicles">
           <PremiumMetricCard
-            title="Total Vehicles"
+            title={t("stats.totalVehicles.title")}
             value={totalVehicles}
-            subtitle="Active fleet vehicles"
+            subtitle={t("stats.totalVehicles.subtitle")}
             icon={Truck}
             variant="blue"
           />
@@ -288,9 +345,9 @@ export default function DashboardPage() {
 
         <Link href="/dashboard/work-orders">
           <PremiumMetricCard
-            title="Active Work Orders"
+            title={t("stats.activeWorkOrders.title")}
             value={activeWorkOrders}
-            subtitle="In progress"
+            subtitle={t("stats.activeWorkOrders.subtitle")}
             icon={Wrench}
             variant="orange"
           />
@@ -298,9 +355,9 @@ export default function DashboardPage() {
 
         <Link href="/dashboard/maintenance">
           <PremiumMetricCard
-            title="Critical Issues"
+            title={t("stats.criticalIssues.title")}
             value={criticalIssues}
-            subtitle="Requires immediate attention"
+            subtitle={t("stats.criticalIssues.subtitle")}
             icon={AlertTriangle}
             variant="rose"
           />
@@ -308,9 +365,9 @@ export default function DashboardPage() {
 
         <Link href="/dashboard/reports">
           <PremiumMetricCard
-            title="Fleet Availability"
+            title={t("stats.fleetAvailability.title")}
             value={`${fleetAvailability.toFixed(0)}%`}
-            subtitle="Vehicles available"
+            subtitle={t("stats.fleetAvailability.subtitle")}
             icon={CheckCircle}
             variant="green"
           />
@@ -319,13 +376,17 @@ export default function DashboardPage() {
 
       {/* Widgets Row */}
       <div className="grid gap-6 md:grid-cols-2">
-        <OverdueWorkOrders />
-        <VehiclesNeedingMaintenance />
+        <OverdueWorkOrders data={kpiData?.overdue_work_orders || []} />
+        <VehiclesNeedingMaintenance data={kpiData?.vehicles_needing_maintenance || []} />
       </div>
 
       {/* Charts Grid */}
       {kpiData && (
-        <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />}>
+        <Suspense
+          fallback={
+            <div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
+          }
+        >
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 content-visibility-auto">
             <div className="lg:col-span-2">
               <CostTrendChart data={kpiData.cost_trend_12months} />
@@ -368,7 +429,7 @@ export default function DashboardPage() {
             </div>
             <div className="relative flex justify-center">
               <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text px-4 text-sm font-semibold text-transparent">
-                Predictive Analytics & AI Insights
+                {t("sections.predictiveAI")}
               </span>
             </div>
           </div>
@@ -398,12 +459,20 @@ export default function DashboardPage() {
       {/* Original Charts */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 content-visibility-auto">
         <div className="col-span-4">
-          <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />}>
+          <Suspense
+            fallback={
+              <div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
+            }
+          >
             <CostChart />
           </Suspense>
         </div>
         <div className="col-span-3">
-          <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />}>
+          <Suspense
+            fallback={
+              <div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
+            }
+          >
             <AvailabilityChart />
           </Suspense>
         </div>

@@ -20,8 +20,10 @@ import { useMemo, useState } from "react";
 import { Part } from "@/features/inventory/types/inventory.types";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function InventoryPage() {
+  const t = useTranslations("inventory");
   const { data: parts, isLoading } = useParts();
   const createPartMutation = useCreatePart();
   const updatePartMutation = useUpdatePart();
@@ -128,7 +130,7 @@ export default function InventoryPage() {
   };
 
   const handleDelete = (part: Part) => {
-    if (confirm(`Are you sure you want to delete "${part.name}"?`)) {
+    if (confirm(t("actions.deleteConfirm", { name: part.name }))) {
       deletePartMutation.mutate(part.id);
     }
   };
@@ -138,22 +140,22 @@ export default function InventoryPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Inventory
+            {t("title")}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Manage parts, stock levels, and suppliers
+            {t("subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
           <Link href="/dashboard/inventory/suppliers">
             <Button variant="outline">
               <Users className="mr-2 h-4 w-4" />
-              Suppliers
+              {t("actions.suppliers")}
             </Button>
           </Link>
           <Button onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Part
+            {t("actions.addPart")}
           </Button>
         </div>
       </div>
@@ -165,31 +167,31 @@ export default function InventoryPage() {
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Parts</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("stats.totalParts.title")}</CardTitle>
               <Package className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {parts?.data?.length || 0}
               </div>
-              <p className="text-xs text-gray-500">In inventory</p>
+              <p className="text-xs text-gray-500">{t("stats.totalParts.description")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("stats.lowStock.title")}</CardTitle>
               <AlertTriangle className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                 {lowStockCount}
               </div>
-              <p className="text-xs text-gray-500">Need reorder</p>
+              <p className="text-xs text-gray-500">{t("stats.lowStock.description")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("stats.totalValue.title")}</CardTitle>
               <TrendingDown className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
@@ -199,17 +201,17 @@ export default function InventoryPage() {
                   maximumFractionDigits: 2,
                 })} MAD
               </div>
-              <p className="text-xs text-gray-500">Inventory worth</p>
+              <p className="text-xs text-gray-500">{t("stats.totalValue.description")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Categories</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("stats.categories.title")}</CardTitle>
               <Package className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">5</div>
-              <p className="text-xs text-gray-500">Part categories</p>
+              <p className="text-xs text-gray-500">{t("stats.categories.description")}</p>
             </CardContent>
           </Card>
         </div>
@@ -219,7 +221,7 @@ export default function InventoryPage() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search parts or SKU"
+          placeholder={t("filters.searchPlaceholder")}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         />
         <select
@@ -227,21 +229,21 @@ export default function InventoryPage() {
           onChange={(e) => setCategory(e.target.value)}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
-          <option value="all">All categories</option>
-          <option value="Engine">Engine</option>
-          <option value="Brakes">Brakes</option>
-          <option value="Tires">Tires</option>
-          <option value="Filters">Filters</option>
-          <option value="Fluids">Fluids</option>
+          <option value="all">{t("filters.allCategories")}</option>
+          <option value="Engine">{t("filters.categories.engine")}</option>
+          <option value="Brakes">{t("filters.categories.brakes")}</option>
+          <option value="Tires">{t("filters.categories.tires")}</option>
+          <option value="Filters">{t("filters.categories.filters")}</option>
+          <option value="Fluids">{t("filters.categories.fluids")}</option>
         </select>
         <select
           value={warehouse}
           onChange={(e) => setWarehouse(e.target.value)}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
-          <option value="all">All warehouses</option>
-          <option value="Shelf A-1">Shelf A-1</option>
-          <option value="Shelf B-2">Shelf B-2</option>
+          <option value="all">{t("filters.allWarehouses")}</option>
+          <option value="Shelf A-1">{t("filters.warehouses.shelfA1")}</option>
+          <option value="Shelf B-2">{t("filters.warehouses.shelfB2")}</option>
         </select>
         <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           <input
@@ -249,7 +251,7 @@ export default function InventoryPage() {
             checked={lowStockOnly}
             onChange={(e) => setLowStockOnly(e.target.checked)}
           />
-          Low stock only
+          {t("filters.lowStockOnly")}
         </label>
       </div>
 
@@ -257,14 +259,14 @@ export default function InventoryPage() {
         <div className="rounded-lg border border-gray-200 dark:border-gray-700">
           <EmptyState
             icon={Package}
-            title="No parts in inventory"
-            description="Get started by adding your first part to track inventory levels, costs, and supplier information."
+            title={t("emptyStates.noParts.title")}
+            description={t("emptyStates.noParts.description")}
             action={{
-              label: "Add Your First Part",
+              label: t("actions.addFirstPart"),
               onClick: handleCreate,
             }}
             secondaryAction={{
-              label: "Manage Suppliers",
+              label: t("actions.manageSuppliers"),
               onClick: () =>
                 (window.location.href = "/dashboard/inventory/suppliers"),
             }}
@@ -274,10 +276,10 @@ export default function InventoryPage() {
         <div className="rounded-lg border border-gray-200 dark:border-gray-700">
           <EmptyState
             icon={Package}
-            title="No parts found"
-            description="No parts match your current filters. Try adjusting your search criteria or filters."
+            title={t("emptyStates.notFound.title")}
+            description={t("emptyStates.notFound.description")}
             action={{
-              label: "Clear Filters",
+              label: t("actions.clearFilters"),
               onClick: () => {
                 setSearch("");
                 setCategory("all");
@@ -286,7 +288,7 @@ export default function InventoryPage() {
               },
             }}
             secondaryAction={{
-              label: "Add Part",
+              label: t("actions.addPart"),
               onClick: handleCreate,
             }}
           />

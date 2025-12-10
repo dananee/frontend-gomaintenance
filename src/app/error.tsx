@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Error({
   error,
@@ -11,6 +12,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("errorPage");
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -22,16 +25,16 @@ export default function Error({
           <AlertCircle className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
         <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Something went wrong!
+          {t("title")}
         </h2>
         <p className="mb-6 text-gray-500 dark:text-gray-400">
-          {error.message || "An unexpected error occurred. Please try again."}
+          {error.message || t("defaultMessage")}
         </p>
         <div className="flex gap-4">
           <Button onClick={() => window.location.reload()} variant="outline">
-            Reload Page
+            {t("actions.reloadPage")}
           </Button>
-          <Button onClick={() => reset()}>Try Again</Button>
+          <Button onClick={() => reset()}>{t("actions.tryAgain")}</Button>
         </div>
       </div>
     </div>

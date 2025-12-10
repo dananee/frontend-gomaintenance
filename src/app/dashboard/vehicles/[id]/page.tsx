@@ -7,21 +7,31 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Link from "next/link";
 import { getVehicleDetails, VehicleDetailsResponse } from "@/features/vehicles/api/getVehicleDetails";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
 import { ServiceSummary } from "@/features/vehicles/components/ServiceSummary";
 import { CostTrendChart } from "@/features/dashboard/components/CostTrendChart";
 import { DowntimeChart } from "@/features/dashboard/components/DowntimeChart";
 import { WorkOrderPieChart } from "@/features/dashboard/components/WorkOrderPieChart";
 import {
-  ArrowLeft,
-  DollarSign,
-  Wrench,
+  Activity,
+  CalendarRange,
   Clock,
+  DollarSign,
+  FileText,
+  History,
+  LayoutDashboard,
+  ShieldCheck,
   Timer,
   Zap,
   TrendingDown,
+  TrendingUp,
+  Wrench,
+  Pencil,
+  ArrowLeft,
   Package,
 } from "lucide-react";
 import {
@@ -60,8 +70,10 @@ import {
   VehicleMaintenancePlan,
 } from "@/features/vehicles/api/vehiclePlans";
 import { AddVehicleDocumentRequest } from "@/features/vehicles/api/vehicleDocuments";
+import { useTranslations } from "next-intl";
 
 export default function VehicleDetailPage() {
+  const t = useTranslations("vehicles");
   const params = useParams();
   const router = useRouter();
   const vehicleId = params.id as string;
@@ -220,116 +232,152 @@ export default function VehicleDetailPage() {
     });
   };
 
+  const handleEdit = () => router.push(`/dashboard/vehicles/${vehicleId}/edit`);
+
   return (
     <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">
-              {vehicle.year} {vehicle.brand} {vehicle.model}
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {vehicle.brand} {vehicle.model}
             </h1>
-            <p className="text-muted-foreground">
-              {vehicle.plate_number} • VIN: {vehicle.vin} • {vehicle.status.toUpperCase()}
-            </p>
+            <Badge
+              variant={vehicle.status === "active" ? "success" : "secondary"}
+              className="capitalize"
+            >
+              {t(`filters.status.${vehicle.status}`) || vehicle.status}
+            </Badge>
           </div>
+          <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
+            <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-sm">
+              {vehicle.plate_number}
+            </span>
+            <span>•</span>
+            <span>{vehicle.year}</span>
+            <span>•</span>
+            <span className="capitalize">
+              {vehicle.type ? t(`filters.type.${vehicle.type}`) : t('filters.type.unknown')}
+            </span>
+          </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" onClick={() => setIsUsageModalOpen(true)}>
-            Update Usage
+
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={handleEdit}>
+            <Pencil className="mr-2 h-4 w-4" />
+            {t("actions.edit")}
           </Button>
-          <Link href={`/dashboard/vehicles/${vehicleId}/edit`}>
-            <Button variant="outline">Edit Vehicle</Button>
-          </Link>
-          <Button onClick={() => setIsWorkOrderModalOpen(true)}>Create Work Order</Button>
+          <Button onClick={() => setIsWorkOrderModalOpen(true)}>
+            <Wrench className="mr-2 h-4 w-4" />
+            {t("actions.createWorkOrder")}
+          </Button>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="mb-6 border-b pb-1">
-          <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0">
+          <TabsList className="w-full justify-start gap-6 rounded-none border-b-2 border-transparent bg-transparent p-0">
             <TabsTrigger
               value="overview"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
-              Overview
+              {t("details.tabs.overview")}
             </TabsTrigger>
             <TabsTrigger
               value="plans"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
-              Maintenance Plans
+              {t("details.tabs.plans")}
             </TabsTrigger>
             <TabsTrigger
               value="documents"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
-              Documents
+              {t("details.tabs.documents")}
             </TabsTrigger>
             <TabsTrigger
               value="history"
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
-              History
+              {t("details.tabs.history")}
             </TabsTrigger>
           </TabsList>
         </div>
 
         <TabsContent value="overview" className="space-y-6">
           <div>
-            <h2 className="mb-4 text-xl font-semibold">Performance Metrics</h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <h2 className="mb-4 text-xl font-semibold">{t("details.performanceMetrics.title")}</h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {t("details.metrics.totalCost")}
+                  </CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {formatCurrency(metrics.totalMaintenanceCost)}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("details.metrics.avgRepair")}: {formatCurrency(metrics.averageRepairCost)}
+                  </p>
+                </CardContent>
+              </Card>
               <PremiumMetricCard
-                title="Total Maintenance Cost"
-                value={formatCurrency(metrics.totalMaintenanceCost)}
-                icon={DollarSign}
-                variant="purple"
-              />
-              <PremiumMetricCard
-                title="Avg Repair Cost"
+                title={t("details.metrics.avgRepairCost")}
                 value={formatCurrency(metrics.averageRepairCost)}
-                subtitle="Per work order"
+                subtitle={t("details.metrics.perWorkOrder")}
                 icon={Wrench}
                 variant="indigo"
               />
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {t("details.metrics.costPerKm")}
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {formatCurrency(metrics.costPerKm)}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("details.metrics.perWorkOrder")}: {formatCurrency(metrics.averageRepairCost)}
+                  </p>
+                </CardContent>
+              </Card>
               <PremiumMetricCard
-                title="Cost per KM"
-                value={formatCurrency(metrics.costPerKm)}
-                icon={TrendingDown}
-                variant="blue"
-              />
-              <PremiumMetricCard
-                title="MTBF"
+                title={t("details.metrics.mtbf")}
                 value={`${metrics.mtbf.toFixed(0)}h`}
-                subtitle="Mean Time Between Failures"
+                subtitle={t("details.metrics.meanTimeBetweenFailures")}
                 icon={Zap}
                 variant="green"
               />
               <PremiumMetricCard
-                title="Reliability Score"
+                title={t("details.metrics.reliabilityScore")}
                 value={`${metrics.reliabilityScore.toFixed(1)}%`}
                 icon={Zap}
                 variant="teal"
               />
               <PremiumMetricCard
-                title="Total Downtime"
+                title={t("details.metrics.totalDowntime")}
                 value={`${metrics.totalDowntimeHours.toFixed(1)}h`}
                 icon={Clock}
                 variant="orange"
               />
               <PremiumMetricCard
-                title="MTTR"
+                title={t("details.metrics.mttr")}
                 value={`${metrics.mttr.toFixed(1)}h`}
-                subtitle="Mean Time To Repair"
+                subtitle={t("details.metrics.meanTimeToRepair")}
                 icon={Timer}
                 variant="rose"
               />
               <PremiumMetricCard
-                title="Work Orders"
+                title={t("details.metrics.workOrders")}
                 value={metrics.totalWorkOrders}
-                subtitle="Total completed"
+                subtitle={t("details.metrics.totalCompleted")}
                 icon={Wrench}
                 variant="slate"
               />
@@ -345,7 +393,7 @@ export default function VehicleDetailPage() {
           />
 
           <div>
-            <h2 className="mb-4 text-xl font-semibold">Analytics</h2>
+            <h2 className="mb-4 text-xl font-semibold">{t("details.analytics.title")}</h2>
             <div className="grid gap-6 md:grid-cols-2">
               <CostTrendChart
                 data={(charts.maintenanceCostTrend || []).map((item) => ({
@@ -378,14 +426,14 @@ export default function VehicleDetailPage() {
               />
               <Card className="shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-xl font-semibold">Mileage Growth</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t("details.analytics.mileageGrowth")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex h-[240px] items-center justify-center text-muted-foreground">
                     {(charts.mileageGrowth || []).length > 0 ? (
-                      <p>Chart data available</p>
+                      <p>{t("details.analytics.chartDataAvailable")}</p>
                     ) : (
-                      <p>No mileage history available</p>
+                      <p>{t("details.analytics.noMileageHistory")}</p>
                     )}
                   </div>
                 </CardContent>
@@ -394,25 +442,25 @@ export default function VehicleDetailPage() {
           </div>
 
           <div>
-            <h2 className="mb-4 text-xl font-semibold">Parts Used & Costs</h2>
+            <h2 className="mb-4 text-xl font-semibold">{t("details.partsUsed.title")}</h2>
             <Card className="shadow-sm">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-gray-50 dark:bg-gray-800/50">
-                        <TableHead className="font-semibold">Part Name</TableHead>
-                        <TableHead className="font-semibold">Quantity</TableHead>
-                        <TableHead className="font-semibold">Cost</TableHead>
-                        <TableHead className="font-semibold">Date Used</TableHead>
-                        <TableHead className="font-semibold">Work Order</TableHead>
+                        <TableHead className="font-semibold">{t("details.partsUsed.partName")}</TableHead>
+                        <TableHead className="font-semibold">{t("details.partsUsed.quantity")}</TableHead>
+                        <TableHead className="font-semibold">{t("details.partsUsed.cost")}</TableHead>
+                        <TableHead className="font-semibold">{t("details.partsUsed.dateUsed")}</TableHead>
+                        <TableHead className="font-semibold">{t("details.partsUsed.workOrder")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {(partsUsed || []).length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
-                            No parts used yet
+                            {t("details.partsUsed.noPartsUsed")}
                           </TableCell>
                         </TableRow>
                       ) : (
@@ -435,7 +483,7 @@ export default function VehicleDetailPage() {
                                 href={`/dashboard/work-orders/${part.workOrderId}`}
                                 className="text-blue-600 hover:underline dark:text-blue-400"
                               >
-                                View Work Order
+                                {t("details.partsUsed.viewWorkOrder")}
                               </Link>
                             </TableCell>
                           </TableRow>

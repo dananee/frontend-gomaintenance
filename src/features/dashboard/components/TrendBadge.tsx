@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface TrendBadgeProps {
   value: number;
@@ -9,8 +10,10 @@ interface TrendBadgeProps {
 
 export function TrendBadge({
   value,
-  label = "from last month",
+  label,
 }: TrendBadgeProps) {
+  const t = useTranslations("features.dashboard.trend");
+  const effectiveLabel = label || t("fromLastMonth");
   const isPositive = value > 0;
   const isNeutral = value === 0;
 
@@ -23,7 +26,7 @@ export function TrendBadge({
             0%
           </span>
         </div>
-        <span className="text-gray-600 dark:text-gray-400">{label}</span>
+        <span className="text-gray-600 dark:text-gray-400">{effectiveLabel}</span>
       </div>
     );
   }
@@ -49,7 +52,7 @@ export function TrendBadge({
           </div>
         </>
       )}
-      <span className="text-gray-600 dark:text-gray-400">{label}</span>
+      <span className="text-gray-600 dark:text-gray-400">{effectiveLabel}</span>
     </div>
   );
 }

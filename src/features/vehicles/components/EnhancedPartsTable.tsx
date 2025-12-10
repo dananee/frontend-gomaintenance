@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +41,7 @@ type SortField = "name" | "quantity" | "cost" | "date";
 type SortDirection = "asc" | "desc";
 
 export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
+  const t = useTranslations("features.vehicles.table");
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [dateFilter, setDateFilter] = useState<string>("");
@@ -106,11 +108,11 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
 
   const handleExportCSV = () => {
     const headers = [
-      "Part Name",
-      "Quantity",
-      "Cost",
-      "Date Used",
-      "Work Order",
+      t("headers.partName"),
+      t("headers.quantity"),
+      t("headers.cost"),
+      t("headers.dateUsed"),
+      t("headers.workOrder"),
     ];
     const rows = filteredAndSortedParts.map((part) => [
       part.name,
@@ -144,7 +146,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
           <div className="flex items-center gap-2">
             <Package className="h-5 w-5 text-primary" />
             <CardTitle className="text-xl font-semibold">
-              Parts Used & Costs
+              {t("title")}
             </CardTitle>
           </div>
           <Button
@@ -154,7 +156,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
             className="gap-2"
           >
             <Download className="h-4 w-4" />
-            Export CSV
+            {t("exportCSV")}
           </Button>
         </div>
 
@@ -164,7 +166,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
             <Filter className="h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Filter by part name..."
+              placeholder={t("filterName")}
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
               className="h-9 rounded-md border border-gray-200 px-3 text-sm dark:border-gray-700 dark:bg-gray-800"
@@ -184,7 +186,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
               className="gap-1"
             >
               <X className="h-4 w-4" />
-              Clear
+              {t("clear")}
             </Button>
           )}
         </div>
@@ -199,7 +201,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
                   onClick={() => handleSort("name")}
                 >
                   <div className="flex items-center gap-2">
-                    Part Name {getSortIcon("name")}
+                    {t("headers.partName")} {getSortIcon("name")}
                   </div>
                 </TableHead>
                 <TableHead
@@ -207,7 +209,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
                   onClick={() => handleSort("quantity")}
                 >
                   <div className="flex items-center gap-2">
-                    Quantity {getSortIcon("quantity")}
+                    {t("headers.quantity")} {getSortIcon("quantity")}
                   </div>
                 </TableHead>
                 <TableHead
@@ -215,7 +217,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
                   onClick={() => handleSort("cost")}
                 >
                   <div className="flex items-center gap-2">
-                    Cost {getSortIcon("cost")}
+                    {t("headers.cost")} {getSortIcon("cost")}
                   </div>
                 </TableHead>
                 <TableHead
@@ -223,10 +225,10 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
                   onClick={() => handleSort("date")}
                 >
                   <div className="flex items-center gap-2">
-                    Date Used {getSortIcon("date")}
+                    {t("headers.dateUsed")} {getSortIcon("date")}
                   </div>
                 </TableHead>
-                <TableHead className="font-semibold">Work Order</TableHead>
+                <TableHead className="font-semibold">{t("headers.workOrder")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -263,7 +265,7 @@ export function EnhancedPartsTable({ parts }: EnhancedPartsTableProps) {
               {/* Summary Row */}
               <TableRow className="bg-gray-100 font-semibold dark:bg-gray-800">
                 <TableCell>
-                  Total ({filteredAndSortedParts.length} parts)
+                  {t("totalParts", { count: filteredAndSortedParts.length })}
                 </TableCell>
                 <TableCell>{totalQuantity}</TableCell>
                 <TableCell className="text-green-600 dark:text-green-400">

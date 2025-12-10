@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { formatDateShort } from "@/lib/formatters";
 
 import { useState } from "react";
@@ -44,6 +45,8 @@ interface ActivePlansTableProps {
 }
 
 export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
+  const t = useTranslations("maintenance.table");
+  const tDashboard = useTranslations("maintenance.dashboard");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -82,7 +85,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
   };
 
   const handleDelete = (planId: string) => {
-    if (confirm("Are you sure you want to delete this maintenance plan?")) {
+    if (confirm(t("actions.confirmDelete"))) {
       deletePlan.mutate(planId);
     }
   };
@@ -90,18 +93,18 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
   const getRecurrenceType = (plan: ActiveMaintenancePlan): string => {
     const template = plan.template;
     if (template.interval_days) {
-      if (template.interval_days === 1) return "Daily";
-      if (template.interval_days === 7) return "Weekly";
-      if (template.interval_days === 30) return "Monthly";
-      return `Every ${template.interval_days} days`;
+      if (template.interval_days === 1) return t("recurrence.daily");
+      if (template.interval_days === 7) return t("recurrence.weekly");
+      if (template.interval_days === 30) return t("recurrence.monthly");
+      return t("recurrence.everyDays", { days: template.interval_days });
     }
     if (template.interval_km) {
-      return `Every ${template.interval_km} km`;
+      return t("recurrence.everyKm", { km: template.interval_km });
     }
     if (template.interval_hours) {
-      return `Every ${template.interval_hours} hours`;
+      return t("recurrence.everyHours", { hours: template.interval_hours });
     }
-    return "Custom";
+    return t("recurrence.custom");
   };
 
   if (isLoading) {
@@ -121,9 +124,9 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
     return (
       <EmptyState
         icon={ClipboardList}
-        title="No active maintenance plans"
-        description="Maintenance plans are created from individual vehicle pages. Go to a vehicle's detail page and create a recurring maintenance plan based on a template."
-        actionLabel="View Vehicles"
+        title={tDashboard("noActivePlans")}
+        description={tDashboard("emptyDescription")}
+        actionLabel={tDashboard("viewVehicles")}
         onAction={() => router.push("/dashboard/vehicles")}
       />
     );
@@ -136,7 +139,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
-            placeholder="Search plans..."
+            placeholder={t("searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -146,7 +149,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
           />
         </div>
         <div className="text-sm text-gray-500">
-          {filteredPlans.length} {filteredPlans.length === 1 ? "plan" : "plans"}
+          {filteredPlans.length} {filteredPlans.length === 1 ? t("plan") : t("plans")}
         </div>
       </div>
 
@@ -155,11 +158,11 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Asset</TableHead>
-              <TableHead>Plan Name</TableHead>
-              <TableHead>Recurrence</TableHead>
-              <TableHead>Next Due</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t("headers.asset")}</TableHead>
+              <TableHead>{t("headers.planName")}</TableHead>
+              <TableHead>{t("headers.recurrence")}</TableHead>
+              <TableHead>{t("headers.nextDue")}</TableHead>
+              <TableHead>{t("headers.status")}</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -167,7 +170,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
             {paginatedPlans.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                  No plans found
+                  {t("noPlansFound")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -226,7 +229,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
                       variant="outline"
                       className={cn("text-xs", plan.is_active ? getStatusColor("active") : getStatusColor("inactive"))}
                     >
-                      {plan.is_active ? "Active" : "Inactive"}
+                      {plan.is_active ? t("status.active") : t("status.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -246,20 +249,20 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
                           disabled={runPlanNow.isPending}
                         >
                           <Play className="mr-2 h-4 w-4" />
-                          Run Now
+                          {t("actions.runNow")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handlePauseResume(plan)}
                           disabled={pausePlan.isPending || resumePlan.isPending}
                         >
                           <Pause className="mr-2 h-4 w-4" />
-                          {plan.is_active ? "Pause" : "Resume"}
+                          {plan.is_active ? t("actions.pause") : t("actions.resume")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => router.push(`/dashboard/vehicles/${plan.vehicle_id}`)}
                         >
                           <ExternalLink className="mr-2 h-4 w-4" />
-                          View Vehicle
+                          {t("actions.viewVehicle")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDelete(plan.id)}
@@ -267,7 +270,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
                           disabled={deletePlan.isPending}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
+                          {t("actions.delete")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -283,8 +286,8 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-500">
-            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredPlans.length)}{" "}
-            of {filteredPlans.length}
+            {t("pagination.showing")} {startIndex + 1} {t("pagination.to")} {Math.min(startIndex + itemsPerPage, filteredPlans.length)}{" "}
+            {t("pagination.of")} {filteredPlans.length}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -293,10 +296,10 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
             >
-              Previous
+              {t("pagination.previous")}
             </Button>
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              Page {currentPage} of {totalPages}
+              {t("pagination.page")} {currentPage} {t("pagination.of")} {totalPages}
             </div>
             <Button
               variant="outline"
@@ -304,7 +307,7 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
             >
-              Next
+              {t("pagination.next")}
             </Button>
           </div>
         </div>

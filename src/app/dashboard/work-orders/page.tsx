@@ -12,14 +12,16 @@ import { useModal } from "@/hooks/useModal";
 import { Plus } from "lucide-react";
 import { WorkOrderStatus } from "@/features/workOrders/types/workOrder.types";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function WorkOrdersPage() {
+  const t = useTranslations("workOrders");
   const { isOpen, open, close } = useModal();
   const [filters, setFilters] = useState<WorkOrderFilters>({});
 
   const handleSuccess = () => {
-    toast.success("Work order created", {
-      description: "New work order has been created and assigned.",
+    toast.success(t("toasts.created.title"), {
+      description: t("toasts.created.description"),
     });
     close();
   };
@@ -28,17 +30,17 @@ export default function WorkOrdersPage() {
     <div className="flex h-full flex-col space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Work Orders
+          {t("title")}
         </h1>
         <Button onClick={open}>
           <Plus className="mr-2 h-4 w-4" />
-          New Work Order
+          {t("actions.new")}
         </Button>
       </div>
 
       <div className="grid gap-3 md:grid-cols-4">
         <input
-          placeholder="Search by ID or title"
+          placeholder={t("filters.searchPlaceholder")}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, search: e.target.value }))
@@ -53,10 +55,10 @@ export default function WorkOrdersPage() {
             }))
           }
         >
-          <option value="">All priorities</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
+          <option value="">{t("filters.priority.all")}</option>
+          <option value="high">{t("filters.priority.high")}</option>
+          <option value="medium">{t("filters.priority.medium")}</option>
+          <option value="low">{t("filters.priority.low")}</option>
         </select>
         <select
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
@@ -68,10 +70,10 @@ export default function WorkOrdersPage() {
             }));
           }}
         >
-          <option value="">All status</option>
-          <option value="pending">Pending</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
+          <option value="">{t("filters.status.all")}</option>
+          <option value="pending">{t("filters.status.pending")}</option>
+          <option value="in_progress">{t("filters.status.inProgress")}</option>
+          <option value="completed">{t("filters.status.completed")}</option>
         </select>
       </div>
 
@@ -79,7 +81,7 @@ export default function WorkOrdersPage() {
         <WorkOrderKanban filters={filters} />
       </div>
 
-      <Modal isOpen={isOpen} onClose={close} title="Create Work Order">
+      <Modal isOpen={isOpen} onClose={close} title={t("actions.new")}>
         <WorkOrderForm onSuccess={handleSuccess} onCancel={close} />
       </Modal>
     </div>

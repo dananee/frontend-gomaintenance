@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ export function CalendarHeader({
   onToday,
   eventCount,
 }: CalendarHeaderProps) {
+  const t = useTranslations("maintenance.calendar");
   return (
     <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-800 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-900/50">
       <div className="flex items-center gap-4">
@@ -40,7 +42,7 @@ export function CalendarHeader({
             className="h-7 px-3 text-xs font-medium hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 transition-all duration-200 hover:shadow-sm active:scale-95 cursor-pointer"
             onClick={onToday}
           >
-            Today
+            {t("today")}
           </Button>
           <Button
             variant="ghost"
@@ -55,7 +57,7 @@ export function CalendarHeader({
       <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
         <CalendarIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
         <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-          {eventCount} {eventCount === 1 ? 'event' : 'events'}
+          {eventCount} {eventCount === 1 ? t('event') : t('events')}
         </span>
       </div>
     </div>

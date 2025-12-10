@@ -1,7 +1,6 @@
 "use client";
 
 import { formatDateShort } from "@/lib/formatters";
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, FileText, Trash2, Upload, File, Image as ImageIcon, FileSpreadsheet } from "lucide-react";
@@ -14,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useTranslations } from "next-intl";
 
 interface VehicleDocumentsProps {
   documents: VehicleDocument[];
@@ -28,6 +28,8 @@ export function VehicleDocuments({
   onDelete,
   isDeleting,
 }: VehicleDocumentsProps) {
+  const t = useTranslations("vehicles.details.documents");
+
   const getFileIcon = (type: string) => {
     if (type.includes("image")) return <ImageIcon className="h-5 w-5 text-purple-600" />;
     if (type.includes("sheet") || type.includes("csv")) return <FileSpreadsheet className="h-5 w-5 text-green-600" />;
@@ -48,14 +50,14 @@ export function VehicleDocuments({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Vehicle Documents</h2>
+          <h2 className="text-lg font-semibold">{t("title")}</h2>
           <p className="text-sm text-muted-foreground">
-            Manage insurance, registration, and inspection records
+            {t("subtitle")}
           </p>
         </div>
         <Button onClick={onUpload} size="sm">
           <Upload className="mr-2 h-4 w-4" />
-          Upload Document
+          {t("upload")}
         </Button>
       </div>
 
@@ -65,14 +67,13 @@ export function VehicleDocuments({
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
               <FileText className="h-8 w-8" />
             </div>
-            <h3 className="mb-2 text-lg font-semibold">No Documents Uploaded</h3>
+            <h3 className="mb-2 text-lg font-semibold">{t("noDocs")}</h3>
             <p className="mb-6 max-w-sm text-sm text-muted-foreground">
-              Keep all your vehicle records in one place. Upload insurance policies,
-              registration cards, and inspection reports.
+              {t("noDocsDesc")}
             </p>
             <Button onClick={onUpload} variant="outline" className="border-primary/20 bg-primary/5 hover:bg-primary/10 hover:text-primary">
               <Upload className="mr-2 h-4 w-4" />
-              Upload Document
+              {t("upload")}
             </Button>
           </CardContent>
         </Card>
@@ -81,11 +82,11 @@ export function VehicleDocuments({
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="w-[40%]">Document Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Size</TableHead>
-                <TableHead>Uploaded</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="w-[40%]">{t("name")}</TableHead>
+                <TableHead>{t("type")}</TableHead>
+                <TableHead>{t("size")}</TableHead>
+                <TableHead>{t("uploaded")}</TableHead>
+                <TableHead className="text-right">{t("actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -98,7 +99,7 @@ export function VehicleDocuments({
                       </div>
                       <div className="flex flex-col">
                         <span className="font-medium text-foreground">
-                          {doc.file_name || doc.name || "Untitled Document"}
+                          {doc.file_name || doc.name || t("untitled")}
                         </span>
                         <span className="text-xs text-muted-foreground md:hidden">
                           {formatFileSize(doc.file_size)} • {formatDateShort(doc.uploaded_at)}
@@ -108,7 +109,7 @@ export function VehicleDocuments({
                   </TableCell>
                   <TableCell>
                     <span className="capitalize text-muted-foreground">
-                      {doc.document_type?.replace(/_/g, " ") || "Document"}
+                      {doc.document_type?.replace(/_/g, " ") || t("untitled").split(" ")[0]}
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">

@@ -5,10 +5,10 @@ import {
   Calendar,
   CheckCircle2,
   AlertCircle,
-  Wrench,
   Clock,
 } from "lucide-react";
 import { formatCurrency, formatDateLong } from "@/lib/formatters";
+import { useTranslations } from "next-intl";
 
 interface MaintenanceEvent {
   id: string;
@@ -66,6 +66,7 @@ const getStatusIcon = (status: string) => {
 };
 
 export function MaintenanceTimeline({ events }: MaintenanceTimelineProps) {
+  const t = useTranslations("vehicles.maintenance");
   const sortedEvents = [...events].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -76,7 +77,7 @@ export function MaintenanceTimeline({ events }: MaintenanceTimelineProps) {
         <div className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           <CardTitle className="text-xl font-semibold">
-            Maintenance Timeline
+            {t("timelineTitle")}
           </CardTitle>
         </div>
       </CardHeader>
@@ -87,7 +88,6 @@ export function MaintenanceTimeline({ events }: MaintenanceTimelineProps) {
 
           {sortedEvents.map((event, index) => {
             const colors = getTypeColor(event.type);
-            const isLast = index === sortedEvents.length - 1;
 
             return (
               <div key={event.id} className="relative pl-10">
@@ -117,8 +117,7 @@ export function MaintenanceTimeline({ events }: MaintenanceTimelineProps) {
                         <span
                           className={`rounded-full px-2 py-1 font-medium ${colors.text} bg-current/10`}
                         >
-                          {event.type.charAt(0).toUpperCase() +
-                            event.type.slice(1)}
+                          {t(`types.${event.type}` as any)}
                         </span>
                         <span className="text-muted-foreground">
                           💰 {formatCurrency(event.cost)}

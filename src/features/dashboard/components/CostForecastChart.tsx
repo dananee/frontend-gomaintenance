@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface CostForecastData {
   month: string;
@@ -16,6 +17,8 @@ interface CostForecastChartProps {
 }
 
 function CostForecastChartComponent({ data }: CostForecastChartProps) {
+  const t = useTranslations("features.dashboard.costForecast");
+
   const maxValue = useMemo(
     () =>
       Math.max(
@@ -41,7 +44,7 @@ function CostForecastChartComponent({ data }: CostForecastChartProps) {
           <div className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             <CardTitle className="text-xl font-semibold">
-              Cost Forecast (6 Months)
+              {t("title")}
             </CardTitle>
           </div>
           <div className="text-right">
@@ -49,7 +52,7 @@ function CostForecastChartComponent({ data }: CostForecastChartProps) {
               ${avgForecast}
             </p>
             <p className="text-xs text-gray-600 dark:text-gray-400">
-              Avg Predicted
+              {t("avgPredicted")}
             </p>
           </div>
         </div>
@@ -70,7 +73,7 @@ function CostForecastChartComponent({ data }: CostForecastChartProps) {
                     </span>
                     {isForecast && (
                       <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-                        AI
+                        {t("aiLabel")}
                       </span>
                     )}
                   </div>
@@ -114,11 +117,13 @@ function CostForecastChartComponent({ data }: CostForecastChartProps) {
         <div className="mt-4 flex items-center gap-4 text-xs">
           <div className="flex items-center gap-2">
             <div className="h-2 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500" />
-            <span className="text-gray-600 dark:text-gray-400">Actual</span>
+            <span className="text-gray-600 dark:text-gray-400">{t("actual")}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-2 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
-            <span className="text-gray-600 dark:text-gray-400">Predicted</span>
+            <span className="text-gray-600 dark:text-gray-400">
+              {t("predicted")}
+            </span>
           </div>
         </div>
       </CardContent>

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Wrench, DollarSign } from "lucide-react";
 import { formatDateShort, formatCurrency } from "@/lib/formatters";
+import { useTranslations } from "next-intl";
 
 interface MaintenanceRecord {
   id: string;
@@ -23,6 +24,8 @@ interface VehicleMaintenanceHistoryProps {
 export function VehicleMaintenanceHistory({
   records = [],
 }: VehicleMaintenanceHistoryProps) {
+  const t = useTranslations("features.vehicles.maintenance");
+  
   const mockRecords: MaintenanceRecord[] = records.length > 0 ? records : [
     {
       id: "1",
@@ -62,7 +65,7 @@ export function VehicleMaintenanceHistory({
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Wrench className="h-12 w-12 text-gray-400 dark:text-gray-600" />
           <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            No maintenance history available
+            {t("noHistory")}
           </p>
         </CardContent>
       </Card>
@@ -72,7 +75,7 @@ export function VehicleMaintenanceHistory({
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Complete maintenance history for this vehicle
+        {t("historyTitle")}
       </p>
 
       <div className="relative">
@@ -124,7 +127,7 @@ export function VehicleMaintenanceHistory({
 
                       {record.technician && (
                         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                          Technician: {record.technician}
+                          {t("technician")}: {record.technician}
                         </p>
                       )}
                     </div>

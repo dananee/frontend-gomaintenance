@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ interface FormData {
 }
 
 export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalProps) {
+  const t = useTranslations("maintenance.form");
   const { data: vehiclesData, isLoading: vehiclesLoading } = useVehicles();
   const { data: usersData, isLoading: usersLoading } = useUsers();
   const { data: templatesData, isLoading: templatesLoading } = useMaintenanceTemplates();
@@ -81,10 +83,10 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
         notes: data.notes || undefined,
       });
 
-      toast.success("Maintenance scheduled successfully");
+      toast.success(t("success"));
       onClose();
     } catch (error) {
-      toast.error("Failed to schedule maintenance");
+      toast.error(t("error"));
       console.error(error);
     }
   };
@@ -102,11 +104,11 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
           {/* Vehicle Selection */}
           <div className="space-y-2">
             <Label htmlFor="vehicle_id">
-              Vehicle <span className="text-red-500">*</span>
+              {t("vehicle")} <span className="text-red-500">*</span>
             </Label>
             <Select onValueChange={(value) => setValue("vehicle_id", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a vehicle" />
+                <SelectValue placeholder={t("selectVehicle")} />
               </SelectTrigger>
               <SelectContent>
                 {vehiclesData?.data.map((vehicle) => (
@@ -123,10 +125,10 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
           {/* Template Selection (Optional) */}
           <div className="space-y-2">
-            <Label htmlFor="template_id">Maintenance Template (Optional)</Label>
+            <Label htmlFor="template_id">{t("selectTemplate")}</Label>
             <Select onValueChange={handleTemplateChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a template (optional)" />
+                <SelectValue placeholder={t("selectTemplate")} />
               </SelectTrigger>
               <SelectContent>
                 {templatesData?.data.map((template) => (
@@ -141,7 +143,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
           {/* Title */}
           <div className="space-y-2">
             <Label htmlFor="title">
-              Title <span className="text-red-500">*</span>
+              {t("selectTemplate")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="title"
@@ -155,7 +157,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("description")}</Label>
             <Textarea
               id="description"
               {...register("description")}
@@ -167,7 +169,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
           {/* Scheduled Date */}
           <div className="space-y-2">
             <Label htmlFor="scheduled_date">
-              Scheduled Date <span className="text-red-500">*</span>
+              {t("scheduledDate")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="scheduled_date"
@@ -181,7 +183,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
           {/* Priority */}
           <div className="space-y-2">
-            <Label htmlFor="priority">Priority</Label>
+            <Label htmlFor="priority">{t("priority")}</Label>
             <Select
               onValueChange={(value) => setValue("priority", value as any)}
               defaultValue="medium"
@@ -190,20 +192,20 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
+                <SelectItem value="low">{t("priorities.low")}</SelectItem>
+                <SelectItem value="medium">{t("priorities.medium")}</SelectItem>
+                <SelectItem value="high">{t("priorities.high")}</SelectItem>
+                <SelectItem value="critical">{t("priorities.critical")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Assigned To */}
           <div className="space-y-2">
-            <Label htmlFor="assigned_to">Assign To (Optional)</Label>
+            <Label htmlFor="assigned_to">{t("assignTo")}</Label>
             <Select onValueChange={(value) => setValue("assigned_to", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select technician (optional)" />
+                <SelectValue placeholder={t("selectTechnician")} />
               </SelectTrigger>
               <SelectContent>
                 {usersData?.data
@@ -219,7 +221,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
           {/* Estimated Cost */}
           <div className="space-y-2">
-            <Label htmlFor="estimated_cost">Estimated Cost</Label>
+            <Label htmlFor="estimated_cost">{t("estimatedCost")}</Label>
             <Input
               id="estimated_cost"
               type="number"
@@ -231,7 +233,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
           {/* Notes */}
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">{t("notes")}</Label>
             <Textarea
               id="notes"
               {...register("notes")}
@@ -248,13 +250,13 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
               onClick={onClose}
               disabled={createMutation.isPending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Schedule Maintenance
+              {t("create")}
             </Button>
           </div>
         </>

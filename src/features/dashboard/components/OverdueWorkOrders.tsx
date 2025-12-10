@@ -1,122 +1,97 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertCircle, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
+import { differenceInDays } from "date-fns";
+import { useTranslations } from "next-intl";
 
-function OverdueWorkOrdersComponent() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["work-orders", "overdue"],
-    queryFn: () =>
-      getWorkOrders({
-        page: 1,
-        page_size: 10,
-      }),
-  });
+interface OverdueWorkOrder {
+  id: string;
+  title: string;
+  due_date: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  assigned_to?: string;
+}
 
-  // Filter for overdue work orders (scheduled_date in the past and status not completed)
-  const overdueOrders = useMemo(
-    () =>
-      data?.data?.filter((order) => {
-        if (!order.scheduled_date || order.status === "completed") return false;
-        const scheduledDate = new Date(order.scheduled_date);
-        const today = new Date();
-        return scheduledDate < today;
-      }) || [],
-    [data]
-  );
+interface OverdueWorkOrdersProps {
+  data: OverdueWorkOrder[];
+}
 
-  const priorityVariant = {
-    low: "info" as const,
-    medium: "warning" as const,
-    high: "warning" as const,
-    urgent: "destructive" as const,
-  };
+const priorityVariant: Record<
+  OverdueWorkOrder["priority"],
+  "default" | "secondary" | "destructive" | "outline"
+> = {
+  low: "secondary",
+  medium: "default",
+  high: "destructive",
+  urgent: "destructive",
+};
 
-  const calculateDaysOverdue = (scheduledDate: string): number => {
-    const scheduled = new Date(scheduledDate);
-    const today = new Date();
-    const diffTime = today.getTime() - scheduled.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-              Overdue Work Orders
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-            Loading...
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+function OverdueWorkOrdersComponent({ data = [] }: OverdueWorkOrdersProps) {
+  const t = useTranslations("features.dashboard.overdueWorkOrders");
+  const tPriorities = useTranslations("features.dashboard.priorities");
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-            Overdue Work Orders
+    <Card className="shadow-md border-red-100 dark:border-red-900/20 icon-purple-200">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-2">
+          <AlertCircle className="h-5 w-5 text-red-600" />
+          <CardTitle className="text-xl font-semibold">
+            {t("title")}
           </CardTitle>
-          <Badge variant="destructive">{overdueOrders.length}</Badge>
         </div>
       </CardHeader>
       <CardContent>
-        {overdueOrders.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-            No overdue work orders
-          </p>
+        {data.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="rounded-full bg-green-100 p-3 dark:bg-green-900/20">
+              <Calendar className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <p className="mt-2 text-sm text-gray-500 font-medium">
+              {t("empty")}
+            </p>
+          </div>
         ) : (
-          <div className="space-y-3">
-            {overdueOrders.slice(0, 5).map((order) => (
-              <Link
-                key={order.id}
-                href={`/dashboard/work-orders/${order.id}`}
-                className="block"
-              >
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 transition-shadow hover:shadow-md dark:border-red-900/50 dark:bg-red-900/20">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold text-gray-900 dark:text-gray-100">
-                          {order.title}
-                        </p>
-                        <Badge
-                          variant={priorityVariant[order.priority]}
-                          className="text-xs"
-                        >
-                          {order.priority}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        {order.vehicle_name || `Vehicle ID: ${order.vehicle_id}`}
+          <div className="space-y-4">
+            {data.slice(0, 5).map((order) => {
+              const daysOverdue = differenceInDays(
+                new Date(),
+                new Date(order.due_date)
+              );
+              return (
+                <div
+                  key={order.id}
+                  className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0 border-gray-100 dark:border-gray-800"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-gray-900 dark:text-gray-100">
+                        {order.title}
                       </p>
-                      <p className="text-xs text-red-600 dark:text-red-400 mt-1 font-medium">
-                        {calculateDaysOverdue(order.scheduled_date!)} days overdue
-                      </p>
+                      <Badge
+                        variant={priorityVariant[order.priority]}
+                        className="text-xs"
+                      >
+                        {tPriorities(order.priority)}
+                      </Badge>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {order.id.substring(0, 8)}
-                    </span>
+                    <p className="text-xs text-muted-foreground">
+                      ID: {order.id} • {order.assigned_to || "Unassigned"}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-red-600 dark:text-red-400">
+                      {t("daysOverdue", { days: daysOverdue })}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(order.due_date).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
-              </Link>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>

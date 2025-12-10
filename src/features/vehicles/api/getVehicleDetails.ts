@@ -10,6 +10,7 @@ export type VehicleDetailsResponse = {
     plate_number: string;
     status: string;
     mileage: number;
+    type: string;
   };
   metrics: {
     totalMaintenanceCost: number;

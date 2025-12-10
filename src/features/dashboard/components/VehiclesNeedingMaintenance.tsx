@@ -1,150 +1,110 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Wrench, AlertCircle } from "lucide-react";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { getUpcomingMaintenance } from "@/features/reports/api/reports";
+import { AlertTriangle, Wrench, CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-const urgencyConfig = {
-  upcoming: {
-    variant: "info" as const,
-    color: "text-blue-600 dark:text-blue-400",
-  },
-  soon: {
-    variant: "warning" as const,
-    color: "text-yellow-600 dark:text-yellow-400",
-  },
-  overdue: {
-    variant: "destructive" as const,
-    color: "text-red-600 dark:text-red-400",
-  },
-};
+interface MaintenanceVehicle {
+  id: string;
+  name: string;
+  service_type: string;
+  urgency: "upcoming" | "soon" | "overdue";
+  due_in?: string; // "2 days", "Overdue by 5 days"
+}
 
-function VehiclesNeedingMaintenanceComponent() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["upcoming-maintenance"],
-    queryFn: getUpcomingMaintenance,
-  });
+interface VehiclesNeedingMaintenanceProps {
+  data: MaintenanceVehicle[];
+}
 
-  // Transform API data to match component interface
-  const vehicles = useMemo(
-    () =>
-      data?.data?.map((item: any) => ({
-        id: item.vehicle_id,
-        name: item.vehicle_name || `Vehicle ${item.vehicle_id}`,
-        plateNumber: item.plate_number || "N/A",
-        maintenanceType: item.maintenance_type || "Scheduled Maintenance",
-        dueIn: item.due_in || "Unknown",
-        urgency: item.urgency || "upcoming",
-      })) || [],
-    [data]
-  );
+function VehiclesNeedingMaintenanceComponent({
+  data = [],
+}: VehiclesNeedingMaintenanceProps) {
+  const t = useTranslations("features.dashboard.upcomingMaintenance");
+  const tUrgency = useTranslations("features.dashboard.urgency");
 
-  const { overdueCount, soonCount } = useMemo(
-    () => ({
-      overdueCount: vehicles.filter((v: any) => v.urgency === "overdue").length,
-      soonCount: vehicles.filter((v: any) => v.urgency === "soon").length,
-    }),
-    [vehicles]
-  );
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Wrench className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              Vehicles Needing Maintenance
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-            Loading...
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+  const overdueCount = data.filter((v) => v.urgency === "overdue").length;
+  const soonCount = data.filter((v) => v.urgency === "soon").length;
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="shadow-md">
+      <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Wrench className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-            Vehicles Needing Maintenance
-          </CardTitle>
-          <div className="flex gap-1">
-            {overdueCount > 0 && (
-              <Badge variant="destructive" className="text-xs">
-                {overdueCount} overdue
-              </Badge>
-            )}
-            {soonCount > 0 && (
-              <Badge variant="warning" className="text-xs">
-                {soonCount} soon
-              </Badge>
-            )}
+          <div className="flex items-center gap-2">
+            <Wrench className="h-5 w-5 text-orange-600" />
+            <CardTitle className="text-xl font-semibold">
+              {t("title")}
+            </CardTitle>
           </div>
+          {(overdueCount > 0 || soonCount > 0) && (
+            <div className="flex gap-2">
+              {overdueCount > 0 && (
+                <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                  {t("overdueBadge", { count: overdueCount })}
+                </span>
+              )}
+              {soonCount > 0 && (
+                <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-bold text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                  {t("soonBadge", { count: soonCount })}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent>
-        {vehicles.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-            All vehicles are up to date
-          </p>
+        {data.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="rounded-full bg-green-100 p-3 dark:bg-green-900/20">
+              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <p className="mt-2 text-sm text-gray-500 font-medium">
+              {t("empty")}
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
-            {vehicles.slice(0, 4).map((vehicle: any) => {
-              const config = urgencyConfig[vehicle.urgency as keyof typeof urgencyConfig];
+            {data.slice(0, 5).map((item) => {
+              let statusColor = "bg-gray-100 text-gray-700";
+              if (item.urgency === "overdue")
+                statusColor =
+                  "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400";
+              if (item.urgency === "soon")
+                statusColor =
+                  "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400";
+              if (item.urgency === "upcoming")
+                statusColor =
+                  "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400";
+
               return (
-                <Link
-                  key={vehicle.id}
-                  href={`/dashboard/vehicles/${vehicle.id}`}
-                  className="block"
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900/50"
                 >
-                  <div
-                    className={`rounded-lg border p-3 transition-shadow hover:shadow-md ${
-                      vehicle.urgency === "overdue"
-                        ? "border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-900/20"
-                        : vehicle.urgency === "soon"
-                        ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900/50 dark:bg-yellow-900/20"
-                        : "border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-gray-900 dark:text-gray-100">
-                            {vehicle.name}
-                          </p>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {vehicle.plateNumber}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          {vehicle.maintenanceType}
-                        </p>
-                        <div className="flex items-center gap-1 mt-1">
-                          {vehicle.urgency === "overdue" && (
-                            <AlertCircle className="h-3 w-3 text-red-600 dark:text-red-400" />
-                          )}
-                          <p className={`text-xs font-medium ${config.color}`}>
-                            Due: {vehicle.dueIn}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge variant={config.variant} className="text-xs capitalize">
-                        {vehicle.urgency}
-                      </Badge>
+                  <div className="flex items-center gap-3">
+                    <div className={`rounded-full p-2 ${statusColor}`}>
+                      <AlertTriangle className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100">
+                        {item.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.service_type}
+                      </p>
                     </div>
                   </div>
-                </Link>
+                  <div className="text-right">
+                    <span
+                      className={`inline-block rounded-md px-2 py-1 text-xs font-bold ${statusColor}`}
+                    >
+                      {tUrgency(item.urgency)}
+                    </span>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {t("due", { date: item.due_in || "Unknown" })}
+                    </p>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -154,4 +114,6 @@ function VehiclesNeedingMaintenanceComponent() {
   );
 }
 
-export const VehiclesNeedingMaintenance = memo(VehiclesNeedingMaintenanceComponent);
+export const VehiclesNeedingMaintenance = memo(
+  VehiclesNeedingMaintenanceComponent
+);

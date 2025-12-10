@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -312,6 +313,7 @@ export default function UserDetailsPage() {
   const users = useUsersStore((state) => state.users);
   const suspendUser = useUsersStore((state) => state.suspendUser);
   const reactivateUser = useUsersStore((state) => state.reactivateUser);
+  const t = useTranslations("users");
 
   const user = users.find((u) => u.id === userId);
   const [attachments, setAttachments] =
@@ -340,7 +342,7 @@ export default function UserDetailsPage() {
         <div className="text-center">
           <UserRound className="h-12 w-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            User not found
+            {t("errors.notFound")}
           </p>
         </div>
       </div>
@@ -360,24 +362,24 @@ export default function UserDetailsPage() {
       };
     });
     setAttachments((prev) => [...uploads, ...prev]);
-    toast.success("Files uploaded", {
-      description: `${files.length} file(s) uploaded successfully.`,
+    toast.success(t("toasts.filesUploaded.title"), {
+      description: t("toasts.filesUploaded.description", { count: files.length }),
     });
   };
 
   const handleSuspend = () => {
     if (confirm(`Are you sure you want to suspend ${user.name}?`)) {
       suspendUser(user.id);
-      toast.success("User suspended", {
-        description: `${user.name} has been suspended.`,
+      toast.success(t("toasts.suspended.title"), {
+        description: t("toasts.suspended.description", { name: user.name }),
       });
     }
   };
 
   const handleReactivate = () => {
     reactivateUser(user.id);
-    toast.success("User reactivated", {
-      description: `${user.name} has been reactivated.`,
+    toast.success(t("toasts.reactivated.title"), {
+      description: t("toasts.reactivated.description", { name: user.name }),
     });
   };
 
@@ -394,20 +396,20 @@ export default function UserDetailsPage() {
       ...prev,
     ]);
     setNewComment("");
-    toast.success("Note added successfully");
+    toast.success(t("toasts.noteAdded"));
   };
 
   const handleInviteResend = () => {
     // Simulate API call
-    toast.success("Invitation sent", {
-      description: `Invitation email sent to ${user?.email}`,
+    toast.success(t("toasts.invitationSent.title"), {
+      description: t("toasts.invitationSent.description", { email: user?.email }),
     });
     setInviteDialogOpen(false);
   };
 
   const handleDeleteAttachment = (id: number) => {
     setAttachments((prev) => prev.filter((file) => file.id !== id));
-    toast.success("File deleted");
+    toast.success(t("toasts.fileDeleted"));
   };
 
   const handlePinComment = (id: number) => {
@@ -495,18 +497,18 @@ export default function UserDetailsPage() {
         <div className="flex flex-wrap gap-3">
           {user.status === "suspended" ? (
             <Button variant="outline" onClick={handleReactivate}>
-              <CheckCircle className="mr-2 h-4 w-4" /> Reactivate
+              <CheckCircle className="mr-2 h-4 w-4" /> {t("actions.reactivate")}
             </Button>
           ) : (
             <Button variant="outline" onClick={handleSuspend}>
-              <Ban className="mr-2 h-4 w-4" /> Suspend
+              <Ban className="mr-2 h-4 w-4" /> {t("actions.suspend")}
             </Button>
           )}
           <Button variant="outline" onClick={open}>
-            <Pencil className="mr-2 h-4 w-4" /> Edit Profile
+            <Pencil className="mr-2 h-4 w-4" /> {t("actions.edit")}
           </Button>
           <Button onClick={() => setInviteDialogOpen(true)}>
-            <Send className="mr-2 h-4 w-4" /> Invite/Resend
+            <Send className="mr-2 h-4 w-4" /> {t("actions.invite")}
           </Button>
         </div>
       </div>
@@ -515,22 +517,22 @@ export default function UserDetailsPage() {
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-6 lg:w-auto">
           <TabsTrigger value="overview" className="text-sm">
-            Overview
+            {t("details.overview")}
           </TabsTrigger>
           <TabsTrigger value="roles" className="text-sm">
-            Roles & Permissions
+            {t("details.roles")}
           </TabsTrigger>
           <TabsTrigger value="skills" className="text-sm">
-            Skills & Certs
+            {t("details.skills")}
           </TabsTrigger>
           <TabsTrigger value="activity" className="text-sm">
-            Activity
+            {t("details.activity")}
           </TabsTrigger>
           <TabsTrigger value="attachments" className="text-sm">
-            Attachments
+            {t("details.attachments")}
           </TabsTrigger>
           <TabsTrigger value="comments" className="text-sm">
-            Notes
+            {t("details.notes")}
           </TabsTrigger>
         </TabsList>
 
@@ -541,17 +543,17 @@ export default function UserDetailsPage() {
               <div className="flex items-center gap-2">
                 <UserRound className="h-5 w-5 text-primary" />
                 <CardTitle className="text-xl font-semibold">
-                  User Information
+                  {t("details.information.title")}
                 </CardTitle>
               </div>
-              <CardDescription>Personal and contact details</CardDescription>
+              <CardDescription>{t("details.information.subtitle")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <Mail className="h-3.5 w-3.5" />
-                    <span>Email</span>
+                    <span>{t("details.information.email")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {user.email}
@@ -561,7 +563,7 @@ export default function UserDetailsPage() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                       <Smartphone className="h-3.5 w-3.5" />
-                      <span>Phone</span>
+                      <span>{t("details.information.phone")}</span>
                     </div>
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {user.phone}
@@ -571,7 +573,7 @@ export default function UserDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <Briefcase className="h-3.5 w-3.5" />
-                    <span>Job Title</span>
+                    <span>{t("details.information.jobTitle")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">
                     {user.role} Specialist
@@ -580,7 +582,7 @@ export default function UserDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <Building2 className="h-3.5 w-3.5" />
-                    <span>Department</span>
+                    <span>{t("details.information.department")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     Maintenance
@@ -589,7 +591,7 @@ export default function UserDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5" />
-                    <span>Site</span>
+                    <span>{t("details.information.site")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     Main Facility
@@ -598,7 +600,7 @@ export default function UserDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <Clock className="h-3.5 w-3.5" />
-                    <span>Shift</span>
+                    <span>{t("details.information.shift")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     Day Shift (8AM - 5PM)
@@ -607,7 +609,7 @@ export default function UserDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <CalendarRange className="h-3.5 w-3.5" />
-                    <span>Joined</span>
+                    <span>{t("details.information.joined")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {user.created_at
@@ -618,7 +620,7 @@ export default function UserDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                     <Activity className="h-3.5 w-3.5" />
-                    <span>Last Active</span>
+                    <span>{t("details.information.lastActive")}</span>
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {user.last_active || "Recently"}

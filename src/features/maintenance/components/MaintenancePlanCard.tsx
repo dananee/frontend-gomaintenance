@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,7 @@ interface MaintenancePlanCardProps {
 }
 
 export function MaintenancePlanCard({ plan, template, currentMileage, onComplete }: MaintenancePlanCardProps) {
+  const t = useTranslations("maintenance.card");
   const interval = template.intervals[0];
 
   // Calculate progress
@@ -45,7 +48,7 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
             <p className="text-sm text-gray-500 dark:text-gray-400">{template.description}</p>
           </div>
           <Badge variant={isOverdue ? "destructive" : "success"}>
-            {isOverdue ? "Overdue" : "Active"}
+            {isOverdue ? t("overdue") : t("active")}
           </Badge>
         </div>
       </CardHeader>
@@ -53,7 +56,7 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Progress</span>
+              <span className="text-gray-500">{t("progress")}</span>
               <span className={`font-medium ${isOverdue ? "text-red-600" : "text-gray-900"}`}>
                 {Math.round(progress)}%
               </span>
@@ -65,16 +68,16 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-gray-400" />
               <div>
-                <p className="text-xs text-gray-500">Last Performed</p>
+                <p className="text-xs text-gray-500">{t("lastPerformed")}</p>
                 <p className="font-medium">
-                  {plan.last_performed_date ? formatDateShort(plan.last_performed_date) : "Never"}
+                  {plan.last_performed_date ? formatDateShort(plan.last_performed_date) : t("never")}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <AlertTriangle className={`h-4 w-4 ${isOverdue ? "text-red-500" : "text-gray-400"}`} />
               <div>
-                <p className="text-xs text-gray-500">Next Due</p>
+                <p className="text-xs text-gray-500">{t("nextDue")}</p>
                 <p className={`font-medium ${isOverdue ? "text-red-600" : ""}`}>
                   {interval.type === "distance"
                     ? `${(plan.last_performed_mileage || 0) + interval.value} km`
@@ -86,7 +89,7 @@ export function MaintenancePlanCard({ plan, template, currentMileage, onComplete
 
           <Button className="w-full" onClick={() => onComplete(plan.id)}>
             <CheckCircle className="mr-2 h-4 w-4" />
-            Mark as Completed
+            {t("markCompleted")}
           </Button>
         </div>
       </CardContent>

@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import withPWAInit from "next-pwa";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const withPWA = withPWAInit({
   dest: "public",
@@ -10,9 +11,10 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'standalone',
+  output: "standalone",
   reactCompiler: true,
   turbopack: {},
 };
+const withNextIntl = createNextIntlPlugin("./src/i18n/requests.ts");
 
-export default withPWA(nextConfig);
+export default withNextIntl(withPWA(nextConfig));

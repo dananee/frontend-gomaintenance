@@ -1,0 +1,1189 @@
+{
+    "login": {
+        "title": "Login",
+        "description": "Enter your email and password to access your account",
+        "fields": {
+            "email": {
+                "label": "Email",
+                "placeholder": "name@example.com"
+            },
+            "password": {
+                "label": "Password"
+            }
+        },
+        "errors": {
+            "invalidCredentials": "Invalid credentials"
+        },
+        "actions": {
+            "submit": "Sign In"
+        }
+    },
+    "authLayout": {
+        "title": "Fleet Maintenance",
+        "subtitle": "Manage your fleet efficiently"
+    },
+    "navigation": {
+        "sidebar": {
+            "dashboard": "Dashboard",
+            "vehicles": "Vehicles",
+            "workOrders": "Work Orders",
+            "maintenance": "Maintenance",
+            "inventory": "Inventory",
+            "users": "Users",
+            "reports": "Reports",
+            "title": "Fleet CMMS",
+            "subtitle": "Maintenance Pro"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "kpis": {
+            "totalFleetValue": {
+                "title": "Total Fleet Value",
+                "subtitle": "Total asset value"
+            },
+            "maintenanceCostYTD": {
+                "title": "Maintenance Cost YTD",
+                "subtitle": "Year to date"
+            },
+            "totalCostOfOwnership": {
+                "title": "Total Cost of Ownership",
+                "subtitle": "Fleet TCO"
+            },
+            "fleetEfficiency": {
+                "title": "Fleet Efficiency",
+                "subtitle": "Overall performance"
+            },
+            "scheduledVsCorrective": {
+                "title": "Scheduled vs Corrective",
+                "subtitle": "Maintenance ratio"
+            },
+            "downtimeMonth": {
+                "title": "Downtime (Month)",
+                "subtitle": "Total hours"
+            },
+            "avgDowntimeVehicle": {
+                "title": "Avg Downtime / Vehicle",
+                "subtitle": "Per vehicle"
+            },
+            "mttr": {
+                "title": "MTTR",
+                "subtitle": "Mean Time To Repair"
+            },
+            "mtbf": {
+                "title": "MTBF",
+                "subtitle": "Between failures"
+            },
+            "avgCostVehicle": {
+                "title": "Avg Cost / Vehicle",
+                "subtitle": "Per vehicle"
+            },
+            "woSlaCompliance": {
+                "title": "WO SLA Compliance",
+                "subtitle": "On-time completion"
+            },
+            "fleetHealthScore": {
+                "title": "Fleet Health Score",
+                "subtitle": "Overall fleet status"
+            },
+            "woCompletionRate": {
+                "title": "WO Completion Rate",
+                "subtitle": "This week"
+            },
+            "pmCompliance": {
+                "title": "PM Compliance",
+                "subtitle": "Preventive maintenance"
+            }
+        },
+        "sections": {
+            "fleetAnalytics": "Fleet Analytics",
+            "predictiveAI": "Predictive Analytics & AI Insights"
+        },
+        "stats": {
+            "totalVehicles": {
+                "title": "Total Vehicles",
+                "subtitle": "Active fleet vehicles"
+            },
+            "activeWorkOrders": {
+                "title": "Active Work Orders",
+                "subtitle": "In progress"
+            },
+            "criticalIssues": {
+                "title": "Critical Issues",
+                "subtitle": "Requires immediate attention"
+            },
+            "fleetAvailability": {
+                "title": "Fleet Availability",
+                "subtitle": "Vehicles available"
+            }
+        }
+    },
+    "features": {
+        "dashboard": {
+            "priorities": {
+                "low": "Low",
+                "medium": "Medium",
+                "high": "High",
+                "urgent": "Urgent"
+            },
+            "urgency": {
+                "upcoming": "Upcoming",
+                "soon": "Soon",
+                "overdue": "Overdue"
+            },
+            "fleetHealth": {
+                "title": "Fleet Health Score",
+                "healthy": "Healthy",
+                "due": "Due",
+                "critical": "Critical",
+                "clickToView": "Click to view full health report →"
+            },
+            "overdueWorkOrders": {
+                "title": "Overdue Work Orders",
+                "loading": "Loading...",
+                "empty": "No overdue work orders",
+                "daysOverdue": "{days} days overdue"
+            },
+            "upcomingMaintenance": {
+                "title": "Vehicles Needing Maintenance",
+                "loading": "Loading...",
+                "empty": "All vehicles are up to date",
+                "overdueBadge": "{count} overdue",
+                "soonBadge": "{count} soon",
+                "due": "Due: {date}"
+            },
+            "costForecast": {
+                "title": "Cost Forecast (6 Months)",
+                "avgPredicted": "Avg Predicted",
+                "actual": "Actual",
+                "predicted": "Predicted",
+                "aiLabel": "AI"
+            },
+            "costTrend": {
+                "title": "Maintenance Cost Trend",
+                "subtitle": "Last 12 months"
+            },
+            "downtime": {
+                "title": "Downtime Trend",
+                "subtitle": "Last 12 months"
+            },
+            "failurePrediction": {
+                "title": "AI Failure Predictions",
+                "subtitle": "Machine learning risk assessment",
+                "confidence": "Confidence",
+                "riskBadge": "{score}% Risk",
+                "component": "Component",
+                "predictedFailure": "Predicted Failure",
+                "aiScore": "AI Score",
+                "days": "{days} days",
+                "modelInfo": "Model trained on 10,000+ maintenance records",
+                "modelDesc": "Predictions update daily based on usage patterns and sensor data"
+            },
+            "mttr": {
+                "title": "MTTR Trend (12 Months)",
+                "average": "Average"
+            },
+            "sla": {
+                "title": "SLA Compliance",
+                "onTime": "On Time",
+                "delayed": "Delayed",
+                "breached": "Breached"
+            },
+            "techPerformance": {
+                "title": "Technician Performance",
+                "wos": "WOs",
+                "avg": "avg",
+                "efficiency": "Efficiency"
+            },
+            "topFaults": {
+                "title": "Top 5 Fault Types"
+            },
+            "trend": {
+                "fromLastMonth": "from last month"
+            },
+            "woDistribution": {
+                "title": "Work Order Distribution",
+                "total": "Total WOs"
+            },
+            "workload": {
+                "title": "Technician Workload Heatmap",
+                "subtitle": "Work orders per technician by month",
+                "legend": "Workload:",
+                "levels": {
+                    "low": "Low",
+                    "medium": "Medium",
+                    "high": "High",
+                    "critical": "Critical"
+                }
+            }
+        },
+        "reports": {
+            "availability": {
+                "title": "Fleet Availability",
+                "active": "Active",
+                "inMaintenance": "In Maintenance",
+                "inactive": "Inactive",
+                "loading": "Loading chart data...",
+                "noData": "No fleet data available"
+            },
+            "cost": {
+                "title": "Maintenance Costs (Last 6 Months)",
+                "loading": "Loading cost data...",
+                "total": "Total Cost",
+                "labor": "Labor Cost",
+                "parts": "Parts Cost",
+                "external": "External Services",
+                "workOrders": "Total Work Orders"
+            },
+            "fuel": {
+                "title": "Fuel Usage Trends",
+                "totalGallons": "Total Gallons",
+                "totalCost": "Total Cost",
+                "avgMpg": "Avg MPG",
+                "usage": "Usage",
+                "cost": "Cost",
+                "mpg": "MPG"
+            },
+            "breakdown": {
+                "title": "Maintenance Cost Breakdown",
+                "totalCost": "Total Cost",
+                "labor": "Labor",
+                "parts": "Parts",
+                "other": "Other"
+            }
+        },
+        "vehicles": {
+            "maintenance": {
+                "noHistory": "No maintenance history available",
+                "historyTitle": "Maintenance History",
+                "technician": "Technician"
+            }
+        }
+    },
+    "inventory": {
+        "title": "Inventory",
+        "subtitle": "Manage parts, stock levels, and suppliers",
+        "actions": {
+            "suppliers": "Suppliers",
+            "addPart": "Add Part",
+            "addFirstPart": "Add Your First Part",
+            "manageSuppliers": "Manage Suppliers",
+            "clearFilters": "Clear Filters",
+            "deleteConfirm": "Are you sure you want to delete \"{name}\"?"
+        },
+        "stats": {
+            "totalParts": {
+                "title": "Total Parts",
+                "description": "In inventory"
+            },
+            "lowStock": {
+                "title": "Low Stock",
+                "description": "Need reorder"
+            },
+            "totalValue": {
+                "title": "Total Value",
+                "description": "Inventory worth"
+            },
+            "categories": {
+                "title": "Categories",
+                "description": "Part categories"
+            }
+        },
+        "filters": {
+            "searchPlaceholder": "Search parts or SKU",
+            "allCategories": "All categories",
+            "allWarehouses": "All warehouses",
+            "lowStockOnly": "Low stock only",
+            "categories": {
+                "engine": "Engine",
+                "brakes": "Brakes",
+                "tires": "Tires",
+                "filters": "Filters",
+                "fluids": "Fluids"
+            },
+            "warehouses": {
+                "shelfA1": "Shelf A-1",
+                "shelfB2": "Shelf B-2"
+            }
+        },
+        "emptyStates": {
+            "noParts": {
+                "title": "No parts in inventory",
+                "description": "Get started by adding your first part to track inventory levels, costs, and supplier information."
+            },
+            "notFound": {
+                "title": "No parts found",
+                "description": "No parts match your current filters. Try adjusting your search criteria or filters."
+            }
+        },
+        "details": {
+            "adjustStock": "Adjust Stock",
+            "editPart": "Edit Part",
+            "exportCSV": "Export CSV",
+            "upload": "Upload",
+            "tabs": {
+                "overview": "Overview",
+                "stock": "Stock",
+                "movements": "Movements",
+                "attachments": "Attachments",
+                "comments": "Comments"
+            },
+            "overview": {
+                "onHand": {
+                    "title": "On Hand",
+                    "description": "Across all warehouses"
+                },
+                "reorderPoint": {
+                    "title": "Reorder Point",
+                    "description": "Threshold"
+                },
+                "unitPrice": {
+                    "title": "Unit Price",
+                    "description": "Latest supplier cost"
+                },
+                "totalValue": {
+                    "title": "Total Value",
+                    "description": "Qty × price"
+                }
+            },
+            "stock": {
+                "title": "Warehouse Stock",
+                "location": "Location",
+                "stock": "Stock",
+                "lowStock": "Low stock"
+            },
+            "movements": {
+                "title": "Stock Movements",
+                "id": "ID",
+                "type": "Type",
+                "quantity": "Quantity",
+                "location": "Location",
+                "date": "Date"
+            },
+            "attachments": {
+                "title": "Attachments"
+            },
+            "comments": {
+                "title": "Comments",
+                "placeholder": "Add a comment",
+                "post": "Post comment",
+                "toasts": {
+                    "added": {
+                        "title": "Comment added",
+                        "description": "Your comment has been posted."
+                    }
+                }
+            },
+            "editModal": {
+                "title": "Edit Part",
+                "description": "Update part metadata and pricing.",
+                "fields": {
+                    "name": "Part name",
+                    "sku": "SKU",
+                    "price": "Unit price"
+                },
+                "save": "Save changes"
+            },
+            "stockAdjustment": {
+                "toasts": {
+                    "success": {
+                        "title": "Stock adjusted",
+                        "description": "Stock has been {type}."
+                    }
+                },
+                "types": {
+                    "increased": "increased",
+                    "decreased": "decreased",
+                    "updated": "updated"
+                }
+            }
+        },
+        "suppliers": {
+            "title": "Suppliers",
+            "subtitle": "Manage your suppliers and contacts",
+            "actions": {
+                "addSupplier": "Add Supplier",
+                "deleteConfirm": "Are you sure you want to delete this supplier?"
+            },
+            "filters": {
+                "searchPlaceholder": "Search suppliers..."
+            }
+        }
+    },
+    "maintenance": {
+        "dashboard": {
+            "title": "Maintenance",
+            "subtitle": "Manage preventive maintenance schedules and active plans",
+            "actions": {
+                "templates": "Templates",
+                "schedule": "Schedule Maintenance"
+            },
+            "tabs": {
+                "calendar": "Calendar",
+                "activePlans": "Active Plans"
+            },
+            "modals": {
+                "schedule": {
+                    "title": "Schedule Maintenance"
+                }
+            }
+        },
+        "templates": {
+            "title": "Maintenance Templates",
+            "subtitle": "Create and manage preventive maintenance templates",
+            "actions": {
+                "create": "Create Template",
+                "delete": "Delete",
+                "cancel": "Cancel"
+            },
+            "modals": {
+                "create": "Create Template",
+                "edit": "Edit Template"
+            },
+            "alerts": {
+                "delete": {
+                    "title": "Delete Template",
+                    "description": "Are you sure you want to delete this template? This action cannot be undone."
+                }
+            },
+            "toasts": {
+                "createSuccess": "Template created successfully",
+                "updateSuccess": "Template updated successfully",
+                "saveError": "Failed to save template",
+                "deleteSuccess": "Template deleted successfully",
+                "deleteError": "Failed to delete template"
+            }
+        }
+    },
+    "notifications": {
+        "common": {
+            "categories": {
+                "work_order": "Work Orders",
+                "inventory": "Inventory",
+                "maintenance": "Maintenance",
+                "system": "System"
+            }
+        },
+        "dashboard": {
+            "title": "Notifications",
+            "subtitle": "Manage your alerts and updates",
+            "actions": {
+                "viewAll": "View all",
+                "markAllRead": "Mark all as read"
+            },
+            "filters": {
+                "searchPlaceholder": "Search notifications...",
+                "filterBy": "Filter by",
+                "options": {
+                    "all": "All Notifications",
+                    "unread": "Unread Only"
+                }
+            },
+            "empty": "No notifications found matching your criteria.",
+            "pagination": "Showing {start}-{end} of {total}"
+        },
+        "all": {
+            "title": "All notifications",
+            "subtitle": "Full history with filters, pagination, and bulk controls.",
+            "actions": {
+                "markAllRead": "Mark everything read",
+                "backToDashboard": "Back to dashboard"
+            },
+            "sections": {
+                "filters": "Filters",
+                "stream": "Notification stream",
+                "summary": "Summary"
+            },
+            "filters": {
+                "searchPlaceholder": "Search by title or message",
+                "filterByType": "Filter by type",
+                "options": {
+                    "all": "All categories"
+                }
+            },
+            "stats": {
+                "unread": "Unread",
+                "total": "Total"
+            },
+            "empty": "No notifications match your filters."
+        }
+    },
+    "reports": {
+        "title": "Reports",
+        "subtitle": "Fleet analytics and performance metrics",
+        "actions": {
+            "exportCSV": "Export CSV",
+            "exportPDF": "Export PDF",
+            "clear": "Clear"
+        },
+        "filters": {
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "showingDataFor": "Showing data for:"
+        },
+        "toasts": {
+            "exportPDF": {
+                "title": "Export to PDF",
+                "description": "Generating PDF report...",
+                "successTitle": "PDF Generated",
+                "successDescription": "Your report has been downloaded."
+            },
+            "exportCSV": {
+                "title": "Export to CSV",
+                "description": "Generating CSV file...",
+                "successTitle": "CSV Downloaded",
+                "successDescription": "Your data has been exported."
+            }
+        }
+    },
+    "search": {
+        "title": "Search results",
+        "subtitle": "Browse results by category with a full page view.",
+        "quickSearch": "Press / or ⌘K to search anywhere",
+        "cardTitle": "Search",
+        "placeholder": "Search vehicles, work orders, parts, users, and pages",
+        "update": "Update results",
+        "tabs": {
+            "all": "All",
+            "vehicle": "Vehicles",
+            "work_order": "Work Orders",
+            "part": "Parts",
+            "user": "Users",
+            "page": "Pages"
+        },
+        "empty": {
+            "query": "No results found for \"{query}\"",
+            "category": "No results in this category"
+        }
+    },
+    "settings": {
+        "title": "Settings",
+        "subtitle": "Manage your account and workspace preferences"
+    },
+    "users": {
+        "title": "Users",
+        "actions": {
+            "add": "Add User",
+            "addFirst": "Add Your First User",
+            "reactivate": "Reactivate",
+            "suspend": "Suspend",
+            "edit": "Edit Profile",
+            "invite": "Invite/Resend"
+        },
+        "errors": {
+            "loadFailed": "Failed to load users",
+            "generic": "An error occurred while fetching users",
+            "notFound": "User not found"
+        },
+        "empty": {
+            "title": "No users yet",
+            "description": "Add team members to manage your fleet. Assign roles, track activities, and collaborate effectively."
+        },
+        "details": {
+            "overview": "Overview",
+            "roles": "Roles & Permissions",
+            "skills": "Skills & Certs",
+            "activity": "Activity",
+            "attachments": "Attachments",
+            "notes": "Notes",
+            "information": {
+                "title": "User Information",
+                "subtitle": "Personal and contact details",
+                "email": "Email",
+                "phone": "Phone",
+                "jobTitle": "Job Title",
+                "department": "Department",
+                "site": "Site",
+                "shift": "Shift",
+                "joined": "Joined",
+                "lastActive": "Last Active"
+            },
+            "performance": {
+                "title": "Performance Metrics",
+                "subtitle": "Key performance indicators and productivity",
+                "completedWOs": "Completed WOs",
+                "avgCompletion": "Avg Completion",
+                "mttr": "MTTR",
+                "backlog": "Backlog",
+                "productivity": "Productivity",
+                "vsLastMonth": "+12% vs last month",
+                "perWorkOrder": "Per work order",
+                "meanTimeToRepair": "Mean time to repair",
+                "pendingTasks": "Pending tasks"
+            },
+            "assignedWorkOrders": {
+                "title": "Assigned Work Orders",
+                "subtitle": "Current assignments and upcoming tasks",
+                "active": "{count} active",
+                "due": "Due"
+            }
+        },
+        "toasts": {
+            "filesUploaded": {
+                "title": "Files uploaded",
+                "description": "{count} file(s) uploaded successfully."
+            },
+            "suspended": {
+                "title": "User suspended",
+                "description": "{name} has been suspended."
+            },
+            "reactivated": {
+                "title": "User reactivated",
+                "description": "{name} has been reactivated."
+            },
+            "noteAdded": "Note added successfully",
+            "invitationSent": {
+                "title": "Invitation sent",
+                "description": "Invitation email sent to {email}"
+            },
+            "fileDeleted": "File deleted"
+        }
+    },
+    "vehicles": {
+        "title": "Vehicles",
+        "actions": {
+            "add": "Add Vehicle",
+            "addFirst": "Add Your First Vehicle",
+            "clearFilters": "Clear Filters",
+            "updateUsage": "Update Usage",
+            "edit": "Edit Vehicle",
+            "createWorkOrder": "Create Work Order"
+        },
+        "filters": {
+            "searchPlaceholder": "Search by name or plate",
+            "status": {
+                "all": "All status",
+                "active": "Active",
+                "maintenance": "Maintenance",
+                "retired": "Retired"
+            },
+            "type": {
+                "all": "All types",
+                "truck": "Truck",
+                "van": "Van",
+                "car": "Car",
+                "unknown": "Unknown"
+            }
+        },
+        "empty": {
+            "title": "No vehicles yet",
+            "description": "Get started by adding your first vehicle to the fleet. Track maintenance, assignments, and performance all in one place.",
+            "notFoundTitle": "No vehicles found",
+            "notFoundDescription": "No vehicles match your current filters. Try adjusting your search criteria or filters."
+        },
+        "toasts": {
+            "deleted": {
+                "title": "Vehicle deleted",
+                "description": "Vehicle has been removed from your fleet."
+            },
+            "updated": {
+                "title": "Vehicle updated",
+                "description": "Vehicle information has been updated successfully."
+            },
+            "created": {
+                "title": "Vehicle created",
+                "description": "New vehicle has been added to your fleet."
+            }
+        },
+        "details": {
+            "tabs": {
+                "overview": "Overview",
+                "plans": "Maintenance Plans",
+                "documents": "Documents",
+                "history": "History"
+            },
+            "performanceMetrics": {
+                "title": "Performance Metrics"
+            },
+            "analytics": {
+                "title": "Analytics",
+                "mileageGrowth": "Mileage Growth",
+                "chartDataAvailable": "Chart data available",
+                "noMileageHistory": "No mileage history available"
+            },
+            "partsUsed": {
+                "title": "Parts Used & Costs",
+                "partName": "Part Name",
+                "quantity": "Quantity",
+                "cost": "Cost",
+                "dateUsed": "Date Used",
+                "workOrder": "Work Order",
+                "noPartsUsed": "No parts used yet",
+                "viewWorkOrder": "View Work Order"
+            },
+            "metrics": {
+                "title": "Performance Metrics",
+                "totalCost": "Total Maintenance Cost",
+                "avgRepair": "Avg Repair Cost",
+                "avgRepairCost": "Avg Repair Cost",
+                "perWorkOrder": "Per work order",
+                "costPerKm": "Cost per KM",
+                "mtbf": "MTBF",
+                "meanTimeBetweenFailures": "Mean Time Between Failures",
+                "reliabilityScore": "Reliability Score",
+                "reliability": "Reliability Score",
+                "totalDowntime": "Total Downtime",
+                "downtime": "Total Downtime",
+                "mttr": "MTTR",
+                "meanTimeToRepair": "Mean Time To Repair",
+                "workOrders": "Work Orders",
+                "totalCompleted": "Total completed"
+            },
+            "analytics": {
+                "title": "Analytics",
+                "mileageGrowth": "Mileage Growth",
+                "available": "Chart data available",
+                "unavailable": "No mileage history available"
+            },
+            "parts": {
+                "title": "Parts Used & Costs",
+                "name": "Part Name",
+                "quantity": "Quantity",
+                "cost": "Cost",
+                "date": "Date Used",
+                "workOrder": "Work Order",
+                "empty": "No parts used yet",
+                "viewWorkOrder": "View Work Order"
+            },
+            "table": {
+                "headers": {
+                    "vehicle": "Vehicle",
+                    "plate": "License Plate",
+                    "status": "Status",
+                    "mileage": "Mileage",
+                    "totalCost": "Total Maint. Cost",
+                    "downtime": "Downtime",
+                    "nextService": "Next Service",
+                    "healthScore": "Health Score",
+                    "woCount": "WO Count",
+                    "actions": "Actions",
+                    "partName": "Part Name",
+                    "quantity": "Quantity",
+                    "cost": "Cost",
+                    "dateUsed": "Date Used",
+                    "workOrder": "Work Order"
+                },
+                "noData": "No vehicles found",
+                "noService": "No service scheduled",
+                "days": "{days} days",
+                "title": "Parts Used & Costs",
+                "exportCSV": "Export CSV",
+                "filterName": "Filter by part name...",
+                "clear": "Clear",
+                "totalParts": "Total ({count} parts)"
+            },
+            "form": {
+                "createTitle": "Create Maintenance Plan",
+                "editTitle": "Edit Maintenance Plan",
+                "description": "Set up recurring service intervals to keep this vehicle on schedule.",
+                "brand": "Brand",
+                "model": "Model",
+                "year": "Year",
+                "type": "Type",
+                "plate": "License Plate",
+                "vin": "VIN",
+                "status": "Status",
+                "updateTitle": "Update Usage",
+                "updateDesc": "Record new mileage or engine hours to keep vehicle utilization accurate.",
+                "currentMileage": "Current Mileage (km)",
+                "engineHours": "Engine Hours",
+                "saveUsage": "Save Usage",
+                "cancel": "Cancel",
+                "save": "Save Changes",
+                "create": "Create Plan",
+                "update": "Update Vehicle",
+                "createVehicle": "Create Vehicle",
+                "template": "Maintenance Template",
+                "templateRequired": "Template is required",
+                "templateDesc": "Template intervals will auto-fill the fields below.",
+                "serviceIntervals": "Service Intervals",
+                "intervalKm": "Interval (KM)",
+                "intervalMonths": "Interval (Months)",
+                "intervalError": "At least one interval (KM or Months) must be greater than 0",
+                "lastServiceInfo": "Last Service Information",
+                "lastServiceKm": "Last Service KM",
+                "lastServiceDate": "Last Service Date",
+                "selectTemplate": "Select a maintenance template...",
+                "searchTemplates": "Search templates...",
+                "noTemplates": "No templates found."
+            },
+            "kpis": {
+                "predictive": {
+                    "title": "Predictive Maintenance",
+                    "predictedFailure": "Predicted Failure",
+                    "days": "{days} days",
+                    "basedOn": "Based on usage patterns",
+                    "nextOilChange": "Next Oil Change",
+                    "kmRemaining": "km remaining ({km} km)",
+                    "riskAssessment": "Risk Assessment",
+                    "aiRecommendations": "AI Recommendations"
+                },
+                "serviceSummary": {
+                    "title": "Service Summary",
+                    "lastMaintenance": "Last Maintenance",
+                    "lastCost": "Last Cost",
+                    "lastTechnician": "Last Technician",
+                    "nextServiceDue": "Next Service Due",
+                    "serviceInterval": "Service Interval"
+                }
+            },
+            "documents": {
+                "title": "Vehicle Documents",
+                "subtitle": "Manage insurance, registration, and inspection records",
+                "upload": "Upload Document",
+                "noDocs": "No Documents Uploaded",
+                "noDocsDesc": "Keep all your vehicle records in one place. Upload insurance policies, registration cards, and inspection reports.",
+                "name": "Document Name",
+                "type": "Type",
+                "size": "Size",
+                "uploaded": "Uploaded",
+                "actions": "Actions",
+                "untitled": "Untitled Document",
+                "modalTitle": "Upload Document",
+                "modalDesc": "Attach insurance cards, registrations, and inspection reports to this vehicle",
+                "fileName": "File Name",
+                "fileUrl": "File URL"
+            },
+            "maintenance": {
+                "plansTitle": "Active Plans",
+                "plansSubtitle": "Manage recurring maintenance schedules",
+                "newPlan": "New Plan",
+                "noPlans": "No Maintenance Plans",
+                "noPlansDesc": "Set up recurring maintenance schedules to keep this vehicle in top condition. We'll notify you when service is due.",
+                "createFirst": "Create First Plan",
+                "customPlan": "Custom Plan",
+                "paused": "Paused",
+                "every": "Every",
+                "due": "Due: {date}",
+                "lastService": "Last Service",
+                "nextDue": "Next Due",
+                "editConfig": "Edit Configuration",
+                "deletePlan": "Delete Plan",
+                "runNow": "Run Plan Now",
+                "resumePlan": "Resume Plan",
+                "pausePlan": "Pause Plan",
+                "confirmDelete": "Are you sure you want to delete this plan?",
+                "historyTitle": "Complete maintenance history for this vehicle",
+                "noHistory": "No maintenance history available",
+                "timelineTitle": "Maintenance Timeline",
+                "technician": "Technician: {name}",
+                "types": {
+                    "preventive": "Preventive",
+                    "corrective": "Corrective",
+                    "emergency": "Emergency",
+                    "scheduled": "Scheduled"
+                }
+            },
+            "activity": {
+                "title": "Activity Timeline",
+                "historyTitle": "Complete activity history for this vehicle",
+                "noActivity": "No activity recorded for this vehicle yet.",
+                "noLogs": "No activity logs available"
+            },
+            "workOrders": {
+                "title": "All work orders associated with this vehicle",
+                "noWos": "No work orders for this vehicle",
+                "scheduled": "Scheduled: {date}"
+            }
+        }
+    },
+    "workOrders": {
+        "title": "Work Orders",
+        "actions": {
+            "new": "New Work Order",
+            "edit": "Edit Details",
+            "markComplete": "Mark Complete",
+            "goBack": "Go Back",
+            "saveChanges": "Save changes"
+        },
+        "filters": {
+            "searchPlaceholder": "Search by ID or title",
+            "priority": {
+                "all": "All priorities",
+                "high": "High",
+                "medium": "Medium",
+                "low": "Low"
+            },
+            "status": {
+                "all": "All status",
+                "pending": "Pending",
+                "inProgress": "In Progress",
+                "completed": "Completed"
+            }
+        },
+        "toasts": {
+            "created": {
+                "title": "Work order created",
+                "description": "New work order has been created and assigned."
+            }
+        },
+        "details": {
+            "notFound": {
+                "title": "Work Order Not Found",
+                "description": "The requested work order could not be located."
+            },
+            "tabs": {
+                "overview": "Overview",
+                "tasks": "Tasks",
+                "attachments": "Attachments",
+                "activity": "Activity",
+                "comments": "Comments"
+            },
+            "cards": {
+                "status": {
+                    "title": "Status",
+                    "description": "Current workflow stage"
+                },
+                "dueDate": {
+                    "title": "Due Date",
+                    "description": "Target completion",
+                    "none": "No date"
+                },
+                "vehicle": {
+                    "title": "Vehicle",
+                    "description": "Linked asset",
+                    "unknown": "Unknown"
+                },
+                "assignee": {
+                    "title": "Assignee",
+                    "role": "Technician",
+                    "unassigned": "Not assigned"
+                },
+                "details": {
+                    "title": "Details & Description",
+                    "type": "Work Order Type",
+                    "priority": "Priority Level",
+                    "description": "Description",
+                    "notes": "Additional Notes"
+                }
+            },
+            "modal": {
+                "title": "Edit Work Order",
+                "description": "Update work order status, assignee, or due date.",
+                "titleLabel": "Title",
+                "dueDateLabel": "Due Date"
+            }
+        }
+    },
+    "forbidden": {
+        "error": "Error 403",
+        "title": "Access forbidden",
+        "description": "You do not have permission to view this page. Please check your role or contact an administrator.",
+        "actions": {
+            "switchAccount": "Switch account",
+            "backToDashboard": "Back to dashboard"
+        }
+    },
+    "partRequests": {
+        "approvals": {
+            "title": "Part Request Approvals",
+            "subtitle": "Review and approve pending part requests",
+            "searchPlaceholder": "Search by part name, SKU, or work order...",
+            "loading": "Loading pending approvals...",
+            "error": "Failed to load pending approvals. Please try again.",
+            "empty": {
+                "title": "All caught up!",
+                "description": "There are no pending part requests to review at this time."
+            },
+            "noPendingApprovals": "No pending approvals",
+            "allProcessed": "All part requests have been processed.",
+            "actions": {
+                "approve": "Approve",
+                "reject": "Reject",
+                "previous": "Previous",
+                "next": "Next"
+            },
+            "fields": {
+                "workOrder": "Work Order",
+                "requestedBy": "Requested by",
+                "requested": "Requested",
+                "notes": "Notes",
+                "sku": "SKU",
+                "quantity": "Quantity"
+            },
+            "pagination": "Page {page} of {total}",
+            "prompts": {
+                "rejectReason": "Please provide a reason for rejection:"
+            },
+            "fallback": {
+                "unknownPart": "Unknown Part",
+                "na": "N/A"
+            }
+        },
+        "myRequests": {
+            "title": "My Part Requests",
+            "subtitle": "View your part request history",
+            "searchPlaceholder": "Search by part name, SKU, or status...",
+            "empty": {
+                "title": "No requests found",
+                "description": "You haven't requested any parts yet."
+            },
+            "fields": {
+                "approvedBy": "Approved by",
+                "rejected": "Rejected",
+                "qty": "Qty"
+            }
+        },
+        "maintenance": {
+            "dashboard": {
+                "activePlansTitle": "Active Maintenance Plans",
+                "noActivePlans": "No active maintenance plans",
+                "emptyDescription": "Maintenance plans are created from individual vehicle pages. Go to a vehicle's detail page and create a recurring maintenance plan based on a template.",
+                "viewVehicles": "View Vehicles",
+                "viewDetails": "View Details",
+                "editPlan": "Edit Plan",
+                "deactivate": "Deactivate",
+                "template": "Template",
+                "nextDue": "Next Due",
+                "notScheduled": "Not scheduled",
+                "dueAtKm": "Due at KM",
+                "activeStatus": "Plan is active and monitoring",
+                "attentionStatus": "Plan requires attention"
+            },
+            "calendar": {
+                "today": "Today",
+                "event": "event",
+                "events": "events",
+                "weekdays": {
+                    "sun": "Sun",
+                    "mon": "Mon",
+                    "tue": "Tue",
+                    "wed": "Wed",
+                    "thu": "Thu",
+                    "fri": "Fri",
+                    "sat": "Sat"
+                }
+            },
+            "table": {
+                "searchPlaceholder": "Search plans...",
+                "noPlansFound": "No plans found",
+                "plan": "plan",
+                "plans": "plans",
+                "headers": {
+                    "asset": "Asset",
+                    "planName": "Plan Name",
+                    "recurrence": "Recurrence",
+                    "nextDue": "Next Due",
+                    "status": "Status"
+                },
+                "actions": {
+                    "runNow": "Run Now",
+                    "pause": "Pause",
+                    "resume": "Resume",
+                    "viewVehicle": "View Vehicle",
+                    "delete": "Delete",
+                    "confirmDelete": "Are you sure you want to delete this maintenance plan?"
+                },
+                "recurrence": {
+                    "daily": "Daily",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly",
+                    "everyDays": "Every {days} days",
+                    "everyKm": "Every {km} km",
+                    "everyHours": "Every {hours} hours",
+                    "custom": "Custom"
+                },
+                "status": {
+                    "active": "Active",
+                    "inactive": "Inactive"
+                },
+                "pagination": {
+                    "showing": "Showing",
+                    "to": "to",
+                    "of": "of",
+                    "page": "Page",
+                    "previous": "Previous",
+                    "next": "Next"
+                }
+            },
+            "card": {
+                "progress": "Progress",
+                "lastPerformed": "Last Performed",
+                "nextDue": "Next Due",
+                "never": "Never",
+                "overdue": "Overdue",
+                "active": "Active",
+                "markCompleted": "Mark as Completed"
+            },
+            "form": {
+                "scheduleTitle": "Schedule Maintenance",
+                "editTemplate": "Edit Template",
+                "createTemplate": "Create Maintenance Template",
+                "templateName": "Template Name",
+                "description": "Description",
+                "intervalRules": "Interval Rules",
+                "type": "Type",
+                "value": "Value",
+                "taskChecklist": "Task Checklist",
+                "addTask": "Add Task",
+                "saveTemplate": "Save Template",
+                "cancel": "Cancel",
+                "create": "Schedule Maintenance",
+                "vehicle": "Vehicle",
+                "selectVehicle": "Select a vehicle",
+                "selectTemplate": "Select a template (optional)",
+                "scheduledDate": "Scheduled Date",
+                "priority": "Priority",
+                "assignTo": "Assign To (Optional)",
+                "estimatedCost": "Estimated Cost",
+                "notes": "Notes",
+                "optional": "(Optional)",
+                "selectTechnician": "Select technician (optional)",
+                "task": "Task",
+                "items": {
+                    "distance": "Distance (km)",
+                    "time": "Time (months)",
+                    "engineHours": "Engine Hours"
+                },
+                "priorities": {
+                    "low": "Low",
+                    "medium": "Medium",
+                    "high": "High",
+                    "critical": "Critical"
+                },
+                "success": "Maintenance scheduled successfully",
+                "error": "Failed to schedule maintenance"
+            }
+        }
+    },
+    "notAuthorized": {
+        "title": "Access Denied",
+        "description": "You do not have permission to access this page. Please contact your administrator if you believe this is an error.",
+        "actions": {
+            "goBack": "Go Back",
+            "goToDashboard": "Go to Dashboard"
+        }
+    },
+    "errorPage": {
+        "title": "Something went wrong!",
+        "defaultMessage": "An unexpected error occurred. Please try again.",
+        "actions": {
+            "reloadPage": "Reload Page",
+            "tryAgain": "Try Again"
+        }
+    },
+    "notFoundPage": {
+        "title": "404",
+        "description": "Page not found",
+        "actions": {
+            "backToDashboard": "Back to dashboard",
+            "viewWorkOrders": "View work orders"
+        }
+    },
+    "homePage": {
+        "redirecting": "Redirecting..."
+    },
+    "components": {
+        "pagination": {
+            "showing": "Showing",
+            "to": "to",
+            "of": "of",
+            "results": "results",
+            "rowsPerPage": "Rows per page:"
+        },
+        "confirmDialog": {
+            "defaultConfirm": "Confirm",
+            "defaultCancel": "Cancel"
+        }
+    }
+}

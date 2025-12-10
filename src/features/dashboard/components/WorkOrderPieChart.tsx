@@ -4,12 +4,15 @@ import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart } from "lucide-react";
 import { WorkOrderStatusDistribution } from "../types/dashboardKPI.types";
+import { useTranslations } from "next-intl";
 
 interface WorkOrderPieChartProps {
   data: WorkOrderStatusDistribution[];
 }
 
 function WorkOrderPieChartComponent({ data }: WorkOrderPieChartProps) {
+  const t = useTranslations("features.dashboard.woDistribution");
+  
   const total = useMemo(
     () => data.reduce((sum, item) => sum + item.count, 0),
     [data]
@@ -21,7 +24,7 @@ function WorkOrderPieChartComponent({ data }: WorkOrderPieChartProps) {
         <div className="flex items-center gap-2">
           <PieChart className="h-5 w-5 text-primary" />
           <CardTitle className="text-xl font-semibold">
-            Work Order Distribution
+            {t("title")}
           </CardTitle>
         </div>
       </CardHeader>
@@ -64,7 +67,7 @@ function WorkOrderPieChartComponent({ data }: WorkOrderPieChartProps) {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <p className="text-3xl font-bold">{total}</p>
-              <p className="text-xs text-muted-foreground">Total WOs</p>
+              <p className="text-xs text-muted-foreground">{t("total")}</p>
             </div>
           </div>
 

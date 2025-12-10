@@ -26,8 +26,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTranslations } from "next-intl";
 
 export default function MaintenanceTemplatesPage() {
+  const t = useTranslations("maintenance.templates");
   const { data, isLoading } = useMaintenanceTemplates();
   const { isOpen, open, close } = useModal();
   const [selectedTemplate, setSelectedTemplate] =
@@ -55,14 +57,14 @@ export default function MaintenanceTemplatesPage() {
           id: selectedTemplate.id,
           data: formData,
         });
-        toast.success("Template updated successfully");
+        toast.success(t("toasts.updateSuccess"));
       } else {
         await createMutation.mutateAsync(formData);
-        toast.success("Template created successfully");
+        toast.success(t("toasts.createSuccess"));
       }
       close();
     } catch (error) {
-      toast.error("Failed to save template");
+      toast.error(t("toasts.saveError"));
     }
   };
 
@@ -71,10 +73,10 @@ export default function MaintenanceTemplatesPage() {
 
     try {
       await deleteMutation.mutateAsync(deleteId);
-      toast.success("Template deleted successfully");
+      toast.success(t("toasts.deleteSuccess"));
       setDeleteId(null);
     } catch (error) {
-      toast.error("Failed to delete template");
+      toast.error(t("toasts.deleteSuccess"));
     }
   };
 
@@ -89,16 +91,16 @@ export default function MaintenanceTemplatesPage() {
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Maintenance Templates
+              {t("title")}
             </h1>
             <p className="text-gray-500 dark:text-gray-400">
-              Create and manage preventive maintenance templates
+              {t("subtitle")}
             </p>
           </div>
         </div>
         <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
-          Create Template
+          {t("actions.create")}
         </Button>
       </div>
 
@@ -112,7 +114,7 @@ export default function MaintenanceTemplatesPage() {
       <Modal
         isOpen={isOpen}
         onClose={close}
-        title={selectedTemplate ? "Edit Template" : "Create Template"}
+        title={selectedTemplate ? t("modals.edit") : t("modals.create")}
       >
         <TemplateForm
           initialData={selectedTemplate || undefined}
@@ -125,19 +127,18 @@ export default function MaintenanceTemplatesPage() {
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Template</AlertDialogTitle>
+            <AlertDialogTitle>{t("alerts.delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this template? This action cannot be
-              undone.
+              {t("alerts.delete.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("actions.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              {t("actions.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

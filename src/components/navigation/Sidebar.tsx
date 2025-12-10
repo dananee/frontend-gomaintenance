@@ -17,6 +17,8 @@ import {
   Wrench,
 } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 interface NavItem {
   name: string;
   href: string;
@@ -24,53 +26,54 @@ interface NavItem {
   permission?: Permission;
 }
 
-const navItems: NavItem[] = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Vehicles",
-    href: "/dashboard/vehicles",
-    icon: Car,
-    permission: "view_vehicles",
-  },
-  {
-    name: "Work Orders",
-    href: "/dashboard/work-orders",
-    icon: ClipboardList,
-    permission: "view_work_orders",
-  },
-  {
-    name: "Maintenance",
-    href: "/dashboard/maintenance",
-    icon: Wrench,
-    permission: "view_maintenance",
-  },
-  {
-    name: "Inventory",
-    href: "/dashboard/inventory",
-    icon: Package,
-    permission: "view_inventory",
-  },
-  {
-    name: "Users",
-    href: "/dashboard/users",
-    icon: Users,
-    permission: "view_users",
-  },
-  {
-    name: "Reports",
-    href: "/dashboard/reports",
-    icon: BarChart3,
-    permission: "view_reports",
-  },
-];
-
 export function Sidebar() {
+  const t = useTranslations("navigation.sidebar");
   const pathname = usePathname();
   const { isOpen, isMobileOpen, closeMobile } = useSidebarStore();
+
+  const navItems: NavItem[] = [
+    {
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: t("vehicles"),
+      href: "/dashboard/vehicles",
+      icon: Car,
+      permission: "view_vehicles",
+    },
+    {
+      name: t("workOrders"),
+      href: "/dashboard/work-orders",
+      icon: ClipboardList,
+      permission: "view_work_orders",
+    },
+    {
+      name: t("maintenance"),
+      href: "/dashboard/maintenance",
+      icon: Wrench,
+      permission: "view_maintenance",
+    },
+    {
+      name: t("inventory"),
+      href: "/dashboard/inventory",
+      icon: Package,
+      permission: "view_inventory",
+    },
+    {
+      name: t("users"),
+      href: "/dashboard/users",
+      icon: Users,
+      permission: "view_users",
+    },
+    {
+      name: t("reports"),
+      href: "/dashboard/reports",
+      icon: BarChart3,
+      permission: "view_reports",
+    },
+  ];
 
   const filteredNavItems = navItems.filter((item) => {
     if (!item.permission) return true;
@@ -87,10 +90,10 @@ export function Sidebar() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-              Fleet CMMS
+              {t("title")}
             </h1>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Maintenance Pro
+              {t("subtitle")}
             </p>
           </div>
         </div>

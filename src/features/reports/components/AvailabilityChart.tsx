@@ -11,10 +11,12 @@ import {
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { getFleetAvailability } from "@/features/reports/api/reports";
+import { useTranslations } from "next-intl";
 
 const COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444"];
 
 export function AvailabilityChart() {
+  const t = useTranslations("features.reports.availability");
   const { data, isLoading } = useQuery({
     queryKey: ["fleet-availability"],
     queryFn: getFleetAvailability,
@@ -23,9 +25,9 @@ export function AvailabilityChart() {
   // Transform data for the chart
   const chartData = data
     ? [
-        { name: "Active", value: data.active_vehicles },
-        { name: "In Maintenance", value: data.in_maintenance_vehicles },
-        { name: "Inactive", value: data.inactive_vehicles },
+        { name: t("active"), value: data.active_vehicles },
+        { name: t("inMaintenance"), value: data.in_maintenance_vehicles },
+        { name: t("inactive"), value: data.inactive_vehicles },
       ]
     : [];
 
@@ -33,12 +35,12 @@ export function AvailabilityChart() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Fleet Availability</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Loading chart data...
+              {t("loading")}
             </p>
           </div>
         </CardContent>
@@ -49,14 +51,14 @@ export function AvailabilityChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Fleet Availability</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
           {chartData.length === 0 || data?.total_vehicles === 0 ? (
             <div className="h-full flex items-center justify-center">
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                No fleet data available
+                {t("noData")}
               </p>
             </div>
           ) : (

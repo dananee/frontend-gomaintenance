@@ -7,6 +7,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { Toaster } from "@/components/ui/sonner";
 import { GlobalErrorBoundary } from "@/components/layout/GlobalErrorBoundary";
 import { OfflineIndicatorClient } from "@/features/offline/components/OfflineIndicatorClient";
+import { NextIntlClientProvider } from "next-intl";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,15 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         <GlobalErrorBoundary>
           <Providers>
             <Suspense fallback={null}>
               <ProgressBar />
             </Suspense>
             <OfflineIndicatorClient />
-            {children}
-
+            <NextIntlClientProvider>{children}</NextIntlClientProvider>
           </Providers>
         </GlobalErrorBoundary>
       </body>

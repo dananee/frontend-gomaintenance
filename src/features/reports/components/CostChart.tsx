@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { getMaintenanceCosts } from "@/features/reports/api/reports";
 import { formatCurrency } from "@/lib/formatters";
+import { useTranslations } from "next-intl";
 
 export function CostChart() {
+  const t = useTranslations("features.reports.cost");
   const { data, isLoading } = useQuery({
     queryKey: ["maintenance-costs"],
     queryFn: () => {
@@ -24,12 +26,12 @@ export function CostChart() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Maintenance Costs (Last 6 Months)</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[200px] flex items-center justify-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Loading cost data...
+              {t("loading")}
             </p>
           </div>
         </CardContent>
@@ -40,14 +42,14 @@ export function CostChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Maintenance Costs (Last 6 Months)</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Total Cost
+                {t("total")}
               </p>
               <p className="text-2xl font-bold">
                 {formatCurrency(data?.total_cost || 0)}
@@ -55,7 +57,7 @@ export function CostChart() {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Labor Cost
+                {t("labor")}
               </p>
               <p className="text-2xl font-bold text-blue-600">
                 {formatCurrency(data?.labor_cost || 0)}
@@ -63,7 +65,7 @@ export function CostChart() {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Parts Cost
+                {t("parts")}
               </p>
               <p className="text-2xl font-bold text-orange-600">
                 {formatCurrency(data?.parts_cost || 0)}
@@ -71,7 +73,7 @@ export function CostChart() {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                External Services
+                {t("external")}
               </p>
               <p className="text-2xl font-bold text-purple-600">
                 {formatCurrency(data?.external_service_cost || 0)}
@@ -80,7 +82,7 @@ export function CostChart() {
           </div>
           <div className="pt-4 border-t">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Total Work Orders: <span className="font-semibold">{data?.work_order_count || 0}</span>
+              {t("workOrders")}: <span className="font-semibold">{data?.work_order_count || 0}</span>
             </p>
           </div>
         </div>

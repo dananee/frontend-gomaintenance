@@ -1,7 +1,6 @@
 "use client";
 
 import { formatDateShort } from "@/lib/formatters";
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 
 interface VehicleMaintenancePlansProps {
   plans?: VehicleMaintenancePlan[];
@@ -45,6 +45,7 @@ export function VehicleMaintenancePlans({
   onEdit,
   onDelete,
 }: VehicleMaintenancePlansProps) {
+  const t = useTranslations("vehicles.details.maintenance");
   const { runPlanNow, pausePlan, resumePlan } = useMaintenanceMutations();
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
@@ -68,7 +69,7 @@ export function VehicleMaintenancePlans({
 
   const handleDelete = (e: React.MouseEvent, planId: string) => {
     e.stopPropagation();
-    if (confirm("Are you sure you want to delete this plan?")) {
+    if (confirm(t("deleteConfirm"))) {
       onDelete(planId);
     }
   };
@@ -106,14 +107,13 @@ export function VehicleMaintenancePlans({
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
             <RefreshCw className="h-8 w-8" />
           </div>
-          <h3 className="mb-2 text-lg font-semibold">No Maintenance Plans</h3>
+          <h3 className="mb-2 text-lg font-semibold">{t("noPlans")}</h3>
           <p className="mb-6 max-w-sm text-sm text-muted-foreground">
-            Set up recurring maintenance schedules to keep this vehicle in top condition.
-            We&apos;ll notify you when service is due.
+            {t("noPlansDesc")}
           </p>
           <Button onClick={onCreate} className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary">
             <Plus className="mr-2 h-4 w-4" />
-            Create First Plan
+            {t("createFirstPlan")}
           </Button>
         </CardContent>
       </Card>
@@ -124,14 +124,14 @@ export function VehicleMaintenancePlans({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Active Plans</h2>
+          <h2 className="text-lg font-semibold">{t("plansTitle")}</h2>
           <p className="text-sm text-muted-foreground">
-            Manage recurring maintenance schedules
+            {t("plansSubtitle")}
           </p>
         </div>
         <Button onClick={onCreate} size="sm">
           <Plus className="mr-2 h-4 w-4" />
-          New Plan
+          {t("newPlan")}
         </Button>
       </div>
 
@@ -167,7 +167,7 @@ export function VehicleMaintenancePlans({
                     </Badge>
                     {!plan.is_active && (
                       <Badge variant="secondary" className="text-xs">
-                        Paused
+                        {t("paused")}
                       </Badge>
                     )}
                   </div>
@@ -175,9 +175,9 @@ export function VehicleMaintenancePlans({
                     <div className="flex items-center gap-1.5">
                       <RefreshCw className="h-3.5 w-3.5" />
                       <span>
-                        Every {plan.interval_km ? `${plan.interval_km.toLocaleString()} km` : ""}
-                        {plan.interval_km && plan.interval_months ? " or " : ""}
-                        {plan.interval_months ? `${plan.interval_months} months` : ""}
+                        {t("every")} {plan.interval_km ? `${plan.interval_km.toLocaleString()} km` : ""}
+                        {plan.interval_km && plan.interval_months ? ` ${t("or")} ` : ""}
+                        {plan.interval_months ? `${plan.interval_months} ${t("months")}` : ""}
                       </span>
                     </div>
                     {(plan.next_service_date || plan.next_service_km) && (
@@ -187,8 +187,8 @@ export function VehicleMaintenancePlans({
                       )}>
                         <Calendar className="h-3.5 w-3.5" />
                         <span>
-                          Due: {plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}
-                          {plan.next_service_km ? ` or ${plan.next_service_km.toLocaleString()} km` : ""}
+                          {t("due")}: {plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}
+                          {plan.next_service_km ? ` ${t("or")} ${plan.next_service_km.toLocaleString()} km` : ""}
                         </span>
                       </div>
                     )}
@@ -213,7 +213,7 @@ export function VehicleMaintenancePlans({
                           )}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Run Plan Now</TooltipContent>
+                      <TooltipContent>{t("runNow")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
 
@@ -234,7 +234,7 @@ export function VehicleMaintenancePlans({
                           )}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>{plan.is_active ? "Pause Plan" : "Resume Plan"}</TooltipContent>
+                      <TooltipContent>{plan.is_active ? t("pausePlan") : t("resumePlan")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
 
@@ -258,10 +258,10 @@ export function VehicleMaintenancePlans({
                 <div className="mt-4 border-t pt-4 animate-in slide-in-from-top-2 duration-200">
                   <div className="grid gap-4 md:grid-cols-3">
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Last Service</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("lastService")}</p>
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-3.5 w-3.5 text-gray-400" />
-                        <span>{plan.last_service_date ? formatDateShort(plan.last_service_date) : "Never"}</span>
+                        <span>{plan.last_service_date ? formatDateShort(plan.last_service_date) : t("never")}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <Gauge className="h-3.5 w-3.5 text-gray-400" />
@@ -270,7 +270,7 @@ export function VehicleMaintenancePlans({
                     </div>
 
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Next Due</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("nextDue")}</p>
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-3.5 w-3.5 text-gray-400" />
                         <span>{plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}</span>
@@ -290,7 +290,7 @@ export function VehicleMaintenancePlans({
                           onEdit(plan);
                         }}
                       >
-                        Edit Configuration
+                        {t("editConfig")}
                       </Button>
                       <Button
                         variant="ghost"
@@ -300,7 +300,7 @@ export function VehicleMaintenancePlans({
                         disabled={isDeleting}
                       >
                         <Trash2 className="mr-2 h-3.5 w-3.5" />
-                        Delete Plan
+                        {t("deletePlan")}
                       </Button>
                     </div>
                   </div>

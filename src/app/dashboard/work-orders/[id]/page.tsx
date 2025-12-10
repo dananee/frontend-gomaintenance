@@ -34,8 +34,10 @@ import { WorkOrderComments } from "@/features/workOrders/components/WorkOrderCom
 import { useWorkOrder } from "@/features/workOrders/hooks/useWorkOrder";
 import { formatDateShort } from "@/lib/formatters";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function WorkOrderDetailsPage() {
+  const t = useTranslations("workOrders");
   const params = useParams();
   const workOrderId = params.id as string;
   const { isOpen, open, close } = useModal();
@@ -53,9 +55,9 @@ export default function WorkOrderDetailsPage() {
           <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-full inline-flex">
             <FileText className="h-8 w-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Work Order Not Found</h3>
-          <p className="text-gray-500 dark:text-gray-400">The requested work order could not be located.</p>
-          <Button variant="outline" onClick={() => window.history.back()}>Go Back</Button>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t("details.notFound.title")}</h3>
+          <p className="text-gray-500 dark:text-gray-400">{t("details.notFound.description")}</p>
+          <Button variant="outline" onClick={() => window.history.back()}>{t("actions.goBack")}</Button>
         </div>
       </div>
     );
@@ -96,13 +98,13 @@ export default function WorkOrderDetailsPage() {
                   variant="secondary"
                   className={`capitalize px-3 py-1 text-sm font-medium border ${getStatusColor(workOrder.status)}`}
                 >
-                  {workOrder.status.replace("_", " ")}
+                  {t(`filters.status.${workOrder.status}`) || workOrder.status.replace("_", " ")}
                 </Badge>
                 <Badge
                   variant="outline"
                   className={`capitalize px-3 py-1 text-sm font-medium ${getPriorityColor(workOrder.priority)}`}
                 >
-                  {workOrder.priority} Priority
+                  {t(`filters.priority.${workOrder.priority}`) || workOrder.priority}
                 </Badge>
               </div>
 
@@ -110,19 +112,19 @@ export default function WorkOrderDetailsPage() {
                 <div className="flex items-center gap-2">
                   <Wrench className="h-4 w-4" />
                   <span className="font-medium text-gray-700 dark:text-gray-300">
-                    {workOrder.vehicle_name || "Unknown Vehicle"}
+                    {workOrder.vehicle_name || t("details.cards.vehicle.unknown")}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CalendarRange className="h-4 w-4" />
                   <span>
-                    Due {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : "No date"}
+                    {t("details.cards.dueDate.title")} {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("details.cards.dueDate.none")}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <span>
-                    {workOrder.assigned_to_name || "Unassigned"}
+                    {workOrder.assigned_to_name || t("details.cards.assignee.unassigned")}
                   </span>
                 </div>
               </div>
@@ -130,10 +132,10 @@ export default function WorkOrderDetailsPage() {
 
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" onClick={open} className="shadow-sm bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800">
-                <Pencil className="mr-2 h-4 w-4" /> Edit Details
+                <Pencil className="mr-2 h-4 w-4" /> {t("actions.edit")}
               </Button>
               <Button className="shadow-sm bg-blue-600 hover:bg-blue-700 text-white transition-all">
-                <BadgeCheck className="mr-2 h-4 w-4" /> Mark Complete
+                <BadgeCheck className="mr-2 h-4 w-4" /> {t("actions.markComplete")}
               </Button>
             </div>
           </div>
@@ -147,35 +149,35 @@ export default function WorkOrderDetailsPage() {
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <LayoutDashboard className="h-4 w-4 mr-2" />
-              Overview
+              {t("details.tabs.overview")}
             </TabsTrigger>
             <TabsTrigger
               value="tasks"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <CheckCircle2 className="h-4 w-4 mr-2" />
-              Tasks
+              {t("details.tabs.tasks")}
             </TabsTrigger>
             <TabsTrigger
               value="attachments"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <Paperclip className="h-4 w-4 mr-2" />
-              Attachments
+              {t("details.tabs.attachments")}
             </TabsTrigger>
             <TabsTrigger
               value="activity"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <Activity className="h-4 w-4 mr-2" />
-              Activity
+              {t("details.tabs.activity")}
             </TabsTrigger>
             <TabsTrigger
               value="comments"
               className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             >
               <MessageSquare className="h-4 w-4 mr-2" />
-              Comments
+              {t("details.tabs.comments")}
             </TabsTrigger>
           </TabsList>
 
@@ -183,43 +185,43 @@ export default function WorkOrderDetailsPage() {
             <div className="grid gap-6 md:grid-cols-4">
               <Card className="bg-white dark:bg-gray-900 shadow-sm border-gray-200 dark:border-gray-800">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</CardTitle>
+                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.status.title")}</CardTitle>
                   <Activity className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold capitalize text-gray-900 dark:text-white">
-                    {workOrder.status.replace("_", " ")}
+                    {t(`filters.status.${workOrder.status}`) || workOrder.status.replace("_", " ")}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Current workflow stage</p>
+                  <p className="text-xs text-gray-500 mt-1">{t("details.cards.status.description")}</p>
                 </CardContent>
               </Card>
               <Card className="bg-white dark:bg-gray-900 shadow-sm border-gray-200 dark:border-gray-800">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Due Date</CardTitle>
+                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.dueDate.title")}</CardTitle>
                   <CalendarRange className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : "No date"}
+                    {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("details.cards.dueDate.none")}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Target completion</p>
+                  <p className="text-xs text-gray-500 mt-1">{t("details.cards.dueDate.description")}</p>
                 </CardContent>
               </Card>
               <Card className="bg-white dark:bg-gray-900 shadow-sm border-gray-200 dark:border-gray-800">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Vehicle</CardTitle>
+                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.vehicle.title")}</CardTitle>
                   <Wrench className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-lg font-bold text-gray-900 dark:text-white truncate" title={workOrder.vehicle_name}>
-                    {workOrder.vehicle_name || "Unknown"}
+                    {workOrder.vehicle_name || t("details.cards.vehicle.unknown")}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Linked asset</p>
+                  <p className="text-xs text-gray-500 mt-1">{t("details.cards.vehicle.description")}</p>
                 </CardContent>
               </Card>
               <Card className="bg-white dark:bg-gray-900 shadow-sm border-gray-200 dark:border-gray-800">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">Assignee</CardTitle>
+                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.assignee.title")}</CardTitle>
                   <User className="h-4 w-4 text-gray-400" />
                 </CardHeader>
                 <CardContent className="flex items-center gap-3">
@@ -234,11 +236,11 @@ export default function WorkOrderDetailsPage() {
                         <div className="text-sm font-bold text-gray-900 dark:text-white">
                           {workOrder.assigned_to_name}
                         </div>
-                        <p className="text-xs text-gray-500">Technician</p>
+                        <p className="text-xs text-gray-500">{t("details.cards.assignee.role")}</p>
                       </div>
                     </>
                   ) : (
-                    <p className="text-sm text-gray-500">Not assigned</p>
+                    <p className="text-sm text-gray-500">{t("details.cards.assignee.unassigned")}</p>
                   )}
                 </CardContent>
               </Card>
@@ -248,7 +250,7 @@ export default function WorkOrderDetailsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-gray-500" />
-                  Details & Description
+                  {t("details.cards.details.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -262,10 +264,10 @@ export default function WorkOrderDetailsPage() {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Priority Level</label>
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.type")}</label>
                     <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800">
                       <p className="text-gray-900 dark:text-gray-100 capitalize font-medium">
-                        {workOrder.priority}
+                        {t(`filters.priority.${workOrder.priority}`) || workOrder.priority}
                       </p>
                     </div>
                   </div>
@@ -273,7 +275,7 @@ export default function WorkOrderDetailsPage() {
 
                 {workOrder.description && (
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.description")}</label>
                     <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800">
                       <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
                         {workOrder.description}
@@ -284,7 +286,7 @@ export default function WorkOrderDetailsPage() {
 
                 {workOrder.notes && (
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Additional Notes</label>
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.notes")}</label>
                     <div className="p-4 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg border border-yellow-100 dark:border-yellow-900/20">
                       <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
                         {workOrder.notes}
@@ -316,16 +318,16 @@ export default function WorkOrderDetailsPage() {
         <Modal
           isOpen={isOpen}
           onClose={close}
-          title="Edit Work Order"
-          description="Update work order status, assignee, or due date."
+          title={t("details.modal.title")}
+          description={t("details.modal.description")}
         >
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Title</label>
+              <label className="text-sm font-medium">{t("details.modal.titleLabel")}</label>
               <Input placeholder="Title" defaultValue={workOrder.title} />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Due Date</label>
+              <label className="text-sm font-medium">{t("details.modal.dueDateLabel")}</label>
               <Input
                 placeholder="Due date"
                 defaultValue={workOrder.scheduled_date || ""}
@@ -334,7 +336,7 @@ export default function WorkOrderDetailsPage() {
               />
             </div>
             <div className="flex justify-end pt-4">
-              <Button onClick={close}>Save changes</Button>
+              <Button onClick={close}>{t("actions.saveChanges")}</Button>
             </div>
           </div>
         </Modal>

@@ -16,8 +16,10 @@ import {
   useDeleteSupplier,
 } from "@/features/inventory/hooks/useSupplierMutations";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function SuppliersPage() {
+  const t = useTranslations("suppliers");
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | undefined>(
@@ -84,7 +86,7 @@ export default function SuppliersPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this supplier?")) {
+    if (confirm(t("actions.deleteConfirm"))) {
       deleteSupplierMutation.mutate(id);
     }
   };
@@ -96,15 +98,15 @@ export default function SuppliersPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Suppliers
+              {t("title")}
             </h1>
             <p className="text-muted-foreground/80">
-              Manage your parts suppliers and contacts
+              {t("subtitle")}
             </p>
           </div>
           <Button onClick={handleCreate} className="rounded-xl shadow-sm">
             <Plus className="mr-2 h-4 w-4" />
-            Add Supplier
+            {t("actions.addSupplier")}
           </Button>
         </div>
       </div>
@@ -121,7 +123,7 @@ export default function SuppliersPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search suppliers by name, contact, or email..."
+            placeholder={t("filters.searchPlaceholder")}
             className="pl-9 rounded-xl bg-background/50 backdrop-blur-sm border-muted-foreground/20 focus:bg-background transition-all"
           />
         </div>

@@ -18,8 +18,10 @@ import {
   Calendar,
   BarChart3,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ReportsPage() {
+  const t = useTranslations("reports");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [hasData, setHasData] = useState(true); // Set to false to show empty state
@@ -32,26 +34,26 @@ export default function ReportsPage() {
       : "All Time";
 
   const handleExportPDF = () => {
-    toast.info("Export to PDF", {
-      description: "Generating PDF report...",
+    toast.info(t("toasts.exportPDF.title"), {
+      description: t("toasts.exportPDF.description"),
     });
     // TODO: Implement PDF export logic
     setTimeout(() => {
-      toast.success("PDF Generated", {
-        description: "Your report has been downloaded.",
+      toast.success(t("toasts.exportPDF.successTitle"), {
+        description: t("toasts.exportPDF.successDescription"),
       });
     }, 1500);
   };
 
   const handleExportCSV = () => {
-    toast.info("Export to CSV", {
-      description: "Generating CSV file...",
+    toast.info(t("toasts.exportCSV.title"), {
+      description: t("toasts.exportCSV.description"),
     });
     // TODO: Implement CSV export logic
     const csvData = generateCSVData();
     downloadCSV(csvData, `fleet-report-${Date.now()}.csv`);
-    toast.success("CSV Downloaded", {
-      description: "Your data has been exported.",
+    toast.success(t("toasts.exportCSV.successTitle"), {
+      description: t("toasts.exportCSV.successDescription"),
     });
   };
 
@@ -86,20 +88,20 @@ export default function ReportsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Reports
+            {t("title")}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Fleet analytics and performance metrics
+            {t("subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleExportCSV}>
             <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Export CSV
+            {t("actions.exportCSV")}
           </Button>
           <Button onClick={handleExportPDF}>
             <FileText className="mr-2 h-4 w-4" />
-            Export PDF
+            {t("actions.exportPDF")}
           </Button>
         </div>
       </div>
@@ -114,7 +116,7 @@ export default function ReportsPage() {
                 className="mb-2 flex items-center gap-2"
               >
                 <Calendar className="h-4 w-4" />
-                Start Date
+                {t("filters.startDate")}
               </Label>
               <Input
                 id="start-date"
@@ -126,7 +128,7 @@ export default function ReportsPage() {
             </div>
             <div className="flex-1">
               <Label htmlFor="end-date" className="mb-2">
-                End Date
+                {t("filters.endDate")}
               </Label>
               <Input
                 id="end-date"
@@ -144,12 +146,12 @@ export default function ReportsPage() {
               }}
               disabled={!startDate && !endDate}
             >
-              Clear
+              {t("actions.clear")}
             </Button>
           </div>
           {(startDate || endDate) && (
             <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-              Showing data for:{" "}
+              {t("filters.showingDataFor")}{" "}
               <span className="font-semibold">{dateRangeText}</span>
             </div>
           )}

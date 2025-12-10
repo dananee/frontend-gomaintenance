@@ -4,7 +4,14 @@ import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -15,19 +22,18 @@ export function LoginForm() {
     e.preventDefault();
     login({ email, password });
   };
+  const t = useTranslations("login");
 
   return (
     <Card className="w-full shadow-lg">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Login</CardTitle>
-        <CardDescription>
-          Enter your email and password to access your account
-        </CardDescription>
+        <CardTitle className="text-2xl font-bold">{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="Email"
+            label={t("fields.email.label")}
             type="email"
             placeholder="name@example.com"
             value={email}
@@ -35,21 +41,23 @@ export function LoginForm() {
             required
           />
           <Input
-            label="Password"
+            label={t("fields.password.label")}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          
+
           {error && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-500 dark:bg-red-900/20">
-              {error instanceof Error ? error.message : "Invalid credentials"}
+              {error instanceof Error
+                ? error.message
+                : t("errors.invalidCredentials")}
             </div>
           )}
 
           <Button type="submit" className="w-full" isLoading={isPending}>
-            Sign In
+            {t("actions.submit")}
           </Button>
         </form>
       </CardContent>

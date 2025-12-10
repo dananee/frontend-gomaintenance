@@ -4,12 +4,15 @@ import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { MonthlyTrendData } from "../types/dashboardKPI.types";
+import { useTranslations } from "next-intl";
 
 interface CostTrendChartProps {
   data: MonthlyTrendData[];
 }
 
 function CostTrendChartComponent({ data }: CostTrendChartProps) {
+  const t = useTranslations("features.dashboard.costTrend");
+
   const maxValue = useMemo(
     () => Math.max(...data.map((d) => d.value)),
     [data]
@@ -22,10 +25,10 @@ function CostTrendChartComponent({ data }: CostTrendChartProps) {
           <div className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
             <CardTitle className="text-xl font-semibold">
-              Maintenance Cost Trend
+              {t("title")}
             </CardTitle>
           </div>
-          <span className="text-xs text-muted-foreground">Last 12 months</span>
+          <span className="text-xs text-muted-foreground">{t("subtitle")}</span>
         </div>
       </CardHeader>
       <CardContent>

@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface WorkloadData {
   technician: string;
@@ -14,6 +15,8 @@ interface WorkloadHeatmapProps {
 }
 
 function WorkloadHeatmapComponent({ data }: WorkloadHeatmapProps) {
+  const t = useTranslations("features.dashboard.workload");
+  
   const maxWorkload = useMemo(
     () => Math.max(...data.flatMap((tech) => tech.months.map((m) => m.workload))),
     [data]
@@ -40,11 +43,11 @@ function WorkloadHeatmapComponent({ data }: WorkloadHeatmapProps) {
         <div className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-orange-600 dark:text-orange-400" />
           <CardTitle className="text-xl font-semibold">
-            Technician Workload Heatmap
+            {t("title")}
           </CardTitle>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Work orders per technician by month
+          {t("subtitle")}
         </p>
       </CardHeader>
       <CardContent>
@@ -90,22 +93,22 @@ function WorkloadHeatmapComponent({ data }: WorkloadHeatmapProps) {
 
         {/* Legend */}
         <div className="mt-6 flex items-center gap-3 text-xs">
-          <span className="text-gray-600 dark:text-gray-400">Workload:</span>
+          <span className="text-gray-600 dark:text-gray-400">{t("legend")}</span>
           <div className="flex items-center gap-1">
             <div className="h-4 w-4 rounded bg-green-100 dark:bg-green-900/30" />
-            <span className="text-gray-600 dark:text-gray-400">Low</span>
+            <span className="text-gray-600 dark:text-gray-400">{t("levels.low")}</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="h-4 w-4 rounded bg-yellow-200 dark:bg-yellow-800/40" />
-            <span className="text-gray-600 dark:text-gray-400">Medium</span>
+            <span className="text-gray-600 dark:text-gray-400">{t("levels.medium")}</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="h-4 w-4 rounded bg-orange-300 dark:bg-orange-700/50" />
-            <span className="text-gray-600 dark:text-gray-400">High</span>
+            <span className="text-gray-600 dark:text-gray-400">{t("levels.high")}</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="h-4 w-4 rounded bg-red-400 dark:bg-red-700/60" />
-            <span className="text-gray-600 dark:text-gray-400">Critical</span>
+            <span className="text-gray-600 dark:text-gray-400">{t("levels.critical")}</span>
           </div>
         </div>
       </CardContent>
