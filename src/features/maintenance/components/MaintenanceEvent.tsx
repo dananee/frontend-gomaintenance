@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import { useTranslations } from "next-intl";
 import { User, DollarSign, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
@@ -15,6 +16,7 @@ export const MaintenanceEvent = memo(function MaintenanceEvent({
   event,
   onClick,
 }: MaintenanceEventProps) {
+  const t = useTranslations("features.maintenance.tooltips");
   const isHighPriority = event.priority === "high" || event.priority === "critical";
   
   return (
@@ -27,7 +29,7 @@ export const MaintenanceEvent = memo(function MaintenanceEvent({
           : "shadow-sm hover:shadow-md",
         getPriorityColor(event.priority)
       )}
-      title={isHighPriority ? "⚠️ High priority maintenance" : undefined}
+      title={isHighPriority ? t("highPriorityMaintenance") : undefined}
     >
       {/* High Priority Indicator */}
       {isHighPriority && (

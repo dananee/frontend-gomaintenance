@@ -29,7 +29,7 @@ import {
 import { useTranslations } from "next-intl";
 
 export default function MaintenanceTemplatesPage() {
-  const t = useTranslations("maintenance.templates");
+  const t = useTranslations("features.maintenance.templates");
   const { data, isLoading } = useMaintenanceTemplates();
   const { isOpen, open, close } = useModal();
   const [selectedTemplate, setSelectedTemplate] =

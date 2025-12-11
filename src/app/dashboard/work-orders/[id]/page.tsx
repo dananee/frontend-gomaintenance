@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useParams } from "next/navigation";
 import {
   Activity,
@@ -23,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Modal } from "@/components/ui/modal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DetailPageSkeleton } from "@/components/ui/skeleton";
@@ -41,6 +44,7 @@ export default function WorkOrderDetailsPage() {
   const params = useParams();
   const workOrderId = params.id as string;
   const { isOpen, open, close } = useModal();
+  const [scheduledDate, setScheduledDate] = useState<Date | undefined>();
 
   const { data: workOrder, isLoading } = useWorkOrder(workOrderId);
 
@@ -328,11 +332,9 @@ export default function WorkOrderDetailsPage() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">{t("details.modal.dueDateLabel")}</label>
-              <Input
-                placeholder="Due date"
-                defaultValue={workOrder.scheduled_date || ""}
-                type="datetime-local"
-                step="60" // Enable seconds/24h format support
+              <DateTimePicker
+                date={scheduledDate || (workOrder.scheduled_date ? new Date(workOrder.scheduled_date) : undefined)}
+                setDate={setScheduledDate}
               />
             </div>
             <div className="flex justify-end pt-4">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { X, Calendar, User, DollarSign, FileText, AlertCircle, Trash2, CheckCircle, ExternalLink, Clock, Tag, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ interface EventDrawerProps {
 
 export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
   const router = useRouter();
+  const t = useTranslations("features.maintenance.eventDrawer");
   const { deleteEvent, markEventDone, convertToWorkOrder } = useMaintenanceMutations();
 
   // Handle ESC key to close drawer
@@ -40,7 +42,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
   if (!isOpen) return null;
 
   const handleDelete = () => {
-    if (event && confirm("⚠️ Are you sure you want to delete this maintenance event? This action cannot be undone.")) {
+    if (event && confirm(t("confirmDelete"))) {
       deleteEvent.mutate(event.id, {
         onSuccess: () => onClose(),
       });
@@ -48,7 +50,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
   };
 
   const handleMarkDone = () => {
-    if (event && confirm("✅ Mark this maintenance as completed?")) {
+    if (event && confirm(t("confirmComplete"))) {
       markEventDone.mutate(event.id, {
         onSuccess: () => onClose(),
       });
@@ -94,11 +96,11 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
         )}>
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Event Details
+              {t("title")}
             </h2>
             {isHighPriority && (
               <Badge variant="outline" className="bg-red-500 text-white border-red-600 animate-pulse-subtle">
-                High Priority
+                {t("highPriority")}
               </Badge>
             )}
           </div>
@@ -149,7 +151,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      Equipment
+                      {t("equipment")}
                     </div>
                     <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                       {event.vehicle_name}
@@ -164,7 +166,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      Scheduled Date
+                      {t("scheduledDate")}
                     </div>
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">
                       {formatDateTime(event.scheduled_date)}
@@ -180,7 +182,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                        Assigned Technician
+                        {t("assignedTechnician")}
                       </div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                         {event.assigned_to}
@@ -197,7 +199,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                        Estimated Cost
+                        {t("estimatedCost")}
                       </div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
                         ${event.estimated_cost.toFixed(2)}
@@ -211,7 +213,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                   <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                       <FileText className="h-4 w-4" />
-                      <span>Description</span>
+                      <span>{t("description")}</span>
                     </div>
                     <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
                       {event.description}
@@ -224,7 +226,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                   <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                       <FileText className="h-4 w-4" />
-                      <span>Notes</span>
+                      <span>{t("notes")}</span>
                     </div>
                     <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
                       {event.notes}
@@ -237,9 +239,9 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
             <div className="flex h-full flex-col items-center justify-center space-y-4">
               <AlertCircle className="h-12 w-12 text-gray-400" />
               <div className="text-center">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">Event not found</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{t("notFoundTitle")}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  This event may have been deleted or you don't have permission to view it.
+                  {t("notFoundDesc")}
                 </p>
               </div>
             </div>
@@ -255,12 +257,12 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                 size="sm"
                 onClick={() => {
                   // TODO: Implement edit modal
-                  toast.info("Edit functionality coming soon");
+                  toast.info(t("editSoon"));
                 }}
                 className="w-full h-10 bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200 hover:border-purple-300 dark:bg-purple-900/20 dark:hover:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md"
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {t("edit")}
               </Button>
               <Button
                 variant="outline"
@@ -270,7 +272,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                 className="w-full h-10 bg-green-50 hover:bg-green-100 text-green-700 border-green-200 hover:border-green-300 dark:bg-green-900/20 dark:hover:bg-green-900/30 dark:text-green-400 dark:border-green-800 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <CheckCircle className="mr-2 h-4 w-4" />
-                Done
+                {t("done")}
               </Button>
               <Button
                 variant="outline"
@@ -280,7 +282,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                 className="w-full h-10 bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 hover:border-blue-300 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
-                {event.work_order_id ? "View WO" : "WO"}
+                {event.work_order_id ? t("viewWO") : t("wo")}
               </Button>
               <Button
                 variant="destructive"
@@ -289,7 +291,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                 className="w-full col-span-3 h-10 bg-red-500 hover:bg-red-600 text-white border-0 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-red-500/50"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete Event
+                {t("deleteEvent")}
               </Button>
             </div>
           </div>

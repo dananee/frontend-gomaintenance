@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Clock, Calendar, Gauge, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { useTranslations } from "next-intl";
 
 interface TemplateTableProps {
   templates: MaintenanceTemplate[];
@@ -25,6 +26,8 @@ export function TemplateTable({
   onEdit,
   onDelete,
 }: TemplateTableProps) {
+  const t = useTranslations("features.maintenance.templatesList");
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -42,8 +45,8 @@ export function TemplateTable({
     return (
       <EmptyState
         icon={FileText}
-        title="No templates found"
-        description="Create your first maintenance template to get started."
+        title={t("emptyState.title")}
+        description={t("emptyState.description")}
       />
     );
   }
@@ -53,11 +56,11 @@ export function TemplateTable({
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50/50 hover:bg-gray-50/50 dark:bg-gray-900/50 dark:hover:bg-gray-900/50">
-            <TableHead className="font-semibold text-gray-900 dark:text-white">Name</TableHead>
-            <TableHead className="font-semibold text-gray-900 dark:text-white">Description</TableHead>
-            <TableHead className="font-semibold text-gray-900 dark:text-white">Intervals</TableHead>
-            <TableHead className="font-semibold text-gray-900 dark:text-white">Tasks</TableHead>
-            <TableHead className="text-right font-semibold text-gray-900 dark:text-white">Actions</TableHead>
+            <TableHead className="font-semibold text-gray-900 dark:text-white">{t("table.name")}</TableHead>
+            <TableHead className="font-semibold text-gray-900 dark:text-white">{t("table.description")}</TableHead>
+            <TableHead className="font-semibold text-gray-900 dark:text-white">{t("table.intervals")}</TableHead>
+            <TableHead className="font-semibold text-gray-900 dark:text-white">{t("table.tasks")}</TableHead>
+            <TableHead className="text-right font-semibold text-gray-900 dark:text-white">{t("table.actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -74,29 +77,29 @@ export function TemplateTable({
                   {template.interval_km && (
                     <Badge variant="secondary" className="gap-1 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300">
                       <Gauge className="h-3 w-3" />
-                      {template.interval_km.toLocaleString()} km
+                      {template.interval_km.toLocaleString()} {t("table.units.km")}
                     </Badge>
                   )}
                   {template.interval_days && (
                     <Badge variant="secondary" className="gap-1 bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300">
                       <Calendar className="h-3 w-3" />
-                      {template.interval_days} days
+                      {template.interval_days} {t("table.units.days")}
                     </Badge>
                   )}
                   {template.interval_hours && (
                     <Badge variant="secondary" className="gap-1 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300">
                       <Clock className="h-3 w-3" />
-                      {template.interval_hours} hrs
+                      {template.interval_hours} {t("table.units.hours")}
                     </Badge>
                   )}
                   {!template.interval_km && !template.interval_days && !template.interval_hours && (
-                    <span className="text-sm text-gray-400 italic">No intervals set</span>
+                    <span className="text-sm text-gray-400 italic">{t("table.noIntervals")}</span>
                   )}
                 </div>
               </TableCell>
               <TableCell>
                 <Badge variant="outline" className="font-mono">
-                  {template.tasks.length} task{template.tasks.length !== 1 ? "s" : ""}
+                  {t("table.tasksCount", { count: template.tasks.length })}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">

@@ -2,9 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -38,7 +39,7 @@ interface FormData {
 }
 
 export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalProps) {
-  const t = useTranslations("maintenance.form");
+  const t = useTranslations("features.maintenance.schedule");
   const { data: vehiclesData, isLoading: vehiclesLoading } = useVehicles();
   const { data: usersData, isLoading: usersLoading } = useUsers();
   const { data: templatesData, isLoading: templatesLoading } = useMaintenanceTemplates();
@@ -46,6 +47,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
     watch,
@@ -147,8 +149,8 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             </Label>
             <Input
               id="title"
-              {...register("title", { required: "Title is required" })}
-              placeholder="e.g., Oil Change, Tire Rotation"
+              {...register("title", { required: t("validation.titleRequired") })}
+              placeholder={t("placeholders.title")}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title.message}</p>
@@ -161,7 +163,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             <Textarea
               id="description"
               {...register("description")}
-              placeholder="Describe the maintenance work..."
+              placeholder={t("placeholders.description")}
               rows={3}
             />
           </div>
@@ -171,10 +173,17 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             <Label htmlFor="scheduled_date">
               {t("scheduledDate")} <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="scheduled_date"
-              type="datetime-local"
-              {...register("scheduled_date", { required: "Scheduled date is required" })}
+            <Controller
+              control={control}
+              name="scheduled_date"
+              rules={{ required: t("validation.dateRequired") }}
+              render={({ field }) => (
+                <DateTimePicker
+                  date={field.value ? new Date(field.value) : undefined}
+                  setDate={(date) => field.onChange(date ? date.toISOString() : "")}
+                  error={errors.scheduled_date?.message}
+                />
+              )}
             />
             {errors.scheduled_date && (
               <p className="text-sm text-red-500">{errors.scheduled_date.message}</p>
@@ -237,7 +246,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             <Textarea
               id="notes"
               {...register("notes")}
-              placeholder="Additional notes or instructions..."
+              placeholder={t("placeholders.notes")}
               rows={2}
             />
           </div>

@@ -18,7 +18,7 @@ interface MaintenanceTemplateFormProps {
 }
 
 export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: MaintenanceTemplateFormProps) {
-  const t = useTranslations("maintenance.form");
+  const t = useTranslations("features.maintenance.form");
   const [tasks, setTasks] = useState<string[]>(initialData?.tasks || [""]);
   
   const { register, handleSubmit, setValue } = useForm<Partial<MaintenanceTemplate>>({
@@ -62,12 +62,12 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
         <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium">{t("templateName")}</label>
-            <Input {...register("name", { required: true })} placeholder="e.g., Oil Change Service A" />
+            <Input {...register("name", { required: true })} placeholder={t("placeholders.name")} />
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">{t("description")}</label>
-            <Textarea {...register("description")} placeholder="Describe the maintenance procedure..." />
+            <Textarea {...register("description")} placeholder={t("placeholders.description")} />
           </div>
 
           <div className="space-y-4">
@@ -80,7 +80,7 @@ export function MaintenanceTemplateForm({ initialData, onSubmit, onCancel }: Mai
                   onValueChange={(val) => setValue("intervals.0.type", val as MaintenanceIntervalType)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder={t("placeholders.selectType")} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="distance">{t("items.distance")}</SelectItem>

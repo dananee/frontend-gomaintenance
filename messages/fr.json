@@ -258,6 +258,255 @@
                 "historyTitle": "Historique de maintenance",
                 "technician": "Technicien"
             }
+        },
+        "maintenance": {
+            "dashboard": {
+                "title": "Maintenance",
+                "subtitle": "Gérez les programmes de maintenance préventive et les plans actifs",
+                "actions": {
+                    "templates": "Modèles",
+                    "schedule": "Planifier une maintenance"
+                },
+                "tabs": {
+                    "calendar": "Calendrier",
+                    "activePlans": "Plans actifs"
+                },
+                "modals": {
+                    "schedule": {
+                        "title": "Planifier une maintenance"
+                    }
+                },
+                "activePlansTitle": "Plans de maintenance actifs",
+                "noActivePlans": "Aucun plan de maintenance actif",
+                "emptyDescription": "Les plans de maintenance sont créés à partir des pages individuelles des véhicules. Allez sur la page de détail d'un véhicule et créez un plan de maintenance récurrent basé sur un modèle.",
+                "viewVehicles": "Voir les véhicules",
+                "viewDetails": "Voir les détails",
+                "editPlan": "Modifier le plan",
+                "deactivate": "Désactiver",
+                "template": "Modèle",
+                "nextDue": "Prochaine échéance",
+                "notScheduled": "Non planifié",
+                "dueAtKm": "Dû à KM",
+                "activeStatus": "Le plan est actif et surveillé",
+                "attentionStatus": "Le plan nécessite une attention"
+            },
+            "calendar": {
+                "today": "Aujourd'hui",
+                "event": "événement",
+                "events": "événements",
+                "weekdays": {
+                    "sun": "Dim",
+                    "mon": "Lun",
+                    "tue": "Mar",
+                    "wed": "Mer",
+                    "thu": "Jeu",
+                    "fri": "Ven",
+                    "sat": "Sam"
+                },
+                "moreEvents": "+{count} de plus",
+                "eventsTitle": "Événements pour le {date}",
+                "priority": "Priorité",
+                "assigned": "Assigné",
+                "oneEvent": "1 événement",
+                "multipleEvents": "{count} événements"
+            },
+            "eventDrawer": {
+                "title": "Détails de l'événement",
+                "highPriority": "Haute priorité",
+                "equipment": "Équipement",
+                "scheduledDate": "Date prévue",
+                "assignedTechnician": "Technicien assigné",
+                "estimatedCost": "Coût estimé",
+                "description": "Description",
+                "notes": "Notes",
+                "notFoundTitle": "Événement non trouvé",
+                "notFoundDesc": "Cet événement a peut-être été supprimé ou vous n'avez pas la permission de le voir.",
+                "editSoon": "La fonctionnalité d'édition arrive bientôt",
+                "edit": "Modifier",
+                "done": "Terminé",
+                "viewWO": "Voir OT",
+                "wo": "OT",
+                "deleteEvent": "Supprimer l'événement",
+                "confirmDelete": "⚠️ Êtes-vous sûr de vouloir supprimer cet événement de maintenance ? Cette action est irréversible.",
+                "confirmComplete": "✅ Marquer cette maintenance comme terminée ?"
+            },
+            "card": {
+                "overdue": "En retard",
+                "active": "Actif",
+                "progress": "Progression",
+                "lastPerformed": "Dernière exécution",
+                "never": "Jamais",
+                "nextDue": "Prochaine échéance",
+                "markCompleted": "Marquer comme terminé",
+                "inactive": "Inactif"
+            },
+            "tooltips": {
+                "technician": "Technicien",
+                "highPriorityMaintenance": "⚠️ Maintenance haute priorité"
+            },
+            "filter": {
+                "label": "Filtre",
+                "title": "Filtres",
+                "resetAll": "Tout réinitialiser",
+                "status": "Statut",
+                "apply": "Appliquer les filtres"
+            },
+            "status": {
+                "scheduled": "Planifié",
+                "in_progress": "En cours",
+                "completed": "Terminé",
+                "cancelled": "Annulé",
+                "overdue": "En retard",
+                "active": "Actif",
+                "inactive": "Inactif"
+            },
+            "table": {
+                "searchPlaceholder": "Rechercher des plans...",
+                "noPlansFound": "Aucun plan trouvé",
+                "plan": "plan",
+                "plans": "plans",
+                "headers": {
+                    "asset": "Actif",
+                    "planName": "Nom du plan",
+                    "recurrence": "Récurrence",
+                    "nextDue": "Prochaine échéance",
+                    "status": "Statut"
+                },
+                "actions": {
+                    "runNow": "Exécuter maintenant",
+                    "pause": "Pause",
+                    "resume": "Reprendre",
+                    "viewVehicle": "Voir le véhicule",
+                    "delete": "Supprimer",
+                    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce plan de maintenance ?"
+                },
+                "recurrence": {
+                    "daily": "Quotidien",
+                    "weekly": "Hebdomadaire",
+                    "monthly": "Mensuel",
+                    "everyDays": "Tous les {days} jours",
+                    "everyKm": "Tous les {km} km",
+                    "everyHours": "Toutes les {hours} heures",
+                    "custom": "Personnalisé"
+                },
+                "status": {
+                    "active": "Actif",
+                    "inactive": "Inactif"
+                },
+                "pagination": {
+                    "showing": "Affichage de",
+                    "to": "à",
+                    "of": "sur",
+                    "page": "Page",
+                    "previous": "Précédent",
+                    "next": "Suivant"
+                }
+            },
+            "templatesList": {
+                "table": {
+                    "name": "Nom",
+                    "description": "Description",
+                    "frequency": "Fréquence",
+                    "intervals": "Intervalles",
+                    "tasks": "Tâches",
+                    "actions": "Actions",
+                    "empty": "Aucun modèle trouvé.",
+                    "noIntervals": "Aucun intervalle défini",
+                    "units": {
+                        "km": "km",
+                        "days": "jours",
+                        "hours": "h"
+                    },
+                    "tasksCount": "{count} tâche(s)"
+                },
+                "emptyState": {
+                    "title": "Aucun modèle trouvé",
+                    "description": "Créez votre premier modèle de maintenance pour commencer."
+                }
+            },
+            "form": {
+                "templateName": "Nom du modèle",
+                "description": "Description",
+                "intervalsRecommended": "Intervalles de maintenance (au moins un recommandé)",
+                "everyKm": "Tous les (KM)",
+                "everyDays": "Tous les (Jours)",
+                "everyHours": "Toutes les (Heures)",
+                "maintenanceTasks": "Tâches de maintenance",
+                "addTask": "Ajouter une tâche",
+                "task": "Tâche",
+                "cancel": "Annuler",
+                "saving": "Enregistrement...",
+                "saveTemplate": "Enregistrer le modèle",
+                "createTemplate": "Créer le modèle",
+                "updateTemplate": "Mettre à jour le modèle",
+                "validation": {
+                    "nameRequired": "Le nom du modèle est requis"
+                },
+                "placeholders": {
+                    "name": "ex : Service de vidange A",
+                    "description": "Décrivez la procédure de maintenance...",
+                    "selectType": "Sélectionner le type"
+                }
+            },
+            "schedule": {
+                "vehicle": "Véhicule",
+                "selectVehicle": "Sélectionner un véhicule",
+                "selectTemplate": "Sélectionner un modèle",
+                "title": "Titre",
+                "description": "Description",
+                "scheduledDate": "Date prévue",
+                "priority": "Priorité",
+                "assignTo": "Assigner à",
+                "selectTechnician": "Sélectionner un technicien",
+                "estimatedCost": "Coût estimé",
+                "notes": "Notes",
+                "cancel": "Annuler",
+                "create": "Planifier",
+                "success": "Maintenance planifiée avec succès",
+                "error": "Échec de la planification de la maintenance",
+                "priorities": {
+                    "low": "Basse",
+                    "medium": "Moyenne",
+                    "high": "Haute",
+                    "critical": "Critique"
+                },
+                "placeholders": {
+                    "title": "ex : Vidange, Rotation des pneus",
+                    "description": "Décrivez le travail de maintenance...",
+                    "notes": "Notes ou instructions supplémentaires..."
+                },
+                "validation": {
+                    "titleRequired": "Le titre est requis",
+                    "dateRequired": "La date prévue est requise"
+                }
+            },
+            "templates": {
+                "title": "Modèles de maintenance",
+                "subtitle": "Créer et gérer des modèles de maintenance préventive",
+                "actions": {
+                    "create": "Créer un modèle",
+                    "delete": "Supprimer",
+                    "cancel": "Annuler"
+                },
+                "modals": {
+                    "create": "Créer un modèle",
+                    "edit": "Modifier le modèle"
+                },
+                "alerts": {
+                    "delete": {
+                        "title": "Supprimer le modèle",
+                        "description": "Êtes-vous sûr de vouloir supprimer ce modèle ? Cette action est irréversible."
+                    }
+                },
+                "toasts": {
+                    "createSuccess": "Modèle créé avec succès",
+                    "updateSuccess": "Modèle mis à jour avec succès",
+                    "saveError": "Échec de l’enregistrement du modèle",
+                    "deleteSuccess": "Modèle supprimé avec succès",
+                    "deleteError": "Échec de la suppression du modèle",
+                    "loadError": "Échec du chargement des modèles de maintenance"
+                }
+            }
         }
     },
     "inventory": {
@@ -409,260 +658,6 @@
         "filters": {
             "searchPlaceholder": "Rechercher des fournisseurs..."
         }
-    },
-    "maintenance": {
-        "dashboard": {
-            "title": "Maintenance",
-            "subtitle": "Gérez les programmes de maintenance préventive et les plans actifs",
-            "actions": {
-                "templates": "Modèles",
-                "schedule": "Planifier une maintenance"
-            },
-            "tabs": {
-                "calendar": "Calendrier",
-                "activePlans": "Plans actifs"
-            },
-            "modals": {
-                "schedule": {
-                    "title": "Planifier une maintenance"
-                }
-            }
-        },
-        "templates": {
-            "title": "Modèles de maintenance",
-            "subtitle": "Créer et gérer des modèles de maintenance préventive",
-            "actions": {
-                "create": "Créer un modèle",
-                "delete": "Supprimer",
-                "cancel": "Annuler"
-            },
-            "modals": {
-                "create": "Créer un modèle",
-                "edit": "Modifier le modèle"
-            },
-            "alerts": {
-                "delete": {
-                    "title": "Supprimer le modèle",
-                    "description": "Êtes-vous sûr de vouloir supprimer ce modèle ? Cette action est irréversible."
-                }
-            },
-            "toasts": {
-                "createSuccess": "Modèle créé avec succès",
-                "updateSuccess": "Modèle mis à jour avec succès",
-                "saveError": "Échec de l’enregistrement du modèle",
-                "deleteSuccess": "Modèle supprimé avec succès",
-                "deleteError": "Échec de la suppression du modèle"
-            }
-        },
-        "calendar": {
-            "today": "Aujourd'hui",
-            "event": "événement",
-            "events": "événements",
-            "weekdays": {
-                "sun": "Dim",
-                "mon": "Lun",
-                "tue": "Mar",
-                "wed": "Mer",
-                "thu": "Jeu",
-                "fri": "Ven",
-                "sat": "Sam"
-            }
-        },
-        "table": {
-            "searchPlaceholder": "Rechercher des plans...",
-            "noPlansFound": "Aucun plan trouvé",
-            "plan": "plan",
-            "plans": "plans",
-            "headers": {
-                "asset": "Actif",
-                "planName": "Nom du plan",
-                "recurrence": "Récurrence",
-                "nextDue": "Prochaine échéance",
-                "status": "Statut"
-            },
-            "actions": {
-                "runNow": "Exécuter maintenant",
-                "pause": "Pause",
-                "resume": "Reprendre",
-                "viewVehicle": "Voir le véhicule",
-                "delete": "Supprimer",
-                "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce plan de maintenance ?"
-            },
-            "recurrence": {
-                "daily": "Quotidien",
-                "weekly": "Hebdomadaire",
-                "monthly": "Mensuel",
-                "everyDays": "Tous les {days} jours",
-                "everyKm": "Tous les {km} km",
-                "everyHours": "Toutes les {hours} heures",
-                "custom": "Personnalisé"
-            },
-            "status": {
-                "active": "Actif",
-                "inactive": "Inactif"
-            },
-            "pagination": {
-                "showing": "Affichage de",
-                "to": "à",
-                "of": "sur",
-                "page": "Page",
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
-        },
-        "card": {
-            "progress": "Progression",
-            "lastPerformed": "Dernière exécution",
-            "nextDue": "Prochaine échéance",
-            "never": "Jamais",
-            "overdue": "En retard",
-            "active": "Actif",
-            "markCompleted": "Marquer comme terminé"
-        },
-        "form": {
-            "scheduleTitle": "Planifier la maintenance",
-            "editTemplate": "Modifier le modèle",
-            "createTemplate": "Créer un modèle de maintenance",
-            "templateName": "Nom du modèle",
-            "description": "Description",
-            "intervalRules": "Règles d'intervalle",
-            "type": "Type",
-            "value": "Valeur",
-            "taskChecklist": "Liste de contrôle des tâches",
-            "addTask": "Ajouter une tâche",
-            "saveTemplate": "Enregistrer le modèle",
-            "cancel": "Annuler",
-            "create": "Planifier la maintenance",
-            "vehicle": "Véhicule",
-            "selectVehicle": "Sélectionner un véhicule",
-            "selectTemplate": "Sélectionner un modèle (optionnel)",
-            "scheduledDate": "Date prévue",
-            "priority": "Priorité",
-            "assignTo": "Assigner à (optionnel)",
-            "estimatedCost": "Coût estimé",
-            "notes": "Notes",
-            "optional": "(Optionnel)",
-            "selectTechnician": "Sélectionner un technicien (optionnel)",
-            "task": "Tâche",
-            "items": {
-                "distance": "Distance (km)",
-                "time": "Temps (mois)",
-                "engineHours": "Heures moteur"
-            },
-            "priorities": {
-                "low": "Basse",
-                "medium": "Moyenne",
-                "high": "Haute",
-                "critical": "Critique"
-            },
-            "success": "Maintenance planifiée avec succès",
-            "error": "Échec de la planification de la maintenance"
-        }
-    },
-    "notifications": {
-        "common": {
-            "categories": {
-                "work_order": "Ordres de travail",
-                "inventory": "Inventaire",
-                "maintenance": "Maintenance",
-                "system": "Système"
-            }
-        },
-        "dashboard": {
-            "title": "Notifications",
-            "subtitle": "Gérez vos alertes et mises à jour",
-            "actions": {
-                "viewAll": "Voir tout",
-                "markAllRead": "Tout marquer comme lu"
-            },
-            "filters": {
-                "searchPlaceholder": "Rechercher des notifications...",
-                "filterBy": "Filtrer par",
-                "options": {
-                    "all": "Toutes les notifications",
-                    "unread": "Non lues uniquement"
-                }
-            },
-            "empty": "Aucune notification ne correspond à vos critères.",
-            "pagination": "Affichage {start}-{end} sur {total}"
-        },
-        "all": {
-            "title": "Toutes les notifications",
-            "subtitle": "Historique complet avec filtres, pagination et actions groupées.",
-            "actions": {
-                "markAllRead": "Tout marquer comme lu",
-                "backToDashboard": "Retour au tableau de bord"
-            },
-            "sections": {
-                "filters": "Filtres",
-                "stream": "Flux de notifications",
-                "summary": "Résumé"
-            },
-            "filters": {
-                "searchPlaceholder": "Rechercher par titre ou message",
-                "filterByType": "Filtrer par type",
-                "options": {
-                    "all": "Toutes les catégories"
-                }
-            },
-            "stats": {
-                "unread": "Non lues",
-                "total": "Total"
-            },
-            "empty": "Aucune notification ne correspond à vos filtres."
-        }
-    },
-    "reports": {
-        "title": "Rapports",
-        "subtitle": "Analyses de flotte et indicateurs de performance",
-        "actions": {
-            "exportCSV": "Exporter en CSV",
-            "exportPDF": "Exporter en PDF",
-            "clear": "Réinitialiser"
-        },
-        "filters": {
-            "startDate": "Date de début",
-            "endDate": "Date de fin",
-            "showingDataFor": "Affichage des données pour :"
-        },
-        "toasts": {
-            "exportPDF": {
-                "title": "Export PDF",
-                "description": "Génération du rapport PDF...",
-                "successTitle": "PDF généré",
-                "successDescription": "Votre rapport a été téléchargé."
-            },
-            "exportCSV": {
-                "title": "Export CSV",
-                "description": "Génération du fichier CSV...",
-                "successTitle": "CSV téléchargé",
-                "successDescription": "Vos données ont été exportées."
-            }
-        }
-    },
-    "search": {
-        "title": "Résultats de recherche",
-        "subtitle": "Parcourez les résultats par catégorie en vue plein écran.",
-        "quickSearch": "Appuyez sur / ou ⌘K pour rechercher partout",
-        "cardTitle": "Rechercher",
-        "placeholder": "Rechercher véhicules, ordres de travail, pièces, utilisateurs et pages",
-        "update": "Mettre à jour les résultats",
-        "tabs": {
-            "all": "Tous",
-            "vehicle": "Véhicules",
-            "work_order": "Ordres de travail",
-            "part": "Pièces",
-            "user": "Utilisateurs",
-            "page": "Pages"
-        },
-        "empty": {
-            "query": "Aucun résultat trouvé pour « {query} »",
-            "category": "Aucun résultat dans cette catégorie"
-        }
-    },
-    "settings": {
-        "title": "Paramètres",
-        "subtitle": "Gérez votre compte et les préférences de votre espace de travail"
     },
     "users": {
         "title": "Utilisateurs",
@@ -944,6 +939,17 @@
                 "fileName": "Nom Fichier",
                 "fileUrl": "URL Fichier"
             },
+            "activity": {
+                "title": "Chronologie Activité",
+                "historyTitle": "Historique complet d'activité pour ce véhicule",
+                "noActivity": "Aucune activité enregistrée pour l'instant.",
+                "noLogs": "Aucun journal d'activité disponible"
+            },
+            "workOrders": {
+                "title": "Tous les ordres de travail associés à ce véhicule",
+                "noWos": "Aucun ordre de travail pour ce véhicule",
+                "scheduled": "Prévu : {date}"
+            },
             "maintenance": {
                 "plansTitle": "Plans Actifs",
                 "plansSubtitle": "Gérer les calendriers de maintenance récurrents",
@@ -973,17 +979,6 @@
                     "emergency": "Urgent",
                     "scheduled": "Planifié"
                 }
-            },
-            "activity": {
-                "title": "Chronologie Activité",
-                "historyTitle": "Historique complet d'activité pour ce véhicule",
-                "noActivity": "Aucune activité enregistrée pour l'instant.",
-                "noLogs": "Aucun journal d'activité disponible"
-            },
-            "workOrders": {
-                "title": "Tous les ordres de travail associés à ce véhicule",
-                "noWos": "Aucun ordre de travail pour ce véhicule",
-                "scheduled": "Prévu : {date}"
             }
         }
     },
@@ -1115,127 +1110,6 @@
                 "approvedBy": "Approuvé par",
                 "rejected": "Rejetée",
                 "qty": "Qté"
-            }
-        },
-        "maintenance": {
-            "dashboard": {
-                "activePlansTitle": "Plans de maintenance actifs",
-                "noActivePlans": "Aucun plan de maintenance actif",
-                "emptyDescription": "Les plans de maintenance sont créés à partir des pages individuelles des véhicules. Allez sur la page de détail d'un véhicule et créez un plan de maintenance récurrent basé sur un modèle.",
-                "viewVehicles": "Voir les véhicules",
-                "viewDetails": "Voir les détails",
-                "editPlan": "Modifier le plan",
-                "deactivate": "Désactiver",
-                "template": "Modèle",
-                "nextDue": "Prochaine échéance",
-                "notScheduled": "Non planifié",
-                "dueAtKm": "Dû à KM",
-                "activeStatus": "Le plan est actif et surveillé",
-                "attentionStatus": "Le plan nécessite une attention"
-            },
-            "calendar": {
-                "today": "Aujourd'hui",
-                "event": "événement",
-                "events": "événements",
-                "weekdays": {
-                    "sun": "Dim",
-                    "mon": "Lun",
-                    "tue": "Mar",
-                    "wed": "Mer",
-                    "thu": "Jeu",
-                    "fri": "Ven",
-                    "sat": "Sam"
-                }
-            },
-            "table": {
-                "searchPlaceholder": "Rechercher des plans...",
-                "noPlansFound": "Aucun plan trouvé",
-                "plan": "plan",
-                "plans": "plans",
-                "headers": {
-                    "asset": "Actif",
-                    "planName": "Nom du plan",
-                    "recurrence": "Récurrence",
-                    "nextDue": "Prochaine échéance",
-                    "status": "Statut"
-                },
-                "actions": {
-                    "runNow": "Exécuter maintenant",
-                    "pause": "Pause",
-                    "resume": "Reprendre",
-                    "viewVehicle": "Voir le véhicule",
-                    "delete": "Supprimer",
-                    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce plan de maintenance ?"
-                },
-                "recurrence": {
-                    "daily": "Quotidien",
-                    "weekly": "Hebdomadaire",
-                    "monthly": "Mensuel",
-                    "everyDays": "Tous les {days} jours",
-                    "everyKm": "Tous les {km} km",
-                    "everyHours": "Toutes les {hours} heures",
-                    "custom": "Personnalisé"
-                },
-                "status": {
-                    "active": "Actif",
-                    "inactive": "Inactif"
-                },
-                "pagination": {
-                    "showing": "Affichage de",
-                    "to": "à",
-                    "of": "sur",
-                    "page": "Page",
-                    "previous": "Précédent",
-                    "next": "Suivant"
-                }
-            },
-            "card": {
-                "progress": "Progression",
-                "lastPerformed": "Dernière exécution",
-                "nextDue": "Prochaine échéance",
-                "never": "Jamais",
-                "overdue": "En retard",
-                "active": "Actif",
-                "markCompleted": "Marquer comme terminé"
-            },
-            "form": {
-                "scheduleTitle": "Planifier la maintenance",
-                "editTemplate": "Modifier le modèle",
-                "createTemplate": "Créer un modèle de maintenance",
-                "templateName": "Nom du modèle",
-                "description": "Description",
-                "intervalRules": "Règles d'intervalle",
-                "type": "Type",
-                "value": "Valeur",
-                "taskChecklist": "Liste de contrôle des tâches",
-                "addTask": "Ajouter une tâche",
-                "saveTemplate": "Enregistrer le modèle",
-                "cancel": "Annuler",
-                "create": "Planifier la maintenance",
-                "vehicle": "Véhicule",
-                "selectVehicle": "Sélectionner un véhicule",
-                "selectTemplate": "Sélectionner un modèle (optionnel)",
-                "scheduledDate": "Date prévue",
-                "priority": "Priorité",
-                "assignTo": "Assigner à (optionnel)",
-                "estimatedCost": "Coût estimé",
-                "notes": "Notes",
-                "optional": "(Optionnel)",
-                "selectTechnician": "Sélectionner un technicien (optionnel)",
-                "task": "Tâche",
-                "items": {
-                    "distance": "Distance (km)",
-                    "time": "Temps (mois)",
-                    "engineHours": "Heures moteur"
-                },
-                "priorities": {
-                    "low": "Basse",
-                    "medium": "Moyenne",
-                    "high": "Haute",
-                    "critical": "Critique"
-                },
-                "success": "Maintenance planifiée avec succès",
-                "error": "Échec de la planification de la maintenance"
             }
         }
     },

@@ -45,8 +45,8 @@ interface ActivePlansTableProps {
 }
 
 export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
-  const t = useTranslations("maintenance.table");
-  const tDashboard = useTranslations("maintenance.dashboard");
+  const t = useTranslations("features.maintenance.table");
+  const tDashboard = useTranslations("features.maintenance.dashboard");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;

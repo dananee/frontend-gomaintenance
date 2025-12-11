@@ -1,9 +1,10 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { CreateWorkOrderDTO } from "../types/workOrder.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { useCreateWorkOrder } from "../hooks/useCreateWorkOrder";
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
 
@@ -16,6 +17,7 @@ interface WorkOrderFormProps {
 export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormProps) {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateWorkOrderDTO>({
@@ -89,13 +91,20 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormP
         error={errors.description?.message}
       />
 
-      <Input
-        label="Scheduled Date"
-        type="datetime-local"
-        step="60" // Enable seconds/24h format support
-        {...register("scheduled_date")}
-        error={errors.scheduled_date?.message}
-      />
+      <div className="space-y-1">
+        <label className="block text-sm font-medium">Scheduled Date</label>
+        <Controller
+          control={control}
+          name="scheduled_date"
+          render={({ field }) => (
+            <DateTimePicker
+              date={field.value ? new Date(field.value) : undefined}
+              setDate={(date) => field.onChange(date ? date.toISOString() : "")}
+              error={errors.scheduled_date?.message}
+            />
+          )}
+        />
+      </div>
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>

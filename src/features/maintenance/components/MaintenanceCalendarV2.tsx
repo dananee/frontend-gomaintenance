@@ -36,7 +36,7 @@ export function MaintenanceCalendarV2({
   currentDate,
   onDateChange
 }: MaintenanceCalendarV2Props) {
-  const t = useTranslations("maintenance.calendar.weekdays");
+  const t = useTranslations("features.maintenance.calendar.weekdays");
   const [selectedEvent, setSelectedEvent] = useState<ScheduledMaintenanceEvent | null>(null);
 
   const nextMonth = () => onDateChange(addMonths(currentDate, 1));

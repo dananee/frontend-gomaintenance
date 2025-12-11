@@ -13,7 +13,7 @@ export const formatCalendarDate = (date: Date | string): string => {
  */
 export const formatDateTime = (date: Date | string): string => {
   const dateObj = typeof date === "string" ? new Date(date) : date;
-  return format(dateObj, "MMM d, yyyy 'at' h:mm a");
+  return format(dateObj, "MMM d, yyyy 'at' HH:mm");
 };
 
 /**

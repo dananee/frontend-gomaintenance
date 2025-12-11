@@ -32,7 +32,7 @@ interface ActivePlansListProps {
 }
 
 export function ActivePlansList({ plans, isLoading }: ActivePlansListProps) {
-  const t = useTranslations("maintenance.dashboard");
+  const t = useTranslations("features.maintenance.dashboard");
   if (isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

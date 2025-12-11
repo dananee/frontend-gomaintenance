@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
 import { AlertTriangle, Clock, CheckCircle2, Circle } from "lucide-react";
@@ -35,6 +36,7 @@ export function CalendarDayEvents({
     onEventClick,
     maxVisibleEvents = 3,
 }: CalendarDayEventsProps) {
+    const t = useTranslations("features.maintenance.calendar");
     const [showAllModal, setShowAllModal] = useState(false);
 
     // Sort events by priority and due time
@@ -104,6 +106,7 @@ export function CalendarDayEvents({
                             key={event.id}
                             event={event}
                             status={getEventStatus(event)}
+                            t={t}
                             statusConfig={getStatusConfig(getEventStatus(event))}
                             onClick={() => onEventClick(event)}
                         />
@@ -114,7 +117,7 @@ export function CalendarDayEvents({
                             onClick={() => setShowAllModal(true)}
                             className="flex items-center justify-center gap-1 px-2 py-1.5 text-[10px] font-medium text-blue-700 dark:text-blue-400 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/30 rounded-md border border-blue-300 dark:border-blue-800 hover:shadow-md transition-all cursor-pointer"
                         >
-                            +{remainingCount} more
+                            {t("moreEvents", { count: remainingCount })}
                         </button>
                     )}
                 </div>
@@ -126,7 +129,9 @@ export function CalendarDayEvents({
                             onClick={() => setShowAllModal(true)}
                             className="w-full px-2 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-md border border-gray-300 dark:border-gray-600 hover:shadow-md transition-all"
                         >
-                            {events.length} {events.length === 1 ? "event" : "events"}
+                            {events.length === 1
+                                ? t("oneEvent")
+                                : t("multipleEvents", { count: events.length })}
                         </button>
                     )}
                 </div>
@@ -137,7 +142,7 @@ export function CalendarDayEvents({
                 <DialogContent className="max-w-2xl max-h-[80vh]">
                     <DialogHeader>
                         <DialogTitle>
-                            Events for {formatDateLong(date)}
+                            {t("eventsTitle", { date: formatDateLong(date) })}
                         </DialogTitle>
                     </DialogHeader>
                     <ScrollArea className="h-[60vh] pr-4">
@@ -146,6 +151,7 @@ export function CalendarDayEvents({
                                 <EventCardExpanded
                                     key={event.id}
                                     event={event}
+                                    t={t}
                                     status={getEventStatus(event)}
                                     statusConfig={getStatusConfig(getEventStatus(event))}
                                     onClick={() => {
@@ -168,9 +174,11 @@ interface EventCardProps {
     status: EventStatus;
     statusConfig: ReturnType<typeof getStatusConfig>;
     onClick: () => void;
+    t?: any;
 }
 
-function EventCard({ event, status, statusConfig, onClick }: EventCardProps) {
+
+function EventCard({ event, status, statusConfig, onClick, t }: EventCardProps) {
     const { bg, border, icon: Icon, iconColor, dotColor } = statusConfig;
 
     return (
@@ -210,11 +218,11 @@ function EventCard({ event, status, statusConfig, onClick }: EventCardProps) {
                         <div className="font-semibold">{event.vehicle_name}</div>
                         <div className="text-sm">{event.title}</div>
                         <div className="text-xs text-gray-500">
-                            Priority: <span className="capitalize">{event.priority}</span>
+                            {t ? t("priority") : "Priority"}: <span className="capitalize">{event.priority}</span>
                         </div>
                         {event.assigned_to && (
                             <div className="text-xs text-gray-500">
-                                Assigned: {event.assigned_to}
+                                {t ? t("assigned") : "Assigned"}: {event.assigned_to}
                             </div>
                         )}
                     </div>
@@ -225,7 +233,7 @@ function EventCard({ event, status, statusConfig, onClick }: EventCardProps) {
 }
 
 // Expanded Event Card for Modal
-function EventCardExpanded({ event, status, statusConfig, onClick }: EventCardProps) {
+function EventCardExpanded({ event, status, statusConfig, onClick, t }: EventCardProps) {
     const { bg, border, icon: Icon, iconColor, dotColor } = statusConfig;
 
     const getPriorityBadgeColor = (priority: string) => {

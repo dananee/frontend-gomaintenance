@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
@@ -14,6 +15,7 @@ interface EventTooltipProps {
 }
 
 export function EventTooltip({ event, isVisible, position }: EventTooltipProps) {
+  const t = useTranslations("features.maintenance.tooltips");
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export function EventTooltip({ event, isVisible, position }: EventTooltipProps) 
 
         {event.assigned_to && (
           <p className="text-xs text-gray-600 dark:text-gray-300">
-            <span className="font-medium">Technician:</span> {event.assigned_to}
+            <span className="font-medium">{t("technician")}:</span> {event.assigned_to}
           </p>
         )}
 

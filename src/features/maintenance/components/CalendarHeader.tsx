@@ -1,7 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { format } from "date-fns";
+import { useTranslations, useFormatter } from "next-intl";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,12 +19,13 @@ export function CalendarHeader({
   onToday,
   eventCount,
 }: CalendarHeaderProps) {
-  const t = useTranslations("maintenance.calendar");
+  const t = useTranslations("features.maintenance.calendar");
+  const format = useFormatter();
   return (
     <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-800 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-900/50">
       <div className="flex items-center gap-4">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {format(currentDate, "MMMM yyyy")}
+          {format.dateTime(currentDate, { month: 'long', year: 'numeric' })}
         </h2>
         <div className="flex items-center rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800 shadow-sm">
           <Button
