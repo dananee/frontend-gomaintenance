@@ -10,6 +10,7 @@ import { useConsumeParts } from '@/hooks/queries/usePartsQueries';
 import { useToast } from '@/hooks/useToast';
 import { Package, Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 interface ConsumePartsModalProps {
     workOrderId: string;
@@ -22,6 +23,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
     const [quantityUsed, setQuantityUsed] = useState('');
     const consumeMutation = useConsumeParts(workOrderId);
     const { showSuccess, showError } = useToast();
+    const t = useTranslations('partRequests.premium.consumeModal');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,7 +31,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
 
         const qty = parseFloat(quantityUsed);
         if (qty > request.quantity) {
-            showError(`Quantity used cannot exceed approved quantity (${request.quantity})`);
+            showError(t('alerts.exceeds', { quantity: request.quantity }));
             return;
         }
 
@@ -42,10 +44,10 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                     },
                 ],
             });
-            showSuccess('Parts consumption recorded successfully');
+            showSuccess(t('alerts.success'));
             handleClose();
         } catch (err: any) {
-            showError(err.message || 'Failed to record parts consumption');
+            showError(err.message || t('alerts.error'));
         }
     };
 
@@ -61,7 +63,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
             <DialogContent className="sm:max-w-[500px] bg-white/95 backdrop-blur-xl border-gray-200 shadow-2xl">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                        Mark Parts as Used
+                        {t('title')}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -75,7 +77,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                             <div>
                                 <div className="font-semibold text-green-900">{request.part?.name}</div>
                                 <div className="text-sm text-green-700">
-                                    SKU: {request.part?.part_number} • Approved: {request.quantity}
+                                    {t('fields.sku')}: {request.part?.part_number} • {t('fields.approved')}: {request.quantity}
                                 </div>
                             </div>
                         </div>
@@ -84,7 +86,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                     {/* Quantity Used */}
                     <div>
                         <Label htmlFor="quantityUsed" className="text-sm font-semibold text-gray-700">
-                            Quantity Used
+                            {t('fields.quantityUsed')}
                         </Label>
                         <Input
                             id="quantityUsed"
@@ -92,7 +94,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                             min="0.01"
                             max={request.quantity}
                             step="0.01"
-                            placeholder={`Enter quantity (max: ${request.quantity})`}
+                            placeholder={t('placeholders.quantityUsed', { max: request.quantity })}
                             value={quantityUsed}
                             onChange={(e) => setQuantityUsed(e.target.value)}
                             required
@@ -105,7 +107,7 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                                 className="mt-2 flex items-center space-x-2 text-red-600 text-sm"
                             >
                                 <AlertCircle className="h-4 w-4" />
-                                <span>Quantity exceeds approved amount</span>
+                                <span>{t('alerts.quantityWarning')}</span>
                             </motion.div>
                         )}
                     </div>
@@ -113,14 +115,14 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                     {/* Info Message */}
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
                         <p className="text-sm text-blue-800">
-                            <strong>Note:</strong> Recording parts consumption will update stock levels in Odoo and mark this request as consumed.
+                            <strong>{t('info.noteLabel')}</strong> {t('info.description')}
                         </p>
                     </div>
 
                     {/* Actions */}
                     <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                         <Button type="button" variant="outline" onClick={handleClose}>
-                            Cancel
+                            {t('actions.cancel')}
                         </Button>
                         <Button
                             type="submit"
@@ -130,10 +132,10 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                             {consumeMutation.isPending ? (
                                 <>
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Recording...
+                                    {t('actions.recording')}
                                 </>
                             ) : (
-                                'Confirm Usage'
+                                t('actions.confirm')
                             )}
                         </Button>
                     </div>

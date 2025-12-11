@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Plus, Package, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { WorkOrderPartRequest } from '@/types/parts';
+import { useTranslations } from 'next-intl';
 
 interface PremiumPartsTabProps {
     workOrderId: string;
@@ -19,6 +20,7 @@ interface PremiumPartsTabProps {
 export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [consumeRequest, setConsumeRequest] = useState<WorkOrderPartRequest | null>(null);
+    const t = useTranslations('partRequests.premium.tab');
 
     const { data: requests, isLoading, error } = usePartRequests(workOrderId);
 
@@ -38,7 +40,7 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
         return (
             <Card className="border-red-200 bg-red-50">
                 <CardContent className="pt-6">
-                    <p className="text-sm text-red-600">Failed to load part requests. Please try again.</p>
+                    <p className="text-sm text-red-600">{t('error')}</p>
                 </CardContent>
             </Card>
         );
@@ -58,10 +60,10 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
                     </div>
                     <div>
                         <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            Parts Requests
+                            {t('title')}
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
-                            Request and track parts for this work order
+                            {t('subtitle')}
                         </p>
                     </div>
                 </div>
@@ -70,7 +72,7 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
                     className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                     <Plus className="h-5 w-5 mr-2" />
-                    Request Part
+                    {t('actions.requestPart')}
                     <Sparkles className="h-4 w-4 ml-2" />
                 </Button>
             </motion.div>
@@ -88,16 +90,16 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
                                 <div className="inline-flex p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl mb-6">
                                     <Package className="h-16 w-16 text-indigo-400" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">No parts requested yet</h3>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('empty.title')}</h3>
                                 <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-                                    Get started by requesting a part for this work order. Track approvals, orders, and deliveries all in one place.
+                                    {t('empty.description')}
                                 </p>
                                 <Button
                                     onClick={() => setIsRequestModalOpen(true)}
                                     className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg"
                                 >
                                     <Plus className="h-5 w-5 mr-2" />
-                                    Request Your First Part
+                                    {t('empty.cta')}
                                 </Button>
                             </div>
                         </CardContent>

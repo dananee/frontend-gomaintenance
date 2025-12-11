@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/useToast';
 import { Search, Package, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Part } from '@/types/parts';
+import { useTranslations } from 'next-intl';
 
 interface PremiumRequestPartModalProps {
     workOrderId: string;
@@ -29,6 +30,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
     const { data: searchResults, isLoading: isSearching } = useSearchParts(debouncedSearch);
     const createMutation = useCreatePartRequest(workOrderId);
     const { showSuccess, showError } = useToast();
+    const t = useTranslations('partRequests.premium.requestModal');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,10 +42,10 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                 quantity: parseFloat(quantity),
                 notes,
             });
-            showSuccess('Part request created successfully');
+            showSuccess(t('alerts.createSuccess'));
             handleClose();
         } catch (err: any) {
-            showError(err.message || 'Failed to create part request');
+            showError(err.message || t('alerts.createError'));
         }
     };
 
@@ -60,21 +62,21 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
             return (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
                     <CheckCircle2 className="h-3 w-3 mr-1" />
-                    In Stock: {part.quantity}
+                    {t('stock.inStock', { quantity: part.quantity })}
                 </span>
             );
         } else if (part.quantity > 0) {
             return (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200">
                     <AlertCircle className="h-3 w-3 mr-1" />
-                    Low: {part.quantity}
+                    {t('stock.lowStock', { quantity: part.quantity })}
                 </span>
             );
         } else {
             return (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200">
                     <AlertCircle className="h-3 w-3 mr-1" />
-                    Out of Stock
+                    {t('stock.outOfStock')}
                 </span>
             );
         }
@@ -85,7 +87,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
             <DialogContent className="sm:max-w-[700px] bg-white/95 backdrop-blur-xl border-gray-200 shadow-2xl">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                        Request Part
+                        {t('title')}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -93,14 +95,14 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                     {/* Search Parts */}
                     <div>
                         <Label htmlFor="search" className="text-sm font-semibold text-gray-700">
-                            Search Parts
+                            {t('fields.search')}
                         </Label>
                         <div className="relative mt-2">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                             <Input
                                 id="search"
                                 type="text"
-                                placeholder="Search by name, SKU, or part number..."
+                                placeholder={t('placeholders.search')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10 bg-white/50 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
@@ -138,7 +140,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                                                     <div>
                                                         <div className="font-semibold text-gray-900">{part.name}</div>
                                                         <div className="text-sm text-gray-500">
-                                                            SKU: {part.part_number} {part.brand && `• ${part.brand}`}
+                                                            {t('fields.sku')}: {part.part_number} {part.brand && `• ${part.brand}`}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -167,7 +169,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                                         </div>
                                         <div>
                                             <div className="font-semibold text-indigo-900">{selectedPart.name}</div>
-                                            <div className="text-sm text-indigo-700">SKU: {selectedPart.part_number}</div>
+                                            <div className="text-sm text-indigo-700">{t('fields.sku')}: {selectedPart.part_number}</div>
                                         </div>
                                     </div>
                                     <Button
@@ -177,7 +179,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                                         onClick={() => setSelectedPart(null)}
                                         className="text-indigo-600 hover:text-indigo-700 hover:bg-white/50"
                                     >
-                                        Change
+                                        {t('actions.change')}
                                     </Button>
                                 </div>
                             </motion.div>
@@ -187,14 +189,14 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                     {/* Quantity */}
                     <div>
                         <Label htmlFor="quantity" className="text-sm font-semibold text-gray-700">
-                            Quantity
+                            {t('fields.quantity')}
                         </Label>
                         <Input
                             id="quantity"
                             type="number"
                             min="0.01"
                             step="0.01"
-                            placeholder="Enter quantity"
+                            placeholder={t('placeholders.quantity')}
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                             required
@@ -205,11 +207,11 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                     {/* Notes */}
                     <div>
                         <Label htmlFor="notes" className="text-sm font-semibold text-gray-700">
-                            Notes (Optional)
+                            {t('fields.notes')}
                         </Label>
                         <Textarea
                             id="notes"
-                            placeholder="Add any additional notes..."
+                            placeholder={t('placeholders.notes')}
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                             rows={3}
@@ -220,7 +222,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                     {/* Actions */}
                     <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                         <Button type="button" variant="outline" onClick={handleClose}>
-                            Cancel
+                            {t('actions.cancel')}
                         </Button>
                         <Button
                             type="submit"
@@ -230,10 +232,10 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                             {createMutation.isPending ? (
                                 <>
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Requesting...
+                                    {t('actions.requesting')}
                                 </>
                             ) : (
-                                'Request Part'
+                                t('actions.requestPart')
                             )}
                         </Button>
                     </div>
