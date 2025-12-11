@@ -4,6 +4,7 @@ import React from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useTranslations } from 'next-intl';
 
 interface Props {
     children: React.ReactNode;
@@ -14,8 +15,12 @@ interface State {
     error: Error | null;
 }
 
-export class PartsErrorBoundary extends React.Component<Props, State> {
-    constructor(props: Props) {
+interface PartsErrorBoundaryContentProps extends Props {
+    t: (key: string) => string;
+}
+
+class PartsErrorBoundaryInner extends React.Component<PartsErrorBoundaryContentProps, State> {
+    constructor(props: PartsErrorBoundaryContentProps) {
         super(props);
         this.state = { hasError: false, error: null };
     }
@@ -38,17 +43,17 @@ export class PartsErrorBoundary extends React.Component<Props, State> {
                                 <AlertCircle className="h-12 w-12 text-red-600" />
                             </div>
                             <h3 className="text-xl font-bold text-red-900 mb-2">
-                                Something went wrong
+                                {this.props.t('title')}
                             </h3>
                             <p className="text-red-700 mb-6">
-                                {this.state.error?.message || 'An unexpected error occurred in the parts system'}
+                                {this.state.error?.message || this.props.t('description')}
                             </p>
                             <Button
                                 onClick={() => this.setState({ hasError: false, error: null })}
                                 className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white"
                             >
                                 <RefreshCw className="h-4 w-4 mr-2" />
-                                Try Again
+                                {this.props.t('actions.retry')}
                             </Button>
                         </div>
                     </CardContent>
@@ -58,4 +63,10 @@ export class PartsErrorBoundary extends React.Component<Props, State> {
 
         return this.props.children;
     }
+}
+
+export function PartsErrorBoundary(props: Props) {
+    const t = useTranslations('partRequests.premium.errorBoundary');
+
+    return <PartsErrorBoundaryInner {...props} t={t} />;
 }

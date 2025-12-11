@@ -8,6 +8,7 @@ import { FileText, Download, Eye, X, Loader2 } from 'lucide-react';
 import { formatBytes } from '@/lib/formatters';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 interface PremiumAttachmentsViewerProps {
     attachments: OdooAttachment[];
@@ -17,6 +18,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
     const [selectedAttachment, setSelectedAttachment] = useState<OdooAttachment | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const t = useTranslations('partRequests.premium.attachments');
 
     const handleDownload = (attachment: OdooAttachment) => {
         const link = document.createElement('a');
@@ -59,7 +61,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                                         </div>
                                         <div className="flex items-center space-x-3 text-sm text-gray-500 mt-1">
                                             <span className="inline-flex items-center">
-                                                {attachment.file_size ? formatBytes(attachment.file_size) : 'Unknown size'}
+                                                {attachment.file_size ? formatBytes(attachment.file_size) : t('meta.unknownSize')}
                                             </span>
                                             <span>•</span>
                                             <span>{format(new Date(attachment.created_at), 'MMM d, yyyy')}</span>
@@ -75,7 +77,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                                         className="border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:border-indigo-300"
                                     >
                                         <Eye className="h-4 w-4 mr-1" />
-                                        View
+                                        {t('actions.view')}
                                     </Button>
                                     <Button
                                         variant="outline"
@@ -84,7 +86,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                                         className="border-gray-200 text-gray-600 hover:bg-gray-50"
                                     >
                                         <Download className="h-4 w-4 mr-1" />
-                                        Download
+                                        {t('actions.download')}
                                     </Button>
                                 </div>
                             </div>
@@ -117,7 +119,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                             <div className="flex items-center justify-center h-full">
                                 <div className="text-center">
                                     <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                                    <p className="text-gray-600">Loading PDF...</p>
+                                    <p className="text-gray-600">{t('viewer.loading')}</p>
                                 </div>
                             </div>
                         ) : error ? (
@@ -126,7 +128,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                                     <div className="p-4 bg-red-50 rounded-full inline-block mb-4">
                                         <FileText className="h-12 w-12 text-red-600" />
                                     </div>
-                                    <p className="text-red-600 font-semibold mb-2">Failed to load PDF</p>
+                                    <p className="text-red-600 font-semibold mb-2">{t('viewer.loadError')}</p>
                                     <p className="text-gray-600 text-sm">{error}</p>
                                 </div>
                             </div>
@@ -135,7 +137,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                                 src={selectedAttachment.storage_url}
                                 className="w-full h-full border-0"
                                 title={selectedAttachment.file_name}
-                                onError={() => setError('PDF could not be displayed')}
+                                onError={() => setError(t('viewer.renderError'))}
                             />
                         ) : null}
                     </div>

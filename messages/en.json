@@ -989,6 +989,12 @@
                 "previous": "Previous",
                 "next": "Next"
             },
+            "notifications": {
+                "approveSuccess": "Part request approved and PO created in Odoo",
+                "approveError": "Failed to approve request",
+                "rejectSuccess": "Part request rejected",
+                "rejectError": "Failed to reject request"
+            },
             "fields": {
                 "workOrder": "Work Order",
                 "requestedBy": "Requested by",
@@ -1004,6 +1010,167 @@
             "fallback": {
                 "unknownPart": "Unknown Part",
                 "na": "N/A"
+            }
+        },
+        "confirmation": {
+            "approveModal": {
+                "title": "Approve Part Request",
+                "description": "This will create a purchase order in Odoo",
+                "note": "Approving this request will automatically create a purchase order in Odoo and notify the requester."
+            },
+            "rejectModal": {
+                "title": "Reject Part Request",
+                "description": "Please provide a reason for rejection",
+                "placeholder": "Explain why this request is being rejected..."
+            },
+            "fields": {
+                "part": "Part",
+                "quantity": "Quantity",
+                "note": "Note",
+                "rejectionReason": "Rejection Reason"
+            },
+            "actions": {
+                "cancel": "Cancel",
+                "approving": "Approving...",
+                "rejecting": "Rejecting...",
+                "confirmApproval": "Confirm Approval",
+                "confirmRejection": "Confirm Rejection"
+            }
+        },
+        "premium": {
+            "tab": {
+                "title": "Parts Requests",
+                "subtitle": "Request and track parts for this work order",
+                "error": "Failed to load part requests. Please try again.",
+                "actions": {
+                    "requestPart": "Request Part"
+                },
+                "empty": {
+                    "title": "No parts requested yet",
+                    "description": "Get started by requesting a part for this work order. Track approvals, orders, and deliveries all in one place.",
+                    "cta": "Request Your First Part"
+                }
+            },
+            "table": {
+                "fallback": {
+                    "unknownPart": "Unknown Part",
+                    "na": "N/A"
+                },
+                "labels": {
+                    "sku": "SKU",
+                    "quantity": "Qty",
+                    "poNumber": "PO Number",
+                    "approvedBy": "Approved by"
+                },
+                "actions": {
+                    "markUsed": "Mark Used"
+                },
+                "sections": {
+                    "statusTimeline": "Status Timeline",
+                    "notes": "Notes",
+                    "rejectionReason": "Rejection Reason",
+                    "purchaseOrder": "Purchase Order",
+                    "invoiceAttachments": "Invoice Attachments"
+                },
+                "statuses": {
+                    "draft": "Draft",
+                    "pendingApproval": "Pending Approval",
+                    "approved": "Approved",
+                    "sentToOdoo": "Sent to Odoo",
+                    "ordered": "Ordered",
+                    "received": "Received",
+                    "rejected": "Rejected",
+                    "cancelled": "Cancelled",
+                    "unknown": "Unknown"
+                }
+            },
+            "requestModal": {
+                "title": "Request Part",
+                "fields": {
+                    "search": "Search Parts",
+                    "sku": "SKU",
+                    "quantity": "Quantity",
+                    "notes": "Notes (Optional)"
+                },
+                "placeholders": {
+                    "search": "Search by name, SKU, or part number...",
+                    "quantity": "Enter quantity",
+                    "notes": "Add any additional notes..."
+                },
+                "stock": {
+                    "inStock": "In Stock: {quantity}",
+                    "lowStock": "Low: {quantity}",
+                    "outOfStock": "Out of Stock"
+                },
+                "alerts": {
+                    "createSuccess": "Part request created successfully",
+                    "createError": "Failed to create part request"
+                },
+                "actions": {
+                    "change": "Change",
+                    "cancel": "Cancel",
+                    "requesting": "Requesting...",
+                    "requestPart": "Request Part"
+                }
+            },
+            "consumeModal": {
+                "title": "Mark Parts as Used",
+                "fields": {
+                    "sku": "SKU",
+                    "approved": "Approved",
+                    "quantityUsed": "Quantity Used"
+                },
+                "placeholders": {
+                    "quantityUsed": "Enter quantity (max: {max})"
+                },
+                "alerts": {
+                    "exceeds": "Quantity used cannot exceed approved quantity ({quantity})",
+                    "success": "Parts consumption recorded successfully",
+                    "error": "Failed to record parts consumption",
+                    "quantityWarning": "Quantity exceeds approved amount"
+                },
+                "info": {
+                    "noteLabel": "Note:",
+                    "description": "Recording parts consumption will update stock levels in Odoo and mark this request as consumed."
+                },
+                "actions": {
+                    "cancel": "Cancel",
+                    "recording": "Recording...",
+                    "confirm": "Confirm Usage"
+                }
+            },
+            "attachments": {
+                "meta": {
+                    "unknownSize": "Unknown size"
+                },
+                "actions": {
+                    "view": "View",
+                    "download": "Download"
+                },
+                "viewer": {
+                    "loading": "Loading PDF...",
+                    "loadError": "Failed to load PDF",
+                    "renderError": "PDF could not be displayed"
+                }
+            },
+            "timeline": {
+                "steps": {
+                    "requested": "Requested",
+                    "approved": "Approved",
+                    "poCreated": "PO Created",
+                    "received": "Received"
+                },
+                "statuses": {
+                    "rejected": "Rejected",
+                    "cancelled": "Cancelled"
+                }
+            },
+            "errorBoundary": {
+                "title": "Something went wrong",
+                "description": "An unexpected error occurred in the parts system",
+                "actions": {
+                    "retry": "Try Again"
+                }
             }
         },
         "myRequests": {

@@ -1088,6 +1088,12 @@
                 "previous": "Précédent",
                 "next": "Suivant"
             },
+            "notifications": {
+                "approveSuccess": "Demande de pièce approuvée et bon de commande créé dans Odoo",
+                "approveError": "Échec de l'approbation de la demande",
+                "rejectSuccess": "Demande de pièce rejetée",
+                "rejectError": "Échec du rejet de la demande"
+            },
             "fields": {
                 "workOrder": "Ordre de travail",
                 "requestedBy": "Demandé par",
@@ -1096,7 +1102,172 @@
                 "sku": "SKU",
                 "quantity": "Quantité"
             },
-            "pagination": "Page {page} sur {total}"
+            "pagination": "Page {page} sur {total}",
+            "fallback": {
+                "unknownPart": "Pièce inconnue",
+                "na": "N/A"
+            }
+        },
+        "confirmation": {
+            "approveModal": {
+                "title": "Approuver la demande de pièce",
+                "description": "Cela créera un bon de commande dans Odoo",
+                "note": "L'approbation de cette demande créera automatiquement un bon de commande dans Odoo et informera le demandeur."
+            },
+            "rejectModal": {
+                "title": "Rejeter la demande de pièce",
+                "description": "Veuillez fournir une raison du refus",
+                "placeholder": "Expliquez pourquoi cette demande est refusée..."
+            },
+            "fields": {
+                "part": "Pièce",
+                "quantity": "Quantité",
+                "note": "Note",
+                "rejectionReason": "Raison du refus"
+            },
+            "actions": {
+                "cancel": "Annuler",
+                "approving": "Approbation en cours...",
+                "rejecting": "Rejet en cours...",
+                "confirmApproval": "Confirmer l'approbation",
+                "confirmRejection": "Confirmer le rejet"
+            }
+        },
+        "premium": {
+            "tab": {
+                "title": "Demandes de pièces",
+                "subtitle": "Demandez et suivez les pièces pour cet ordre de travail",
+                "error": "Échec du chargement des demandes de pièces. Veuillez réessayer.",
+                "actions": {
+                    "requestPart": "Demander une pièce"
+                },
+                "empty": {
+                    "title": "Aucune pièce demandée pour le moment",
+                    "description": "Commencez par demander une pièce pour cet ordre de travail. Suivez les approbations, commandes et livraisons au même endroit.",
+                    "cta": "Demander votre première pièce"
+                }
+            },
+            "table": {
+                "fallback": {
+                    "unknownPart": "Pièce inconnue",
+                    "na": "N/A"
+                },
+                "labels": {
+                    "sku": "SKU",
+                    "quantity": "Qté",
+                    "poNumber": "Numéro de BC",
+                    "approvedBy": "Approuvé par"
+                },
+                "actions": {
+                    "markUsed": "Marquer comme utilisée"
+                },
+                "sections": {
+                    "statusTimeline": "Chronologie du statut",
+                    "notes": "Notes",
+                    "rejectionReason": "Raison du rejet",
+                    "purchaseOrder": "Bon de commande",
+                    "invoiceAttachments": "Pièces jointes de facture"
+                },
+                "statuses": {
+                    "draft": "Brouillon",
+                    "pendingApproval": "En attente d'approbation",
+                    "approved": "Approuvée",
+                    "sentToOdoo": "Envoyée à Odoo",
+                    "ordered": "Commandée",
+                    "received": "Réceptionnée",
+                    "rejected": "Rejetée",
+                    "cancelled": "Annulée",
+                    "unknown": "Inconnue"
+                }
+            },
+            "requestModal": {
+                "title": "Demander une pièce",
+                "fields": {
+                    "search": "Rechercher des pièces",
+                    "sku": "SKU",
+                    "quantity": "Quantité",
+                    "notes": "Notes (facultatif)"
+                },
+                "placeholders": {
+                    "search": "Rechercher par nom, SKU ou numéro de pièce...",
+                    "quantity": "Saisissez la quantité",
+                    "notes": "Ajoutez des notes supplémentaires..."
+                },
+                "stock": {
+                    "inStock": "En stock : {quantity}",
+                    "lowStock": "Faible : {quantity}",
+                    "outOfStock": "Rupture de stock"
+                },
+                "alerts": {
+                    "createSuccess": "Demande de pièce créée avec succès",
+                    "createError": "Échec de la création de la demande de pièce"
+                },
+                "actions": {
+                    "change": "Changer",
+                    "cancel": "Annuler",
+                    "requesting": "Demande en cours...",
+                    "requestPart": "Demander une pièce"
+                }
+            },
+            "consumeModal": {
+                "title": "Marquer les pièces comme utilisées",
+                "fields": {
+                    "sku": "SKU",
+                    "approved": "Approuvé",
+                    "quantityUsed": "Quantité utilisée"
+                },
+                "placeholders": {
+                    "quantityUsed": "Saisissez la quantité (max : {max})"
+                },
+                "alerts": {
+                    "exceeds": "La quantité utilisée ne peut pas dépasser la quantité approuvée ({quantity})",
+                    "success": "Consommation des pièces enregistrée avec succès",
+                    "error": "Échec de l'enregistrement de la consommation des pièces",
+                    "quantityWarning": "La quantité dépasse le montant approuvé"
+                },
+                "info": {
+                    "noteLabel": "Remarque :",
+                    "description": "L'enregistrement de la consommation des pièces mettra à jour les niveaux de stock dans Odoo et marquera cette demande comme consommée."
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "recording": "Enregistrement...",
+                    "confirm": "Confirmer l'utilisation"
+                }
+            },
+            "attachments": {
+                "meta": {
+                    "unknownSize": "Taille inconnue"
+                },
+                "actions": {
+                    "view": "Voir",
+                    "download": "Télécharger"
+                },
+                "viewer": {
+                    "loading": "Chargement du PDF...",
+                    "loadError": "Échec du chargement du PDF",
+                    "renderError": "Impossible d'afficher le PDF"
+                }
+            },
+            "timeline": {
+                "steps": {
+                    "requested": "Demandée",
+                    "approved": "Approuvée",
+                    "poCreated": "BC créé",
+                    "received": "Réceptionnée"
+                },
+                "statuses": {
+                    "rejected": "Rejetée",
+                    "cancelled": "Annulée"
+                }
+            },
+            "errorBoundary": {
+                "title": "Un problème est survenu",
+                "description": "Une erreur inattendue s'est produite dans le système des pièces",
+                "actions": {
+                    "retry": "Réessayer"
+                }
+            }
         },
         "myRequests": {
             "title": "Mes demandes de pièces",

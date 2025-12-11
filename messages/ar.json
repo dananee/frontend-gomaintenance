@@ -1137,6 +1137,12 @@
                 "previous": "السابق",
                 "next": "التالي"
             },
+            "notifications": {
+                "approveSuccess": "تمت الموافقة على طلب القطعة وإنشاء أمر شراء في أودو",
+                "approveError": "فشل في الموافقة على الطلب",
+                "rejectSuccess": "تم رفض طلب القطعة",
+                "rejectError": "فشل في رفض الطلب"
+            },
             "fields": {
                 "workOrder": "أمر العمل",
                 "requestedBy": "طُلب بواسطة",
@@ -1145,7 +1151,172 @@
                 "sku": "SKU",
                 "quantity": "الكمية"
             },
-            "pagination": "الصفحة {page} من {total}"
+            "pagination": "الصفحة {page} من {total}",
+            "fallback": {
+                "unknownPart": "قطعة غير معروفة",
+                "na": "غير متوفر"
+            }
+        },
+        "confirmation": {
+            "approveModal": {
+                "title": "الموافقة على طلب القطعة",
+                "description": "سيتم إنشاء أمر شراء في أودو",
+                "note": "سيؤدي اعتماد هذا الطلب تلقائياً إلى إنشاء أمر شراء في أودو وإخطار مقدم الطلب."
+            },
+            "rejectModal": {
+                "title": "رفض طلب القطعة",
+                "description": "يرجى تقديم سبب الرفض",
+                "placeholder": "اشرح سبب رفض هذا الطلب..."
+            },
+            "fields": {
+                "part": "القطعة",
+                "quantity": "الكمية",
+                "note": "ملاحظة",
+                "rejectionReason": "سبب الرفض"
+            },
+            "actions": {
+                "cancel": "إلغاء",
+                "approving": "جاري الاعتماد...",
+                "rejecting": "جاري الرفض...",
+                "confirmApproval": "تأكيد الاعتماد",
+                "confirmRejection": "تأكيد الرفض"
+            }
+        },
+        "premium": {
+            "tab": {
+                "title": "طلبات القطع",
+                "subtitle": "اطلب وتابع القطع لهذا أمر العمل",
+                "error": "فشل تحميل طلبات القطع. يرجى المحاولة مرة أخرى.",
+                "actions": {
+                    "requestPart": "طلب قطعة"
+                },
+                "empty": {
+                    "title": "لا توجد طلبات قطع بعد",
+                    "description": "ابدأ بطلب قطعة لهذا أمر العمل. تابع الموافقات والطلبات والتسليمات في مكان واحد.",
+                    "cta": "اطلب أول قطعة لك"
+                }
+            },
+            "table": {
+                "fallback": {
+                    "unknownPart": "قطعة غير معروفة",
+                    "na": "غير متوفر"
+                },
+                "labels": {
+                    "sku": "SKU",
+                    "quantity": "الكمية",
+                    "poNumber": "رقم أمر الشراء",
+                    "approvedBy": "تمت الموافقة بواسطة"
+                },
+                "actions": {
+                    "markUsed": "تحديدها كمستخدمة"
+                },
+                "sections": {
+                    "statusTimeline": "الخط الزمني للحالة",
+                    "notes": "ملاحظات",
+                    "rejectionReason": "سبب الرفض",
+                    "purchaseOrder": "أمر الشراء",
+                    "invoiceAttachments": "مرفقات الفاتورة"
+                },
+                "statuses": {
+                    "draft": "مسودة",
+                    "pendingApproval": "بانتظار الموافقة",
+                    "approved": "تمت الموافقة",
+                    "sentToOdoo": "أُرسل إلى أودو",
+                    "ordered": "تم الطلب",
+                    "received": "تم الاستلام",
+                    "rejected": "مرفوض",
+                    "cancelled": "ملغي",
+                    "unknown": "غير معروف"
+                }
+            },
+            "requestModal": {
+                "title": "طلب قطعة",
+                "fields": {
+                    "search": "البحث عن قطع",
+                    "sku": "SKU",
+                    "quantity": "الكمية",
+                    "notes": "ملاحظات (اختياري)"
+                },
+                "placeholders": {
+                    "search": "ابحث بالاسم أو SKU أو رقم القطعة...",
+                    "quantity": "أدخل الكمية",
+                    "notes": "أضف أي ملاحظات إضافية..."
+                },
+                "stock": {
+                    "inStock": "متوفر: {quantity}",
+                    "lowStock": "منخفض: {quantity}",
+                    "outOfStock": "غير متوفر"
+                },
+                "alerts": {
+                    "createSuccess": "تم إنشاء طلب القطعة بنجاح",
+                    "createError": "فشل إنشاء طلب القطعة"
+                },
+                "actions": {
+                    "change": "تغيير",
+                    "cancel": "إلغاء",
+                    "requesting": "جاري الطلب...",
+                    "requestPart": "طلب قطعة"
+                }
+            },
+            "consumeModal": {
+                "title": "تحديد القطع كمستخدمة",
+                "fields": {
+                    "sku": "SKU",
+                    "approved": "المعتمد",
+                    "quantityUsed": "الكمية المستخدمة"
+                },
+                "placeholders": {
+                    "quantityUsed": "أدخل الكمية (الحد الأقصى: {max})"
+                },
+                "alerts": {
+                    "exceeds": "لا يمكن أن تتجاوز الكمية المستخدمة الكمية المعتمدة ({quantity})",
+                    "success": "تم تسجيل استهلاك القطع بنجاح",
+                    "error": "فشل تسجيل استهلاك القطع",
+                    "quantityWarning": "الكمية تتجاوز الحد المعتمد"
+                },
+                "info": {
+                    "noteLabel": "ملاحظة:",
+                    "description": "سيؤدي تسجيل استهلاك القطع إلى تحديث مستويات المخزون في أودو ووضع علامة على هذا الطلب كمستهلك."
+                },
+                "actions": {
+                    "cancel": "إلغاء",
+                    "recording": "جارٍ التسجيل...",
+                    "confirm": "تأكيد الاستخدام"
+                }
+            },
+            "attachments": {
+                "meta": {
+                    "unknownSize": "حجم غير معروف"
+                },
+                "actions": {
+                    "view": "عرض",
+                    "download": "تنزيل"
+                },
+                "viewer": {
+                    "loading": "جارٍ تحميل ملف PDF...",
+                    "loadError": "فشل تحميل ملف PDF",
+                    "renderError": "تعذر عرض ملف PDF"
+                }
+            },
+            "timeline": {
+                "steps": {
+                    "requested": "تم الطلب",
+                    "approved": "تمت الموافقة",
+                    "poCreated": "تم إنشاء أمر شراء",
+                    "received": "تم الاستلام"
+                },
+                "statuses": {
+                    "rejected": "مرفوض",
+                    "cancelled": "ملغي"
+                }
+            },
+            "errorBoundary": {
+                "title": "حدث خطأ ما",
+                "description": "حدث خطأ غير متوقع في نظام القطع",
+                "actions": {
+                    "retry": "إعادة المحاولة"
+                }
+            }
         },
         "myRequests": {
             "title": "طلباتي للقطع",

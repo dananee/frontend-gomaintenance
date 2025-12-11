@@ -32,11 +32,11 @@ export default function SupervisorApprovalPage() {
 
         try {
             await approveMutation.mutateAsync(selectedRequest.id);
-            showSuccess('Part request approved and PO created in Odoo');
+            showSuccess(t('notifications.approveSuccess'));
             setApprovalModalOpen(false);
             setSelectedRequest(null);
         } catch (err: any) {
-            showError(err.message || 'Failed to approve request');
+            showError(err.message || t('notifications.approveError'));
         }
     };
 
@@ -48,11 +48,11 @@ export default function SupervisorApprovalPage() {
                 requestId: selectedRequest.id,
                 payload: { reason },
             });
-            showSuccess('Part request rejected');
+            showSuccess(t('notifications.rejectSuccess'));
             setRejectionModalOpen(false);
             setSelectedRequest(null);
         } catch (err: any) {
-            showError(err.message || 'Failed to reject request');
+            showError(err.message || t('notifications.rejectError'));
         }
     };
 
@@ -167,18 +167,18 @@ export default function SupervisorApprovalPage() {
                                             <div className="flex-1 space-y-4">
                                                 {/* Part Info */}
                                                 <div className="flex items-center space-x-4">
-                                                    <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200">
-                                                        <Package className="h-8 w-8 text-indigo-600" />
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="text-xl font-bold text-gray-900">
-                                                            {request.part?.name || 'Unknown Part'}
-                                                        </h3>
-                                                        <p className="text-sm text-gray-500">
-                                                            {t('fields.sku')}: {request.part?.part_number || 'N/A'} • {t('fields.quantity')}: {request.quantity}
-                                                        </p>
-                                                    </div>
+                                                <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200">
+                                                    <Package className="h-8 w-8 text-indigo-600" />
                                                 </div>
+                                                <div>
+                                                    <h3 className="text-xl font-bold text-gray-900">
+                                                        {request.part?.name || t('fallback.unknownPart')}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500">
+                                                        {t('fields.sku')}: {request.part?.part_number || t('fallback.na')} • {t('fields.quantity')}: {request.quantity}
+                                                    </p>
+                                                </div>
+                                            </div>
 
                                                 {/* Request Details */}
                                                 <div className="grid grid-cols-3 gap-4 text-sm">
@@ -289,7 +289,7 @@ export default function SupervisorApprovalPage() {
                         }}
                         onConfirm={handleApprove}
                         isLoading={approveMutation.isPending}
-                        partName={selectedRequest.part?.name || 'Unknown Part'}
+                        partName={selectedRequest.part?.name || t('fallback.unknownPart')}
                         quantity={selectedRequest.quantity}
                     />
 
@@ -301,7 +301,7 @@ export default function SupervisorApprovalPage() {
                         }}
                         onConfirm={handleReject}
                         isLoading={rejectMutation.isPending}
-                        partName={selectedRequest.part?.name || 'Unknown Part'}
+                        partName={selectedRequest.part?.name || t('fallback.unknownPart')}
                     />
                 </>
             )}

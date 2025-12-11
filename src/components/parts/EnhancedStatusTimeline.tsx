@@ -4,36 +4,38 @@ import { WorkOrderPartRequest } from '@/types/parts';
 import { CheckCircle2, Clock, Package, XCircle, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 interface EnhancedStatusTimelineProps {
     request: WorkOrderPartRequest;
 }
 
 export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps) {
+    const t = useTranslations('partRequests.premium.timeline');
     const steps = [
         {
-            name: 'Requested',
+            name: t('steps.requested'),
             timestamp: request.created_at,
             completed: true,
             icon: Clock,
             color: 'blue',
         },
         {
-            name: 'Approved',
+            name: t('steps.approved'),
             timestamp: request.approved_at,
             completed: !!request.approved_at,
             icon: CheckCircle2,
             color: 'green',
         },
         {
-            name: 'PO Created',
+            name: t('steps.poCreated'),
             timestamp: request.ordered_at,
             completed: !!request.ordered_at,
             icon: Package,
             color: 'purple',
         },
         {
-            name: 'Received',
+            name: t('steps.received'),
             timestamp: request.received_at,
             completed: !!request.received_at,
             icon: CheckCircle2,
@@ -49,7 +51,7 @@ export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps)
                     <XCircle className="h-6 w-6 text-red-600" />
                 </div>
                 <div>
-                    <span className="text-sm font-semibold text-red-900">Rejected</span>
+                    <span className="text-sm font-semibold text-red-900">{t('statuses.rejected')}</span>
                     {request.rejection_reason && (
                         <p className="text-xs text-red-700 mt-1">{request.rejection_reason}</p>
                     )}
@@ -64,7 +66,7 @@ export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps)
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 border-2 border-gray-400">
                     <AlertCircle className="h-6 w-6 text-gray-600" />
                 </div>
-                <span className="text-sm font-semibold text-gray-900">Cancelled</span>
+                <span className="text-sm font-semibold text-gray-900">{t('statuses.cancelled')}</span>
             </div>
         );
     }

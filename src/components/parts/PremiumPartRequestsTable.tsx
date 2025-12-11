@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { WorkOrderPartRequest } from '@/types/parts';
+import { PartRequestStatus, WorkOrderPartRequest } from '@/types/parts';
 import { EnhancedStatusTimeline } from './EnhancedStatusTimeline';
 import { PremiumAttachmentsViewer } from './PremiumAttachmentsViewer';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronRight, Calendar, User, Package, FileText, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, Calendar, User, Package, FileText, CheckCircle2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getStatusColor, getStatusDisplayName } from '@/types/parts';
+import { getStatusColor } from '@/types/parts';
+import { useTranslations } from 'next-intl';
 
 interface PremiumPartRequestsTableProps {
     requests: WorkOrderPartRequest[];
@@ -17,6 +18,18 @@ interface PremiumPartRequestsTableProps {
 
 export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRequestsTableProps) {
     const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+    const t = useTranslations('partRequests.premium.table');
+
+    const statusKeyMap: Record<PartRequestStatus, string> = {
+        [PartRequestStatus.DRAFT]: 'draft',
+        [PartRequestStatus.PENDING_APPROVAL]: 'pendingApproval',
+        [PartRequestStatus.APPROVED]: 'approved',
+        [PartRequestStatus.SENT_TO_ODOO]: 'sentToOdoo',
+        [PartRequestStatus.ORDERED]: 'ordered',
+        [PartRequestStatus.RECEIVED]: 'received',
+        [PartRequestStatus.REJECTED]: 'rejected',
+        [PartRequestStatus.CANCELLED]: 'cancelled',
+    };
 
     const toggleRow = (id: string) => {
         const newExpanded = new Set(expandedRows);
@@ -70,10 +83,10 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                         </div>
                                         <div>
                                             <div className="font-semibold text-gray-900 text-lg">
-                                                {request.part?.name || 'Unknown Part'}
+                                                {request.part?.name || t('fallback.unknownPart')}
                                             </div>
                                             <div className="text-sm text-gray-500">
-                                                SKU: {request.part?.part_number || 'N/A'}
+                                                {t('labels.sku')}: {request.part?.part_number || t('fallback.na')}
                                             </div>
                                         </div>
                                     </div>
@@ -81,13 +94,13 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                     {/* Quantity Badge */}
                                     <div className="px-4 py-2 bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl">
                                         <span className="text-sm font-semibold text-gray-700">
-                                            Qty: {request.quantity}
+                                            {t('labels.quantity')}: {request.quantity}
                                         </span>
                                     </div>
 
                                     {/* Status Badge */}
                                     <span className={getStatusBadgeClasses(request.status)}>
-                                        {getStatusDisplayName(request.status)}
+                                        {t(`statuses.${statusKeyMap[request.status] ?? 'unknown'}`)}
                                     </span>
 
                                     {/* Requested Date */}
@@ -113,7 +126,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                             className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
                                         >
                                             <CheckCircle2 className="h-4 w-4 mr-1.5" />
-                                            Mark Used
+                                            {t('actions.markUsed')}
                                         </Button>
                                     )}
                                 </div>
@@ -135,7 +148,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                         <div>
                                             <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center">
                                                 <FileText className="h-4 w-4 mr-2" />
-                                                Status Timeline
+                                                {t('sections.statusTimeline')}
                                             </h4>
                                             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                                 <EnhancedStatusTimeline request={request} />
@@ -145,7 +158,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                         {/* Notes */}
                                         {request.notes && (
                                             <div>
-                                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Notes</h4>
+                                                <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('sections.notes')}</h4>
                                                 <div className="bg-white p-4 rounded-xl border border-gray-200 text-sm text-gray-600">
                                                     {request.notes}
                                                 </div>
@@ -155,7 +168,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                         {/* Rejection Reason */}
                                         {request.rejection_reason && (
                                             <div>
-                                                <h4 className="text-sm font-semibold text-red-700 mb-2">Rejection Reason</h4>
+                                                <h4 className="text-sm font-semibold text-red-700 mb-2">{t('sections.rejectionReason')}</h4>
                                                 <div className="bg-red-50 p-4 rounded-xl border border-red-200 text-sm text-red-600">
                                                     {request.rejection_reason}
                                                 </div>
@@ -165,18 +178,18 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                         {/* Purchase Order Info */}
                                         {request.odoo_purchase_order_id && (
                                             <div>
-                                                <h4 className="text-sm font-semibold text-gray-700 mb-2">Purchase Order</h4>
+                                                <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('sections.purchaseOrder')}</h4>
                                                 <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-200">
                                                     <div className="flex items-center space-x-6">
                                                         <div>
-                                                            <span className="text-sm text-indigo-600 font-medium">PO Number:</span>
+                                                            <span className="text-sm text-indigo-600 font-medium">{t('labels.poNumber')}:</span>
                                                             <span className="ml-2 font-mono text-sm font-bold text-indigo-900">
                                                                 #{request.odoo_purchase_order_id}
                                                             </span>
                                                         </div>
                                                         {request.approved_by && (
                                                             <div>
-                                                                <span className="text-sm text-indigo-600 font-medium">Approved by:</span>
+                                                                <span className="text-sm text-indigo-600 font-medium">{t('labels.approvedBy')}:</span>
                                                                 <span className="ml-2 text-sm font-semibold text-indigo-900">
                                                                     {request.approved_by.first_name} {request.approved_by.last_name}
                                                                 </span>
@@ -192,7 +205,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                             <div>
                                                 <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
                                                     <FileText className="h-4 w-4 mr-2" />
-                                                    Invoice Attachments
+                                                    {t('sections.invoiceAttachments')}
                                                 </h4>
                                                 <PremiumAttachmentsViewer attachments={request.attachments} />
                                             </div>
