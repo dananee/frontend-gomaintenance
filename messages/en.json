@@ -1482,6 +1482,15 @@
             "viewWorkOrders": "View work orders"
         }
     },
+    "integrationExample": {
+        "tabs": {
+            "details": "Details",
+            "tasks": "Tasks",
+            "parts": "Parts",
+            "comments": "Comments",
+            "costs": "Costs"
+        }
+    },
     "homePage": {
         "redirecting": "Redirecting..."
     },

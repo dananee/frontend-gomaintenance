@@ -1550,6 +1550,15 @@
             "viewWorkOrders": "عرض أوامر العمل"
         }
     },
+    "integrationExample": {
+        "tabs": {
+            "details": "التفاصيل",
+            "tasks": "المهام",
+            "parts": "القطع",
+            "comments": "التعليقات",
+            "costs": "التكاليف"
+        }
+    },
     "homePage": {
         "redirecting": "جارٍ إعادة التوجيه..."
     },
