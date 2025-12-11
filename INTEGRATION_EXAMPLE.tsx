@@ -3,10 +3,12 @@
 
 import { PartsTab } from '@/features/parts/components/PartsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTranslations } from 'next-intl';
 
 // In your WorkOrderDetailPage component:
 export default function WorkOrderDetailPage({ params }: { params: { id: string } }) {
     // ... existing code ...
+    const t = useTranslations('integrationExample');
 
     return (
         <div className="container mx-auto py-8">
@@ -14,11 +16,11 @@ export default function WorkOrderDetailPage({ params }: { params: { id: string }
 
             <Tabs defaultValue="details" className="mt-6">
                 <TabsList className="grid w-full grid-cols-5">
-                    <TabsTrigger value="details">Details</TabsTrigger>
-                    <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                    <TabsTrigger value="parts">Parts</TabsTrigger>
-                    <TabsTrigger value="comments">Comments</TabsTrigger>
-                    <TabsTrigger value="costs">Costs</TabsTrigger>
+                    <TabsTrigger value="details">{t('tabs.details')}</TabsTrigger>
+                    <TabsTrigger value="tasks">{t('tabs.tasks')}</TabsTrigger>
+                    <TabsTrigger value="parts">{t('tabs.parts')}</TabsTrigger>
+                    <TabsTrigger value="comments">{t('tabs.comments')}</TabsTrigger>
+                    <TabsTrigger value="costs">{t('tabs.costs')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="details">

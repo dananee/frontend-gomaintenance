@@ -1308,6 +1308,15 @@
             "viewWorkOrders": "Voir les ordres de travail"
         }
     },
+    "integrationExample": {
+        "tabs": {
+            "details": "Détails",
+            "tasks": "Tâches",
+            "parts": "Pièces",
+            "comments": "Commentaires",
+            "costs": "Coûts"
+        }
+    },
     "homePage": {
         "redirecting": "Redirection..."
     },
