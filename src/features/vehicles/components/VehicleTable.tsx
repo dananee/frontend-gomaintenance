@@ -108,7 +108,7 @@ export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
                   </span>
                 </div>
               </TableCell>
-              <TableCell>{formatCurrency(0)}</TableCell> {/* Placeholder for total cost */}
+              <TableCell>{formatCurrency(0)}</TableCell>
               <TableCell>
                 <span className="text-gray-500">
                     {t("days", { days: 0 })}

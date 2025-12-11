@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ export function TemplateForm({
   onCancel,
   isSubmitting = false,
 }: TemplateFormProps) {
+  const t = useTranslations("features.maintenance.form");
   const [tasks, setTasks] = useState<string[]>(initialData?.tasks || [""]);
 
   const {
@@ -70,12 +72,12 @@ export function TemplateForm({
       {/* Name */}
       <div className="space-y-2">
         <Label htmlFor="name">
-          Template Name <span className="text-red-500">*</span>
+          {t("templateName")} <span className="text-red-500">*</span>
         </Label>
         <Input
           id="name"
-          {...register("name", { required: "Template name is required" })}
-          placeholder="e.g., Oil Change Service"
+          {...register("name", { required: t("validation.nameRequired") })}
+          placeholder={t("placeholders.name")}
           className={errors.name ? "border-red-500" : ""}
         />
         {errors.name && (
@@ -85,22 +87,22 @@ export function TemplateForm({
 
       {/* Description */}
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">{t("description")}</Label>
         <Textarea
           id="description"
           {...register("description")}
-          placeholder="Describe the maintenance procedure..."
+          placeholder={t("placeholders.description")}
           rows={3}
         />
       </div>
 
       {/* Intervals */}
       <div className="space-y-4">
-        <Label>Maintenance Intervals (at least one recommended)</Label>
+        <Label>{t("intervalsRecommended")}</Label>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <Label htmlFor="interval_km" className="text-sm">
-              Every (KM)
+              {t("everyKm")}
             </Label>
             <Input
               id="interval_km"
@@ -112,7 +114,7 @@ export function TemplateForm({
           </div>
           <div className="space-y-2">
             <Label htmlFor="interval_days" className="text-sm">
-              Every (Days)
+              {t("everyDays")}
             </Label>
             <Input
               id="interval_days"
@@ -124,7 +126,7 @@ export function TemplateForm({
           </div>
           <div className="space-y-2">
             <Label htmlFor="interval_hours" className="text-sm">
-              Every (Hours)
+              {t("everyHours")}
             </Label>
             <Input
               id="interval_hours"
@@ -140,7 +142,7 @@ export function TemplateForm({
       {/* Tasks */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label>Maintenance Tasks</Label>
+          <Label>{t("maintenanceTasks")}</Label>
           <Button
             type="button"
             variant="outline"
@@ -148,7 +150,7 @@ export function TemplateForm({
             onClick={addTask}
           >
             <Plus className="mr-1 h-3 w-3" />
-            Add Task
+            {t("addTask")}
           </Button>
         </div>
         <div className="space-y-2">
@@ -157,7 +159,7 @@ export function TemplateForm({
               <Input
                 value={task}
                 onChange={(e) => updateTask(index, e.target.value)}
-                placeholder={`Task ${index + 1}`}
+                placeholder={`${t("task")} ${index + 1}`}
               />
               {tasks.length > 1 && (
                 <Button
@@ -183,14 +185,14 @@ export function TemplateForm({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Cancel
+          {t("cancel")}
         </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
-            ? "Saving..."
+            ? t("saving")
             : initialData
-            ? "Update Template"
-            : "Create Template"}
+            ? t("updateTemplate")
+            : t("createTemplate")}
         </Button>
       </div>
     </form>

@@ -451,7 +451,47 @@
                 "updateSuccess": "تم تحديث القالب بنجاح",
                 "saveError": "فشل حفظ القالب",
                 "deleteSuccess": "تم حذف القالب بنجاح",
-                "deleteError": "فشل حذف القالب"
+                "deleteError": "فشل حذف القالب",
+                "loadError": "فشل تحميل قوالب الصيانة"
+            },
+            "schedule": {
+                "vehicle": "المركبة",
+                "selectVehicle": "اختر مركبة",
+                "selectTemplate": "اختر قالباً",
+                "title": "العنوان",
+                "description": "الوصف",
+                "scheduledDate": "تاريخ الجدولة",
+                "priority": "الأولوية",
+                "assignTo": "تعيين لـ",
+                "selectTechnician": "اختر فنياً",
+                "estimatedCost": "التكلفة التقديرية",
+                "notes": "ملاحظات",
+                "cancel": "إلغاء",
+                "create": "جدولة",
+                "success": "تمت جدولة الصيانة بنجاح",
+                "error": "فشل في جدولة الصيانة",
+                "priorities": {
+                    "low": "منخفض",
+                    "medium": "متوسط",
+                    "high": "عالي",
+                    "critical": "حرج"
+                },
+                "updateTemplate": "تحديث القالب",
+                "saving": "جار الحفظ...",
+                "intervalsRecommended": "فترات الصيانة (يوصى بواحدة على الأقل)",
+                "everyKm": "كل (كم)",
+                "everyDays": "كل (أيام)",
+                "everyHours": "كل (ساعات)",
+                "maintenanceTasks": "مهام الصيانة",
+                "placeholders": {
+                    "name": "مثال: خدمة تغيير الزيت أ",
+                    "description": "صف إجراءات الصيانة...",
+                    "notes": "ملاحظات أو تعليمات إضافية..."
+                },
+                "validation": {
+                    "titleRequired": "العنوان مطلوب",
+                    "dateRequired": "تاريخ الجدولة مطلوب"
+                }
             }
         },
         "calendar": {
@@ -1149,7 +1189,60 @@
                     "thu": "خميس",
                     "fri": "جمعة",
                     "sat": "سبت"
-                }
+                },
+                "moreEvents": "+{count} المزيد",
+                "eventsTitle": "أحداث {date}",
+                "priority": "الأولوية",
+                "assigned": "مُعين لـ",
+                "oneEvent": "حدث واحد",
+                "multipleEvents": "{count} أحداث"
+            },
+            "eventDrawer": {
+                "title": "تفاصيل الحدث",
+                "highPriority": "أولوية عالية",
+                "equipment": "المعدات",
+                "scheduledDate": "تاريخ الجدولة",
+                "assignedTechnician": "الفني المعين",
+                "estimatedCost": "التكلفة التقديرية",
+                "description": "الوصف",
+                "notes": "ملاحظات",
+                "notFoundTitle": "لم يتم العثور على الحدث",
+                "notFoundDesc": "ربما تم حذف هذا الحدث أو ليس لديك إذن لعرضه.",
+                "editSoon": "وظيفة التعديل قريبا",
+                "edit": "تعديل",
+                "done": "منجز",
+                "viewWO": "عرض أمر العمل",
+                "wo": "أمر العمل",
+                "deleteEvent": "حذف الحدث",
+                "confirmDelete": "⚠️ هل أنت متأكد أنك تريد حذف حدث الصيانة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
+                "confirmComplete": "✅ هل تريد تحديد هذه الصيانة كمكتملة؟"
+            },
+            "tooltips": {
+                "technician": "فني",
+                "highPriorityMaintenance": "⚠️ صيانة ذات أولوية قصوى"
+            },
+            "card": {
+                "overdue": "متأخر",
+                "active": "نشط",
+                "progress": "التقدم",
+                "lastPerformed": "أخر تنفيذ",
+                "never": "أبدا",
+                "nextDue": "الاستحقاق القادم",
+                "markCompleted": "تحديد كمكتمل"
+            },
+            "filter": {
+                "label": "تصفية",
+                "title": "تصفية",
+                "resetAll": "إعادة تعيين الكل",
+                "status": "الحالة",
+                "apply": "تطبيق المرشحات"
+            },
+            "status": {
+                "scheduled": "مجدول",
+                "in_progress": "قيد التنفيذ",
+                "completed": "مكتمل",
+                "cancelled": "ملغى",
+                "overdue": "متأخر"
             },
             "table": {
                 "searchPlaceholder": "بحث عن خطط...",
@@ -1193,6 +1286,28 @@
                     "next": "التالي"
                 }
             },
+            "templatesList": {
+                "table": {
+                    "name": "الاسم",
+                    "description": "الوصف",
+                    "frequency": "التكرار",
+                    "intervals": "فترات",
+                    "tasks": "مهام",
+                    "actions": "الإجراءات",
+                    "empty": "لم يتم العثور على قوالب.",
+                    "noIntervals": "لم يتم تعيين فترات",
+                    "units": {
+                        "km": "كم",
+                        "days": "أيام",
+                        "hours": "ساعة"
+                    },
+                    "tasksCount": "{count} مهمة/مهام"
+                },
+                "emptyState": {
+                    "title": "لم يتم العثور على قوالب",
+                    "description": "قم بإنشاء نموذج الصيانة الأول الخاص بك للبدء."
+                }
+            },
             "card": {
                 "progress": "التقدم",
                 "lastPerformed": "آخر تنفيذ",
@@ -1214,6 +1329,10 @@
                 "taskChecklist": "قائمة مهام",
                 "addTask": "إضافة مهمة",
                 "saveTemplate": "حفظ القالب",
+                "validation": {
+                    "nameRequired": "اسم القالب مطلوب"
+                },
+                "placeholders": {},
                 "cancel": "إلغاء",
                 "create": "جدولة الصيانة",
                 "vehicle": "المركبة",
@@ -1228,17 +1347,10 @@
                 "selectTechnician": "اختر فنياً (اختياري)",
                 "task": "مهمة",
                 "items": {
-                    "distance": "المسافة (كم)",
-                    "time": "الوقت (أشهر)",
+                    "distance": "المسافة",
+                    "time": "الوقت",
                     "engineHours": "ساعات المحرك"
                 },
-                "priorities": {
-                    "low": "منخفض",
-                    "medium": "متوسط",
-                    "high": "عالي",
-                    "critical": "حرج"
-                },
-                "success": "تمت جدولة الصيانة بنجاح",
                 "error": "فشل في جدولة الصيانة"
             }
         }

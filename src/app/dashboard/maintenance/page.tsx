@@ -18,7 +18,7 @@ import { startOfMonth, endOfMonth, formatISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
 export default function MaintenanceDashboardPage() {
-  const t = useTranslations("maintenance.dashboard");
+  const t = useTranslations("features.maintenance.dashboard");
   const { isOpen, open, close } = useModal();
   const { filters } = useMaintenanceFilters();
   

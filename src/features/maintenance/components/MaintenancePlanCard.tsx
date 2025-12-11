@@ -18,7 +18,7 @@ interface MaintenancePlanCardProps {
 }
 
 export function MaintenancePlanCard({ plan, template, currentMileage, onComplete }: MaintenancePlanCardProps) {
-  const t = useTranslations("maintenance.card");
+  const t = useTranslations("features.maintenance.card");
   const interval = template.intervals[0];
 
   // Calculate progress

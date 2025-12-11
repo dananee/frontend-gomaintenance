@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
 import { formatDateLong } from "@/lib/formatters";
@@ -22,6 +23,7 @@ export function CompactDayEvents({
     date,
     onEventClick,
 }: CompactDayEventsProps) {
+    const t = useTranslations("features.maintenance.calendar");
     const [showModal, setShowModal] = useState(false);
 
     // Sort by priority then time
@@ -79,7 +81,7 @@ export function CompactDayEvents({
                         onClick={() => setShowModal(true)}
                         className="h-6 px-2 py-1 rounded-lg bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 text-[10px] font-medium text-gray-700 dark:text-gray-300 text-center transition-all"
                     >
-                        +{remainingCount} more
+                        {t("moreEvents", { count: remainingCount })}
                     </button>
                 )}
             </div>
@@ -89,7 +91,7 @@ export function CompactDayEvents({
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
                         <DialogTitle>
-                            Events - {formatDateLong(date)}
+                            {t("eventsTitle", { date: formatDateLong(date) })}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="max-h-[60vh] overflow-y-auto space-y-2 pr-2">

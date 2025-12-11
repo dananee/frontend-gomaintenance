@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,8 @@ export function FilterDropdown() {
     resetFilters,
     getActiveFilterCount,
   } = useMaintenanceFilters();
+  const t = useTranslations("features.maintenance.filter");
+  const tStatus = useTranslations("features.maintenance.status");
 
   const [isOpen, setIsOpen] = useState(false);
   const activeCount = getActiveFilterCount();
@@ -49,7 +52,7 @@ export function FilterDropdown() {
           )}
         >
           <Filter className="mr-2 h-3.5 w-3.5" />
-          Filter
+          {t("label")}
           {activeCount > 0 && (
             <Badge
               variant="default"
@@ -65,7 +68,7 @@ export function FilterDropdown() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
-              Filters
+              {t("title")}
             </h4>
             <Button
               variant="ghost"
@@ -73,14 +76,14 @@ export function FilterDropdown() {
               onClick={handleReset}
               className="h-7 text-xs"
             >
-              Reset All
+              {t("resetAll")}
             </Button>
           </div>
 
           {/* Status Filter */}
           <div className="space-y-2">
             <Label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-              Status
+              {t("status")}
             </Label>
             <div className="space-y-2">
               {STATUS_OPTIONS.map((status) => (
@@ -94,7 +97,7 @@ export function FilterDropdown() {
                     htmlFor={`status-${status.id}`}
                     className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
                   >
-                    {status.label}
+                    {tStatus(status.id)}
                   </label>
                 </div>
               ))}
@@ -108,7 +111,7 @@ export function FilterDropdown() {
               onClick={() => setIsOpen(false)}
               className="flex-1"
             >
-              Apply Filters
+              {t("apply")}
             </Button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations, useFormatter } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
@@ -11,6 +12,8 @@ interface MaintenanceCalendarProps {
 }
 
 export function MaintenanceCalendar({ events }: MaintenanceCalendarProps) {
+  const t = useTranslations("features.maintenance.calendar");
+  const format = useFormatter();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const daysInMonth = new Date(
@@ -25,8 +28,8 @@ export function MaintenanceCalendar({ events }: MaintenanceCalendarProps) {
     1
   ).getDay();
 
-  const monthName = currentDate.toLocaleString('default', { month: 'long' });
-  const year = currentDate.getFullYear();
+  const monthName = format.dateTime(currentDate, { month: 'long' });
+  const year = format.dateTime(currentDate, { year: 'numeric' });
 
   const prevMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
@@ -59,7 +62,7 @@ export function MaintenanceCalendar({ events }: MaintenanceCalendarProps) {
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button variant="outline" size="icon" onClick={() => setCurrentDate(new Date())}>
-            Today
+            {t("today")}
           </Button>
           <Button variant="outline" size="icon" onClick={nextMonth}>
             <ChevronRight className="h-4 w-4" />
@@ -68,9 +71,9 @@ export function MaintenanceCalendar({ events }: MaintenanceCalendarProps) {
       </CardHeader>
       <CardContent className="flex-1">
         <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+          {['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map((day) => (
             <div key={day} className="bg-gray-50 dark:bg-gray-900 p-2 text-center text-sm font-medium text-gray-500">
-              {day}
+              {t(`weekdays.${day}`)}
             </div>
           ))}
           

@@ -699,7 +699,9 @@
                 "title": "Analytics",
                 "mileageGrowth": "Mileage Growth",
                 "chartDataAvailable": "Chart data available",
-                "noMileageHistory": "No mileage history available"
+                "noMileageHistory": "No mileage history available",
+                "available": "Chart data available",
+                "unavailable": "No mileage history available"
             },
             "partsUsed": {
                 "title": "Parts Used & Costs",
@@ -728,12 +730,6 @@
                 "meanTimeToRepair": "Mean Time To Repair",
                 "workOrders": "Work Orders",
                 "totalCompleted": "Total completed"
-            },
-            "analytics": {
-                "title": "Analytics",
-                "mileageGrowth": "Mileage Growth",
-                "available": "Chart data available",
-                "unavailable": "No mileage history available"
             },
             "parts": {
                 "title": "Parts Used & Costs",
@@ -1052,7 +1048,153 @@
                     "thu": "Thu",
                     "fri": "Fri",
                     "sat": "Sat"
+                },
+                "moreEvents": "+{count} more",
+                "eventsTitle": "Events for {date}",
+                "priority": "Priority",
+                "assigned": "Assigned",
+                "oneEvent": "1 event",
+                "multipleEvents": "{count} events"
+            },
+            "eventDrawer": {
+                "title": "Event Details",
+                "highPriority": "High Priority",
+                "equipment": "Equipment",
+                "scheduledDate": "Scheduled Date",
+                "assignedTechnician": "Assigned Technician",
+                "estimatedCost": "Estimated Cost",
+                "description": "Description",
+                "notes": "Notes",
+                "notFoundTitle": "Event not found",
+                "notFoundDesc": "This event may have been deleted or you don't have permission to view it.",
+                "editSoon": "Edit functionality coming soon",
+                "edit": "Edit",
+                "done": "Done",
+                "viewWO": "View WO",
+                "wo": "WO",
+                "deleteEvent": "Delete Event",
+                "confirmDelete": "⚠️ Are you sure you want to delete this maintenance event? This action cannot be undone.",
+                "confirmComplete": "✅ Mark this maintenance as completed?"
+            },
+            "tooltips": {
+                "technician": "Technician",
+                "highPriorityMaintenance": "⚠️ High priority maintenance"
+            },
+            "card": {
+                "overdue": "Overdue",
+                "active": "Active",
+                "progress": "Progress",
+                "lastPerformed": "Last Performed",
+                "never": "Never",
+                "nextDue": "Next Due",
+                "markCompleted": "Mark Completed"
+            },
+            "form": {
+                "editTemplate": "Edit Template",
+                "createTemplate": "Create Template",
+                "templateName": "Template Name",
+                "description": "Description",
+                "intervalRules": "Interval Rules",
+                "type": "Type",
+                "value": "Value",
+                "taskChecklist": "Task Checklist",
+                "addTask": "Add Task",
+                "task": "Task",
+                "cancel": "Cancel",
+                "saveTemplate": "Save Template",
+                "updateTemplate": "Update Template",
+                "saving": "Saving...",
+                "intervalsRecommended": "Maintenance Intervals (at least one recommended)",
+                "everyKm": "Every (KM)",
+                "everyDays": "Every (Days)",
+                "everyHours": "Every (Hours)",
+                "maintenanceTasks": "Maintenance Tasks",
+                "placeholders": {
+                    "name": "e.g., Oil Change Service A",
+                    "description": "Describe the maintenance procedure...",
+                    "selectType": "Select type"
+                },
+                "items": {
+                    "distance": "Distance",
+                    "time": "Time",
+                    "engineHours": "Engine Hours"
                 }
+            },
+            "templatesList": {
+                "title": "Maintenance Templates",
+                "newTemplate": "New Template",
+                "cardTitle": "Templates",
+                "table": {
+                    "name": "Name",
+                    "description": "Description",
+                    "frequency": "Frequency",
+                    "intervals": "Intervals",
+                    "tasks": "Tasks",
+                    "actions": "Actions",
+                    "empty": "No templates found.",
+                    "noIntervals": "No intervals set",
+                    "units": {
+                        "km": "km",
+                        "days": "days",
+                        "hours": "hrs"
+                    },
+                    "tasksCount": "{count} task(s)"
+                },
+                "emptyState": {
+                    "title": "No templates found",
+                    "description": "Create your first maintenance template to get started."
+                },
+                "loading": "Loading...",
+                "deleteConfirm": "Are you sure you want to delete this template?",
+                "deleteSuccess": "Template deleted successfully",
+                "deleteError": "Failed to delete template",
+                "loadError": "Failed to load maintenance templates"
+            },
+            "schedule": {
+                "vehicle": "Vehicle",
+                "selectVehicle": "Select a vehicle",
+                "selectTemplate": "Select Template",
+                "title": "Title",
+                "description": "Description",
+                "scheduledDate": "Scheduled Date",
+                "priority": "Priority",
+                "assignTo": "Assign To",
+                "selectTechnician": "Select technician",
+                "estimatedCost": "Estimated Cost",
+                "notes": "Notes",
+                "cancel": "Cancel",
+                "create": "Schedule",
+                "success": "Maintenance scheduled successfully",
+                "error": "Failed to schedule maintenance",
+                "priorities": {
+                    "low": "Low",
+                    "medium": "Medium",
+                    "high": "High",
+                    "critical": "Critical"
+                },
+                "placeholders": {
+                    "title": "e.g., Oil Change, Tire Rotation",
+                    "description": "Describe the maintenance work...",
+                    "notes": "Additional notes or instructions..."
+                },
+                "validation": {
+                    "titleRequired": "Title is required",
+                    "dateRequired": "Scheduled date is required"
+                }
+            },
+            "filter": {
+                "label": "Filter",
+                "title": "Filters",
+                "resetAll": "Reset All",
+                "status": "Status",
+                "apply": "Apply Filters"
+            },
+            "status": {
+                "scheduled": "Scheduled",
+                "in_progress": "In Progress",
+                "completed": "Completed",
+                "cancelled": "Cancelled",
+                "overdue": "Overdue"
             },
             "table": {
                 "searchPlaceholder": "Search plans...",
@@ -1117,6 +1259,9 @@
                 "taskChecklist": "Task Checklist",
                 "addTask": "Add Task",
                 "saveTemplate": "Save Template",
+                "validation": {
+                    "nameRequired": "Template name is required"
+                },
                 "cancel": "Cancel",
                 "create": "Schedule Maintenance",
                 "vehicle": "Vehicle",
