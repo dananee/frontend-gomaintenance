@@ -95,7 +95,17 @@ export function MaintenanceCostBreakdownChart({
                   border: "1px solid #e5e7eb",
                   borderRadius: "8px",
                 }}
-                formatter={(value: number) => `${value.toLocaleString()} MAD`}
+                formatter={(value) => {
+                  const rawValue = Array.isArray(value) ? value[0] : value;
+                  const numericValue =
+                    typeof rawValue === "number"
+                      ? rawValue
+                      : typeof rawValue === "string"
+                      ? Number(rawValue)
+                      : 0;
+
+                  return `${numericValue.toLocaleString()} MAD`;
+                }}
               />
               <Legend />
               <Bar
@@ -128,28 +138,37 @@ export function MaintenanceCostBreakdownChart({
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="h-3 w-3 rounded-sm bg-blue-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">{t("labor")}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t("labor")}
+              </p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {data.reduce((sum, item) => sum + item.labor, 0).toLocaleString()} MAD
+              {data.reduce((sum, item) => sum + item.labor, 0).toLocaleString()}{" "}
+              MAD
             </p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="h-3 w-3 rounded-sm bg-orange-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">{t("parts")}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t("parts")}
+              </p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {data.reduce((sum, item) => sum + item.parts, 0).toLocaleString()} MAD
+              {data.reduce((sum, item) => sum + item.parts, 0).toLocaleString()}{" "}
+              MAD
             </p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="h-3 w-3 rounded-sm bg-purple-500" />
-              <p className="text-xs text-gray-500 dark:text-gray-400">{t("other")}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t("other")}
+              </p>
             </div>
             <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {data.reduce((sum, item) => sum + item.other, 0).toLocaleString()} MAD
+              {data.reduce((sum, item) => sum + item.other, 0).toLocaleString()}{" "}
+              MAD
             </p>
           </div>
         </div>
