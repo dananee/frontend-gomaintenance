@@ -139,11 +139,20 @@ export function FuelUsageTrendChart({
                   border: "1px solid #e5e7eb",
                   borderRadius: "8px",
                 }}
-                formatter={(value: number, name: string) => {
+                formatter={(value, name) => {
+                  const rawValue = Array.isArray(value) ? value[0] : value;
+                  const numericValue =
+                    typeof rawValue === "number"
+                      ? rawValue
+                      : typeof rawValue === "string"
+                      ? Number(rawValue)
+                      : 0;
+
                   if (name === "Cost" || name === t("cost"))
-                    return [`${value.toLocaleString()} MAD`, t("cost")];
-                  if (name === "MPG" || name === t("mpg")) return [value.toFixed(1), t("mpg")];
-                  return [`${value.toLocaleString()} gal`, t("usage")];
+                    return [`${numericValue.toLocaleString()} MAD`, t("cost")];
+                  if (name === "MPG" || name === t("mpg"))
+                    return [numericValue.toFixed(1), t("mpg")];
+                  return [`${numericValue.toLocaleString()} gal`, t("usage")];
                 }}
               />
               <Legend />
