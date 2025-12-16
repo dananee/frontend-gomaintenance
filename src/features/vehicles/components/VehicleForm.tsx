@@ -5,6 +5,7 @@ import { CreateVehicleDTO, Vehicle } from "@/features/vehicles/types/vehicle.typ
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCreateVehicle } from "../hooks/useCreateVehicle";
+import { useUpdateVehicle } from "../hooks/useUpdateVehicle";
 import { useTranslations } from "next-intl";
 
 interface VehicleFormProps {
@@ -27,19 +28,16 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
     } : undefined,
   });
 
-  const { mutate: createVehicle, isPending } = useCreateVehicle();
+  const { mutate: createVehicle, isPending: isCreating } = useCreateVehicle();
+  const { mutate: updateVehicle, isPending: isUpdating } = useUpdateVehicle();
+
+  const isPending = isCreating || isUpdating;
 
   const onSubmit = (data: CreateVehicleDTO) => {
     if (initialData) {
-      // updateVehicle.mutate({ id: initialData.id, ...data }, { onSuccess });
-      console.log("Update not implemented yet", data);
-      onSuccess();
+      updateVehicle({ id: initialData.id, ...data }, { onSuccess });
     } else {
-      createVehicle(data, {
-        onSuccess: () => {
-          onSuccess();
-        },
-      });
+      createVehicle(data, { onSuccess });
     }
   };
 

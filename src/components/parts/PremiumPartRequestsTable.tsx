@@ -35,6 +35,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
         const newExpanded = new Set(expandedRows);
         if (newExpanded.has(id)) {
             newExpanded.delete(id);
+
         } else {
             newExpanded.add(id);
         }
@@ -42,7 +43,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
     };
 
     const getStatusBadgeClasses = (status: string) => {
-        const color = getStatusColor(status);
+        const color = getStatusColor(status as PartRequestStatus);
         return `inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${color}`;
     };
 
@@ -51,6 +52,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
             {requests.map((request, index) => {
                 const isExpanded = expandedRows.has(request.id);
                 const canMarkUsed = request.status === 'RECEIVED' && onMarkUsed;
+
 
                 return (
                     <motion.div

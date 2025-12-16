@@ -22,6 +22,16 @@
         "title": "Fleet Maintenance",
         "subtitle": "Manage your fleet efficiently"
     },
+    "common": {
+        "details": "Details",
+        "edit": "Edit",
+        "create": "Create",
+        "view": "View",
+        "delete": "Delete",
+        "save": "Save",
+        "cancel": "Cancel",
+        "actions": "Actions"
+    },
     "navigation": {
         "sidebar": {
             "dashboard": "Dashboard",
@@ -32,8 +42,18 @@
             "users": "Users",
             "reports": "Reports",
             "title": "Fleet CMMS",
-            "subtitle": "Maintenance Pro"
-        }
+            "subtitle": "Maintenance Pro",
+            "settings": "Settings",
+            "profile": "Profile",
+            "branding": "Branding",
+            "company": "Company",
+            "integrations": "Integrations",
+            "roles": "Roles",
+            "parts": "Parts",
+            "suppliers": "Suppliers"
+        },
+        "details": "Details",
+        "edit": "Edit"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -257,6 +277,62 @@
                 "noHistory": "No maintenance history available",
                 "historyTitle": "Maintenance History",
                 "technician": "Technician"
+            },
+            "documents": {
+                "title": "Documents",
+                "subtitle": "Manage vehicle documents and files",
+                "upload": "Upload",
+                "noDocs": "No documents",
+                "noDocsDesc": "No documents have been added to this vehicle yet.",
+                "name": "Document Name",
+                "type": "Type",
+                "size": "Size",
+                "uploaded": "Uploaded",
+                "actions": "Actions",
+                "untitled": "Untitled",
+                "modalTitle": "Upload Document",
+                "modalDesc": "Add a new document to this vehicle. Supported formats: PDF, Images, DOCX.",
+                "fileName": "File Name",
+                "fileUrl": "File URL",
+                "expiryDate": "Expiry Date",
+                "status": "Status",
+                "valid": "Valid",
+                "expiringSoon": "Expiring Soon",
+                "expired": "Expired",
+                "view": "View",
+                "download": "Download",
+                "delete": "Delete",
+                "untitled": "Untitled",
+                "dragDropTitle": "Drag & drop your file here",
+                "dragDropSubtitle": "or click to browse",
+                "supportedFormats": "PDF, Images, DOCX up to 10MB",
+                "browse": "Browse",
+                "changeFile": "Change file",
+                "fileDetails": "File Details",
+                "cancel": "Cancel",
+                "confirmUpload": "Upload Document",
+                "types": {
+                    "insurance": "Insurance",
+                    "registration": "Registration",
+                    "inspection": "Inspection",
+                    "invoice": "Invoice",
+                    "other": "Other"
+                }
+            },
+            "form": {
+                "brand": "Brand",
+                "model": "Model",
+                "year": "Year",
+                "type": "Type",
+                "licensePlate": "License Plate",
+                "vin": "VIN",
+                "status": "Status",
+                "active": "Active",
+                "maintenance": "Maintenance",
+                "inactive": "Inactive",
+                "cancel": "Cancel",
+                "create": "Create",
+                "update": "Update"
             }
         }
     },
@@ -361,7 +437,13 @@
                 "date": "Date"
             },
             "attachments": {
-                "title": "Attachments"
+                "title": "Attachments",
+                "toasts": {
+                    "added": "Document added successfully",
+                    "error": "Failed to add document",
+                    "deleted": "Document deleted",
+                    "deleteError": "Failed to delete document"
+                }
             },
             "comments": {
                 "title": "Comments",
@@ -371,7 +453,8 @@
                     "added": {
                         "title": "Comment added",
                         "description": "Your comment has been posted."
-                    }
+                    },
+                    "error": "Failed to add comment"
                 }
             },
             "editModal": {
@@ -647,7 +730,15 @@
             "clearFilters": "Clear Filters",
             "updateUsage": "Update Usage",
             "edit": "Edit Vehicle",
-            "createWorkOrder": "Create Work Order"
+            "createWorkOrder": "Create Work Order",
+            "back": "Back",
+            "backToList": "Back to list"
+        },
+        "edit": {
+            "title": "Edit Vehicle"
+        },
+        "errors": {
+            "notFound": "Vehicle not found"
         },
         "filters": {
             "searchPlaceholder": "Search by name or plate",
@@ -660,8 +751,11 @@
             "type": {
                 "all": "All types",
                 "truck": "Truck",
+                "Truck": "Truck",
                 "van": "Van",
+                "Van": "Van",
                 "car": "Car",
+                "Car": "Car",
                 "unknown": "Unknown"
             }
         },

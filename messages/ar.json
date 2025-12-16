@@ -22,6 +22,16 @@
         "title": "إدارة الأسطول",
         "subtitle": "قم بإدارة أسطولك بكفاءة"
     },
+    "common": {
+        "details": "التفاصيل",
+        "edit": "تعديل",
+        "create": "إنشاء",
+        "view": "عرض",
+        "delete": "حذف",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "actions": "إجراءات"
+    },
     "navigation": {
         "sidebar": {
             "dashboard": "لوحة التحكم",
@@ -32,8 +42,18 @@
             "users": "المستخدمون",
             "reports": "التقارير",
             "title": "Fleet CMMS",
-            "subtitle": "Maintenance Pro"
-        }
+            "subtitle": "Maintenance Pro",
+            "settings": "الإعدادات",
+            "profile": "الملف الشخصي",
+            "branding": "العلامة التجارية",
+            "company": "الشركة",
+            "integrations": "التكاملات",
+            "roles": "الأدوار",
+            "parts": "قطع الغيار",
+            "suppliers": "المورّدون"
+        },
+        "details": "التفاصيل",
+        "edit": "تعديل"
     },
     "dashboard": {
         "title": "لوحة التحكم",
@@ -257,6 +277,62 @@
                 "noHistory": "لا يوجد سجل صيانة متاح",
                 "historyTitle": "سجل الصيانة",
                 "technician": "فني"
+            },
+            "documents": {
+                "title": "المستندات",
+                "subtitle": "إدارة مستندات وملفات المركبة",
+                "upload": "رفع",
+                "noDocs": "لا توجد مستندات",
+                "noDocsDesc": "لم يتم إضافة أي مستندات لهذه المركبة حتى الآن.",
+                "name": "اسم المستند",
+                "type": "النوع",
+                "size": "الحجم",
+                "uploaded": "تاريخ الرفع",
+                "actions": "إجراءات",
+                "untitled": "بدون عنوان",
+                "modalTitle": "رفع مستند",
+                "modalDesc": "أضف مستندًا جديدًا لهذه المركبة. الصيغ المدعومة: PDF، صور، DOCX.",
+                "fileName": "اسم الملف",
+                "fileUrl": "رابط الملف",
+                "expiryDate": "تاريخ الانتهاء",
+                "status": "الحالة",
+                "valid": "ساري",
+                "expiringSoon": "ينتهي قريباً",
+                "expired": "منتهي",
+                "view": "عرض",
+                "download": "تحميل",
+                "delete": "حذف",
+                "untitled": "بدون عنوان",
+                "dragDropTitle": "اسحب الملف وأفلته هنا",
+                "dragDropSubtitle": "أو انقر للاستعراض",
+                "supportedFormats": "PDF، صور، DOCX بحجم يصل إلى 10 ميجابايت",
+                "browse": "استعراض",
+                "changeFile": "تغيير الملف",
+                "fileDetails": "تفاصيل الملف",
+                "cancel": "إلغاء",
+                "confirmUpload": "تأكيد الرفع",
+                "types": {
+                    "insurance": "تأمين",
+                    "registration": "تسجيل",
+                    "inspection": "فحص",
+                    "invoice": "فاتورة",
+                    "other": "أخرى"
+                }
+            },
+            "form": {
+                "brand": "العلامة التجارية",
+                "model": "الموديل",
+                "year": "السنة",
+                "type": "النوع",
+                "licensePlate": "رقم اللوحة",
+                "vin": "رقم الهيكل (VIN)",
+                "status": "الحالة",
+                "active": "نشط",
+                "maintenance": "صيانة",
+                "inactive": "غير نشط",
+                "cancel": "إلغاء",
+                "create": "إنشاء",
+                "update": "تحديث"
             }
         }
     },
@@ -361,7 +437,13 @@
                 "date": "التاريخ"
             },
             "attachments": {
-                "title": "المرفقات"
+                "title": "المرفقات",
+                "toasts": {
+                    "added": "تم إضافة المستند بنجاح",
+                    "error": "فشل في إضافة المستند",
+                    "deleted": "تم حذف المستند",
+                    "deleteError": "فشل في حذف المستند"
+                }
             },
             "comments": {
                 "title": "التعليقات",
@@ -371,7 +453,8 @@
                     "added": {
                         "title": "تمت إضافة التعليق",
                         "description": "تم نشر تعليقك بنجاح."
-                    }
+                    },
+                    "error": "فشل إضافة التعليق"
                 }
             },
             "editModal": {
@@ -791,7 +874,15 @@
             "clearFilters": "مسح عوامل التصفية",
             "updateUsage": "تحديث الاستخدام",
             "edit": "تعديل المركبة",
-            "createWorkOrder": "إنشاء أمر عمل"
+            "createWorkOrder": "إنشاء أمر عمل",
+            "back": "رجوع",
+            "backToList": "العودة للقائمة"
+        },
+        "edit": {
+            "title": "تعديل المركبة"
+        },
+        "errors": {
+            "notFound": "المركبة غير موجودة"
         },
         "filters": {
             "searchPlaceholder": "البحث بالاسم أو اللوحة",
@@ -804,8 +895,11 @@
             "type": {
                 "all": "كل الأنواع",
                 "truck": "شاحنة",
+                "Truck": "شاحنة",
                 "van": "فان",
+                "Van": "فان",
                 "car": "سيارة",
+                "Car": "سيارة",
                 "unknown": "غير معروف"
             }
         },

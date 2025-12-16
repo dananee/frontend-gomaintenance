@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,7 +30,7 @@ export function RequestPartModal({ workOrderId, isOpen, onClose, onSuccess }: Re
     const debouncedSearch = useDebounce(searchQuery, 300);
 
     // Search parts when query changes
-    useState(() => {
+    useEffect(() => {
         if (debouncedSearch) {
             setIsSearching(true);
             searchParts(debouncedSearch, 1, 10)

@@ -25,41 +25,8 @@ export function VehicleMaintenanceHistory({
   records = [],
 }: VehicleMaintenanceHistoryProps) {
   const t = useTranslations("features.vehicles.maintenance");
-  
-  const mockRecords: MaintenanceRecord[] = records.length > 0 ? records : [
-    {
-      id: "1",
-      type: "Oil Change",
-      description: "Regular oil change and filter replacement",
-      date: "2024-11-15",
-      mileage: 45000,
-      cost: 89.99,
-      status: "completed",
-      technician: "John Smith",
-    },
-    {
-      id: "2",
-      type: "Brake Inspection",
-      description: "Full brake system inspection and pad replacement",
-      date: "2024-10-20",
-      mileage: 43500,
-      cost: 320.50,
-      status: "completed",
-      technician: "Sarah Johnson",
-    },
-    {
-      id: "3",
-      type: "Tire Rotation",
-      description: "Tire rotation and pressure check",
-      date: "2024-09-10",
-      mileage: 42000,
-      cost: 45.00,
-      status: "completed",
-      technician: "Mike Davis",
-    },
-  ];
 
-  if (mockRecords.length === 0) {
+  if (records.length === 0) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
@@ -83,7 +50,7 @@ export function VehicleMaintenanceHistory({
         <div className="absolute left-5 top-0 h-full w-0.5 bg-gray-200 dark:bg-gray-800" />
 
         <div className="space-y-6">
-          {mockRecords.map((record) => (
+          {records.map((record) => (
             <div key={record.id} className="relative pl-12">
               {/* Timeline dot */}
               <div className="absolute left-3 top-2 h-4 w-4 rounded-full border-2 border-blue-500 bg-white dark:bg-gray-900" />

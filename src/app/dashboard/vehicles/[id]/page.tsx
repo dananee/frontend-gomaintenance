@@ -544,7 +544,6 @@ export default function VehicleDetailPage() {
           setSelectedPlan(null);
         }}
         onSubmit={handlePlanSubmit}
-        isSubmitting={isCreatingPlan || isUpdatingPlan}
         plan={selectedPlan || undefined}
       />
 

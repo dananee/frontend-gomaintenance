@@ -44,11 +44,71 @@ export interface StockAdjustment {
 export interface StockMovement {
   id: string;
   part_id: string;
-  type: "in" | "out" | "transfer";
+  warehouse_id: string | null; // Nullable
+  warehouse?: { name: string };
+  movement_type: "in" | "out" | "adjustment"; // Matches backend
   quantity: number;
-  from_location?: string;
-  to_location?: string;
-  reference?: string;
-  notes?: string;
+  reason?: string;
+  work_order_id?: string;
   created_at: string;
+}
+
+export interface PartDocument {
+  id: string;
+  part_id: string;
+  name: string;
+  file_size: number;
+  file_url: string;
+  media_type: string;
+  created_at: string;
+}
+
+export interface PartComment {
+  id: string;
+  part_id: string;
+  user_id: string;
+  text: string;
+  created_at: string;
+  user?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+}
+
+
+export interface InventoryStock {
+  id: string;
+  warehouse_id: string | null;
+  part_id: string;
+  quantity: number;
+  min_quantity: number;
+  warehouse?: {
+    id: string;
+    name: string;
+    location: string;
+  };
+}
+
+export interface CreateStockMovementRequest {
+  part_id: string;
+  warehouse_id?: string; // Optional
+  movement_type: "in" | "out" | "adjustment";
+  quantity: number;
+  reason?: string;
+  work_order_id?: string;
+}
+
+export interface UpdatePartRequest {
+  part_number: string;
+  name: string;
+  description?: string;
+  category?: string;
+  brand?: string;
+  unit_price?: number;
+  quantity?: number;
+  min_quantity?: number;
+  location?: string;
+  supplier_id?: string;
 }

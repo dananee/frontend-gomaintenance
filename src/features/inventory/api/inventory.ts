@@ -1,4 +1,5 @@
 import apiClient from '@/lib/api/axiosClient';
+import { StockMovement } from '../types/inventory.types';
 
 export interface Warehouse {
   id: string;
@@ -45,19 +46,6 @@ export interface UpdateStockRequest {
   location_in_warehouse?: string;
 }
 
-export interface StockMovement {
-  id: string;
-  part_id: string;
-  from_warehouse_id?: string;
-  to_warehouse_id?: string;
-  quantity: number;
-  type: 'in' | 'out' | 'transfer' | 'adjustment';
-  reference_id?: string; // e.g. work order id
-  notes?: string;
-  created_by: string;
-  created_at: string;
-}
-
 export interface CreateStockMovementRequest {
   part_id: string;
   from_warehouse_id?: string;
@@ -71,7 +59,8 @@ export interface CreateStockMovementRequest {
 // Warehouses
 export const getWarehouses = async (): Promise<Warehouse[]> => {
   const response = await apiClient.get('/warehouses');
-  return response.data;
+  // Unwrap paginated response
+  return (response.data as any).data || response.data;
 };
 
 export const getWarehouse = async (id: string): Promise<Warehouse> => {
@@ -110,9 +99,11 @@ export const updateWarehouseStock = async (warehouseId: string, stockId: string,
 };
 
 // Stock Movements
-export const getStockMovements = async (): Promise<StockMovement[]> => {
-  const response = await apiClient.get('/stock-movements');
-  return response.data;
+// Stock Movements
+export const getStockMovements = async (params?: { part_id?: string; warehouse_id?: string; type?: string }): Promise<StockMovement[]> => {
+  const response = await apiClient.get('/stock-movements', { params });
+  // Unwrap paginated response
+  return (response.data as any).data || response.data;
 };
 
 export const createStockMovement = async (data: CreateStockMovementRequest): Promise<StockMovement> => {

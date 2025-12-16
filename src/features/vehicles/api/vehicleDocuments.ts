@@ -8,7 +8,9 @@ export interface VehicleDocument {
   file_size?: number;
   name: string;
   file_url: string;
-  uploaded_at: string;
+  uploaded_at?: string; // Mapped from created_at
+  created_at?: string;
+  expiry_date?: string;
 }
 
 export interface AddVehicleDocumentRequest {
@@ -17,6 +19,7 @@ export interface AddVehicleDocumentRequest {
   file_size?: number;
   name: string;
   file_url: string;
+  expiry_date?: string;
 }
 
 // Get all documents for a vehicle

@@ -3,17 +3,17 @@
 import { formatDateShort } from "@/lib/formatters";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Trash2, Upload, File, Image as ImageIcon, FileSpreadsheet } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Download, FileText, Trash2, Upload, File, Image as ImageIcon, FileSpreadsheet, Eye, MoreVertical, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
 import { VehicleDocument } from "@/features/vehicles/api/vehicleDocuments";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useTranslations } from "next-intl";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 interface VehicleDocumentsProps {
   documents: VehicleDocument[];
@@ -28,13 +28,42 @@ export function VehicleDocuments({
   onDelete,
   isDeleting,
 }: VehicleDocumentsProps) {
-  const t = useTranslations("vehicles.details.documents");
+  const t = useTranslations("features.vehicles.documents");
 
   const getFileIcon = (type: string) => {
-    if (type.includes("image")) return <ImageIcon className="h-5 w-5 text-purple-600" />;
-    if (type.includes("sheet") || type.includes("csv")) return <FileSpreadsheet className="h-5 w-5 text-green-600" />;
-    if (type.includes("pdf")) return <FileText className="h-5 w-5 text-red-600" />;
-    return <File className="h-5 w-5 text-blue-600" />;
+    if (type.includes("image")) return <ImageIcon className="h-8 w-8 text-purple-600" />;
+    if (type.includes("sheet") || type.includes("csv")) return <FileSpreadsheet className="h-8 w-8 text-green-600" />;
+    if (type.includes("pdf")) return <FileText className="h-8 w-8 text-red-600" />;
+    return <File className="h-8 w-8 text-blue-600" />;
+  };
+
+  const getStatusBadge = (expiryDate?: string) => {
+    if (!expiryDate) return null;
+    
+    const today = new Date();
+    const expiry = new Date(expiryDate);
+    const diffTime = expiry.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return (
+        <Badge variant="destructive" className="gap-1 pl-1 pr-2">
+          <AlertTriangle className="h-3 w-3" /> {t("expired")}
+        </Badge>
+      );
+    }
+    if (diffDays <= 30) {
+      return (
+        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 gap-1 pl-1 pr-2">
+           <AlertTriangle className="h-3 w-3" /> {t("expiringSoon")}
+        </Badge>
+      );
+    }
+    return (
+      <Badge variant="outline" className="border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400 gap-1 pl-1 pr-2">
+        <CheckCircle className="h-3 w-3" /> {t("valid")}
+      </Badge>
+    );
   };
 
   const formatFileSize = (bytes?: number) => {
@@ -62,89 +91,68 @@ export function VehicleDocuments({
       </div>
 
       {documents.length === 0 ? (
-        <Card className="border-dashed border-gray-300 bg-gray-50/50 dark:border-gray-700 dark:bg-gray-900/20">
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <FileText className="h-8 w-8" />
+        <Card className="border-dashed border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/20">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+              <File className="h-8 w-8" />
             </div>
-            <h3 className="mb-2 text-lg font-semibold">{t("noDocs")}</h3>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">{t("noDocs")}</h3>
             <p className="mb-6 max-w-sm text-sm text-muted-foreground">
               {t("noDocsDesc")}
             </p>
-            <Button onClick={onUpload} variant="outline" className="border-primary/20 bg-primary/5 hover:bg-primary/10 hover:text-primary">
-              <Upload className="mr-2 h-4 w-4" />
+            <Button onClick={onUpload} variant="outline" className="border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40">
               {t("upload")}
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-xl border bg-card shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="w-[40%]">{t("name")}</TableHead>
-                <TableHead>{t("type")}</TableHead>
-                <TableHead>{t("size")}</TableHead>
-                <TableHead>{t("uploaded")}</TableHead>
-                <TableHead className="text-right">{t("actions")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {documents.map((doc) => (
-                <TableRow key={doc.id} className="group transition-colors hover:bg-muted/50">
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted group-hover:bg-background">
-                        {getFileIcon(doc.document_type || "file")}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium text-foreground">
-                          {doc.file_name || doc.name || t("untitled")}
-                        </span>
-                        <span className="text-xs text-muted-foreground md:hidden">
-                          {formatFileSize(doc.file_size)} • {formatDateShort(doc.uploaded_at)}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="capitalize text-muted-foreground">
-                      {doc.document_type?.replace(/_/g, " ") || t("untitled").split(" ")[0]}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatFileSize(doc.file_size)}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatDateShort(doc.uploaded_at)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/20"
-                        onClick={() => window.open(doc.file_url, "_blank")}
-                        title="Download"
-                      >
-                        <Download className="h-4 w-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {documents.map((doc) => (
+            <Card key={doc.id} className="group relative overflow-hidden transition-all hover:shadow-md border-gray-200 dark:border-gray-800">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-900/50">
+                     {getFileIcon(doc.document_type || "file")}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-gray-600">
+                        <MoreVertical className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20"
-                        onClick={() => onDelete(doc.id)}
-                        disabled={isDeleting}
-                        title="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => window.open(doc.file_url, "_blank")}>
+                        <Eye className="mr-2 h-4 w-4" /> {t("view")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => window.open(doc.file_url, "_blank")}>
+                        <Download className="mr-2 h-4 w-4" /> {t("download")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onDelete(doc.id)} className="text-red-600 focus:text-red-600">
+                        <Trash2 className="mr-2 h-4 w-4" /> {t("delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                
+                <div className="mb-3">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate" title={doc.name}>
+                    {doc.name || t("untitled")}
+                  </h3>
+                  <p className="text-xs text-muted-foreground capitalize">
+                     {doc.document_type?.replace(/_/g, " ") || "Document"} • {formatFileSize(doc.file_size)}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between mt-4 border-t pt-3 dark:border-gray-800">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Calendar className="h-3 w-3" />
+                    <span>{doc.expiry_date ? formatDateShort(doc.expiry_date) : "No Expiry"}</span>
+                  </div>
+                   {getStatusBadge(doc.expiry_date)}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
     </div>

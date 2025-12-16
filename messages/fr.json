@@ -22,6 +22,16 @@
         "title": "Gestion de flotte",
         "subtitle": "Gérez votre flotte efficacement"
     },
+    "common": {
+        "details": "Détails",
+        "edit": "Modifier",
+        "create": "Créer",
+        "view": "Voir",
+        "delete": "Supprimer",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "actions": "Actions"
+    },
     "navigation": {
         "sidebar": {
             "dashboard": "Tableau de bord",
@@ -32,8 +42,18 @@
             "users": "Utilisateurs",
             "reports": "Rapports",
             "title": "Fleet CMMS",
-            "subtitle": "Maintenance Pro"
-        }
+            "subtitle": "Maintenance Pro",
+            "settings": "Paramètres",
+            "profile": "Profil",
+            "branding": "Marque",
+            "company": "Entreprise",
+            "integrations": "Intégrations",
+            "roles": "Rôles",
+            "parts": "Pièces",
+            "suppliers": "Fournisseurs"
+        },
+        "details": "Détails",
+        "edit": "Modifier"
     },
     "dashboard": {
         "title": "Tableau de bord",
@@ -257,6 +277,61 @@
                 "noHistory": "Aucun historique de maintenance disponible",
                 "historyTitle": "Historique de maintenance",
                 "technician": "Technicien"
+            },
+            "documents": {
+                "title": "Documents",
+                "subtitle": "Gérez les documents et fichiers du véhicule",
+                "upload": "Téléverser",
+                "noDocs": "Aucun document",
+                "noDocsDesc": "Aucun document n'a été ajouté à ce véhicule.",
+                "name": "Nom du document",
+                "type": "Type",
+                "size": "Taille",
+                "uploaded": "Téléversé le",
+                "actions": "Actions",
+                "untitled": "Sans titre",
+                "modalTitle": "Téléverser un document",
+                "modalDesc": "Ajoutez un nouveau document à ce véhicule. Formats supportés : PDF, Images, DOCX.",
+                "fileName": "Nom du fichier",
+                "fileUrl": "URL du fichier",
+                "expiryDate": "Date d'expiration",
+                "status": "Statut",
+                "valid": "Valide",
+                "expiringSoon": "Expire bientôt",
+                "expired": "Expiré",
+                "view": "Voir",
+                "download": "Télécharger",
+                "delete": "Supprimer",
+                "dragDropTitle": "Glissez-déposez votre fichier ici",
+                "dragDropSubtitle": "ou cliquez pour parcourir",
+                "supportedFormats": "PDF, Images, DOCX jusqu'à 10MB",
+                "browse": "Parcourir",
+                "changeFile": "Changer de fichier",
+                "fileDetails": "Détails du fichier",
+                "cancel": "Annuler",
+                "confirmUpload": "Confirmer le téléversement",
+                "types": {
+                    "insurance": "Assurance",
+                    "registration": "Carte grise",
+                    "inspection": "Contrôle technique",
+                    "invoice": "Facture",
+                    "other": "Autre"
+                }
+            },
+            "form": {
+                "brand": "Marque",
+                "model": "Modèle",
+                "year": "Année",
+                "type": "Type",
+                "licensePlate": "Immatriculation",
+                "vin": "VIN",
+                "status": "Statut",
+                "active": "Actif",
+                "maintenance": "Maintenance",
+                "inactive": "Inactif",
+                "cancel": "Annuler",
+                "create": "Créer",
+                "update": "Mettre à jour"
             }
         },
         "maintenance": {
@@ -610,7 +685,13 @@
                 "date": "Date"
             },
             "attachments": {
-                "title": "Pièces jointes"
+                "title": "Pièces jointes",
+                "toasts": {
+                    "added": "Document ajouté avec succès",
+                    "error": "Échec de l'ajout du document",
+                    "deleted": "Document supprimé",
+                    "deleteError": "Échec de la suppression du document"
+                }
             },
             "comments": {
                 "title": "Commentaires",
@@ -620,7 +701,8 @@
                     "added": {
                         "title": "Commentaire ajouté",
                         "description": "Votre commentaire a été publié."
-                    }
+                    },
+                    "error": "Échec de l'ajout du commentaire"
                 }
             },
             "editModal": {
@@ -746,7 +828,15 @@
             "clearFilters": "Réinitialiser les filtres",
             "updateUsage": "Mettre à jour l’utilisation",
             "edit": "Modifier le véhicule",
-            "createWorkOrder": "Créer un ordre de travail"
+            "createWorkOrder": "Créer un ordre de travail",
+            "back": "Retour",
+            "backToList": "Retour à la liste"
+        },
+        "edit": {
+            "title": "Modifier le véhicule"
+        },
+        "errors": {
+            "notFound": "Véhicule non trouvé"
         },
         "filters": {
             "searchPlaceholder": "Rechercher par nom ou plaque",
@@ -759,8 +849,11 @@
             "type": {
                 "all": "Tous les types",
                 "truck": "Camion",
+                "Truck": "Camion",
                 "van": "Fourgon",
+                "Van": "Fourgon",
                 "car": "Voiture",
+                "Car": "Voiture",
                 "unknown": "Inconnu"
             }
         },

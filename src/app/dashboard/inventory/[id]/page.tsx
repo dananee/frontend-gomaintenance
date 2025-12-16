@@ -1,6 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useParams } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+import { format } from "date-fns";
+import { toast } from "sonner";
 import {
   Activity,
   Archive,
@@ -10,6 +15,14 @@ import {
   Pencil,
   TrendingDown,
   TrendingUp,
+  Loader2,
+  AlertCircle,
+  AlertTriangle,
+  Tag,
+  Coins,
+  Truck,
+  Calendar,
+  CheckCircle2
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -28,74 +41,41 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { DetailPageSkeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useModal } from "@/hooks/useModal";
 import { StockAdjustmentModal } from "@/features/inventory/components/StockAdjustmentModal";
+import { StockAdjustment, Part } from "@/features/inventory/types/inventory.types";
+
+import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+// API Imports
+import { getPart } from "@/features/inventory/api/getPart";
+import { getStockMovements } from "@/features/inventory/api/inventory";
+import { 
+  getPartStock, 
+  getPartDocuments, 
+  getPartComments, 
+  addPartComment,
+  addPartDocument,
+  adjustPartStock,
+  updatePart 
+} from "@/features/inventory/api/partDetails";
+import { getWarehouses } from "@/features/inventory/api/inventory";
+import { CreateStockMovementRequest } from "@/features/inventory/types/inventory.types";
 import { EditPartModal } from "@/features/inventory/components/EditPartModal";
-import { StockAdjustment } from "@/features/inventory/types/inventory.types";
-import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-
-interface Attachment {
-  id: number;
-  name: string;
-  size: string;
-}
-
-interface Comment {
-  id: number;
-  author: string;
-  text: string;
-  timestamp: string;
-}
-
-const defaultAttachments: Attachment[] = [
-  { id: 1, name: "Spec-sheet.pdf", size: "880 KB" },
-  { id: 2, name: "Warehouse-photo.png", size: "1.1 MB" },
-];
-
-const defaultComments: Comment[] = [
-  {
-    id: 1,
-    author: "Inventory Bot",
-    text: "Low stock threshold reached. Consider reordering soon.",
-    timestamp: "Today, 9:12 AM",
-  },
-  {
-    id: 2,
-    author: "Casey Lee",
-    text: "Confirmed new supplier discount for bulk orders.",
-    timestamp: "Yesterday, 6:20 PM",
-  },
-];
-
-const movements = [
-  {
-    id: "MV-120",
-    type: "In",
-    qty: 25,
-    location: "Warehouse A",
-    date: "Mar 10",
-  },
-  {
-    id: "MV-121",
-    type: "Out",
-    qty: 10,
-    location: "Warehouse B",
-    date: "Mar 12",
-  },
-];
-
-const warehouses = [
-  { name: "Warehouse A", stock: 30 },
-  { name: "Warehouse B", stock: 18 },
-  { name: "Mobile Van", stock: 6 },
-];
+import { CommentTimeline } from "@/features/inventory/components/CommentTimeline";
+import { DocumentGrid } from "@/features/inventory/components/DocumentGrid";
+import { deletePartDocument } from "@/features/inventory/api/partDetails";
 
 export default function InventoryPartDetailsPage() {
   const t = useTranslations("inventory.details");
-  const [attachments, setAttachments] =
-    useState<Attachment[]>(defaultAttachments);
-  const [comments, setComments] = useState<Comment[]>(defaultComments);
+  const params = useParams();
+  const id = params.id as string;
+  const queryClient = useQueryClient();
+
+  // State
   const [newComment, setNewComment] = useState("");
   const { isOpen, open, close } = useModal();
   const {
@@ -103,358 +83,486 @@ export default function InventoryPartDetailsPage() {
     open: openStockModal,
     close: closeStockModal,
   } = useModal();
-  const [isLoading] = useState(false); // Can be connected to actual loading state
 
-  const part = useMemo(
-    () => ({
-      name: "Brake Pad Set",
-      sku: "BRK-4452",
-      manufacturer: "ACME Parts",
-      stock: 54,
-      reorderPoint: 20,
-      price: 125.5,
-      category: "Brakes",
-    }),
-    []
-  );
+  const {
+    isOpen: isUploadModalOpen,
+    open: openUploadModal,
+    close: closeUploadModal,
+  } = useModal();
 
-  if (isLoading) {
+  // Queries
+  const { data: part, isLoading: isPartLoading, error: partError, refetch: refetchPart } = useQuery({
+    queryKey: ["part", id],
+    queryFn: () => getPart(id),
+  });
+
+  const { data: stockLevels, isLoading: isStockLoading, refetch: refetchStock } = useQuery({
+    queryKey: ["part-stock", id],
+    queryFn: () => getPartStock(id),
+    enabled: !!part,
+  });
+
+  const { data: movements, isLoading: isMovementsLoading, refetch: refetchMovements } = useQuery({
+    queryKey: ["part-movements", id],
+    queryFn: () => getStockMovements({ part_id: id }),
+    enabled: !!part,
+  });
+
+  const { data: documents, isLoading: isDocumentsLoading, refetch: refetchDocuments } = useQuery({
+    queryKey: ["part-documents", id],
+    queryFn: () => getPartDocuments(id),
+    enabled: !!part,
+  });
+
+  const { data: comments, isLoading: isCommentsLoading, refetch: refetchComments } = useQuery({
+    queryKey: ["part-comments", id],
+    queryFn: () => getPartComments(id),
+    enabled: !!part,
+  });
+
+  const { data: warehouses } = useQuery({
+    queryKey: ["warehouses"],
+    queryFn: () => getWarehouses(),
+  });
+
+  // Mutations
+  const addCommentMutation = useMutation({
+    mutationFn: (text: string) => addPartComment(id, text),
+    onSuccess: () => {
+      setNewComment("");
+      toast.success(t("comments.toasts.success"));
+      refetchComments();
+    },
+    onError: () => {
+      toast.error(t("comments.toasts.error"));
+    }
+  });
+
+  const documentMutation = useMutation({
+    mutationFn: (file: File) => {
+        const mockUrl = URL.createObjectURL(file);
+        return addPartDocument(id, {
+            name: file.name,
+            file_url: mockUrl,
+            file_size: file.size,
+            media_type: file.type
+        });
+    },
+    onSuccess: () => {
+        refetchDocuments();
+        toast.success(t("attachments.toasts.added"));
+        closeUploadModal(); // Close the modal if used
+    },
+    onError: () => {
+        toast.error(t("attachments.toasts.error"));
+    }
+  });
+
+  const deleteDocumentMutation = useMutation({
+    mutationFn: (documentId: string) => deletePartDocument(id, documentId),
+    onSuccess: () => {
+      refetchDocuments();
+      toast.success(t("attachments.toasts.deleted"));
+    },
+    onError: () => {
+      toast.error(t("attachments.toasts.deleteError"));
+    }
+  });
+
+  const stockAdjustmentMutation = useMutation({
+    mutationFn: (data: CreateStockMovementRequest) => adjustPartStock({ ...data, part_id: id }),
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["part-stock", id] });
+        queryClient.invalidateQueries({ queryKey: ["part", id] }); // Total quantity might change
+        queryClient.invalidateQueries({ queryKey: ["part-movements", id] });
+        toast.success("Stock adjusted successfully"); // TODO: Translate
+    },
+    onError: (err: any) => {
+        toast.error(err.response?.data?.error || "Failed to adjust stock");
+    }
+  });
+
+  const updatePartMutation = useMutation({
+    mutationFn: (data: Partial<Part>) => updatePart(id, data as any),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["part", id] });
+      toast.success("Part updated successfully");
+      close();
+    },
+    onError: () => {
+      toast.error("Failed to update part");
+    },
+  });
+
+  const handleEditSave = (data: Partial<Part>) => {
+    updatePartMutation.mutate(data);
+  };
+
+
+
+  if (isPartLoading) {
     return <DetailPageSkeleton />;
   }
 
-  const handleFileUpload = (files: FileList | null) => {
+  if (partError || !part) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Failed to load part details. Please try again.</AlertDescription>
+      </Alert>
+    );
+  }
+
+  // --- Helpers ---
+  const handleFileUpload = async (files: FileList | null) => {
     if (!files?.length) return;
-    const uploads = Array.from(files).map((file) => ({
-      id: Date.now() + Math.random(),
-      name: file.name,
-      size: `${(file.size / 1024).toFixed(1)} KB`,
-    }));
-    setAttachments((prev) => [...uploads, ...prev]);
+    const file = files[0];
+    documentMutation.mutate(file);
   };
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    setComments((prev) => [
-      {
-        id: Date.now(),
-        author: "You",
-        text: newComment.trim(),
-        timestamp: "Just now",
-      },
-      ...prev,
-    ]);
-    toast.success(t("comments.toasts.added.title"), {
-      description: t("comments.toasts.added.description"),
-    });
-    setNewComment("");
+    addCommentMutation.mutate(newComment.trim());
   };
 
   const handleStockAdjustment = (
-    adjustment: Omit<StockAdjustment, "id" | "created_at" | "adjusted_by">
+    adjustment: CreateStockMovementRequest
   ) => {
-    console.log("Stock adjustment:", adjustment);
-    const adjustmentType =
-      adjustment.adjustment_type === "add"
-        ? t("stockAdjustment.types.increased")
-        : adjustment.adjustment_type === "remove"
-        ? t("stockAdjustment.types.decreased")
-        : t("stockAdjustment.types.updated");
-
-    toast.success(t("stockAdjustment.toasts.success.title"), {
-      description: t("stockAdjustment.toasts.success.description", {
-        type: adjustmentType,
-      }),
-    });
-    // TODO: Implement stock adjustment API call
+    stockAdjustmentMutation.mutate(adjustment);
   };
 
-  const totalValue = useMemo(
-    () => part.stock * part.price,
-    [part.price, part.stock]
-  );
+  const currentTotalStock = stockLevels?.reduce((acc, s) => acc + s.quantity, 0) || part.quantity || 0;
+  const totalValue = currentTotalStock * (part.unit_price || 0);
+
+  // Status Logic
+  const minQty = part.min_quantity || 0;
+  const isCritical = currentTotalStock === 0;
+  const isLow = currentTotalStock <= minQty;
+  const getStatusColor = () => {
+      if (isCritical) return "text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800";
+      if (isLow) return "text-orange-600 bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 border-orange-200 dark:border-orange-800";
+      return "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800";
+  };
+  const statusLabel = isCritical ? "Critical Stock" : isLow ? "Low Stock" : "In Stock";
+  const statusIcon = isCritical ? AlertCircle : isLow ? AlertTriangle : CheckCircle2;
+  const StatusIcon = statusIcon;
+
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {part.name}
-            </h1>
-            <Badge variant="outline">SKU {part.sku}</Badge>
-            <Badge className="capitalize">{part.category}</Badge>
-          </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {part.manufacturer}
-          </p>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Header Section */}
+      <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+        <div className="space-y-4">
+            <div className="flex items-center gap-3">
+                <Badge variant="outline" className={`px-3 py-1 text-sm font-medium border ${getStatusColor()} flex items-center gap-2`}>
+                   <StatusIcon className="h-3.5 w-3.5" />
+                   {statusLabel}
+                </Badge>
+                <span className="text-sm text-muted-foreground">Updated today</span>
+            </div>
+
+            <div className="space-y-1">
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                {part.name}
+                </h1>
+                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-medium text-foreground">{part.brand || "Unknown Brand"}</span>
+                    <span>•</span>
+                    <span className="font-mono">SKU: {part.part_number}</span>
+                    <span>•</span>
+                    <Badge variant="secondary" className="rounded-md px-2 font-normal capitalize">
+                        {part.category || "General"}
+                    </Badge>
+                </div>
+            </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={openStockModal}>
+
+        <div className="flex flex-wrap gap-3">
+          <Button variant="outline" onClick={openStockModal} className="h-10">
             <TrendingUp className="mr-2 h-4 w-4" /> {t("adjustStock")}
           </Button>
-          <Button variant="outline" onClick={open}>
+          <Button variant="outline" onClick={open} className="h-10">
             <Pencil className="mr-2 h-4 w-4" /> {t("editPart")}
           </Button>
-          <Button>
+          <Button className="h-10">
             <Archive className="mr-2 h-4 w-4" /> {t("exportCSV")}
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="overview">
-        <TabsList className="grid grid-cols-5">
-          <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
-          <TabsTrigger value="stock">{t("tabs.stock")}</TabsTrigger>
-          <TabsTrigger value="movements">{t("tabs.movements")}</TabsTrigger>
-          <TabsTrigger value="attachments">{t("tabs.attachments")}</TabsTrigger>
-          <TabsTrigger value="comments">{t("tabs.comments")}</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
+          <TabsTrigger value="overview" className="relative h-10 rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none">
+             {t("tabs.overview")}
+          </TabsTrigger>
+          <TabsTrigger value="stock" className="relative h-10 rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none">
+             {t("tabs.stock")}
+          </TabsTrigger>
+          <TabsTrigger value="movements" className="relative h-10 rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none">
+             {t("tabs.movements")}
+          </TabsTrigger>
+          <TabsTrigger value="attachments" className="relative h-10 rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none">
+             {t("tabs.attachments")}
+          </TabsTrigger>
+          <TabsTrigger value="comments" className="relative h-10 rounded-none border-b-2 border-transparent px-4 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none">
+             {t("tabs.comments")}
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t("overview.onHand.title")}</CardTitle>
-                <Boxes className="h-4 w-4 text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{part.stock} units</div>
-                <p className="text-xs text-gray-500">{t("overview.onHand.description")}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {t("overview.reorderPoint.title")}
-                </CardTitle>
-                <Activity className="h-4 w-4 text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {part.reorderPoint} units
-                </div>
-                <p className="text-xs text-gray-500">{t("overview.reorderPoint.description")}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {t("overview.unitPrice.title")}
-                </CardTitle>
-                <Package2 className="h-4 w-4 text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  ${part.price.toFixed(2)}
-                </div>
-                <p className="text-xs text-gray-500">{t("overview.unitPrice.description")}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {t("overview.totalValue.title")}
-                </CardTitle>
-                <TrendingDown className="h-4 w-4 text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  ${totalValue.toFixed(2)}
-                </div>
-                <p className="text-xs text-gray-500">{t("overview.totalValue.description")}</p>
-              </CardContent>
-            </Card>
+        <TabsContent value="overview" className="space-y-6 animate-in fade-in duration-300">
+           {/* KPI Cards */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <PremiumMetricCard
+                title={t("overview.onHand.title")}
+                value={`${currentTotalStock} units`}
+                icon={Boxes}
+                variant={isCritical ? "rose" : isLow ? "orange" : "blue"}
+                subtitle={isLow ? `${minQty - currentTotalStock} below target` : "Stock healthy"}
+            />
+            <PremiumMetricCard
+                title={t("overview.reorderPoint.title")}
+                value={`${minQty} units`}
+                icon={AlertTriangle}
+                variant="slate"
+                subtitle="Minimum required level"
+            />
+            <PremiumMetricCard
+                title={t("overview.unitPrice.title")}
+                value={`$${(part.unit_price || 0).toFixed(2)}`}
+                icon={Tag}
+                variant="teal"
+                subtitle="Cost per unit"
+            />
+            <PremiumMetricCard
+                title={t("overview.totalValue.title")}
+                value={`$${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                icon={Coins}
+                variant="green"
+                subtitle="Total inventory value"
+            />
           </div>
+
+          <Card>
+              <CardHeader>
+                  <CardTitle>Part Description</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                      {part.description || "No description available for this part."}
+                  </p>
+              </CardContent>
+          </Card>
         </TabsContent>
 
-        <TabsContent value="stock" className="space-y-4">
+        <TabsContent value="stock" className="space-y-4 animate-in fade-in duration-300">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t("stock.title")}</CardTitle>
+              <Button variant="outline" size="sm" onClick={openStockModal}>
+                  <TrendingUp className="mr-2 h-4 w-4" /> Transfer Stock
+              </Button>
             </CardHeader>
             <CardContent>
+              {isStockLoading ? ( <div className="p-4 flex justify-center"><Loader2 className="animate-spin" /></div> ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t("stock.location")}</TableHead>
+                    <TableHead className="w-[30%]">{t("stock.location")}</TableHead>
                     <TableHead>{t("stock.stock")}</TableHead>
+                    <TableHead className="w-[100px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {warehouses.map((location) => (
-                    <TableRow
-                      key={location.name}
-                      className={
-                        location.stock <= part.reorderPoint
-                          ? "bg-red-50/50 dark:bg-red-900/20"
-                          : undefined
-                      }
-                    >
+                  {stockLevels?.map((stock) => {
+                    const maxCapacity = 100; // Mock max for visualization, or use logic
+                    const percentage = Math.min((stock.quantity / Math.max(currentTotalStock, 1)) * 100, 100);
+
+                    return (
+                    <TableRow key={stock.id}>
                       <TableCell className="font-medium">
-                        {location.name}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span>{location.stock} units</span>
-                          {location.stock <= part.reorderPoint && (
-                            <Badge variant="destructive" className="text-xs">
-                              {t("stock.lowStock")}
-                            </Badge>
-                          )}
+                        <div className="flex items-center gap-3">
+                            <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center dark:bg-gray-800">
+                                <Boxes className="h-4 w-4 text-gray-500" />
+                            </div>
+                            {stock.warehouse?.name || "Unknown Warehouse"}
                         </div>
                       </TableCell>
+                      <TableCell>
+                        <div className="space-y-2 max-w-[200px]">
+                           <div className="flex justify-between text-xs text-muted-foreground">
+                                <span className={stock.quantity <= part.min_quantity ? "text-orange-500 font-medium" : ""}>
+                                    {stock.quantity} units
+                                </span>
+                                <span>{percentage.toFixed(0)}% of total</span>
+                           </div>
+                           <Progress value={percentage} className="h-2" />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                         <Button variant="ghost" size="sm">Manage</Button>
+                      </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
+                  {(!stockLevels || stockLevels.length === 0) && (
+                      <TableRow><TableCell colSpan={3} className="text-center text-gray-500 py-8">No stock information available</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="movements" className="space-y-4">
+        <TabsContent value="movements" className="space-y-4 animate-in fade-in duration-300">
           <Card>
-            <CardHeader>
+             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t("movements.title")}</CardTitle>
+              <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="h-8">Filter</Button>
+                  <Button variant="outline" size="sm" className="h-8">Date Range</Button>
+              </div>
             </CardHeader>
             <CardContent>
+            {isMovementsLoading ? ( <div className="p-4 flex justify-center"><Loader2 className="animate-spin" /></div> ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t("movements.id")}</TableHead>
+                    <TableHead>{t("movements.date")}</TableHead>
                     <TableHead>{t("movements.type")}</TableHead>
                     <TableHead>{t("movements.quantity")}</TableHead>
                     <TableHead>{t("movements.location")}</TableHead>
-                    <TableHead>{t("movements.date")}</TableHead>
+                    <TableHead>{t("movements.id")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {movements.map((move) => (
+                  {movements?.map((move) => (
                     <TableRow key={move.id}>
-                      <TableCell className="font-medium">{move.id}</TableCell>
+                       <TableCell className="font-medium text-muted-foreground">
+                          {format(new Date(move.created_at), "MMM d, yyyy HH:mm")}
+                       </TableCell>
                       <TableCell>
                         <Badge
-                          variant={move.type === "In" ? "secondary" : "outline"}
+                          variant="secondary"
+                          className={
+                              move.movement_type === "in"
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100"
+                              : move.movement_type === "out"
+                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100"
+                              : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                          }
                         >
-                          {move.type}
+                          {move.movement_type.toUpperCase()}
                         </Badge>
                       </TableCell>
-                      <TableCell>{move.qty}</TableCell>
-                      <TableCell>{move.location}</TableCell>
-                      <TableCell>{move.date}</TableCell>
+                      <TableCell>
+                          <span className={move.movement_type === "in" ? "text-emerald-600 font-medium" : "text-gray-900 dark:text-gray-100"}>
+                            {move.movement_type === "in" ? "+" : ""}{move.quantity}
+                          </span>
+                      </TableCell>
+                      <TableCell>{move.warehouse?.name || "-"}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground font-mono">{move.id.substring(0, 8)}</TableCell>
                     </TableRow>
                   ))}
+                   {(!movements || movements.length === 0) && (
+                      <TableRow><TableCell colSpan={5} className="text-center text-gray-500 py-8">No stock movements found</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
+             )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="attachments" className="space-y-4">
+        <TabsContent value="attachments" className="space-y-4 animate-in fade-in duration-300">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t("attachments.title")}</CardTitle>
-              <div className="flex items-center gap-2">
+              <div>
                 <Input
                   id="part-files"
                   type="file"
                   multiple
                   className="hidden"
                   onChange={(e) => handleFileUpload(e.target.files)}
+                  disabled={documentMutation.isPending}
                 />
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={() => document.getElementById("part-files")?.click()}
+                  disabled={documentMutation.isPending}
                 >
-                  <FileUp className="mr-2 h-4 w-4" /> {t("upload")}
+                    {documentMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileUp className="mr-2 h-4 w-4" />}
+                   {t("upload")}
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="grid gap-3 md:grid-cols-2">
-              {attachments.map((file) => (
-                <div
-                  key={file.id}
-                  className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm dark:border-gray-700"
-                >
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-gray-500">{file.size}</p>
-                  </div>
-                  <Badge variant="secondary">PDF/Image</Badge>
-                </div>
-              ))}
+            <CardContent>
+              {isDocumentsLoading ? (
+                  <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>
+              ) : (
+                  <DocumentGrid 
+                    documents={documents || []} 
+                    onDelete={(id) => deleteDocumentMutation.mutate(id)} 
+                  />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="comments" className="space-y-4">
+        <TabsContent value="comments" className="space-y-4 animate-in fade-in duration-300">
           <Card>
             <CardHeader>
               <CardTitle>{t("comments.title")}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-3">
                 <Textarea
                   placeholder={t("comments.placeholder")}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
+                  disabled={addCommentMutation.isPending}
+                  className="resize-none"
                 />
                 <div className="flex justify-end">
-                  <Button onClick={handleAddComment}>{t("comments.post")}</Button>
+                  <Button onClick={handleAddComment} disabled={addCommentMutation.isPending || !newComment.trim()}>
+                      {addCommentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {t("comments.post")}
+                  </Button>
                 </div>
               </div>
-              <div className="space-y-4">
-                {comments.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="rounded-lg border border-gray-200 p-3 dark:border-gray-700"
-                  >
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900 dark:text-gray-100">
-                        {comment.author}
-                      </p>
-                      <span className="text-xs text-gray-500">
-                        {comment.timestamp}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
-                      {comment.text}
-                    </p>
-                  </div>
-                ))}
+              
+              <div className="border-t pt-6">
+                {isCommentsLoading ? (
+                    <div className="flex justify-center"><Loader2 className="animate-spin" /></div>
+                ) : (
+                    <CommentTimeline comments={comments || []} />
+                )}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
 
-      <Modal
+      {part && <EditPartModal
         isOpen={isOpen}
         onClose={close}
-        title={t("editModal.title")}
-        description={t("editModal.description")}
-      >
-        <div className="space-y-4">
-          <Input placeholder={t("editModal.fields.name")} defaultValue={part.name} />
-          <Input placeholder={t("editModal.fields.sku")} defaultValue={part.sku} />
-          <Input
-            placeholder={t("editModal.fields.price")}
-            defaultValue={part.price.toString()}
-          />
-          <div className="flex justify-end">
-            <Button onClick={close}>{t("editModal.save")}</Button>
-          </div>
-        </div>
-      </Modal>
+        part={part}
+        onSave={handleEditSave}
+        isSaving={updatePartMutation.isPending}
+      />}
 
-      <StockAdjustmentModal
+      {part && <StockAdjustmentModal
         isOpen={isStockModalOpen}
         onClose={closeStockModal}
         partName={part.name}
-        currentStock={part.stock}
+        globalStock={currentTotalStock} // Renamed prop
+        warehouses={warehouses}
+        stocks={stockLevels} // New prop
         onSave={handleStockAdjustment}
-      />
+      />}
     </div>
   );
 }

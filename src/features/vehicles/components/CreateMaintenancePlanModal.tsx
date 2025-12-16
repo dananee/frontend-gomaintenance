@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { CreateMaintenancePlanRequest, VehicleMaintenancePlan } from "../api/vehiclePlans";
+import { useMaintenanceTemplates } from "@/features/maintenance/hooks/useMaintenanceTemplates";
  
 interface CreateMaintenancePlanModalProps {
   isOpen: boolean;
@@ -46,6 +47,8 @@ export function CreateMaintenancePlanModal({
   onSubmit,
 }: CreateMaintenancePlanModalProps) {
   const t = useTranslations("vehicles.details.form");
+  const { data: templatesData, isLoading: isLoadingTemplates, error: templatesError } = useMaintenanceTemplates();
+  
   const {
     register,
     handleSubmit,
@@ -68,12 +71,8 @@ export function CreateMaintenancePlanModal({
   const intervalKm = watch("interval_km");
   const intervalMonths = watch("interval_months");
 
-  // Mock templates - Replace with API query
-  const templates = [
-    { id: "1", name: "Standard Oil Change", interval_km: 5000, interval_months: 3 },
-    { id: "2", name: "Tire Rotation", interval_km: 10000, interval_months: 6 },
-    { id: "3", name: "Annual Inspection", interval_months: 12 },
-  ];
+  // Get templates from API
+  const templates = templatesData?.data || [];
 
   const filteredTemplates = templates.filter((t) =>
     t.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -98,8 +97,8 @@ export function CreateMaintenancePlanModal({
     const template = templates.find((t) => t.id === templateId);
     if (template) {
       setValue("template_id", templateId);
-      setValue("interval_km", template.interval_km);
-      setValue("interval_months", template.interval_months);
+      setValue("interval_km", template.interval_km ?? undefined);
+      setValue("interval_months", template.interval_days ? Math.floor(template.interval_days / 30) : undefined);
     }
   };
 
@@ -126,9 +125,10 @@ export function CreateMaintenancePlanModal({
               <Select
                 value={selectedTemplate}
                 onValueChange={handleTemplateSelect}
+                disabled={isLoadingTemplates}
               >
                 <SelectTrigger className="h-11">
-                  <SelectValue placeholder={t("selectTemplate")} />
+                  <SelectValue placeholder={isLoadingTemplates ? t("searchTemplates") : t("selectTemplate")} />
                 </SelectTrigger>
                 <SelectContent>
                   <div className="flex items-center px-2 pb-2 pt-0 sticky top-0 bg-white dark:bg-gray-950 z-10 border-b border-gray-100 dark:border-gray-800">
@@ -138,10 +138,20 @@ export function CreateMaintenancePlanModal({
                       className="border-0 focus-visible:ring-0 h-8 px-0"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
+                      disabled={isLoadingTemplates}
                     />
                   </div>
                   <div className="max-h-[200px] overflow-y-auto pt-1">
-                    {filteredTemplates.length > 0 ? (
+                    {isLoadingTemplates ? (
+                      <div className="py-4 px-2 flex items-center justify-center gap-2 text-sm text-gray-500">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Loading templates...</span>
+                      </div>
+                    ) : templatesError ? (
+                      <div className="py-2 px-2 text-sm text-red-500 text-center">
+                        Failed to load templates
+                      </div>
+                    ) : filteredTemplates.length > 0 ? (
                       filteredTemplates.map((template) => (
                         <SelectItem key={template.id} value={template.id}>
                           {template.name}
