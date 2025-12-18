@@ -1,5 +1,8 @@
 import { useRouter } from "next/navigation";
-import { useWorkOrders, useUpdateWorkOrderStatus, useDeleteWorkOrder, useUpdateWorkOrder } from "../hooks/useWorkOrders";
+import { useDeleteWorkOrder, useUpdateWorkOrder } from "../hooks/useWorkOrders";
+import { useWorkOrdersBoard } from "../hooks/useWorkOrdersBoard";
+import { useWorkOrdersBoardStore } from "../store/useWorkOrdersBoardStore";
+import { updateWorkOrderStatus } from "../api/updateWorkOrderStatus";
 import {
   DndContext,
   closestCorners,
@@ -18,7 +21,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SortableWorkOrderCard } from "./SortableWorkOrderCard";
 import { WorkOrderCard } from "./WorkOrderCard";
 import { DroppableColumn } from "./DroppableColumn";
@@ -28,9 +31,8 @@ import { WorkOrder, WorkOrderStatus } from "../types/workOrder.types";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ClipboardList } from "lucide-react";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
-const columns = [
+const columnDefinitions = [
   { id: "pending" as WorkOrderStatus, title: "Pending", color: "orange" },
   { id: "in_progress" as WorkOrderStatus, title: "In Progress", color: "blue" },
   { id: "completed" as WorkOrderStatus, title: "Completed", color: "green" },
@@ -46,12 +48,18 @@ export interface WorkOrderFilters {
 
 export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
   const router = useRouter();
-  const { data: workOrders, isLoading } = useWorkOrders();
-  const updateStatus = useUpdateWorkOrderStatus();
+  const { isLoading } = useWorkOrdersBoard("default");
+
+  // Get state from Zustand store
+  const workOrdersById = useWorkOrdersBoardStore((state) => state.workOrdersById);
+  const boardColumns = useWorkOrdersBoardStore((state) => state.columns);
+  const optimisticMove = useWorkOrdersBoardStore((state) => state.optimisticMove);
+  const rollbackMove = useWorkOrdersBoardStore((state) => state.rollbackMove);
+  const calculatePosition = useWorkOrdersBoardStore((state) => state.calculatePosition);
+
   const updateWorkOrder = useUpdateWorkOrder();
   const deleteWorkOrderMutation = useDeleteWorkOrder();
-  const queryClient = useQueryClient();
-  
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<WorkOrder | undefined>(
     undefined
@@ -60,7 +68,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
 
-  const allWorkOrders = workOrders?.data || [];
+  const allWorkOrders = useMemo(() => Object.values(workOrdersById), [workOrdersById]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -82,7 +90,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     setOverId(over ? (over.id as string) : null);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over) {
@@ -95,7 +103,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     const overId = over.id as string;
 
     // Find the order that was dragged
-    const draggedOrder = allWorkOrders.find((order) => order.id === activeId);
+    const draggedOrder = workOrdersById[activeId];
     if (!draggedOrder) {
       setActiveId(null);
       setOverId(null);
@@ -103,54 +111,66 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     }
 
     // Determine the new status based on the container it was dropped in
-    const newStatus = overId.startsWith("column-")
-      ? (overId.replace("column-", "") as WorkOrderStatus)
-      : allWorkOrders.find((order) => order.id === overId)?.status;
+    let newStatus: WorkOrderStatus;
+    let dropIndex = 0;
 
-    if (!newStatus || draggedOrder.status === newStatus) {
+    if (overId.startsWith("column-")) {
+      newStatus = overId.replace("column-", "") as WorkOrderStatus;
+      dropIndex = boardColumns[newStatus].length;
+    } else {
+      const overOrder = workOrdersById[overId];
+      if (!overOrder) {
+        setActiveId(null);
+        setOverId(null);
+        return;
+      }
+      newStatus = overOrder.status;
+      dropIndex = boardColumns[newStatus].indexOf(overId);
+    }
+
+    if (draggedOrder.status === newStatus) {
       setActiveId(null);
       setOverId(null);
       return;
     }
 
-    // Optimistic update
-    const previousData = queryClient.getQueryData(["workOrders"]);
-    queryClient.setQueryData(["workOrders"], (old: any) => {
-      if (!old?.data) return old;
-      return {
-        ...old,
-        data: old.data.map((order: WorkOrder) =>
-          order.id === activeId ? { ...order, status: newStatus } : order
-        ),
-      };
-    });
+    // Calculate position for the new location
+    const position = calculatePosition(boardColumns[newStatus], dropIndex);
+    const clientRequestId = crypto.randomUUID();
 
-    // Perform mutation using dedicated status update hook
-    updateStatus.mutate(
-      {
-        id: activeId,
-        status: newStatus,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Status updated", {
-            description: `Work order moved to ${newStatus.replace("_", " ")}`,
-          });
-        },
-        onError: (error) => {
-          // Rollback on error
-          queryClient.setQueryData(["workOrders"], previousData);
-          toast.error("Failed to update status", {
-            description: "The status change could not be saved. Please try again.",
-          });
-          console.error("Failed to update work order status:", error);
-        },
-      }
-    );
+    // Optimistic update
+    optimisticMove({
+      id: activeId,
+      toStatus: newStatus,
+      position,
+      clientRequestId,
+    });
 
     // Reset drag state
     setActiveId(null);
     setOverId(null);
+
+    // Perform API call in background
+    try {
+      await updateWorkOrderStatus(activeId, newStatus, position, "default");
+      toast.success("Status updated", {
+        description: `Work order moved to ${newStatus.replace("_", " ")}`,
+      });
+    } catch (error: any) {
+      // Rollback on error
+      rollbackMove(activeId);
+
+      if (error?.response?.status === 409) {
+        toast.error("Conflict detected", {
+          description: "This work order was modified by another user. The latest version has been loaded.",
+        });
+      } else {
+        toast.error("Failed to update status", {
+          description: "The status change could not be saved. Please try again.",
+        });
+      }
+      console.error("Failed to update work order status:", error);
+    }
   };
 
   const handleDragCancel = () => {
@@ -265,35 +285,38 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
         onDragCancel={handleDragCancel}
       >
         <div className="flex h-full gap-6 overflow-x-auto pb-4 px-2">
-          {columns.map((column) => {
-            const columnOrders = allWorkOrders.filter((order) => {
-              const matchesStatus =
-                (filters?.status ?? "all") === "all" ||
-                order.status === filters?.status;
-              const matchesPriority =
-                !filters?.priority || order.priority === filters.priority;
-              const matchesAssignee =
-                !filters?.assignee || order.assigned_to === filters.assignee;
-              const matchesSearch =
-                !filters?.search ||
-                order.title
-                  .toLowerCase()
-                  .includes(filters.search.toLowerCase()) ||
-                order.id.toLowerCase().includes(filters.search.toLowerCase());
+          {columnDefinitions.map((column) => {
+            const columnOrderIds = boardColumns[column.id] || [];
+            const columnOrders = columnOrderIds
+              .map((id: string) => workOrdersById[id])
+              .filter(Boolean)
+              .filter((order: WorkOrder) => {
+                const matchesStatus =
+                  (filters?.status ?? "all") === "all" ||
+                  order.status === filters?.status;
+                const matchesPriority =
+                  !filters?.priority || order.priority === filters.priority;
+                const matchesAssignee =
+                  !filters?.assignee || order.assigned_to === filters.assignee;
+                const matchesSearch =
+                  !filters?.search ||
+                  order.title
+                    .toLowerCase()
+                    .includes(filters.search.toLowerCase()) ||
+                  order.id.toLowerCase().includes(filters.search.toLowerCase());
 
-              return (
-                order.status === column.id &&
-                matchesStatus &&
-                matchesPriority &&
-                matchesAssignee &&
-                matchesSearch
-              );
-            });
+                return (
+                  matchesStatus &&
+                  matchesPriority &&
+                  matchesAssignee &&
+                  matchesSearch
+                );
+              });
 
-            const orderIds = columnOrders.map((order) => order.id);
+            const orderIds = columnOrders.map((order: WorkOrder) => order.id);
             const isOver =
               overId === `column-${column.id}` ||
-              columnOrders.some((order) => order.id === overId);
+              columnOrders.some((order: WorkOrder) => order.id === overId);
 
             return (
               <DroppableColumn
@@ -312,11 +335,10 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
                 >
                   <div
                     id={`column-${column.id}`}
-                    className={`flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg p-2 transition-all duration-300 ${
-                      isOver && columnOrders.length === 0
-                        ? "border-2 border-dashed border-blue-400 bg-blue-50/50 dark:bg-blue-900/10 animate-pulse"
-                        : ""
-                    }`}
+                    className={`flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg p-2 transition-all duration-300 ${isOver && columnOrders.length === 0
+                      ? "border-2 border-dashed border-blue-400 bg-blue-50/50 dark:bg-blue-900/10 animate-pulse"
+                      : ""
+                      }`}
                     style={{ minHeight: "200px" }}
                   >
                     {columnOrders.length === 0 && isOver ? (
@@ -337,7 +359,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
                         </p>
                       </div>
                     ) : (
-                      columnOrders.map((order, index) => {
+                      columnOrders.map((order: WorkOrder, index: number) => {
                         const isActiveCard = order.id === activeId;
                         const isOverCard = order.id === overId;
 
@@ -346,8 +368,8 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
                             {isOverCard && !isActiveCard && (
                               <div className="absolute -top-1 left-0 right-0 h-1 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 shadow-lg shadow-blue-500/50 animate-in slide-in-from-top-2 duration-200" />
                             )}
-                            <SortableWorkOrderCard 
-                              workOrder={order} 
+                            <SortableWorkOrderCard
+                              workOrder={order}
                               onEdit={handleEdit}
                               onDelete={handleDelete}
                               onClick={() => handleCardClick(order.id)}

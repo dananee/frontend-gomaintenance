@@ -3,7 +3,7 @@ import { getWorkOrders, GetWorkOrdersParams } from "../api/getWorkOrders";
 import { updateWorkOrder } from "../api/updateWorkOrder";
 import { deleteWorkOrder } from "../api/deleteWorkOrder";
 import { updateWorkOrderStatus } from "../api/updateWorkOrderStatus";
-import { UpdateWorkOrderDTO, WorkOrderStatus } from "../types/workOrder.types";
+import { UpdateWorkOrderDTO, UpdateWorkOrderStatusRequest } from "../types/workOrder.types";
 
 export function useWorkOrders(params: GetWorkOrdersParams = {}) {
   return useQuery({
@@ -35,13 +35,8 @@ export function useDeleteWorkOrder() {
 }
 
 export function useUpdateWorkOrderStatus() {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: WorkOrderStatus }) =>
-      updateWorkOrderStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["workOrders"] });
-    },
+    mutationFn: ({ id, body }: { id: string; body: UpdateWorkOrderStatusRequest }) =>
+      updateWorkOrderStatus(id, body),
   });
 }

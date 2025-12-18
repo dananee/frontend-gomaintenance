@@ -584,6 +584,214 @@
             }
         }
     },
+    "settings": {
+        "title": "Paramètres",
+        "subtitle": "Gérez votre compte et vos préférences d'espace de travail",
+        "navigation": {
+            "profile": "Profil",
+            "company": "Entreprise",
+            "branding": "Marque",
+            "roles": "Rôles et Permissions",
+            "notifications": "Notifications",
+            "integrations": "Intégrations"
+        },
+        "profile": {
+            "title": "Paramètres de Profil",
+            "subtitle": "Gérer vos informations personnelles",
+            "description": "Gérez votre profil et vos informations personnelles.",
+            "form": {
+                "firstName": "Prénom",
+                "lastName": "Nom",
+                "email": "Adresse Email",
+                "role": "Rôle",
+                "bio": "Bio",
+                "avatar": "Photo de Profil",
+                "upload": "Téléverser",
+                "uploadAvatar": "Téléverser une photo de profil",
+                "changeAvatar": "Changer l'avatar",
+                "save": "Enregistrer les modifications",
+                "saving": "Enregistrement...",
+                "jobTitle": "Intitulé du poste",
+                "bioPlaceholder": "Parlez-nous un peu de vous...",
+                "emailHelp": "L'adresse email ne peut pas être modifiée."
+            },
+            "avatar": {
+                "uploading": "Téléversement...",
+                "change": "Changer l'avatar"
+            },
+            "toasts": {
+                "success": "Profil mis à jour avec succès",
+                "error": "Échec de la mise à jour du profil",
+                "avatarSuccess": "Avatar téléversé avec succès",
+                "avatarError": "Échec du téléversement de l'avatar"
+            }
+        },
+        "company": {
+            "title": "Paramètres de l'Entreprise",
+            "subtitle": "Gérer les détails de l'entreprise et la marque",
+            "description": "Gérez les détails de votre entreprise et les informations de contact.",
+            "accessRestricted": "Accès Restreint",
+            "accessRestrictedDesc": "Seuls les administrateurs peuvent modifier les paramètres de l'entreprise.",
+            "form": {
+                "name": "Nom de l'Entreprise",
+                "website": "Site Web",
+                "address": "Adresse",
+                "city": "Ville",
+                "country": "Pays",
+                "save": "Enregistrer les modifications",
+                "saving": "Enregistrement..."
+            },
+            "toasts": {
+                "success": "Paramètres de l'entreprise mis à jour",
+                "error": "Échec de la mise à jour des paramètres de l'entreprise"
+            }
+        },
+        "branding": {
+            "title": "Marque",
+            "subtitle": "Personnalisez l'apparence et le ressenti",
+            "description": "Personnalisez l'apparence de l'application.",
+            "accessRestricted": {
+                "title": "Accès Restreint",
+                "description": "Seuls les administrateurs peuvent modifier les paramètres de marque."
+            },
+            "form": {
+                "companyLogo": "Logo de l'Entreprise",
+                "noLogo": "Aucun Logo",
+                "uploadLogo": "Téléverser le Logo",
+                "logoHelp": "Fichiers autorisés : JPG, PNG. Taille max : 1 Mo.",
+                "primaryColor": "Couleur Principale",
+                "accentColor": "Couleur d'Accent",
+                "save": "Enregistrer les modifications",
+                "saving": "Enregistrement...",
+                "recommendation": "Taille recommandée : 500x500px. Taille max : 2 Mo."
+            },
+            "toasts": {
+                "success": "Paramètres de marque mis à jour",
+                "error": "Échec de la mise à jour de la marque",
+                "logoSuccess": "Logo téléversé avec succès"
+            }
+        },
+        "notifications": {
+            "title": "Préférences de Notification",
+            "subtitle": "Gérer les notifications email et push",
+            "description": "Gérez comment et quand vous recevez des notifications.",
+            "form": {
+                "workOrderUpdates": {
+                    "title": "Mises à jour des Ordres de Travail",
+                    "description": "Recevez des notifications lorsque le statut d'un ordre de travail change."
+                },
+                "lowStockAlerts": {
+                    "title": "Alertes de Stock Faible",
+                    "description": "Soyez notifié lorsque le stock de pièces est faible."
+                },
+                "maintenanceReminders": {
+                    "title": "Rappels de Maintenance",
+                    "description": "Notifications de maintenance planifiée à venir."
+                },
+                "realtimeAlerts": {
+                    "title": "Alertes en Temps Réel",
+                    "description": "Voir les notifications toast pour les événements en direct dans l'application."
+                },
+                "save": "Enregistrer les Préférences",
+                "saving": "Enregistrement..."
+            },
+            "toasts": {
+                "updateSuccess": "Préférences de notification mises à jour",
+                "updateError": "Échec de la mise à jour des préférences de notification"
+            }
+        },
+        "integrations": {
+            "title": "Intégrations",
+            "subtitle": "Connecter avec des outils tiers",
+            "description": "Connectez votre flux de maintenance avec des systèmes externes.",
+            "odoo": {
+                "cardTitle": "Intégration Odoo",
+                "cardDescription": "Synchronisez l'inventaire et les pièces avec l'ERP Odoo",
+                "status": {
+                    "active": "Actif",
+                    "connected": "Connecté"
+                },
+                "fields": {
+                    "baseUrl": "URL de Base",
+                    "database": "Base de Données",
+                    "lastSync": "Dernière Synchro",
+                    "status": "Statut",
+                    "never": "Jamais"
+                },
+                "form": {
+                    "odooUrl": "URL Odoo",
+                    "databaseName": "Nom de la Base de Données",
+                    "apiKey": "Clé API"
+                },
+                "actions": {
+                    "connect": "Connecter",
+                    "disconnect": "Déconnecter",
+                    "testConnection": "Tester la Connexion"
+                },
+                "toasts": {
+                    "connectSuccess": "Connecté à Odoo avec succès",
+                    "connectError": "Échec de la connexion à Odoo",
+                    "testSuccess": "Test de connexion réussi ! Latence : {latency}",
+                    "testError": "Échec du test de connexion",
+                    "disconnectSuccess": "Déconnecté d'Odoo",
+                    "disconnectError": "Échec de la déconnexion"
+                }
+            }
+        },
+        "roles": {
+            "title": "Rôles et Permissions",
+            "subtitle": "Gérer les niveaux d'accès des utilisateurs",
+            "description": "Gérez les rôles et configurez le contrôle d'accès pour votre équipe.",
+            "create": "Créer un Rôle",
+            "createRole": "Créer un Rôle Personnalisé",
+            "table": {
+                "role": "Rôle",
+                "roleName": "Nom du Rôle",
+                "users": "Utilisateurs",
+                "activeUsers": "Utilisateurs Actifs",
+                "actions": "Actions",
+                "edit": "Modifier les Permissions",
+                "managePermissions": "Gérer les Permissions",
+                "delete": "Supprimer le Rôle",
+                "permissions": "Permissions",
+                "description": "Description",
+                "modules": "Modules",
+                "noRoles": "Aucun rôle trouvé"
+            },
+            "drawer": {
+                "title": "Modifier les Permissions de {role}",
+                "description": "Configurer le contrôle d'accès granulaire pour ce rôle.",
+                "save": "Enregistrer les Permissions",
+                "saving": "Enregistrement...",
+                "cancel": "Annuler",
+                "modules": {
+                    "users": "Utilisateurs",
+                    "vehicles": "Véhicules",
+                    "work_orders": "Ordres de Travail",
+                    "inventory": "Inventaire",
+                    "maintenance": "Maintenance",
+                    "reports": "Rapports",
+                    "settings": "Paramètres"
+                },
+                "types": {
+                    "read": "Lecture",
+                    "create": "Création",
+                    "update": "Mise à Jour",
+                    "delete": "Suppression"
+                }
+            },
+            "form": {
+                "name": "Nom du Rôle",
+                "description": "Description",
+                "save": "Enregistrer le Rôle",
+                "create": "Créer un Rôle"
+            },
+            "toasts": {
+                "success": "Permissions mises à jour",
+                "error": "Échec de la mise à jour des permissions"
+            }
+        }
+    },
     "inventory": {
         "title": "Inventaire",
         "subtitle": "Gérez les pièces, les niveaux de stock et les fournisseurs",
