@@ -8,6 +8,8 @@ export interface ProfileData {
     job_title: string;
     phone: string;
     department: string;
+    bio?: string;
+    avatar_url?: string;
 }
 
 export interface UpdateProfileRequest {

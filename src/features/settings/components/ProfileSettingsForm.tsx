@@ -103,7 +103,7 @@ export function ProfileSettingsForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={avatarPreview || "/avatars/01.png"} alt="Avatar" />
+              <AvatarImage src={avatarPreview || profile?.avatar_url || "/avatars/01.png"} alt="Avatar" />
               <AvatarFallback>
                 {profile?.first_name?.[0]}{profile?.last_name?.[0]}
               </AvatarFallback>

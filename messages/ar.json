@@ -30,7 +30,62 @@
         "delete": "حذف",
         "save": "حفظ",
         "cancel": "إلغاء",
-        "actions": "إجراءات"
+        "actions": "إجراءات",
+        "loading": "جاري التحميل...",
+        "status": "الحالة",
+        "type": "النوع",
+        "priority": "الأولوية",
+        "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر: {item}؟",
+        "noData": "لم يتم العثور على بيانات",
+        "search": "بحث...",
+        "total": "الإجمالي"
+    },
+    "toasts": {
+        "success": {
+            "taskAdded": "تم إضافة المهمة",
+            "taskDeleted": "تم حذف المهمة",
+            "userSuspended": "تم تعليق المستخدم",
+            "userSuspendedDesc": "تم تعليق {name} بنجاح.",
+            "userReactivated": "تم إعادة تفعيل المستخدم",
+            "userReactivatedDesc": "تم إعادة تفعيل {name} بنجاح.",
+            "userDeleted": "تم حذف المستخدم",
+            "userDeletedDesc": "تمت إزالة {name} بنجاح.",
+            "userAdded": "تم إضافة المستخدم",
+            "userAddedDesc": "تم إضافة {name} إلى الفريق بنجاح.",
+            "userUpdated": "تم تحديث المستخدم",
+            "userUpdatedDesc": "تم تحديث {name} بنجاح.",
+            "roleCreated": "تم إنشاء الدور بنجاح",
+            "roleDeleted": "تم حذف الدور بنجاح",
+            "rolePermissionsUpdated": "تم تحديث صلاحيات الدور بنجاح",
+            "taskUpdated": "تم تحديث المهمة",
+            "commentPosted": "تم نشر التعليق",
+            "commentDeleted": "تم حذف التعليق",
+            "fileUploaded": "تم رفع الملف بنجاح",
+            "fileDeleted": "تم حذف الملف",
+            "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
+            "logoUploaded": "تم رفع الشعار بنجاح",
+            "avatarUploaded": "تم تحديث الصورة الشخصية بنجاح",
+            "companyUpdated": "تم تحديث إعدادات الشركة بنجاح",
+            "brandingUpdated": "تم تحديث إعدادات الهوية بنجاح"
+        },
+        "error": {
+            "addTaskFailed": "فشل إضافة المهمة",
+            "updateTaskFailed": "فشل تحديث المهمة",
+            "deleteTaskFailed": "فشل حذف المهمة",
+            "postCommentFailed": "فشل نشر التعليق",
+            "deleteCommentFailed": "فشل حذف التعليق",
+            "uploadFileFailed": "فشل رفع الملف",
+            "deleteFileFailed": "فشل حذف الملف",
+            "roleCreateFailed": "فشل إنشاء الدور",
+            "roleDeleteFailed": "فشل حذف الدور",
+            "rolePermissionsUpdateFailed": "فشل تحديث الصلاحيات",
+            "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+            "profileUpdateFailed": "فشل تحديث الملف الشخصي",
+            "avatarUploadFailed": "فشل رفع الصورة الشخصية",
+            "companyUpdateFailed": "فشل تحديث إعدادات الشركة",
+            "brandingUpdateFailed": "فشل تحديث إعدادات الهوية",
+            "logoUploadFailed": "فشل رفع الشعار"
+        }
     },
     "navigation": {
         "sidebar": {
@@ -991,14 +1046,39 @@
     },
     "users": {
         "title": "المستخدمون",
+        "subtitle": "إدارة فريقك ومستويات وصولهم",
+        "table": {
+            "headers": {
+                "user": "المستخدم",
+                "email": "البريد الإلكتروني",
+                "role": "الدور",
+                "status": "الحالة",
+                "actions": "الإجراءات"
+            }
+        },
+        "roles": {
+            "admin": "مدير النظام",
+            "manager": "مشرف",
+            "technician": "فني",
+            "viewer": "مشاهد"
+        },
+        "status": {
+            "active": "نشط",
+            "suspended": "معلق",
+            "inactive": "غير نشط"
+        },
         "actions": {
             "add": "إضافة مستخدم",
             "addFirst": "أضف مستخدمك الأول",
-            "reactivate": "إعادة التفعيل",
-            "suspend": "تعليق",
+            "view": "عرض التفاصيل",
             "edit": "تعديل الملف الشخصي",
+            "suspend": "تعليق المستخدم",
+            "reactivate": "إعادة تفعيل المستخدم",
+            "delete": "حذف المستخدم",
             "invite": "دعوة/إعادة إرسال"
         },
+        "confirmSuspend": "هل أنت متأكد أنك تريد تعليق {name}؟",
+        "confirmDelete": "هل أنت متأكد أنك تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
         "errors": {
             "loadFailed": "فشل تحميل المستخدمين",
             "generic": "حدث خطأ أثناء جلب المستخدمين",
@@ -1007,6 +1087,36 @@
         "empty": {
             "title": "لا يوجد مستخدمون حتى الان",
             "description": "أضف أعضاء الفريق لإدارة أسطولك. قم بتعيين الأدوار وتتبع الأنشطة والتعاون بفعالية."
+        },
+        "form": {
+            "title": "إضافة مستخدم",
+            "editTitle": "تعديل المستخدم",
+            "description": "التقط تفاصيل المستخدم ودوره وحالته لضم زملاء جدد للفريق.",
+            "editDescription": "تحديث تفاصيل المستخدم ودوره وحالة حسابه.",
+            "fields": {
+                "name": "الاسم",
+                "namePlaceholder": "أدخل الاسم الكامل",
+                "email": "البريد الإلكتروني",
+                "emailPlaceholder": "user@example.com",
+                "phone": "الهاتف",
+                "phonePlaceholder": "+212 6 00 00 00 00",
+                "role": "الدور",
+                "selectRole": "اختر الدور",
+                "status": "الحالة",
+                "selectStatus": "اختر الحالة",
+                "profilePhoto": "صورة الملف الشخصي"
+            },
+            "errors": {
+                "nameRequired": "الاسم مطلوب",
+                "emailRequired": "البريد الإلكتروني مطلوب",
+                "validEmail": "أدخل بريداً إلكترونياً صالحاً",
+                "roleRequired": "الدور مطلوب"
+            },
+            "actions": {
+                "add": "إضافة مستخدم",
+                "save": "حفظ التغييرات",
+                "cancel": "إلغاء"
+            }
         },
         "details": {
             "overview": "نظرة عامة",
@@ -1323,23 +1433,109 @@
     },
     "workOrders": {
         "title": "أوامر العمل",
+        "checklist": {
+            "title": "قائمة المهام",
+            "subtitle": "إدارة وتتبع مهام أمر العمل",
+            "addTask": "إضافة مهمة",
+            "addFirstTask": "إضافة أول مهمة",
+            "progress": "التقدم العام",
+            "completedOf": "تم إنجاز {completed} من أصل {total} مهمة",
+            "noTasks": "لا توجد مهام حتى الآن",
+            "noTasksDesc": "ابدأ بإضافة المهمة الأولى لهذا الأمر العمل.",
+            "todo": "يجب عمله",
+            "done": "منجز",
+            "markToDo": "تحديد كـ يجب عمله",
+            "markDone": "تحديد كـ منجز",
+            "dueTomorrow": "مستحق غدًا"
+        },
+        "form": {
+            "title": "إضافة مهمة جديدة",
+            "editTitle": "تعديل أمر العمل",
+            "createTitle": "إنشاء أمر عمل",
+            "description": "إنشاء مهمة مفصلة لهذا الأمر العمل",
+            "editDescription": "تحديث تفاصيل أمر العمل هذا.",
+            "createDescription": "إنشاء أمر عمل صيانة جديد.",
+            "fields": {
+                "title": "العنوان",
+                "titlePlaceholder": "مثال: فحص الفرامل",
+                "type": "النوع",
+                "selectType": "اختر النوع",
+                "description": "الوصف",
+                "descriptionPlaceholder": "صف المشكلة أو الصيانة المطلوبة...",
+                "priority": "الأولوية",
+                "selectPriority": "اختر الأولوية",
+                "status": "الحالة",
+                "selectStatus": "اختر الحالة",
+                "assignee": "المسؤول عن التنفيذ",
+                "selectTechnician": "اختر فنياً",
+                "category": "الفئة",
+                "selectCategory": "اختر الفئة",
+                "estimatedDuration": "الوقت المتوقع (بالساعات)",
+                "durationPlaceholder": "مثال: 2.5",
+                "estimatedCost": "التكلفة المتوقعة ({currency})",
+                "costPlaceholder": "0.00",
+                "notes": "ملاحظات إضافية",
+                "notesPlaceholder": "أي ملاحظات أو تعليمات إضافية...",
+                "attachments": "المرفقات",
+                "uploadText": "انقر لتحميل الملفات أو قم بسحبها وإفلاتها",
+                "uploadHint": "PDF، PNG، JPG حتى 10 ميجابايت"
+            },
+            "types": {
+                "preventive": "وقائي",
+                "corrective": "تصحيحي",
+                "inspection": "فحص"
+            },
+            "categories": {
+                "mechanical": "ميكانيكي",
+                "electrical": "كهربائي",
+                "body": "هيكل",
+                "tires": "إطارات",
+                "other": "أخرى"
+            },
+            "actions": {
+                "create": "إنشاء أمر عمل",
+                "save": "حفظ التغييرات"
+            }
+        },
+        "parts": {
+            "title": "قطع الغيار",
+            "headers": {
+                "name": "اسم القطعة",
+                "sku": "SKU",
+                "qty": "الكمية",
+                "price": "سعر الوحدة",
+                "total": "الإجمالي"
+            }
+        },
+        "status": {
+            "pending": "قيد الانتظار",
+            "in_progress": "قيد التنفيذ",
+            "completed": "مكتمل",
+            "cancelled": "ملغى"
+        },
+        "priorities": {
+            "low": "منخفض",
+            "medium": "متوسط",
+            "high": "عالي",
+            "urgent": "عاجل"
+        },
         "actions": {
             "new": "أمر عمل جديد",
             "edit": "تعديل التفاصيل",
-            "markComplete": "وضع علامة كمكتمل",
+            "markComplete": "وضع علامة كـ مكتمل",
             "goBack": "رجوع",
             "saveChanges": "حفظ التغييرات"
         },
         "filters": {
-            "searchPlaceholder": "البحث بالرقم التعريفي أو العنوان",
+            "searchPlaceholder": "البحث بواسطة المعرف أو العنوان",
             "priority": {
-                "all": "كل الأولويات",
-                "high": "عالية",
-                "medium": "متوسطة",
-                "low": "منخفضة"
+                "all": "جميع الأولويات",
+                "high": "عالي",
+                "medium": "متوسط",
+                "low": "منخفض"
             },
             "status": {
-                "all": "كل الحالات",
+                "all": "جميع الحالات",
                 "pending": "قيد الانتظار",
                 "inProgress": "قيد التنفيذ",
                 "completed": "مكتمل"
@@ -1353,8 +1549,8 @@
         },
         "details": {
             "notFound": {
-                "title": "أمر العمل غير موجود",
-                "description": "تعذر العثور على أمر العمل المطلوب."
+                "title": "لم يتم العثور على أمر العمل",
+                "description": "تعذر تحديد موقع أمر العمل المطلوب."
             },
             "tabs": {
                 "overview": "نظرة عامة",
@@ -1366,11 +1562,11 @@
             "cards": {
                 "status": {
                     "title": "الحالة",
-                    "description": "مرحلة سير العمل الحالية"
+                    "description": "المرحلة الحالية لسير العمل"
                 },
                 "dueDate": {
                     "title": "تاريخ الاستحقاق",
-                    "description": "تاريخ الانتهاء المستهدف",
+                    "description": "تاريخ الإنجاز المستهدف",
                     "none": "لا يوجد تاريخ"
                 },
                 "vehicle": {
@@ -1393,7 +1589,7 @@
             },
             "modal": {
                 "title": "تعديل أمر العمل",
-                "description": "تحديث حالة أمر العمل، المعين له، أو تاريخ الاستحقاق.",
+                "description": "تحديث حالة أمر العمل أو المعين له أو تاريخ الاستحقاق.",
                 "titleLabel": "العنوان",
                 "dueDateLabel": "تاريخ الاستحقاق"
             }

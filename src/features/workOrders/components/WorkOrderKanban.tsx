@@ -152,7 +152,12 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
 
     // Perform API call in background
     try {
-      await updateWorkOrderStatus(activeId, newStatus, position, "default");
+      await updateWorkOrderStatus(activeId, {
+        status: newStatus,
+        position,
+        boardId: "default",
+        clientRequestId,
+      });
       toast.success("Status updated", {
         description: `Work order moved to ${newStatus.replace("_", " ")}`,
       });

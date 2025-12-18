@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { WorkOrder, WorkOrderPriority, WorkOrderStatus } from "../types/workOrder.types";
+import { useTranslations } from "next-intl";
 
 interface EditWorkOrderModalProps {
   isOpen: boolean;
@@ -35,6 +36,9 @@ export function EditWorkOrderModal({
   workOrder,
   onSave,
 }: EditWorkOrderModalProps) {
+  const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
+
   const { register, handleSubmit, setValue } = useForm<Partial<WorkOrder>>({
     defaultValues: {
       title: workOrder?.title || "",
@@ -71,84 +75,83 @@ export function EditWorkOrderModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
         <DialogHeader>
-          <DialogTitle>{workOrder ? "Edit Work Order" : "Create Work Order"}</DialogTitle>
+          <DialogTitle>{workOrder ? t("form.editTitle") : t("form.createTitle")}</DialogTitle>
           <DialogDescription>
-            {workOrder ? "Update the details of this work order." : "Create a new maintenance work order."}
+            {workOrder ? t("form.editDescription") : t("form.createDescription")}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">{t("form.fields.title")} *</Label>
               <Input
                 id="title"
-                {...register("title", { required: "Title is required" })}
-                placeholder="e.g. Brake Inspection"
+                {...register("title", { required: true })}
+                placeholder={t("form.fields.titlePlaceholder")}
               />
-              {/* Error handling would go here */}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="type">Type</Label>
+              <Label htmlFor="type">{t("form.fields.type")}</Label>
               <Select
                 onValueChange={(value) => setValue("type", value as any)}
                 defaultValue={workOrder?.type || "preventive"}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t("form.fields.selectType")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="preventive">Preventive</SelectItem>
-                  <SelectItem value="corrective">Corrective</SelectItem>
-                  <SelectItem value="inspection">Inspection</SelectItem>
+                  <SelectItem value="preventive">{t("form.types.preventive")}</SelectItem>
+                  <SelectItem value="corrective">{t("form.types.corrective")}</SelectItem>
+                  <SelectItem value="inspection">{t("form.types.inspection")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("form.fields.description")}</Label>
             <Textarea
               id="description"
               {...register("description")}
-              placeholder="Describe the issue or maintenance required..."
+              placeholder={t("form.fields.descriptionPlaceholder")}
               className="h-20"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority">{t("form.fields.priority")}</Label>
               <Select
                 onValueChange={(value) => setValue("priority", value as WorkOrderPriority)}
                 defaultValue={workOrder?.priority || "medium"}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder={t("form.fields.selectPriority")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
+                  <SelectItem value="low">{t("priorities.low")}</SelectItem>
+                  <SelectItem value="medium">{t("priorities.medium")}</SelectItem>
+                  <SelectItem value="high">{t("priorities.high")}</SelectItem>
+                  <SelectItem value="urgent">{t("priorities.urgent")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">{t("form.fields.status")}</Label>
               <Select
                 onValueChange={(value) => setValue("status", value as WorkOrderStatus)}
                 defaultValue={workOrder?.status || "pending"}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t("form.fields.selectStatus")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="pending">{t("status.pending")}</SelectItem>
+                  <SelectItem value="in_progress">{t("status.in_progress")}</SelectItem>
+                  <SelectItem value="completed">{t("status.completed")}</SelectItem>
+                  <SelectItem value="cancelled">{t("status.cancelled")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -156,16 +159,16 @@ export function EditWorkOrderModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="assigned_to">Assignee</Label>
+              <Label htmlFor="assigned_to">{t("form.fields.assignee")}</Label>
               <Select
                 onValueChange={(value) => setValue("assigned_to", value)}
                 defaultValue={workOrder?.assigned_to || ""}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select technician" />
+                  <SelectValue placeholder={t("form.fields.selectTechnician")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="unassigned">Unassigned</SelectItem>
+                  <SelectItem value="unassigned">{tc("noData")}</SelectItem>
                   <SelectItem value="tech-1">John Doe</SelectItem>
                   <SelectItem value="tech-2">Sarah Smith</SelectItem>
                   <SelectItem value="tech-3">Mike Johnson</SelectItem>
@@ -174,20 +177,20 @@ export function EditWorkOrderModal({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t("form.fields.category")}</Label>
               <Select
                 onValueChange={(value) => setValue("category", value)}
                 defaultValue={workOrder?.category || ""}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={t("form.fields.selectCategory")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="mechanical">Mechanical</SelectItem>
-                  <SelectItem value="electrical">Electrical</SelectItem>
-                  <SelectItem value="body">Body Work</SelectItem>
-                  <SelectItem value="tires">Tires</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="mechanical">{t("form.categories.mechanical")}</SelectItem>
+                  <SelectItem value="electrical">{t("form.categories.electrical")}</SelectItem>
+                  <SelectItem value="body">{t("form.categories.body")}</SelectItem>
+                  <SelectItem value="tires">{t("form.categories.tires")}</SelectItem>
+                  <SelectItem value="other">{t("form.categories.other")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -195,56 +198,56 @@ export function EditWorkOrderModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="estimated_duration">Est. Time (Hours)</Label>
+              <Label htmlFor="estimated_duration">{t("form.fields.estimatedDuration")}</Label>
               <Input
                 id="estimated_duration"
                 type="number"
                 step="0.5"
                 {...register("estimated_duration", { valueAsNumber: true })}
-                placeholder="e.g. 2.5"
+                placeholder={t("form.fields.durationPlaceholder")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="estimated_cost">Est. Cost (MAD)</Label>
+              <Label htmlFor="estimated_cost">{t("form.fields.estimatedCost", { currency: "MAD" })}</Label>
               <Input
                 id="estimated_cost"
                 type="number"
                 step="0.01"
                 {...register("estimated_cost", { valueAsNumber: true })}
-                placeholder="0.00"
+                placeholder={t("form.fields.costPlaceholder")}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes</Label>
+            <Label htmlFor="notes">{t("form.fields.notes")}</Label>
             <Textarea
               id="notes"
               {...register("notes")}
-              placeholder="Any additional notes or instructions..."
+              placeholder={t("form.fields.notesPlaceholder")}
               className="h-20"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Attachments</Label>
+            <Label>{t("form.fields.attachments")}</Label>
             <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Click to upload files or drag and drop
+                {t("form.fields.uploadText")}
               </p>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                PDF, PNG, JPG up to 10MB
+                {t("form.fields.uploadHint")}
               </p>
             </div>
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button type="submit">
-              {workOrder ? "Save Changes" : "Create Work Order"}
+              {workOrder ? t("form.actions.save") : t("form.actions.create")}
             </Button>
           </DialogFooter>
         </form>

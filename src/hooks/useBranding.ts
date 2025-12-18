@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBranding, updateBranding, uploadLogo, BrandingSettings, UpdateBrandingRequest } from "@/services/settings/brandingService";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export const useBranding = () => {
+    const t = useTranslations("toasts");
     const queryClient = useQueryClient();
 
     const { data: branding, isLoading, error } = useQuery({
@@ -14,10 +16,10 @@ export const useBranding = () => {
         mutationFn: (data: UpdateBrandingRequest) => updateBranding(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["branding"] });
-            toast.success("Branding settings updated successfully");
+            toast.success(t("success.brandingUpdated"));
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || "Failed to update branding settings");
+            toast.error(error.response?.data?.error || t("error.brandingUpdateFailed"));
         },
     });
 
@@ -25,10 +27,10 @@ export const useBranding = () => {
         mutationFn: (file: File) => uploadLogo(file),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["branding"] });
-            toast.success("Logo uploaded successfully");
+            toast.success(t("success.logoUploaded"));
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || "Failed to upload logo");
+            toast.error(error.response?.data?.error || t("error.logoUploadFailed"));
         },
     });
 

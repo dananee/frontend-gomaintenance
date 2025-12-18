@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getRoles, getRole, updateRolePermissions, createRole, deleteRole, Role } from "@/services/settings/rolesService";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export const useRoles = () => {
+    const t = useTranslations("toasts");
     const queryClient = useQueryClient();
 
     const { data: roles, isLoading, error } = useQuery({
@@ -14,18 +16,18 @@ export const useRoles = () => {
         mutationFn: (data: { name: string; description: string }) => createRole(data.name, data.description),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["roles"] });
-            toast("Role created successfully");
+            toast.success(t("success.roleCreated"));
         },
-        onError: () => toast("Failed to create role"),
+        onError: () => toast.error(t("error.roleCreateFailed")),
     });
 
     const deleteMutation = useMutation({
         mutationFn: deleteRole,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["roles"] });
-            toast("Role deleted successfully");
+            toast.success(t("success.roleDeleted"));
         },
-        onError: () => toast("Failed to delete role"),
+        onError: () => toast.error(t("error.roleDeleteFailed")),
     });
 
     return {
@@ -40,6 +42,7 @@ export const useRoles = () => {
 };
 
 export const useRole = (roleName: string) => {
+    const t = useTranslations("toasts");
     const queryClient = useQueryClient();
 
     const { data: role, isLoading, error } = useQuery({
@@ -53,10 +56,10 @@ export const useRole = (roleName: string) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["roles"] });
             queryClient.invalidateQueries({ queryKey: ["roles", roleName] });
-            toast.success("Role permissions updated successfully");
+            toast.success(t("success.rolePermissionsUpdated"));
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || "Failed to update permissions");
+            toast.error(error.response?.data?.error || t("error.rolePermissionsUpdateFailed"));
         },
     });
 

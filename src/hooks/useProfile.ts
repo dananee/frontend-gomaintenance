@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile, uploadAvatar, ProfileData, UpdateProfileRequest } from "@/services/settings/profileService";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export const useProfile = () => {
+    const t = useTranslations("toasts");
     const queryClient = useQueryClient();
 
     const { data: profile, isLoading, error } = useQuery({
@@ -14,10 +16,10 @@ export const useProfile = () => {
         mutationFn: (data: UpdateProfileRequest) => updateProfile(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["profile"] });
-            toast.success("Profile updated successfully");
+            toast.success(t("success.profileUpdated"));
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || "Failed to update profile");
+            toast.error(error.response?.data?.error || t("error.profileUpdateFailed"));
         },
     });
 
@@ -25,10 +27,10 @@ export const useProfile = () => {
         mutationFn: (file: File) => uploadAvatar(file),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["profile"] });
-            toast.success("Avatar uploaded successfully");
+            toast.success(t("success.avatarUploaded"));
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || "Failed to upload avatar");
+            toast.error(error.response?.data?.error || t("error.avatarUploadFailed"));
         },
     });
 

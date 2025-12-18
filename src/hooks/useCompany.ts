@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCompany, updateCompany, CompanyData, UpdateCompanyRequest } from "@/services/settings/companyService";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export const useCompany = () => {
+    const t = useTranslations("toasts");
     const queryClient = useQueryClient();
 
     const { data: company, isLoading, error } = useQuery({
@@ -14,10 +16,10 @@ export const useCompany = () => {
         mutationFn: (data: UpdateCompanyRequest) => updateCompany(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["company"] });
-            toast.success("Company settings updated successfully");
+            toast.success(t("success.companyUpdated"));
         },
         onError: (error: any) => {
-            toast.error(error.response?.data?.error || "Failed to update company settings");
+            toast.error(error.response?.data?.error || t("error.companyUpdateFailed"));
         },
     });
 
