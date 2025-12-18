@@ -8,7 +8,22 @@ import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function NotFound() {
-  const t = useTranslations("notFoundPage");
+  // Use a try-catch or a check to handle cases where this might be rendered outside of NextIntlClientProvider
+  let t;
+  try {
+    t = useTranslations("notFoundPage");
+  } catch (e) {
+    // Fallback for cases where translations aren't available
+    t = (key: string) => {
+      const messages: Record<string, string> = {
+        title: "404 - Page Not Found",
+        description: "The page you are looking for does not exist.",
+        "actions.backToDashboard": "Back to Dashboard",
+        "actions.viewWorkOrders": "View Work Orders",
+      };
+      return messages[key] || key;
+    };
+  }
 
   return (
     <Suspense>

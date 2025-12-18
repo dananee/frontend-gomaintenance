@@ -20,6 +20,7 @@ export interface WorkOrder {
   assigned_to_name?: string;
   scheduled_date?: string;
   completed_date?: string;
+  position?: number;
   estimated_duration?: number; // in hours
   category?: string;
   estimated_cost?: number;
@@ -27,6 +28,27 @@ export interface WorkOrder {
   notes?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface WorkOrderBoardUpdateEvent {
+  eventId: string;
+  workspaceId: string;
+  boardId: string;
+  workOrderId: string;
+  fromStatus: WorkOrderStatus;
+  toStatus: WorkOrderStatus;
+  position: number;
+  updatedAt: string;
+  updatedBy: string;
+  clientRequestId?: string;
+  type: "work_order.updated";
+}
+
+export interface UpdateWorkOrderStatusRequest {
+  status: WorkOrderStatus;
+  position: number;
+  boardId: string;
+  clientRequestId: string;
 }
 
 // ... (keep existing interfaces)

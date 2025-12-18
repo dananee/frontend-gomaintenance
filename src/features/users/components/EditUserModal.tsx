@@ -24,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserRecord, UserStatus } from "../store/useUsersStore";
+import { useTranslations } from "next-intl";
 
 interface EditUserModalProps {
   open: boolean;
@@ -38,6 +39,10 @@ export function EditUserModal({
   onOpenChange,
   user,
 }: EditUserModalProps) {
+  const t = useTranslations("users");
+  const tc = useTranslations("common");
+  const tt = useTranslations("toasts");
+
   const updateUser = useUsersStore((state) => state.updateUser);
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
@@ -61,11 +66,11 @@ export function EditUserModal({
 
   const validate = () => {
     const nextErrors: Record<string, string> = {};
-    if (!name.trim()) nextErrors.name = "Name is required";
-    if (!email.trim()) nextErrors.email = "Email is required";
+    if (!name.trim()) nextErrors.name = t("form.errors.nameRequired");
+    if (!email.trim()) nextErrors.email = t("form.errors.emailRequired");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      nextErrors.email = "Enter a valid email";
-    if (!role) nextErrors.role = "Role is required";
+      nextErrors.email = t("form.errors.validEmail");
+    if (!role) nextErrors.role = t("form.errors.roleRequired");
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -91,8 +96,8 @@ export function EditUserModal({
       avatar,
     });
 
-    toast.success("User updated", {
-      description: `${name} has been updated successfully.`,
+    toast.success(tt("success.userUpdated"), {
+      description: tt("success.userUpdatedDesc", { name }),
     });
     onOpenChange(false);
   };
@@ -102,9 +107,9 @@ export function EditUserModal({
       <DialogContent className="sm:max-w-[550px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader className="space-y-2">
-            <DialogTitle>Edit User</DialogTitle>
+            <DialogTitle>{t("form.editTitle")}</DialogTitle>
             <DialogDescription>
-              Update user details, role, and account status.
+              {t("form.editDescription")}
             </DialogDescription>
           </DialogHeader>
 
@@ -115,7 +120,7 @@ export function EditUserModal({
             </Avatar>
             <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
               <p className="font-medium text-gray-900 dark:text-gray-100">
-                Profile photo
+                {t("form.fields.profilePhoto")}
               </p>
               <Input type="file" accept="image/*" onChange={handleAvatar} />
             </div>
@@ -123,12 +128,12 @@ export function EditUserModal({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Name *</Label>
+              <Label htmlFor="edit-name">{t("form.fields.name")} *</Label>
               <Input
                 id="edit-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter full name"
+                placeholder={t("form.fields.namePlaceholder")}
                 required
               />
               {errors.name && (
@@ -136,13 +141,13 @@ export function EditUserModal({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-email">Email *</Label>
+              <Label htmlFor="edit-email">{t("form.fields.email")} *</Label>
               <Input
                 id="edit-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@example.com"
+                placeholder={t("form.fields.emailPlaceholder")}
                 required
               />
               {errors.email && (
@@ -152,25 +157,25 @@ export function EditUserModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-phone">Phone</Label>
+            <Label htmlFor="edit-phone">{t("form.fields.phone")}</Label>
             <Input
               id="edit-phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 123-4567"
+              placeholder={t("form.fields.phonePlaceholder")}
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Role *</Label>
+              <Label>{t("form.fields.role")} *</Label>
               <Select
                 value={role}
                 onValueChange={(value) => setRole(value as Role)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
+                  <SelectValue placeholder={t("form.fields.selectRole")} />
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map((option) => (
@@ -179,7 +184,7 @@ export function EditUserModal({
                       value={option}
                       className="capitalize"
                     >
-                      {option}
+                      {t(`roles.${option}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -189,18 +194,18 @@ export function EditUserModal({
               )}
             </div>
             <div className="space-y-2">
-              <Label>Status *</Label>
+              <Label>{t("form.fields.status")} *</Label>
               <Select
                 value={status}
                 onValueChange={(value) => setStatus(value as UserStatus)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t("form.fields.selectStatus")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="suspended">Suspended</SelectItem>
+                  <SelectItem value="active">{t("status.active")}</SelectItem>
+                  <SelectItem value="inactive">{t("status.inactive")}</SelectItem>
+                  <SelectItem value="suspended">{t("status.suspended")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -212,9 +217,9 @@ export function EditUserModal({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit">{t("form.actions.save")}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -1,90 +1,205 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { useBranding } from "@/hooks/useBranding";
+import { Loader2, Lock, Upload } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthStore } from "@/store/useAuthStore";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
 
-type BrandingFormValues = {
-  primaryColor: string;
-  accentColor: string;
-  logoUrl: string;
-};
+interface BrandingFormValues {
+  primary_color: string;
+  accent_color: string;
+}
 
 export function BrandingSettingsForm() {
-  const { register, handleSubmit } = useForm<BrandingFormValues>({
-    defaultValues: {
-      primaryColor: "#3b82f6",
-      accentColor: "#f59e0b",
-      logoUrl: "",
-    },
-  });
+  const { branding, isLoading, updateBranding, isUpdating, uploadLogo, isUploading } = useBranding();
+  const { user } = useAuthStore();
+  const isAdmin = user?.role === "admin";
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const t = useTranslations("settings.branding");
 
-  const onSubmit = (data: BrandingFormValues) => {
-    console.log(data);
+  const { register, handleSubmit, reset, watch, formState: { isDirty } } = useForm<BrandingFormValues>();
+
+  const primaryColor = watch("primary_color");
+  const accentColor = watch("accent_color");
+
+  useEffect(() => {
+    if (branding) {
+      reset({
+        primary_color: branding.primary_color,
+        accent_color: branding.accent_color,
+      });
+      if (branding.logo_url) {
+        setLogoPreview(branding.logo_url);
+      }
+    }
+  }, [branding, reset]);
+
+  const onSubmit = async (data: BrandingFormValues) => {
+    await updateBranding({
+      ...data,
+      logo_url: branding?.logo_url || "",
+    });
+    reset(data);
   };
 
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setLogoPreview(objectUrl);
+
+      try {
+        await uploadLogo(file);
+      } catch (error) {
+        setLogoPreview(branding?.logo_url || null);
+      }
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-8 w-48 mb-2" />
+          <Skeleton className="h-4 w-96" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Skeleton className="h-32 w-full rounded-lg" />
+          <div className="grid gap-4 md:grid-cols-2">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card>
+    <Card className="relative">
+      {!isAdmin && (
+        <div className="absolute inset-0 bg-background/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
+          <div className="bg-background border rounded-lg p-6 shadow-lg flex flex-col items-center gap-3 text-center max-w-sm">
+            <div className="h-10 w-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center">
+              <Lock className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">{t("accessRestricted.title")}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t("accessRestricted.description")}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <CardHeader>
-        <CardTitle>Branding & Appearance</CardTitle>
-        <CardDescription>Customize the look and feel of your workspace.</CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-8">
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Theme Colors</h3>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Primary Color</Label>
-                <div className="flex gap-2">
-                  <Input 
-                    type="color" 
-                    {...register("primaryColor")} 
-                    className="w-12 h-10 p-1 cursor-pointer"
+            <h3 className="text-sm font-medium">{t("form.companyLogo")}</h3>
+            <div className="flex items-center gap-6">
+              <div className="relative h-32 w-32 border border-dashed rounded-lg flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden">
+                {logoPreview ? (
+                  <Image
+                    src={logoPreview}
+                    alt="Logo Preview"
+                    fill
+                    className="object-contain p-2"
                   />
-                  <Input 
-                    {...register("primaryColor")} 
-                    className="font-mono uppercase"
-                  />
-                </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground">{t("form.noLogo")}</span>
+                )}
               </div>
               <div className="space-y-2">
-                <Label>Accent Color</Label>
-                <div className="flex gap-2">
-                  <Input 
-                    type="color" 
-                    {...register("accentColor")} 
-                    className="w-12 h-10 p-1 cursor-pointer"
+                <div className="relative">
+                  <Input
+                    type="file"
+                    className="hidden"
+                    id="logo-upload"
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                    disabled={!isAdmin || isUploading}
                   />
-                  <Input 
-                    {...register("accentColor")} 
-                    className="font-mono uppercase"
-                  />
+                  <Button
+                    variant="outline"
+                    disabled={!isAdmin || isUploading}
+                    onClick={() => document.getElementById("logo-upload")?.click()}
+                  >
+                    {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                    {t("form.uploadLogo")}
+                  </Button>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  {t("form.logoHelp")}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium">Logo</h3>
-            <div className="flex items-center gap-4 p-4 border rounded-lg border-dashed">
-              <div className="h-16 w-16 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-xs text-gray-500">
-                Preview
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("form.primaryColor")}</label>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-9 w-9 rounded border shadow-sm shrink-0"
+                    style={{ backgroundColor: primaryColor }}
+                  />
+                  <Input
+                    {...register("primary_color")}
+                    disabled={!isAdmin}
+                    placeholder="#000000"
+                  />
+                  <Input
+                    type="color"
+                    className="w-12 p-0 h-9 border-0 shrink-0 cursor-pointer"
+                    {...register("primary_color")}
+                    disabled={!isAdmin}
+                  />
+                </div>
               </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium">Upload new logo</p>
-                <p className="text-xs text-gray-500">Recommended size: 512x512px. Max 2MB.</p>
-                <Input type="file" className="max-w-xs" />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("form.accentColor")}</label>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-9 w-9 rounded border shadow-sm shrink-0"
+                    style={{ backgroundColor: accentColor }}
+                  />
+                  <Input
+                    {...register("accent_color")}
+                    disabled={!isAdmin}
+                    placeholder="#000000"
+                  />
+                  <Input
+                    type="color"
+                    className="w-12 p-0 h-9 border-0 shrink-0 cursor-pointer"
+                    {...register("accent_color")}
+                    disabled={!isAdmin}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex justify-end">
-            <Button type="submit">Save Changes</Button>
-          </div>
-        </form>
+            {isAdmin && (
+              <div className="flex justify-end">
+                <Button type="submit" disabled={!isDirty || isUpdating}>
+                  {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {t("form.save")}
+                </Button>
+              </div>
+            )}
+          </form>
+        </div>
       </CardContent>
     </Card>
   );

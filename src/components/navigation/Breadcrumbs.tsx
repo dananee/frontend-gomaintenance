@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
 import { ChevronRight, Home } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -39,25 +38,25 @@ export function Breadcrumbs() {
 
     return segments.map((segment, index) => {
       const href = "/" + segments.slice(0, index + 1).join("/");
-      
+
       // Determine label
       let label = segment;
       const isLast = index === segments.length - 1;
-      
+
       // Heuristic for IDs: UUIDs or long alphanumeric strings, or purely numeric long IDs
       // Standard UUID is 36 chars.
       // Database IDs might be integers or shorter strings.
       // We assume if it's not a known static route segment, and it's not "edit" or "create", it's likely an ID.
       const isKnownRoute = !!routeLabels[segment] || segment === "edit" || segment === "create";
-      
+
       if (segment === "dashboard") {
-        label = "Home"; 
+        label = "Home";
       } else if (routeLabels[segment]) {
         // Try to translate
         try {
-            label = t(routeLabels[segment]);
+          label = t(routeLabels[segment]);
         } catch {
-            label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+          label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
         }
       } else if (segment === "edit") {
         label = tCommon("edit");
@@ -69,8 +68,8 @@ export function Breadcrumbs() {
         label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
       }
 
-      return { 
-        label, 
+      return {
+        label,
         href,
         isId: !isKnownRoute && segment !== "dashboard",
         isLast
@@ -83,38 +82,38 @@ export function Breadcrumbs() {
   return (
     <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 flex-wrap">
       {crumbs.map((crumb, index) => {
-         // Skip rendering "Home" text if it's the dashboard segment, just show icon?
-         // Use existing design: Home icon + text "Home" for dashboard.
-         // If segment is dashboard, we render the Home link.
-         
-         if (crumb.label === "Home") {
-             return (
-                <div key={crumb.href} className="flex items-center gap-2">
-                    <Link href="/dashboard" className="flex items-center gap-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                        <Home className="h-4 w-4" />
-                        <span className="hidden sm:inline">Home</span>
-                    </Link>
-                </div>
-             );
-         }
+        // Skip rendering "Home" text if it's the dashboard segment, just show icon?
+        // Use existing design: Home icon + text "Home" for dashboard.
+        // If segment is dashboard, we render the Home link.
 
-         return (
+        if (crumb.label === "Home") {
+          return (
             <div key={crumb.href} className="flex items-center gap-2">
-              <ChevronRight className="h-4 w-4 shrink-0" />
-              {crumb.isLast ? (
-                <span className="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px]" title={crumb.label}>
-                    {crumb.label}
-                </span>
-              ) : (
-                <Link
-                  href={crumb.href}
-                  className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white truncate max-w-[150px]"
-                >
-                  {crumb.label}
-                </Link>
-              )}
+              <Link href="/dashboard" className="flex items-center gap-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                <Home className="h-4 w-4" />
+                <span className="hidden sm:inline">Home</span>
+              </Link>
             </div>
-         );
+          );
+        }
+
+        return (
+          <div key={crumb.href} className="flex items-center gap-2">
+            <ChevronRight className="h-4 w-4 shrink-0" />
+            {crumb.isLast ? (
+              <span className="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[200px]" title={crumb.label}>
+                {crumb.label}
+              </span>
+            ) : (
+              <Link
+                href={crumb.href}
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white truncate max-w-[150px]"
+              >
+                {crumb.label}
+              </Link>
+            )}
+          </div>
+        );
       })}
     </nav>
   );

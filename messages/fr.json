@@ -30,7 +30,57 @@
         "delete": "Supprimer",
         "save": "Enregistrer",
         "cancel": "Annuler",
-        "actions": "Actions"
+        "actions": "Actions",
+        "loading": "Chargement...",
+        "status": "Statut",
+        "type": "Type",
+        "priority": "Priorité",
+        "confirmDelete": "Voulez-vous vraiment supprimer cet élément : {item} ?",
+        "noData": "Aucune donnée trouvée",
+        "search": "Rechercher...",
+        "total": "Total"
+    },
+    "toasts": {
+        "success": {
+            "taskAdded": "Tâche ajoutée",
+            "taskDeleted": "Tâche supprimée",
+            "userSuspended": "Utilisateur suspendu",
+            "userSuspendedDesc": "{name} a été suspendu.",
+            "userReactivated": "Utilisateur réactivé",
+            "userReactivatedDesc": "{name} a été réactivé.",
+            "userDeleted": "Utilisateur supprimé",
+            "userDeletedDesc": "{name} a été supprimé.",
+            "userAdded": "Utilisateur ajouté",
+            "userAddedDesc": "{name} a été ajouté à l'équipe.",
+            "userUpdated": "Utilisateur mis à jour",
+            "userUpdatedDesc": "{name} a été mis à jour avec succès.",
+            "roleCreated": "Rôle créé avec succès",
+            "roleDeleted": "Rôle supprimé avec succès",
+            "rolePermissionsUpdated": "Permissions du rôle mises à jour avec succès",
+            "taskUpdated": "Tâche mise à jour",
+            "commentPosted": "Commentaire publié",
+            "commentDeleted": "Commentaire supprimé",
+            "fileUploaded": "Fichier téléchargé avec succès",
+            "fileDeleted": "Fichier supprimé",
+            "profileUpdated": "Profil mis à jour avec succès",
+            "logoUploaded": "Logo téléchargé avec succès",
+            "avatarUploaded": "Avatar mis à jour avec succès",
+            "companyUpdated": "Paramètres de l'entreprise mis à jour avec succès",
+            "brandingUpdated": "Paramètres de la marque mis à jour avec succès"
+        },
+        "error": {
+            "generic": "Une erreur s’est produite. Veuillez réessayer.",
+            "taskUpdateFailed": "Échec de la mise à jour de la tâche",
+            "taskDeleteFailed": "Échec de la suppression de la tâche",
+            "roleCreateFailed": "Échec de la création du rôle",
+            "roleDeleteFailed": "Échec de la suppression du rôle",
+            "rolePermissionsUpdateFailed": "Échec de la mise à jour des permissions",
+            "profileUpdateFailed": "Échec de la mise à jour du profil",
+            "avatarUploadFailed": "Échec de la mise à jour de l'avatar",
+            "companyUpdateFailed": "Échec de la mise à jour des paramètres de l'entreprise",
+            "brandingUpdateFailed": "Échec de la mise à jour des paramètres de la marque",
+            "logoUploadFailed": "Échec du téléchargement du logo"
+        }
     },
     "navigation": {
         "sidebar": {
@@ -584,6 +634,214 @@
             }
         }
     },
+    "settings": {
+        "title": "Paramètres",
+        "subtitle": "Gérez votre compte et vos préférences d'espace de travail",
+        "navigation": {
+            "profile": "Profil",
+            "company": "Entreprise",
+            "branding": "Marque",
+            "roles": "Rôles et Permissions",
+            "notifications": "Notifications",
+            "integrations": "Intégrations"
+        },
+        "profile": {
+            "title": "Paramètres de Profil",
+            "subtitle": "Gérer vos informations personnelles",
+            "description": "Gérez votre profil et vos informations personnelles.",
+            "form": {
+                "firstName": "Prénom",
+                "lastName": "Nom",
+                "email": "Adresse Email",
+                "role": "Rôle",
+                "bio": "Bio",
+                "avatar": "Photo de Profil",
+                "upload": "Téléverser",
+                "uploadAvatar": "Téléverser une photo de profil",
+                "changeAvatar": "Changer l'avatar",
+                "save": "Enregistrer les modifications",
+                "saving": "Enregistrement...",
+                "jobTitle": "Intitulé du poste",
+                "bioPlaceholder": "Parlez-nous un peu de vous...",
+                "emailHelp": "L'adresse email ne peut pas être modifiée."
+            },
+            "avatar": {
+                "uploading": "Téléversement...",
+                "change": "Changer l'avatar"
+            },
+            "toasts": {
+                "success": "Profil mis à jour avec succès",
+                "error": "Échec de la mise à jour du profil",
+                "avatarSuccess": "Avatar téléversé avec succès",
+                "avatarError": "Échec du téléversement de l'avatar"
+            }
+        },
+        "company": {
+            "title": "Paramètres de l'Entreprise",
+            "subtitle": "Gérer les détails de l'entreprise et la marque",
+            "description": "Gérez les détails de votre entreprise et les informations de contact.",
+            "accessRestricted": "Accès Restreint",
+            "accessRestrictedDesc": "Seuls les administrateurs peuvent modifier les paramètres de l'entreprise.",
+            "form": {
+                "name": "Nom de l'Entreprise",
+                "website": "Site Web",
+                "address": "Adresse",
+                "city": "Ville",
+                "country": "Pays",
+                "save": "Enregistrer les modifications",
+                "saving": "Enregistrement..."
+            },
+            "toasts": {
+                "success": "Paramètres de l'entreprise mis à jour",
+                "error": "Échec de la mise à jour des paramètres de l'entreprise"
+            }
+        },
+        "branding": {
+            "title": "Marque",
+            "subtitle": "Personnalisez l'apparence et le ressenti",
+            "description": "Personnalisez l'apparence de l'application.",
+            "accessRestricted": {
+                "title": "Accès Restreint",
+                "description": "Seuls les administrateurs peuvent modifier les paramètres de marque."
+            },
+            "form": {
+                "companyLogo": "Logo de l'Entreprise",
+                "noLogo": "Aucun Logo",
+                "uploadLogo": "Téléverser le Logo",
+                "logoHelp": "Fichiers autorisés : JPG, PNG. Taille max : 1 Mo.",
+                "primaryColor": "Couleur Principale",
+                "accentColor": "Couleur d'Accent",
+                "save": "Enregistrer les modifications",
+                "saving": "Enregistrement...",
+                "recommendation": "Taille recommandée : 500x500px. Taille max : 2 Mo."
+            },
+            "toasts": {
+                "success": "Paramètres de marque mis à jour",
+                "error": "Échec de la mise à jour de la marque",
+                "logoSuccess": "Logo téléversé avec succès"
+            }
+        },
+        "notifications": {
+            "title": "Préférences de Notification",
+            "subtitle": "Gérer les notifications email et push",
+            "description": "Gérez comment et quand vous recevez des notifications.",
+            "form": {
+                "workOrderUpdates": {
+                    "title": "Mises à jour des Ordres de Travail",
+                    "description": "Recevez des notifications lorsque le statut d'un ordre de travail change."
+                },
+                "lowStockAlerts": {
+                    "title": "Alertes de Stock Faible",
+                    "description": "Soyez notifié lorsque le stock de pièces est faible."
+                },
+                "maintenanceReminders": {
+                    "title": "Rappels de Maintenance",
+                    "description": "Notifications de maintenance planifiée à venir."
+                },
+                "realtimeAlerts": {
+                    "title": "Alertes en Temps Réel",
+                    "description": "Voir les notifications toast pour les événements en direct dans l'application."
+                },
+                "save": "Enregistrer les Préférences",
+                "saving": "Enregistrement..."
+            },
+            "toasts": {
+                "updateSuccess": "Préférences de notification mises à jour",
+                "updateError": "Échec de la mise à jour des préférences de notification"
+            }
+        },
+        "integrations": {
+            "title": "Intégrations",
+            "subtitle": "Connecter avec des outils tiers",
+            "description": "Connectez votre flux de maintenance avec des systèmes externes.",
+            "odoo": {
+                "cardTitle": "Intégration Odoo",
+                "cardDescription": "Synchronisez l'inventaire et les pièces avec l'ERP Odoo",
+                "status": {
+                    "active": "Actif",
+                    "connected": "Connecté"
+                },
+                "fields": {
+                    "baseUrl": "URL de Base",
+                    "database": "Base de Données",
+                    "lastSync": "Dernière Synchro",
+                    "status": "Statut",
+                    "never": "Jamais"
+                },
+                "form": {
+                    "odooUrl": "URL Odoo",
+                    "databaseName": "Nom de la Base de Données",
+                    "apiKey": "Clé API"
+                },
+                "actions": {
+                    "connect": "Connecter",
+                    "disconnect": "Déconnecter",
+                    "testConnection": "Tester la Connexion"
+                },
+                "toasts": {
+                    "connectSuccess": "Connecté à Odoo avec succès",
+                    "connectError": "Échec de la connexion à Odoo",
+                    "testSuccess": "Test de connexion réussi ! Latence : {latency}",
+                    "testError": "Échec du test de connexion",
+                    "disconnectSuccess": "Déconnecté d'Odoo",
+                    "disconnectError": "Échec de la déconnexion"
+                }
+            }
+        },
+        "roles": {
+            "title": "Rôles et Permissions",
+            "subtitle": "Gérer les niveaux d'accès des utilisateurs",
+            "description": "Gérez les rôles et configurez le contrôle d'accès pour votre équipe.",
+            "create": "Créer un Rôle",
+            "createRole": "Créer un Rôle Personnalisé",
+            "table": {
+                "role": "Rôle",
+                "roleName": "Nom du Rôle",
+                "users": "Utilisateurs",
+                "activeUsers": "Utilisateurs Actifs",
+                "actions": "Actions",
+                "edit": "Modifier les Permissions",
+                "managePermissions": "Gérer les Permissions",
+                "delete": "Supprimer le Rôle",
+                "permissions": "Permissions",
+                "description": "Description",
+                "modules": "Modules",
+                "noRoles": "Aucun rôle trouvé"
+            },
+            "drawer": {
+                "title": "Modifier les Permissions de {role}",
+                "description": "Configurer le contrôle d'accès granulaire pour ce rôle.",
+                "save": "Enregistrer les Permissions",
+                "saving": "Enregistrement...",
+                "cancel": "Annuler",
+                "modules": {
+                    "users": "Utilisateurs",
+                    "vehicles": "Véhicules",
+                    "work_orders": "Ordres de Travail",
+                    "inventory": "Inventaire",
+                    "maintenance": "Maintenance",
+                    "reports": "Rapports",
+                    "settings": "Paramètres"
+                },
+                "types": {
+                    "read": "Lecture",
+                    "create": "Création",
+                    "update": "Mise à Jour",
+                    "delete": "Suppression"
+                }
+            },
+            "form": {
+                "name": "Nom du Rôle",
+                "description": "Description",
+                "save": "Enregistrer le Rôle",
+                "create": "Créer un Rôle"
+            },
+            "toasts": {
+                "success": "Permissions mises à jour",
+                "error": "Échec de la mise à jour des permissions"
+            }
+        }
+    },
     "inventory": {
         "title": "Inventaire",
         "subtitle": "Gérez les pièces, les niveaux de stock et les fournisseurs",
@@ -743,14 +1001,39 @@
     },
     "users": {
         "title": "Utilisateurs",
+        "subtitle": "Gérez votre équipe et leurs niveaux d'accès",
+        "table": {
+            "headers": {
+                "user": "Utilisateur",
+                "email": "Email",
+                "role": "Rôle",
+                "status": "Statut",
+                "actions": "Actions"
+            }
+        },
+        "roles": {
+            "admin": "Admin",
+            "manager": "Gestionnaire",
+            "technician": "Technicien",
+            "viewer": "Lecteur"
+        },
+        "status": {
+            "active": "Actif",
+            "suspended": "Suspendu",
+            "inactive": "Inactif"
+        },
         "actions": {
             "add": "Ajouter un utilisateur",
             "addFirst": "Ajoutez votre premier utilisateur",
-            "reactivate": "Réactiver",
-            "suspend": "Suspendre",
+            "view": "Voir les détails",
             "edit": "Modifier le profil",
+            "suspend": "Suspendre l'utilisateur",
+            "reactivate": "Réactiver l'utilisateur",
+            "delete": "Supprimer l'utilisateur",
             "invite": "Inviter / Renvoyer"
         },
+        "confirmSuspend": "Voulez-vous vraiment suspendre {name} ?",
+        "confirmDelete": "Voulez-vous vraiment supprimer {name} ? Cette action est irréversible.",
         "errors": {
             "loadFailed": "Échec du chargement des utilisateurs",
             "generic": "Une erreur s’est produite lors du chargement des utilisateurs",
@@ -759,6 +1042,36 @@
         "empty": {
             "title": "Aucun utilisateur pour le moment",
             "description": "Ajoutez des membres pour gérer votre flotte. Attribuez des rôles, suivez les activités et collaborez efficacement."
+        },
+        "form": {
+            "title": "Ajouter un utilisateur",
+            "editTitle": "Modifier l'utilisateur",
+            "description": "Saisissez les détails de l'utilisateur, son rôle et son statut pour intégrer de nouveaux coéquipiers.",
+            "editDescription": "Mettre à jour les détails de l'utilisateur, son rôle et le statut de son compte.",
+            "fields": {
+                "name": "Nom",
+                "namePlaceholder": "Entrez le nom complet",
+                "email": "Email",
+                "emailPlaceholder": "utilisateur@exemple.com",
+                "phone": "Téléphone",
+                "phonePlaceholder": "+33 1 23 45 67 89",
+                "role": "Rôle",
+                "selectRole": "Sélectionner le rôle",
+                "status": "Statut",
+                "selectStatus": "Sélectionner le statut",
+                "profilePhoto": "Photo de profil"
+            },
+            "errors": {
+                "nameRequired": "Le nom est requis",
+                "emailRequired": "L'email est requis",
+                "validEmail": "Entrez un email valide",
+                "roleRequired": "Le rôle est requis"
+            },
+            "actions": {
+                "add": "Ajouter l'utilisateur",
+                "save": "Enregistrer les modifications",
+                "cancel": "Annuler"
+            }
         },
         "details": {
             "overview": "Aperçu",
@@ -1077,6 +1390,92 @@
     },
     "workOrders": {
         "title": "Ordres de travail",
+        "checklist": {
+            "title": "Liste de tâches",
+            "subtitle": "Gérer et suivre les tâches de l'ordre de travail",
+            "addTask": "Ajouter une tâche",
+            "addFirstTask": "Ajouter la première tâche",
+            "progress": "Progression globale",
+            "completedOf": "{completed} sur {total} tâches terminées",
+            "noTasks": "Aucune tâche pour le moment",
+            "noTasksDesc": "Commencez par ajouter la première tâche à cet ordre de travail.",
+            "todo": "À faire",
+            "done": "Terminé",
+            "markToDo": "Marquer comme à faire",
+            "markDone": "Marquer comme terminé",
+            "dueTomorrow": "Prévu demain"
+        },
+        "form": {
+            "title": "Ajouter une nouvelle tâche",
+            "editTitle": "Modifier l'ordre de travail",
+            "createTitle": "Créer un ordre de travail",
+            "description": "Créer une tâche détaillée pour cet ordre de travail",
+            "editDescription": "Mettre à jour les détails de cet ordre de travail.",
+            "createDescription": "Créer un nouvel ordre de travail de maintenance.",
+            "fields": {
+                "title": "Titre",
+                "titlePlaceholder": "ex: Inspection des freins",
+                "type": "Type",
+                "selectType": "Sélectionner le type",
+                "description": "Description",
+                "descriptionPlaceholder": "Décrivez le problème ou la maintenance requise...",
+                "priority": "Priorité",
+                "selectPriority": "Sélectionner la priorité",
+                "status": "Statut",
+                "selectStatus": "Sélectionner le statut",
+                "assignee": "Assigné à",
+                "selectTechnician": "Sélectionner un technicien",
+                "category": "Catégorie",
+                "selectCategory": "Sélectionner une catégorie",
+                "estimatedDuration": "Temps estimé (Heures)",
+                "durationPlaceholder": "ex: 2.5",
+                "estimatedCost": "Coût estimé ({currency})",
+                "costPlaceholder": "0.00",
+                "notes": "Notes supplémentaires",
+                "notesPlaceholder": "Toute note ou instruction supplémentaire...",
+                "attachments": "Pièces jointes",
+                "uploadText": "Cliquez pour télécharger des fichiers ou glissez-déposez",
+                "uploadHint": "PDF, PNG, JPG jusqu'à 10 Mo"
+            },
+            "types": {
+                "preventive": "Préventif",
+                "corrective": "Correctif",
+                "inspection": "Inspection"
+            },
+            "categories": {
+                "mechanical": "Mécanique",
+                "electrical": "Électrique",
+                "body": "Carrosserie",
+                "tires": "Pneus",
+                "other": "Autre"
+            },
+            "actions": {
+                "create": "Créer l'ordre de travail",
+                "save": "Enregistrer les modifications"
+            }
+        },
+        "parts": {
+            "title": "Pièces",
+            "headers": {
+                "name": "Nom de la pièce",
+                "sku": "SKU",
+                "qty": "Qté",
+                "price": "Prix unitaire",
+                "total": "Total"
+            }
+        },
+        "status": {
+            "pending": "En attente",
+            "in_progress": "En cours",
+            "completed": "Terminé",
+            "cancelled": "Annulé"
+        },
+        "priorities": {
+            "low": "Faible",
+            "medium": "Moyen",
+            "high": "Élevé",
+            "urgent": "Urgent"
+        },
         "actions": {
             "new": "Nouvel ordre de travail",
             "edit": "Modifier les détails",

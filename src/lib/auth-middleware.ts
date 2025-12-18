@@ -59,8 +59,16 @@ const routeAccessRules: AccessRule[] = [
     roles: ["admin", "manager", "technician", "viewer"],
   },
   {
-    pattern: /^\/dashboard\/settings/,
+    pattern: /^\/dashboard\/settings\/(profile|notifications)/,
+    roles: ["admin", "manager", "technician", "viewer"],
+  },
+  {
+    pattern: /^\/dashboard\/settings\/(company|branding|roles|integrations)/,
     roles: ["admin"],
+  },
+  {
+    pattern: /^\/dashboard\/settings$/, // Main settings page
+    roles: ["admin", "manager", "technician", "viewer"],
   },
   {
     pattern: /^\/dashboard\//,
@@ -101,11 +109,21 @@ async function verifyToken(token: string): Promise<JWTPayload | null> {
   }
 }
 
+// Helper to strip locale from pathname
+function getPathnameWithoutLocale(pathname: string): string {
+  const localePattern = /^\/(?:en|fr|ar)(?:\/|$)/;
+  const newPath = pathname.replace(localePattern, "/");
+  return newPath === "" ? "/" : newPath;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const pathnameWithoutLocale = getPathnameWithoutLocale(pathname);
 
   // Allow public routes
-  if (publicRoutes.includes(pathname)) {
+  // We check against both the raw pathname and the locale-stripped pathname
+  // This ensures /fr/login works as well as /login (if visited directly)
+  if (publicRoutes.includes(pathnameWithoutLocale)) {
     return NextResponse.next();
   }
 
@@ -113,7 +131,7 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
 
   // Root path handling
-  if (pathname === "/") {
+  if (pathnameWithoutLocale === "/") {
     if (token) {
       const payload = await verifyToken(token);
       if (payload) {
@@ -124,11 +142,13 @@ export async function proxy(request: NextRequest) {
   }
 
   // Protected routes (dashboard and API routes)
-  if (pathname.startsWith("/dashboard") || (pathname.startsWith("/api") && !pathname.startsWith("/api/auth"))) {
+  // For API routes, we don't strip locale because they don't have it (usually)
+  // But our previous check was: pathname.startsWith("/dashboard")
+  if (pathnameWithoutLocale.startsWith("/dashboard") || (pathname.startsWith("/api") && !pathname.startsWith("/api/auth"))) {
     // Redirect to login if no token
     if (!token) {
       const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("from", pathname);
+      loginUrl.searchParams.set("from", pathname); // Keep original path for redirect back
       return NextResponse.redirect(loginUrl);
     }
 
@@ -152,8 +172,8 @@ export async function proxy(request: NextRequest) {
     }
 
     // For dashboard routes, check role-based access
-    if (pathname.startsWith("/dashboard")) {
-      const allowed = isRouteAllowed(pathname, payload.role);
+    if (pathnameWithoutLocale.startsWith("/dashboard")) {
+      const allowed = isRouteAllowed(pathnameWithoutLocale, payload.role);
       if (!allowed) {
         return NextResponse.redirect(new URL("/not-authorized", request.url));
       }
@@ -164,6 +184,7 @@ export async function proxy(request: NextRequest) {
     response.headers.set("x-user-id", payload.user_id);
     response.headers.set("x-user-role", payload.role);
     response.headers.set("x-tenant-id", payload.tenant_id);
+    response.headers.set("Authorization", `Bearer ${token}`);
     return response;
   }
 

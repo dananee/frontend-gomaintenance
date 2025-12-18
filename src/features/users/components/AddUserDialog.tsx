@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserStatus } from "../store/useUsersStore";
+import { useTranslations } from "next-intl";
 
 interface AddUserDialogProps {
   open: boolean;
@@ -21,6 +22,10 @@ interface AddUserDialogProps {
 const roles: Role[] = ["admin", "manager", "technician", "viewer"];
 
 export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
+  const t = useTranslations("users");
+  const tc = useTranslations("common");
+  const tt = useTranslations("toasts");
+
   const addUser = useUsersStore((state) => state.addUser);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,10 +45,10 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 
   const validate = () => {
     const nextErrors: Record<string, string> = {};
-    if (!name.trim()) nextErrors.name = "Name is required";
-    if (!email.trim()) nextErrors.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = "Enter a valid email";
-    if (!role) nextErrors.role = "Role is required";
+    if (!name.trim()) nextErrors.name = t("form.errors.nameRequired");
+    if (!email.trim()) nextErrors.email = t("form.errors.emailRequired");
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = t("form.errors.validEmail");
+    if (!role) nextErrors.role = t("form.errors.roleRequired");
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -61,8 +66,8 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
     if (!validate()) return;
 
     const newUser = addUser({ name, email, role, status, avatar });
-    toast.success("User added", {
-      description: `${newUser.name} has been added to the team.`,
+    toast.success(tt("success.userAdded"), {
+      description: tt("success.userAddedDesc", { name: newUser.name }),
     });
     resetForm();
     onOpenChange(false);
@@ -73,8 +78,8 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
       <DialogContent className="sm:max-w-[550px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader className="space-y-2">
-            <DialogTitle>Add User</DialogTitle>
-            <DialogDescription>Capture user details, role, and status to onboard new teammates.</DialogDescription>
+            <DialogTitle>{t("form.title")}</DialogTitle>
+            <DialogDescription>{t("form.description")}</DialogDescription>
           </DialogHeader>
 
           <div className="flex items-center gap-3">
@@ -83,31 +88,31 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
               <AvatarFallback>{getInitials(name || "New User")}</AvatarFallback>
             </Avatar>
             <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
-              <p className="font-medium text-gray-900 dark:text-gray-100">Profile photo</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{t("form.fields.profilePhoto")}</p>
               <Input type="file" accept="image/*" onChange={handleAvatar} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t("form.fields.name")}</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter full name"
+                placeholder={t("form.fields.namePlaceholder")}
                 required
               />
               {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("form.fields.email")}</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@example.com"
+                placeholder={t("form.fields.emailPlaceholder")}
                 required
               />
               {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
@@ -116,15 +121,15 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Role</Label>
+              <Label>{t("form.fields.role")}</Label>
               <Select value={role} onValueChange={(value) => setRole(value as Role)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
+                  <SelectValue placeholder={t("form.fields.selectRole")} />
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map((option) => (
                     <SelectItem key={option} value={option} className="capitalize">
-                      {option}
+                      {t(`roles.${option}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -133,11 +138,11 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
             </div>
             <div className="space-y-2">
               <Label className="flex items-center justify-between">
-                <span>Status</span>
-                <span className="text-xs text-gray-500">{status === "active" ? "Active" : "Inactive"}</span>
+                <span>{t("form.fields.status")}</span>
+                <span className="text-xs text-gray-500">{status === "active" ? t("status.active") : t("status.inactive")}</span>
               </Label>
               <div className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2 dark:border-gray-800">
-                <span className="text-sm text-gray-700 dark:text-gray-200">Active</span>
+                <span className="text-sm text-gray-700 dark:text-gray-200">{t("status.active")}</span>
                 <Switch checked={status === "active"} onCheckedChange={(checked) => setStatus(checked ? "active" : "inactive")} />
               </div>
             </div>
@@ -145,9 +150,9 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
 
           <DialogFooter className="gap-2 sm:gap-3">
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
-            <Button type="submit">Add User</Button>
+            <Button type="submit">{t("form.actions.add")}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

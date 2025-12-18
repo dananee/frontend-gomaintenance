@@ -1,14 +1,10 @@
 import apiClient from "@/lib/api/axiosClient";
-import { WorkOrder, WorkOrderStatus } from "../types/workOrder.types";
-
-export interface UpdateWorkOrderStatusRequest {
-  status: WorkOrderStatus;
-}
+import { WorkOrder, UpdateWorkOrderStatusRequest } from "../types/workOrder.types";
 
 export const updateWorkOrderStatus = async (
   id: string,
-  status: WorkOrderStatus
+  request: UpdateWorkOrderStatusRequest
 ): Promise<WorkOrder> => {
-  const response = await apiClient.patch<WorkOrder>(`/work-orders/${id}/status`, { status });
+  const response = await apiClient.patch<WorkOrder>(`/work-orders/${id}/status`, request);
   return response.data;
 };

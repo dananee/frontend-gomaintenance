@@ -3,7 +3,7 @@
 import { User, LogOut, Settings, UserCircle, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,7 +45,7 @@ export function UserNav() {
             </Avatar>
             <div className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-gray-900 bg-green-500" />
           </div>
-          
+
           <ChevronDown className="h-4 w-4 text-gray-400 transition-transform group-data-[state=open]:rotate-180" />
         </button>
       </DropdownMenuTrigger>

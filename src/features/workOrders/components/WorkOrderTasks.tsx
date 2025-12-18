@@ -14,8 +14,6 @@ import {
   Loader2,
   MoreVertical,
   ListTodo,
-  Calendar,
-  User,
 } from "lucide-react";
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
@@ -36,8 +34,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function WorkOrderTasks() {
+  const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
+  const tt = useTranslations("toasts");
   const params = useParams();
   const workOrderId = params.id as string;
   const { isOpen, open, close } = useModal();
@@ -45,7 +47,7 @@ export function WorkOrderTasks() {
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
   const [newTaskAssignee, setNewTaskAssignee] = useState("");
-  
+
   const queryClient = useQueryClient();
 
   const { data: tasks = [], isLoading } = useQuery({
@@ -63,10 +65,10 @@ export function WorkOrderTasks() {
       setNewTaskDueDate("");
       setNewTaskAssignee("");
       close();
-      toast.success("Task added");
+      toast.success(tt("success.taskAdded"));
     },
     onError: () => {
-      toast.error("Failed to add task");
+      toast.error(tt("error.addTaskFailed"));
     },
   });
 
@@ -77,7 +79,7 @@ export function WorkOrderTasks() {
       queryClient.invalidateQueries({ queryKey: ["workOrderTasks", workOrderId] });
     },
     onError: () => {
-      toast.error("Failed to update task");
+      toast.error(tt("error.updateTaskFailed"));
     },
   });
 
@@ -85,10 +87,10 @@ export function WorkOrderTasks() {
     mutationFn: (taskId: string) => deleteWorkOrderTask(workOrderId, taskId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workOrderTasks", workOrderId] });
-      toast.success("Task deleted");
+      toast.success(tt("success.taskDeleted"));
     },
     onError: () => {
-      toast.error("Failed to delete task");
+      toast.error(tt("error.deleteTaskFailed"));
     },
   });
 
@@ -102,7 +104,7 @@ export function WorkOrderTasks() {
   };
 
   const handleDeleteTask = (taskId: string) => {
-    if (confirm("Delete this task?")) {
+    if (confirm(tc("confirmDelete", { item: t("checklist.addTask") }))) {
       deleteMutation.mutate(taskId);
     }
   };
@@ -122,37 +124,36 @@ export function WorkOrderTasks() {
               </div>
               <div>
                 <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  Task Checklist
+                  {t("checklist.title")}
                 </CardTitle>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                  Manage and track work order tasks
+                  {t("checklist.subtitle")}
                 </p>
               </div>
             </div>
-            <Button 
-              onClick={open} 
+            <Button
+              onClick={open}
               className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all"
-              title="Add a new task to this work order"
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add Task
+              {t("checklist.addTask")}
             </Button>
           </div>
         </CardHeader>
-        
+
         <CardContent className="pt-6 space-y-6">
           {/* Progress Section */}
           <div className="space-y-3 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
             <div className="flex justify-between items-end">
               <div>
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1">
-                  Overall Progress
+                  {t("checklist.progress")}
                 </span>
                 <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   {Math.round(progress)}%
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-                  ({completedCount} of {totalCount} tasks completed)
+                  {t("checklist.completedOf", { completed: completedCount, total: totalCount })}
                 </span>
               </div>
             </div>
@@ -177,10 +178,10 @@ export function WorkOrderTasks() {
                 <ListTodo className="h-8 w-8 text-gray-400 dark:text-gray-500" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                No tasks yet
+                {t("checklist.noTasks")}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-xs mx-auto">
-                Get started by adding the first task to this work order.
+                {t("checklist.noTasksDesc")}
               </p>
               <Button
                 variant="outline"
@@ -188,7 +189,7 @@ export function WorkOrderTasks() {
                 onClick={open}
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add First Task
+                {t("checklist.addFirstTask")}
               </Button>
             </div>
           ) : (
@@ -202,11 +203,10 @@ export function WorkOrderTasks() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className={`group relative flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
-                      task.is_done 
-                        ? "bg-gray-50 border-gray-100 dark:bg-gray-900/30 dark:border-gray-800/50" 
+                    className={`group relative flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${task.is_done
+                        ? "bg-gray-50 border-gray-100 dark:bg-gray-900/30 dark:border-gray-800/50"
                         : "bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-200 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-blue-900"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start gap-4 flex-1">
                       <div className="pt-1">
@@ -214,22 +214,20 @@ export function WorkOrderTasks() {
                           id={`task-${task.id}`}
                           checked={task.is_done}
                           onCheckedChange={() => handleToggle(task.id, task.is_done)}
-                          className={`h-5 w-5 transition-all duration-300 ${
-                            task.is_done 
-                              ? "data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500" 
+                          className={`h-5 w-5 transition-all duration-300 ${task.is_done
+                              ? "data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
                               : "border-gray-300 dark:border-gray-600"
-                          }`}
+                            }`}
                         />
                       </div>
                       <div className="flex-1 space-y-1">
                         <div className="flex items-center gap-2">
                           <label
                             htmlFor={`task-${task.id}`}
-                            className={`cursor-pointer font-semibold text-base transition-colors duration-200 ${
-                              task.is_done 
-                                ? "text-gray-500 line-through decoration-gray-400" 
+                            className={`cursor-pointer font-semibold text-base transition-colors duration-200 ${task.is_done
+                                ? "text-gray-500 line-through decoration-gray-400"
                                 : "text-gray-900 dark:text-gray-100"
-                            }`}
+                              }`}
                           >
                             {task.name}
                           </label>
@@ -238,24 +236,22 @@ export function WorkOrderTasks() {
                               variant="outline"
                               className="ml-2 bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-900/50 text-[10px] px-1.5 py-0 h-5"
                             >
-                              Done
+                              {t("checklist.done")}
                             </Badge>
                           ) : (
                             <Badge
                               variant="outline"
                               className="ml-2 bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-900/50 text-[10px] px-1.5 py-0 h-5"
                             >
-                              To Do
+                              {t("checklist.todo")}
                             </Badge>
                           )}
                         </div>
-                        
-                        {/* Placeholder for future metadata - can be conditionally rendered if data exists */}
+
                         <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                          {/* Example placeholders */}
                           {/* <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            <span>Due Tomorrow</span>
+                            <span>{t("checklist.dueTomorrow")}</span>
                           </div> */}
                         </div>
                       </div>
@@ -264,9 +260,9 @@ export function WorkOrderTasks() {
                     <div className="flex items-center gap-2">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             className="h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <MoreVertical className="h-4 w-4" />
@@ -274,11 +270,11 @@ export function WorkOrderTasks() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleToggle(task.id, task.is_done)}>
-                            {task.is_done ? "Mark as To Do" : "Mark as Done"}
+                            {task.is_done ? t("checklist.markToDo") : t("checklist.markDone")}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => handleDeleteTask(task.id)}>
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            {tc("delete")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -295,26 +291,26 @@ export function WorkOrderTasks() {
       <Modal
         isOpen={isOpen}
         onClose={close}
-        title="Add New Task"
-        description="Create a detailed task for this work order"
+        title={t("form.title")}
+        description={t("form.description")}
       >
         <div className="space-y-4 py-2">
           <div className="space-y-2">
-            <Label htmlFor="task-title">Task Title <span className="text-red-500">*</span></Label>
+            <Label htmlFor="task-title">{t("form.fields.title")} <span className="text-red-500">*</span></Label>
             <Input
               id="task-title"
-              placeholder="e.g., Replace brake pads"
+              placeholder={t("form.fields.titlePlaceholder")}
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               className="h-10"
             />
           </div>
-          
+
           <div className="space-y-2">
-            <Label htmlFor="task-desc">Description (Optional)</Label>
+            <Label htmlFor="task-desc">{t("form.fields.description")}</Label>
             <Textarea
               id="task-desc"
-              placeholder="Add details about this task..."
+              placeholder={t("form.fields.descriptionPlaceholder")}
               value={newTaskDescription}
               onChange={(e) => setNewTaskDescription(e.target.value)}
               className="resize-none min-h-[80px]"
@@ -323,7 +319,7 @@ export function WorkOrderTasks() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="task-due">Due Date (Optional)</Label>
+              <Label htmlFor="task-due">{t("form.fields.dueDate")}</Label>
               <Input
                 id="task-due"
                 type="date"
@@ -332,10 +328,10 @@ export function WorkOrderTasks() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="task-assignee">Assignee (Optional)</Label>
+              <Label htmlFor="task-assignee">{t("form.fields.assignee")}</Label>
               <Select value={newTaskAssignee} onValueChange={setNewTaskAssignee}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select technician" />
+                  <SelectValue placeholder={t("form.fields.selectTechnician")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="tech1">John Doe</SelectItem>
@@ -348,15 +344,15 @@ export function WorkOrderTasks() {
 
           <div className="flex justify-end gap-3 pt-6">
             <Button variant="outline" onClick={close} className="h-10 px-4">
-              Cancel
+              {tc("cancel")}
             </Button>
-            <Button 
-              onClick={handleAddTask} 
+            <Button
+              onClick={handleAddTask}
               disabled={!newTaskTitle.trim() || createMutation.isPending}
               className="h-10 px-4 bg-blue-600 hover:bg-blue-700"
             >
               {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Task
+              {t("form.actions.create")}
             </Button>
           </div>
         </div>
