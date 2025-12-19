@@ -38,7 +38,16 @@
         "confirmDelete": "Voulez-vous vraiment supprimer cet élément : {item} ?",
         "noData": "Aucune donnée trouvée",
         "search": "Rechercher...",
-        "total": "Total"
+        "total": "Total",
+        "pickDate": "Choisir une date",
+        "openMenu": "Ouvrir le menu",
+        "userNav": {
+            "profile": "Profil",
+            "settings": "Paramètres",
+            "logout": "Déconnexion",
+            "user": "Utilisateur",
+            "role": "Rôle"
+        }
     },
     "toasts": {
         "success": {
@@ -644,6 +653,12 @@
         }
     },
     "notifications": {
+        "menu": {
+            "new": "{count} Nouveaux",
+            "noNotifications": "Aucune notification",
+            "caughtUp": "Vous êtes à jour !",
+            "viewAll": "Voir toutes les notifications"
+        },
         "common": {
             "categories": {
                 "work_order": "Ordres de travail",
@@ -695,6 +710,33 @@
             },
             "empty": "Aucune notification ne correspond à vos filtres."
         }
+    },
+    "search": {
+        "title": "Résultats de recherche",
+        "subtitle": "Parcourir les résultats par catégorie avec une vue complète.",
+        "quickSearch": "Appuyez sur / ou ⌘K pour rechercher n'importe où",
+        "cardTitle": "Rechercher",
+        "placeholder": "Rechercher des véhicules, ordres de travail, pièces, utilisateurs et pages",
+        "update": "Mettre à jour les résultats",
+        "tabs": {
+            "all": "Tout",
+            "vehicle": "Véhicules",
+            "work_order": "Ordres de travail",
+            "part": "Pièces",
+            "user": "Utilisateurs",
+            "page": "Pages"
+        },
+        "empty": {
+            "query": "Aucun résultat trouvé pour \"{query}\"",
+            "category": "Aucun résultat dans cette catégorie"
+        },
+        "inputPlaceholder": "Rechercher des véhicules, ordres de travail, pièces...",
+        "pressToSearch": "Appuyez sur / ou ⌘K pour rechercher n'importe où",
+        "paletteCommand": "Appuyez sur ⌘K pour la palette de commandes",
+        "fetching": "Récupération des résultats...",
+        "noResults": "Aucun résultat trouvé.",
+        "openPalette": "Ouvrir la palette de commandes",
+        "viewAll": "Voir tous les résultats"
     },
     "settings": {
         "title": "Paramètres",
@@ -1229,6 +1271,9 @@
                 "Van": "Fourgon",
                 "car": "Voiture",
                 "Car": "Voiture",
+                "8×4": "8×4",
+                "6×4": "6×4",
+                "4×2": "4×2",
                 "unknown": "Inconnu"
             }
         },

@@ -34,6 +34,8 @@ interface VehicleTableProps {
 export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
   const router = useRouter();
   const t = useTranslations("vehicles.details.table");
+  const tf = useTranslations("vehicles.filters");
+  const tc = useTranslations("common");
 
   if (isLoading) {
     return <div className="p-8 text-center">{t("noData")}</div>;
@@ -83,7 +85,7 @@ export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
                     {vehicle.brand} {vehicle.model}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {vehicle.year} • {vehicle.type}
+                    {vehicle.year} • {tf(`type.${vehicle.type}`) || vehicle.type}
                   </span>
                 </div>
               </TableCell>
@@ -97,7 +99,7 @@ export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
                       : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
                     }`}
                 >
-                  {vehicle.status}
+                  {tf(`status.${vehicle.status}`) || vehicle.status}
                 </span>
               </TableCell>
               <TableCell>
@@ -147,7 +149,7 @@ export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
                       variant="ghost"
                       className="h-8 w-8 p-0"
                     >
-                      <span className="sr-only">Open menu</span>
+                      <span className="sr-only">{tc("openMenu")}</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>

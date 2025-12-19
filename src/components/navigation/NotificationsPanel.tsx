@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslations } from "next-intl";
 
 const mockNotifications: Notification[] = [
   {
@@ -43,6 +44,8 @@ const mockNotifications: Notification[] = [
 ];
 
 export function NotificationsPanel() {
+  const t = useTranslations("notifications.dashboard");
+  const tm = useTranslations("notifications.menu");
   const [items, setItems] = useState<Notification[]>(mockNotifications);
   const [open, setOpen] = useState(false);
 
@@ -65,7 +68,7 @@ export function NotificationsPanel() {
           variant="ghost"
           size="icon"
           className="relative h-10 w-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
-          aria-label="Notifications"
+          aria-label={t("title")}
         >
           <Bell className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           {unreadCount > 0 && (
@@ -76,7 +79,7 @@ export function NotificationsPanel() {
       <PopoverContent align="end" className="w-96 p-0 shadow-xl border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
           <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            Notifications
+            {t("title")}
           </p>
           <Button
             variant="ghost"
@@ -84,7 +87,7 @@ export function NotificationsPanel() {
             onClick={markAll}
             className="text-xs h-auto py-1 text-blue-600 hover:text-blue-700 dark:text-blue-400"
           >
-            Mark all read
+            {t("actions.markAllRead")}
           </Button>
         </div>
 
@@ -105,7 +108,7 @@ export function NotificationsPanel() {
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <Bell className="h-8 w-8 text-gray-300 dark:text-gray-600 mb-2" />
-              <p className="text-sm text-gray-500">No notifications</p>
+              <p className="text-sm text-gray-500">{tm("noNotifications")}</p>
             </div>
           )}
         </div>
@@ -116,7 +119,7 @@ export function NotificationsPanel() {
             onClick={() => setOpen(false)}
           >
             <Button variant="ghost" className="w-full text-xs justify-center hover:bg-white dark:hover:bg-gray-800">
-              View all notifications
+              {tm("viewAll")}
             </Button>
           </Link>
         </div>

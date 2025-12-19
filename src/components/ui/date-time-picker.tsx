@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { format, parse, isValid } from "date-fns";
+import { enUS, fr, arSA } from "date-fns/locale";
 import { Calendar as CalendarIcon, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Popover,
   PopoverContent,
@@ -20,6 +22,12 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
+const locales = {
+  en: enUS,
+  fr: fr,
+  ar: arSA,
+};
+
 interface DateTimePickerProps {
   date?: Date;
   setDate: (date: Date | undefined) => void;
@@ -33,6 +41,9 @@ export function DateTimePicker({
   label,
   error,
 }: DateTimePickerProps) {
+  const t = useTranslations("common");
+  const locale = useLocale() as keyof typeof locales;
+  const dateLocale = locales[locale] || enUS;
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(date);
 
   // Sync internal state with external prop
@@ -95,9 +106,9 @@ export function DateTimePicker({
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {selectedDate ? (
-                  format(selectedDate, "PPP")
+                  format(selectedDate, "PPP", { locale: dateLocale })
                 ) : (
-                  <span>Pick a date</span>
+                  <span>{t("pickDate")}</span>
                 )}
               </Button>
             </PopoverTrigger>

@@ -50,7 +50,7 @@ export function Breadcrumbs() {
       const isKnownRoute = !!routeLabels[segment] || segment === "edit" || segment === "create";
 
       if (segment === "dashboard") {
-        label = "Home";
+        label = t("dashboard");
       } else if (routeLabels[segment]) {
         // Try to translate
         try {
@@ -86,12 +86,12 @@ export function Breadcrumbs() {
         // Use existing design: Home icon + text "Home" for dashboard.
         // If segment is dashboard, we render the Home link.
 
-        if (crumb.label === "Home") {
+        if (index === 0 && crumb.href === "/dashboard") {
           return (
             <div key={crumb.href} className="flex items-center gap-2">
               <Link href="/dashboard" className="flex items-center gap-1 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                 <Home className="h-4 w-4" />
-                <span className="hidden sm:inline">Home</span>
+                <span className="hidden sm:inline">{crumb.label}</span>
               </Link>
             </div>
           );

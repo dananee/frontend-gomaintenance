@@ -50,7 +50,12 @@ export default function SearchResultsPage() {
     if (query) params.set("query", query);
     if (activeTab !== "all") params.set("category", activeTab);
 
-    fetch(`/api/search?${params.toString()}`)
+    const token = localStorage.getItem("auth_token");
+    fetch(`/api/search?${params.toString()}`, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    })
       .then((res) => res.json())
       .then((data: { results: SearchResult[] }) => setResults(data.results));
   }, [activeTab, query]);

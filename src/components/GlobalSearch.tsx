@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useTranslations } from "next-intl";
+
 type SearchCategory = "vehicle" | "work_order" | "part" | "user" | "page";
 
 interface SearchResult {
@@ -38,15 +40,8 @@ interface GlobalSearchProps {
   className?: string;
 }
 
-const categoryLabels: Record<SearchCategory, string> = {
-  vehicle: "Vehicles",
-  work_order: "Work Orders",
-  part: "Parts",
-  user: "Users",
-  page: "Pages",
-};
-
 export function GlobalSearch({ className }: GlobalSearchProps) {
+  const t = useTranslations("search");
   const [paletteOpen, setPaletteOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
@@ -56,13 +51,20 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
   const [category, setCategory] = React.useState<SearchCategory | "all">("all");
   const router = useRouter();
 
+  const categories: SearchCategory[] = ["vehicle", "work_order", "part", "user", "page"];
+
   const fetchResults = React.useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
     if (query) params.set("query", query);
     if (category !== "all") params.set("category", category);
 
-    const response = await fetch(`/api/search?${params.toString()}`);
+    const token = localStorage.getItem("auth_token");
+    const response = await fetch(`/api/search?${params.toString()}`, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
     const data = (await response.json()) as { results: SearchResult[] };
     setResults(data.results);
     setLoading(false);
@@ -150,7 +152,7 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
             setFocused(false);
             setTimeout(() => setDropdownOpen(false), 100);
           }}
-          placeholder="Search vehicles, work orders, parts..."
+          placeholder={t("inputPlaceholder")}
           className="h-auto border-none bg-transparent px-0 text-sm placeholder:text-gray-400 focus-visible:ring-0"
         />
         <div className="flex items-center gap-1">
@@ -168,35 +170,35 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
               onClick={() => setCategory("all")}
               className="cursor-pointer"
             >
-              All
+              {t("tabs.all")}
             </Badge>
-            {Object.entries(categoryLabels).map(([value, label]) => (
+            {categories.map((val) => (
               <Badge
-                key={value}
-                variant={category === value ? "default" : "outline"}
-                onClick={() => setCategory(value as SearchCategory)}
+                key={val}
+                variant={category === val ? "default" : "outline"}
+                onClick={() => setCategory(val)}
                 className="cursor-pointer"
               >
-                {label}
+                {t(`tabs.${val}`)}
               </Badge>
             ))}
             <div className="ml-auto flex items-center gap-2 text-xs text-gray-500">
-              <span>Press ⌘K for command palette</span>
+              <span>{t("paletteCommand")}</span>
             </div>
           </div>
 
           {loading ? (
             <div className="flex items-center gap-2 py-6 text-sm text-gray-500">
-              <Loader2 className="h-4 w-4 animate-spin" /> Fetching results...
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("fetching")}
             </div>
           ) : results.length === 0 ? (
-            <p className="py-4 text-sm text-gray-500">No results found.</p>
+            <p className="py-4 text-sm text-gray-500">{t("noResults")}</p>
           ) : (
             <div className="space-y-3">
               {Object.entries(groupedResults).map(([group, groupResults]) => (
                 <div key={group} className="space-y-2">
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
-                    {categoryLabels[group as SearchCategory]}
+                    {t(`tabs.${group}`)}
                   </div>
                   <div className="divide-y divide-gray-100 rounded-md border border-gray-100 dark:divide-gray-800 dark:border-gray-800">
                     {groupResults.slice(0, 3).map((result) => (
@@ -223,10 +225,10 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
 
           <div className="mt-3 flex items-center justify-between">
             <Button variant="ghost" size="sm" onClick={() => setPaletteOpen(true)}>
-              Open command palette
+              {t("openPalette")}
             </Button>
             <Button variant="link" size="sm" onMouseDown={(e) => e.preventDefault()} onClick={handleViewAll}>
-              View all results
+              {t("viewAll")}
             </Button>
           </div>
         </div>
@@ -234,15 +236,15 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
 
       <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
         <CommandInput
-          placeholder="Search vehicles, work orders, parts..."
+          placeholder={t("inputPlaceholder")}
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>{t("noResults")}</CommandEmpty>
 
           {Object.entries(groupedResults).map(([group, groupResults]) => (
-            <CommandGroup key={group} heading={categoryLabels[group as SearchCategory]}>
+            <CommandGroup key={group} heading={t(`tabs.${group}`)}>
               {groupResults.map((result) => (
                 <CommandItem key={result.id} onSelect={() => handleSelect(result.url)}>
                   {getIcon(result.category)}

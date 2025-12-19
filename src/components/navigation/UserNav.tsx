@@ -4,6 +4,7 @@ import { User, LogOut, Settings, UserCircle, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/lib/utils";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export function UserNav() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const t = useTranslations("common.userNav");
 
   const handleLogout = () => {
     logout();
@@ -29,10 +31,10 @@ export function UserNav() {
         <button className="group flex items-center gap-3 rounded-full p-1 pl-2 transition-all hover:bg-gray-100/50 dark:hover:bg-gray-800/50 outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
           <div className="hidden text-right sm:block">
             <p className="text-sm font-medium leading-none text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              {user?.name || "User"}
+              {user?.name || t("user")}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium uppercase tracking-wider">
-              {user?.role || "Role"}
+              {user?.role || t("role")}
             </p>
           </div>
 
@@ -53,7 +55,7 @@ export function UserNav() {
         <DropdownMenuLabel className="p-3">
           <div className="flex flex-col gap-1">
             <span className="font-semibold text-base text-gray-900 dark:text-gray-50">
-              {user?.name || "User"}
+              {user?.name || t("user")}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
               {user?.email || "user@example.com"}
@@ -67,14 +69,14 @@ export function UserNav() {
             className="rounded-lg p-2.5 cursor-pointer focus:bg-blue-50 dark:focus:bg-blue-900/10 focus:text-blue-600 dark:focus:text-blue-400"
           >
             <UserCircle className="mr-3 h-4 w-4 text-gray-500 group-hover:text-blue-500" />
-            Profile
+            {t("profile")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push("/dashboard/settings")}
             className="rounded-lg p-2.5 cursor-pointer focus:bg-blue-50 dark:focus:bg-blue-900/10 focus:text-blue-600 dark:focus:text-blue-400"
           >
             <Settings className="mr-3 h-4 w-4 text-gray-500 group-hover:text-blue-500" />
-            Settings
+            {t("settings")}
           </DropdownMenuItem>
         </div>
         <DropdownMenuSeparator className="my-1 bg-gray-100 dark:bg-gray-800" />
@@ -83,7 +85,7 @@ export function UserNav() {
           className="rounded-lg p-2.5 cursor-pointer text-red-600 dark:text-red-400 focus:bg-red-50 dark:focus:bg-red-900/10"
         >
           <LogOut className="mr-3 h-4 w-4" />
-          Logout
+          {t("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
