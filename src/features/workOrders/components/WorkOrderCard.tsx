@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkOrder, WorkOrderPriority, WorkOrderStatus } from "../types/workOrder.types";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
@@ -38,35 +39,31 @@ const statusConfig: Record<WorkOrderStatus, {
   color: string;
   bgColor: string;
   icon: React.ElementType;
-  label: string;
 }> = {
   pending: {
     color: "text-orange-700 dark:text-orange-400",
     bgColor: "bg-orange-100 dark:bg-orange-900/30",
     icon: Clock,
-    label: "Pending",
   },
   in_progress: {
     color: "text-blue-700 dark:text-blue-400",
     bgColor: "bg-blue-100 dark:bg-blue-900/30",
     icon: PlayCircle,
-    label: "In Progress",
   },
   completed: {
     color: "text-green-700 dark:text-green-400",
     bgColor: "bg-green-100 dark:bg-green-900/30",
     icon: CheckCircle,
-    label: "Completed",
   },
   cancelled: {
     color: "text-slate-700 dark:text-slate-400",
     bgColor: "bg-slate-100 dark:bg-slate-900/30",
     icon: XCircle,
-    label: "Cancelled",
   },
 };
 
 export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrderCardProps) {
+  const t = useTranslations("workOrders");
   const StatusIcon = statusConfig[workOrder.status].icon;
 
   return (
@@ -91,7 +88,7 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
               className="cursor-pointer"
             >
               <Edit className="mr-2 h-4 w-4" />
-              Edit Work Order
+              {t("card.actions.edit")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={(e) => {
@@ -101,7 +98,7 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
               className="cursor-pointer text-red-600 focus:text-red-600 dark:text-red-400"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete
+              {t("card.actions.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -111,10 +108,10 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
         <CardHeader className="p-4 pb-2">
           <div className="flex items-start justify-between gap-2 pr-8">
             <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 line-clamp-2 flex-1">
-              {workOrder.vehicle_name || "Unknown Vehicle"}
+              {workOrder.vehicle_name || t("card.unknownVehicle")}
             </h4>
             <span className={`shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full ${priorityBadgeColors[workOrder.priority]}`}>
-              {workOrder.priority}
+              {t(`priorities.${workOrder.priority}`)}
             </span>
           </div>
 
@@ -126,7 +123,9 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
         <CardContent className="p-4 py-3 space-y-2.5">
           <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
             <Calendar className="h-3.5 w-3.5" />
-            <span className="font-medium">Due: {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : "No date"}</span>
+            <span className="font-medium">
+              {t("card.due")} {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("card.noDate")}
+            </span>
           </div>
           {workOrder.assigned_to_name && (
             <div className="flex items-center gap-2">
@@ -143,7 +142,7 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
         </CardContent>
 
         <CardFooter className="flex items-center justify-between border-t border-slate-100 p-3 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
-          <span className="capitalize font-medium">{workOrder.type}</span>
+          <span className="capitalize font-medium">{t(`form.types.${workOrder.type}`)}</span>
           <span className="font-mono text-xs opacity-60">#{workOrder.id.slice(0, 6)}</span>
         </CardFooter>
       </div>

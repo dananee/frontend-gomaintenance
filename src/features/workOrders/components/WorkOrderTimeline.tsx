@@ -18,8 +18,10 @@ import { useQuery } from "@tanstack/react-query";
 import { listWorkOrderActivity } from "../api/workOrderActivity";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function WorkOrderTimeline() {
+  const t = useTranslations("workOrders");
   const params = useParams();
   const workOrderId = params.id as string;
 
@@ -80,10 +82,10 @@ export function WorkOrderTimeline() {
             <History className="h-8 w-8 text-gray-400 dark:text-gray-500" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-            No activity yet
+            {t("timeline.empty.title")}
           </h3>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 max-w-xs">
-            Actions and updates performed on this work order will appear here.
+            {t("timeline.empty.description")}
           </p>
         </CardContent>
       </Card>
@@ -95,10 +97,10 @@ export function WorkOrderTimeline() {
       <Card className="border-none shadow-sm bg-white dark:bg-gray-950">
         <CardHeader className="pb-4 border-b border-gray-100 dark:border-gray-800">
           <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Activity Timeline
+            {t("timeline.title")}
           </CardTitle>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            Complete history of all changes and activities
+            {t("timeline.subtitle")}
           </p>
         </CardHeader>
         <CardContent className="pt-8">

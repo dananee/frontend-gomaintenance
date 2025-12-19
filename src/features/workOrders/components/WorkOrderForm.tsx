@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { useCreateWorkOrder } from "../hooks/useCreateWorkOrder";
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
+import { useTranslations } from "next-intl";
 
 interface WorkOrderFormProps {
   onSuccess: () => void;
@@ -15,6 +16,7 @@ interface WorkOrderFormProps {
 }
 
 export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormProps) {
+  const t = useTranslations("workOrders");
   const {
     register,
     control,
@@ -37,12 +39,12 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormP
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="mb-2 block text-sm font-medium">Vehicle</label>
+        <label className="mb-2 block text-sm font-medium">{t("form.fields.vehicle")}</label>
         <select
-          {...register("vehicle_id", { required: "Vehicle is required" })}
+          {...register("vehicle_id", { required: t("form.errors.vehicleRequired") })}
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <option value="">Select a vehicle</option>
+          <option value="">{t("form.fields.selectVehicle")}</option>
           {vehiclesData?.data.map((vehicle) => (
             <option key={vehicle.id} value={vehicle.id}>
               {vehicle.plate_number} - {vehicle.brand} {vehicle.model}
@@ -55,44 +57,44 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormP
       </div>
 
       <Input
-        label="Title"
-        {...register("title", { required: "Title is required" })}
+        label={t("form.fields.title")}
+        {...register("title", { required: t("form.errors.titleRequired") })}
         error={errors.title?.message}
       />
 
       <div>
-        <label className="mb-2 block text-sm font-medium">Type</label>
+        <label className="mb-2 block text-sm font-medium">{t("form.fields.type")}</label>
         <select
-          {...register("type", { required: "Type is required" })}
+          {...register("type", { required: t("form.errors.typeRequired") })}
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <option value="preventive">Preventive</option>
-          <option value="corrective">Corrective</option>
-          <option value="inspection">Inspection</option>
+          <option value="preventive">{t("form.types.preventive")}</option>
+          <option value="corrective">{t("form.types.corrective")}</option>
+          <option value="inspection">{t("form.types.inspection")}</option>
         </select>
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-medium">Priority</label>
+        <label className="mb-2 block text-sm font-medium">{t("form.fields.priority")}</label>
         <select
           {...register("priority")}
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="urgent">Urgent</option>
+          <option value="low">{t("priorities.low")}</option>
+          <option value="medium">{t("priorities.medium")}</option>
+          <option value="high">{t("priorities.high")}</option>
+          <option value="urgent">{t("priorities.urgent")}</option>
         </select>
       </div>
 
       <Input
-        label="Description"
+        label={t("form.fields.description")}
         {...register("description")}
         error={errors.description?.message}
       />
 
       <div className="space-y-1">
-        <label className="block text-sm font-medium">Scheduled Date</label>
+        <label className="block text-sm font-medium">{t("form.fields.scheduledDate")}</label>
         <Controller
           control={control}
           name="scheduled_date"
@@ -108,10 +110,10 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormP
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          {t("form.actions.cancel")}
         </Button>
         <Button type="submit" isLoading={isPending}>
-          Create Work Order
+          {t("form.actions.create")}
         </Button>
       </div>
     </form>

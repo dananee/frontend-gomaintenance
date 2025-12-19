@@ -31,12 +31,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface WorkOrderCommentsProps {
   workOrderId: string;
 }
 
 export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
+  const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
+  const tt = useTranslations("toasts");
   const [commentText, setCommentText] = useState("");
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -80,14 +84,14 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
     },
     onError: (err, newComment, context) => {
       queryClient.setQueryData(["workOrderComments", workOrderId], context?.previousComments);
-      toast.error("Failed to post comment");
+      toast.error(tt("error.commentPostFailed"));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["workOrderComments", workOrderId] });
     },
     onSuccess: () => {
       setCommentText("");
-      toast.success("Comment posted");
+      toast.success(tt("success.commentPosted"));
     },
   });
 
@@ -95,10 +99,10 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
     mutationFn: (commentId: string) => deleteWorkOrderComment(workOrderId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workOrderComments", workOrderId] });
-      toast.success("Comment deleted");
+      toast.success(tt("success.commentDeleted"));
     },
     onError: () => {
-      toast.error("Failed to delete comment");
+      toast.error(tt("error.deleteCommentFailed"));
     },
   });
 
@@ -115,7 +119,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
   };
 
   const handleDelete = (commentId: string) => {
-    if (confirm("Delete this comment?")) {
+    if (confirm(tc("confirmDelete", { item: t("comments.item") }))) {
       deleteMutation.mutate(commentId);
     }
   };
@@ -132,7 +136,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
             </Avatar>
             <div className="flex-1 space-y-3">
               <Textarea
-                placeholder="Write a comment..."
+                placeholder={t("comments.placeholder")}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -149,7 +153,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                   ) : (
                     <Send className="mr-2 h-4 w-4" />
                   )}
-                  Post Comment
+                  {t("comments.post")}
                 </Button>
               </div>
             </div>
@@ -162,7 +166,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
         <div className="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
           <MessageSquare className="h-4 w-4 text-gray-500" />
           <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            Comments ({comments.length})
+            {t("comments.title", { count: comments.length })}
           </h3>
         </div>
 
@@ -172,8 +176,8 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
           </div>
         ) : comments.length === 0 ? (
           <div className="text-center py-12 bg-gray-50 dark:bg-gray-900/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-            <p className="text-sm text-gray-500 dark:text-gray-400">No comments yet</p>
-            <p className="text-xs text-gray-400 mt-1">Be the first to share your thoughts</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t("comments.empty.title")}</p>
+            <p className="text-xs text-gray-400 mt-1">{t("comments.empty.description")}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -203,14 +207,14 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                             <div>
                               <div className="flex items-center gap-2">
                                 <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">
-                                  {comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : "Unknown User"}
+                                  {comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : t("comments.unknownUser")}
                                 </span>
                                 <span className="text-xs text-gray-500 dark:text-gray-400">
                                   • {formatDateTime(comment.created_at)}
                                 </span>
                               </div>
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                {comment.user?.role || "User"}
+                                {comment.user?.role || t("comments.roleFallback")}
                               </p>
                             </div>
 
@@ -231,7 +235,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                                     onClick={() => handleDelete(comment.id)}
                                   >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    Delete
+                                    {tc("delete")}
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>

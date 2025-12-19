@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useDeleteWorkOrder, useUpdateWorkOrder } from "../hooks/useWorkOrders";
 import { useWorkOrdersBoard } from "../hooks/useWorkOrdersBoard";
 import { useWorkOrdersBoardStore } from "../store/useWorkOrdersBoardStore";
@@ -32,12 +33,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { ClipboardList } from "lucide-react";
 import { toast } from "sonner";
 
-const columnDefinitions = [
-  { id: "pending" as WorkOrderStatus, title: "Pending", color: "orange" },
-  { id: "in_progress" as WorkOrderStatus, title: "In Progress", color: "blue" },
-  { id: "completed" as WorkOrderStatus, title: "Completed", color: "green" },
-  { id: "cancelled" as WorkOrderStatus, title: "Cancelled", color: "red" },
-];
 
 export interface WorkOrderFilters {
   search?: string;
@@ -47,7 +42,15 @@ export interface WorkOrderFilters {
 }
 
 export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
+  const t = useTranslations("workOrders");
   const router = useRouter();
+
+  const columnDefinitions = useMemo(() => [
+    { id: "pending" as WorkOrderStatus, title: t("status.pending"), color: "orange" },
+    { id: "in_progress" as WorkOrderStatus, title: t("status.in_progress"), color: "blue" },
+    { id: "completed" as WorkOrderStatus, title: t("status.completed"), color: "green" },
+    { id: "cancelled" as WorkOrderStatus, title: t("status.cancelled"), color: "red" },
+  ], [t]);
   const { isLoading } = useWorkOrdersBoard("default");
 
   // Get state from Zustand store
@@ -158,20 +161,22 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
         boardId: "default",
         clientRequestId,
       });
-      toast.success("Status updated", {
-        description: `Work order moved to ${newStatus.replace("_", " ")}`,
+      toast.success(t("toasts.statusUpdated.title"), {
+        description: t("toasts.statusUpdated.description", {
+          status: t(`status.${newStatus}`),
+        }),
       });
     } catch (error: any) {
       // Rollback on error
       rollbackMove(activeId);
 
       if (error?.response?.status === 409) {
-        toast.error("Conflict detected", {
-          description: "This work order was modified by another user. The latest version has been loaded.",
+        toast.error(t("toasts.conflict.title"), {
+          description: t("toasts.conflict.description"),
         });
       } else {
-        toast.error("Failed to update status", {
-          description: "The status change could not be saved. Please try again.",
+        toast.error(t("toasts.updateError.title"), {
+          description: t("toasts.updateError.description"),
         });
       }
       console.error("Failed to update work order status:", error);
@@ -198,14 +203,14 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
         },
         {
           onSuccess: () => {
-            toast.success("Work order updated", {
-              description: "Changes have been saved successfully.",
+            toast.success(t("toasts.saveSuccess.title"), {
+              description: t("toasts.saveSuccess.description"),
             });
             setIsEditModalOpen(false);
           },
           onError: () => {
-            toast.error("Failed to update work order", {
-              description: "Please try again.",
+            toast.error(t("toasts.saveError.title"), {
+              description: t("toasts.saveError.description"),
             });
           },
         }
@@ -245,13 +250,13 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     if (confirm(`Delete work order "${order.title}"?`)) {
       deleteWorkOrderMutation.mutate(order.id, {
         onSuccess: () => {
-          toast.success("Work order deleted", {
-            description: "The work order has been permanently removed.",
+          toast.success(t("toasts.deleteSuccess.title"), {
+            description: t("toasts.deleteSuccess.description"),
           });
         },
         onError: (error) => {
-          toast.error("Failed to delete work order", {
-            description: "Please try again.",
+          toast.error(t("toasts.deleteError.title"), {
+            description: t("toasts.deleteError.description"),
           });
           console.error("Failed to delete work order:", error);
         },
@@ -272,8 +277,8 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
       <div className="rounded-lg border border-gray-200 dark:border-gray-700">
         <EmptyState
           icon={ClipboardList}
-          title="No work orders yet"
-          description="Create your first work order to start tracking maintenance tasks, repairs, and inspections for your fleet."
+          title={t("kanban.empty.title")}
+          description={t("kanban.empty.description")}
         />
       </div>
     );
@@ -350,17 +355,17 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
                       <div className="flex flex-col items-center justify-center py-12 px-4 rounded-lg border-2 border-dashed border-blue-400 bg-blue-50/50 dark:border-blue-600 dark:bg-blue-900/20 animate-in fade-in-50 duration-200">
                         <ClipboardList className="h-10 w-10 text-blue-500 dark:text-blue-400 mb-2" />
                         <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                          Drop here
+                          {t("kanban.column.dropHere")}
                         </p>
                       </div>
                     ) : columnOrders.length === 0 ? (
                       <div className="flex flex-col items-center justify-center py-12 px-4">
                         <ClipboardList className="h-12 w-12 text-slate-400 dark:text-slate-600 mb-3" />
                         <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                          No tasks in this stage
+                          {t("kanban.column.noTasks")}
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
-                          Drag cards here or create new
+                          {t("kanban.column.dragHere")}
                         </p>
                       </div>
                     ) : (

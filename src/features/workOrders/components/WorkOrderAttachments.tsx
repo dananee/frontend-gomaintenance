@@ -27,12 +27,16 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatDateShort } from "@/lib/formatters";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface WorkOrderAttachmentsProps {
   workOrderId: string;
 }
 
 export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps) {
+  const t = useTranslations("workOrders");
+  const tc = useTranslations("common");
+  const tt = useTranslations("toasts");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const [isDragging, setIsDragging] = useState(false);
@@ -54,10 +58,10 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workOrderAttachments", workOrderId] });
-      toast.success("File uploaded successfully");
+      toast.success(tt("success.fileUploaded"));
     },
     onError: () => {
-      toast.error("Failed to upload file");
+      toast.error(tt("error.uploadFailed"));
     },
   });
 
@@ -65,10 +69,10 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
     mutationFn: (attachmentId: string) => deleteWorkOrderAttachment(workOrderId, attachmentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workOrderAttachments", workOrderId] });
-      toast.success("File deleted");
+      toast.success(tt("success.fileDeleted"));
     },
     onError: () => {
-      toast.error("Failed to delete file");
+      toast.error(tt("error.deleteFileFailed"));
     },
   });
 
@@ -102,7 +106,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
   };
 
   const handleDelete = (attachmentId: string) => {
-    if (confirm("Delete this attachment?")) {
+    if (confirm(tc("confirmDelete", { item: t("attachments.item") }))) {
       deleteMutation.mutate(attachmentId);
     }
   };
@@ -121,7 +125,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
     try {
       return formatDateShort(dateString);
     } catch (e) {
-      return "Unknown date";
+      return t("card.noDate");
     }
   };
 
@@ -141,10 +145,10 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Attachments & Files
+                {t("attachments.title")}
               </CardTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                Manage photos, documents, and invoices
+                {t("attachments.subtitle")}
               </p>
             </div>
             <Button
@@ -158,7 +162,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
               ) : (
                 <Upload className="mr-2 h-4 w-4" />
               )}
-              Upload Files
+              {t("attachments.upload")}
             </Button>
           </div>
         </CardHeader>
@@ -182,10 +186,10 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
               <Cloud className={`h-6 w-6 text-blue-600 dark:text-blue-400 ${isDragging ? "animate-bounce" : ""}`} />
             </div>
             <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              Click to upload or drag and drop
+              {t("attachments.dropzone.title")}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              SVG, PNG, JPG or GIF (max. 10MB)
+              {t("attachments.dropzone.subtitle")}
             </p>
           </div>
 
@@ -196,7 +200,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
             </div>
           ) : attachments.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm text-gray-500 dark:text-gray-400">No attachments yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t("attachments.empty")}</p>
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -232,7 +236,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-blue-900/30")}
-                        title="View"
+                        title={tc("view")}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Eye className="h-4 w-4" />
@@ -243,7 +247,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-blue-900/30")}
-                        title="Download"
+                        title={tc("download")}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Download className="h-4 w-4" />
@@ -256,7 +260,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
                           e.stopPropagation();
                           handleDelete(attachment.id);
                         }}
-                        title="Delete"
+                        title={tc("delete")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

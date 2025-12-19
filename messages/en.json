@@ -66,9 +66,16 @@
             "rolePermissionsUpdated": "Role permissions updated successfully",
             "avatarUploaded": "Avatar uploaded successfully",
             "companyUpdated": "Company settings updated successfully",
-            "brandingUpdated": "Branding settings updated successfully"
+            "brandingUpdated": "Branding settings updated successfully",
+            "statusUpdated": "Status updated",
+            "workOrderUpdated": "Work order updated",
+            "workOrderDeleted": "Work order deleted"
         },
         "error": {
+            "conflict": "Conflict detected",
+            "statusUpdateFailed": "Failed to update status",
+            "workOrderUpdateFailed": "Failed to update work order",
+            "workOrderDeleteFailed": "Failed to delete work order",
             "addTaskFailed": "Failed to add task",
             "updateTaskFailed": "Failed to update task",
             "deleteTaskFailed": "Failed to delete task",
@@ -105,7 +112,9 @@
             "integrations": "Integrations",
             "roles": "Roles",
             "parts": "Parts",
-            "suppliers": "Suppliers"
+            "suppliers": "Suppliers",
+            "notifications": "Notifications",
+            "documents": "Documents"
         },
         "details": "Details",
         "edit": "Edit"
@@ -1167,6 +1176,9 @@
                     "dateUsed": "Date Used",
                     "workOrder": "Work Order"
                 },
+                "viewDetails": "View details",
+                "createWorkOrder": "Create Work Order",
+                "scheduleService": "Schedule Service",
                 "noData": "No vehicles found",
                 "noService": "No service scheduled",
                 "days": "{days} days",
@@ -1316,6 +1328,9 @@
             "editDescription": "Update the details of this work order.",
             "createDescription": "Create a new maintenance work order.",
             "fields": {
+                "vehicle": "Vehicle",
+                "selectVehicle": "Select a vehicle",
+                "scheduledDate": "Scheduled Date",
                 "title": "Title",
                 "titlePlaceholder": "e.g. Brake Inspection",
                 "type": "Type",
@@ -1354,7 +1369,13 @@
             },
             "actions": {
                 "create": "Create Work Order",
-                "save": "Save Changes"
+                "save": "Save Changes",
+                "cancel": "Cancel"
+            },
+            "errors": {
+                "vehicleRequired": "Vehicle is required",
+                "titleRequired": "Title is required",
+                "typeRequired": "Type is required"
             }
         },
         "parts": {
@@ -1392,20 +1413,94 @@
                 "all": "All priorities",
                 "high": "High",
                 "medium": "Medium",
-                "low": "Low"
+                "low": "Low",
+                "urgent": "Urgent"
             },
             "status": {
                 "all": "All status",
                 "pending": "Pending",
                 "inProgress": "In Progress",
-                "completed": "Completed"
+                "completed": "Completed",
+                "cancelled": "Cancelled"
             }
         },
         "toasts": {
             "created": {
                 "title": "Work order created",
                 "description": "New work order has been created and assigned."
+            },
+            "statusUpdated": {
+                "title": "Status updated",
+                "description": "Work order moved to {status}"
+            },
+            "conflict": {
+                "title": "Conflict detected",
+                "description": "This work order was modified by another user. The latest version has been loaded."
+            },
+            "updateError": {
+                "title": "Failed to update status",
+                "description": "The status change could not be saved. Please try again."
+            },
+            "saveSuccess": {
+                "title": "Work order updated",
+                "description": "Changes have been saved successfully."
+            },
+            "saveError": {
+                "title": "Failed to update work order",
+                "description": "Please try again."
+            },
+            "deleteSuccess": {
+                "title": "Work order deleted",
+                "description": "The work order has been permanently removed."
+            },
+            "deleteError": {
+                "title": "Failed to delete work order",
+                "description": "Please try again."
             }
+        },
+        "kanban": {
+            "empty": {
+                "title": "No work orders yet",
+                "description": "Create your first work order to start tracking maintenance tasks, repairs, and inspections for your fleet."
+            },
+            "column": {
+                "dropHere": "Drop here",
+                "noTasks": "No tasks in this stage",
+                "dragHere": "Drag cards here or create new"
+            }
+        },
+        "card": {
+            "unknownVehicle": "Unknown Vehicle",
+            "due": "Due:",
+            "noDate": "No date",
+            "actions": {
+                "edit": "Edit Work Order",
+                "delete": "Delete"
+            }
+        },
+        "bulk": {
+            "selected": "Selected",
+            "changeStatus": "Change Status",
+            "setStatusTo": "Set Status To"
+        },
+        "timeline": {
+            "title": "Activity Timeline",
+            "subtitle": "Complete history of all changes and activities",
+            "empty": {
+                "title": "No activity yet",
+                "description": "Actions and updates performed on this work order will appear here."
+            }
+        },
+        "comments": {
+            "title": "Comments ({count})",
+            "placeholder": "Write a comment...",
+            "post": "Post Comment",
+            "empty": {
+                "title": "No comments yet",
+                "description": "Be the first to share your thoughts"
+            },
+            "unknownUser": "Unknown User",
+            "roleFallback": "User"
         },
         "details": {
             "notFound": {

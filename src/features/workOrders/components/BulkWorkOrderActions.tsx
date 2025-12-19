@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +25,7 @@ export function BulkWorkOrderActions({
   onDelete,
   onStatusChange,
 }: BulkWorkOrderActionsProps) {
+  const t = useTranslations("workOrders");
   if (selectedCount === 0) return null;
 
   return (
@@ -32,29 +34,29 @@ export function BulkWorkOrderActions({
         <div className="flex h-5 w-5 items-center justify-center rounded bg-blue-600 text-xs font-bold">
           {selectedCount}
         </div>
-        <span className="text-sm font-medium">Selected</span>
+        <span className="text-sm font-medium">{t("bulk.selected")}</span>
       </div>
 
       <div className="flex items-center gap-1">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 text-white hover:bg-gray-800 hover:text-white dark:text-gray-900 dark:hover:bg-gray-200">
-              Change Status
+              {t("bulk.changeStatus")}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
-            <DropdownMenuLabel>Set Status To</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("bulk.setStatusTo")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onStatusChange("pending")}>
-              Pending
+              {t("status.pending")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onStatusChange("in_progress")}>
               <PlayCircle className="mr-2 h-4 w-4" />
-              In Progress
+              {t("status.in_progress")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onStatusChange("completed")}>
               <CheckCircle className="mr-2 h-4 w-4" />
-              Completed
+              {t("status.completed")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -66,7 +68,7 @@ export function BulkWorkOrderActions({
           onClick={onDelete}
         >
           <Trash2 className="mr-2 h-4 w-4" />
-          Delete
+          {t("card.actions.delete")}
         </Button>
 
         <Button 
@@ -75,7 +77,7 @@ export function BulkWorkOrderActions({
           className="h-8 w-8 text-gray-400 hover:bg-gray-800 hover:text-white dark:text-gray-500 dark:hover:bg-gray-200"
           onClick={onClearSelection}
         >
-          <span className="sr-only">Close</span>
+          <span className="sr-only">{t("form.actions.cancel")}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

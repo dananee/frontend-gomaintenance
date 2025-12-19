@@ -66,9 +66,16 @@
             "logoUploaded": "Logo téléchargé avec succès",
             "avatarUploaded": "Avatar mis à jour avec succès",
             "companyUpdated": "Paramètres de l'entreprise mis à jour avec succès",
-            "brandingUpdated": "Paramètres de la marque mis à jour avec succès"
+            "brandingUpdated": "Paramètres de la marque mis à jour avec succès",
+            "statusUpdated": "Statut mis à jour",
+            "workOrderUpdated": "Ordre de travail mis à jour",
+            "workOrderDeleted": "Ordre de travail supprimé"
         },
         "error": {
+            "conflict": "Conflit détecté",
+            "statusUpdateFailed": "Échec de la mise à jour du statut",
+            "workOrderUpdateFailed": "Échec de la mise à jour de l'ordre de travail",
+            "workOrderDeleteFailed": "Échec de la suppression de l'ordre de travail",
             "generic": "Une erreur s’est produite. Veuillez réessayer.",
             "taskUpdateFailed": "Échec de la mise à jour de la tâche",
             "taskDeleteFailed": "Échec de la suppression de la tâche",
@@ -100,7 +107,9 @@
             "integrations": "Intégrations",
             "roles": "Rôles",
             "parts": "Pièces",
-            "suppliers": "Fournisseurs"
+            "suppliers": "Fournisseurs",
+            "notifications": "Notifications",
+            "documents": "Documents"
         },
         "details": "Détails",
         "edit": "Modifier"
@@ -632,6 +641,59 @@
                     "loadError": "Échec du chargement des modèles de maintenance"
                 }
             }
+        }
+    },
+    "notifications": {
+        "common": {
+            "categories": {
+                "work_order": "Ordres de travail",
+                "inventory": "Inventaire",
+                "maintenance": "Maintenance",
+                "system": "Système"
+            }
+        },
+        "dashboard": {
+            "title": "Notifications",
+            "subtitle": "Gérez vos alertes et mises à jour",
+            "actions": {
+                "viewAll": "Voir tout",
+                "markAllRead": "Tout marquer comme lu"
+            },
+            "filters": {
+                "searchPlaceholder": "Rechercher des notifications...",
+                "filterBy": "Filtrer par",
+                "options": {
+                    "all": "Toutes les notifications",
+                    "unread": "Non lues uniquement"
+                }
+            },
+            "empty": "Aucune notification trouvée correspondant à vos critères.",
+            "pagination": "Affichage de {start}-{end} sur {total}"
+        },
+        "all": {
+            "title": "Toutes les notifications",
+            "subtitle": "Historique complet avec filtres, pagination et contrôles groupés.",
+            "actions": {
+                "markAllRead": "Tout marquer comme lu",
+                "backToDashboard": "Retour au tableau de bord"
+            },
+            "sections": {
+                "filters": "Filtres",
+                "stream": "Flux de notifications",
+                "summary": "Résumé"
+            },
+            "filters": {
+                "searchPlaceholder": "Rechercher par titre ou message",
+                "filterByType": "Filtrer par type",
+                "options": {
+                    "all": "Toutes les catégories"
+                }
+            },
+            "stats": {
+                "unread": "Non lues",
+                "total": "Total"
+            },
+            "empty": "Aucune notification ne correspond à vos filtres."
         }
     },
     "settings": {
@@ -1264,6 +1326,9 @@
                     "dateUsed": "Date Utilisation",
                     "workOrder": "Ordre de Travail"
                 },
+                "viewDetails": "Voir les détails",
+                "createWorkOrder": "Créer un ordre de travail",
+                "scheduleService": "Planifier un service",
                 "noData": "Aucun véhicule trouvé",
                 "noService": "Aucune révision prévue",
                 "days": "{days} jours",
@@ -1413,6 +1478,9 @@
             "editDescription": "Mettre à jour les détails de cet ordre de travail.",
             "createDescription": "Créer un nouvel ordre de travail de maintenance.",
             "fields": {
+                "vehicle": "Véhicule",
+                "selectVehicle": "Sélectionner un véhicule",
+                "scheduledDate": "Date prévue",
                 "title": "Titre",
                 "titlePlaceholder": "ex: Inspection des freins",
                 "type": "Type",
@@ -1451,24 +1519,108 @@
             },
             "actions": {
                 "create": "Créer l'ordre de travail",
-                "save": "Enregistrer les modifications"
+                "save": "Enregistrer les modifications",
+                "cancel": "Annuler"
+            },
+            "errors": {
+                "vehicleRequired": "Le véhicule est requis",
+                "titleRequired": "Le titre est requis",
+                "typeRequired": "Le type est requis"
             }
         },
         "parts": {
-            "title": "Pièces",
+            "title": "Pi\u00e8ces",
             "headers": {
-                "name": "Nom de la pièce",
+                "name": "Nom de la pi\u00e8ce",
                 "sku": "SKU",
-                "qty": "Qté",
+                "qty": "Qt\u00e9",
                 "price": "Prix unitaire",
                 "total": "Total"
             }
         },
+        "toasts": {
+            "created": {
+                "title": "Ordre de travail cr\u00e9\u00e9",
+                "description": "Le nouvel ordre de travail a \u00e9t\u00e9 cr\u00e9\u00e9 et assign\u00e9."
+            },
+            "statusUpdated": {
+                "title": "Statut mis \u00e0 jour",
+                "description": "Ordre de travail d\u00e9plac\u00e9 vers {status}"
+            },
+            "conflict": {
+                "title": "Conflit d\u00e9tect\u00e9",
+                "description": "Cet ordre de travail a \u00e9t\u00e9 modifi\u00e9 par un autre utilisateur. La derni\u00e8re version a \u00e9t\u00e9 charg\u00e9e."
+            },
+            "updateError": {
+                "title": "\u00c9chec de la mise \u00e0 jour du statut",
+                "description": "Le changement de statut n'a pas pu \u00eatre enregistr\u00e9. Veuillez r\u00e9essayer."
+            },
+            "saveSuccess": {
+                "title": "Ordre de travail mis \u00e0 jour",
+                "description": "Les modifications ont \u00e9t\u00e9 enregistr\u00e9es avec succ\u00e8s."
+            },
+            "saveError": {
+                "title": "\u00c9chec de la mise \u00e0 jour de l'ordre de travail",
+                "description": "Veuillez r\u00e9essayer."
+            },
+            "deleteSuccess": {
+                "title": "Ordre de travail supprim\u00e9",
+                "description": "L'ordre de travail a \u00e9t\u00e9 d\u00e9finitivement supprim\u00e9."
+            },
+            "deleteError": {
+                "title": "\u00c9chec de la suppression de l'ordre de travail",
+                "description": "Veuillez r\u00e9essayer."
+            }
+        },
+        "kanban": {
+            "empty": {
+                "title": "Aucun ordre de travail pour le moment",
+                "description": "Cr\u00e9ez votre premier ordre de travail pour commencer \u00e0 suivre les t\u00e2ches de maintenance, les r\u00e9parations et les inspections de votre flotte."
+            },
+            "column": {
+                "dropHere": "D\u00e9poser ici",
+                "noTasks": "Aucune t\u00e2che \u00e0 cette \u00e9tape",
+                "dragHere": "Faites glisser les cartes ici ou cr\u00e9ez-en de nouvelles"
+            }
+        },
+        "card": {
+            "unknownVehicle": "V\u00e9hicule inconnu",
+            "due": "\u00c9ch\u00e9ance :",
+            "noDate": "Pas de date",
+            "actions": {
+                "edit": "Modifier l'ordre de travail",
+                "delete": "Supprimer"
+            }
+        },
+        "bulk": {
+            "selected": "S\u00e9lectionn\u00e9",
+            "changeStatus": "Changer le statut",
+            "setStatusTo": "D\u00e9finir le statut sur"
+        },
+        "timeline": {
+            "title": "Historique d'activit\u00e9",
+            "subtitle": "Historique complet de tous les changements et activit\u00e9s",
+            "empty": {
+                "title": "Aucune activit\u00e9 pour le moment",
+                "description": "Les actions et mises \u00e0 jour effectu\u00e9es sur cet ordre de travail appara\u00eetront ici."
+            }
+        },
+        "comments": {
+            "title": "Commentaires ({count})",
+            "placeholder": "\u00c9crire un commentaire...",
+            "post": "Publier le commentaire",
+            "empty": {
+                "title": "Aucun commentaire pour le moment",
+                "description": "Soyez le premier \u00e0 partager vos pens\u00e9es"
+            },
+            "unknownUser": "Utilisateur inconnu",
+            "roleFallback": "Utilisateur"
+        },
         "status": {
             "pending": "En attente",
             "in_progress": "En cours",
-            "completed": "Terminé",
-            "cancelled": "Annulé"
+            "completed": "Termin\u00e9",
+            "cancelled": "Annul\u00e9"
         },
         "priorities": {
             "low": "Faible",
@@ -1489,19 +1641,15 @@
                 "all": "Toutes priorités",
                 "high": "Haute",
                 "medium": "Moyenne",
-                "low": "Basse"
+                "low": "Basse",
+                "urgent": "Urgent"
             },
             "status": {
                 "all": "Tous les statuts",
                 "pending": "En attente",
                 "inProgress": "En cours",
-                "completed": "Terminé"
-            }
-        },
-        "toasts": {
-            "created": {
-                "title": "Ordre de travail créé",
-                "description": "Un nouvel ordre de travail a été créé et assigné."
+                "completed": "Terminé",
+                "cancelled": "Annulé"
             }
         },
         "details": {

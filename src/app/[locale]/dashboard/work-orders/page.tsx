@@ -34,7 +34,7 @@ export default function WorkOrdersPage() {
         </h1>
         <Button onClick={open}>
           <Plus className="mr-2 h-4 w-4" />
-          {t("actions.new")}
+          {t("actions.new")} 
         </Button>
       </div>
 
@@ -59,6 +59,7 @@ export default function WorkOrdersPage() {
           <option value="high">{t("filters.priority.high")}</option>
           <option value="medium">{t("filters.priority.medium")}</option>
           <option value="low">{t("filters.priority.low")}</option>
+          <option value="urgent">{t("filters.priority.urgent")}</option>
         </select>
         <select
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
@@ -74,6 +75,7 @@ export default function WorkOrdersPage() {
           <option value="pending">{t("filters.status.pending")}</option>
           <option value="in_progress">{t("filters.status.inProgress")}</option>
           <option value="completed">{t("filters.status.completed")}</option>
+          <option value="cancelled">{t("filters.status.cancelled")}</option>
         </select>
       </div>
 

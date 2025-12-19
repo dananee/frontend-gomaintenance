@@ -156,14 +156,14 @@ export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
                     <DropdownMenuItem
                       onClick={() => router.push(`/dashboard/vehicles/${vehicle.id}`)}
                     >
-                      View details
+                      {t("viewDetails")}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      Create Work Order
+                      {t("createWorkOrder")}
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      Schedule Service
+                      {t("scheduleService")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

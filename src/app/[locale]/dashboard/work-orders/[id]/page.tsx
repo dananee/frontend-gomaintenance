@@ -102,13 +102,13 @@ export default function WorkOrderDetailsPage() {
                   variant="secondary"
                   className={`capitalize px-3 py-1 text-sm font-medium border ${getStatusColor(workOrder.status)}`}
                 >
-                  {t(`filters.status.${workOrder.status}`) || workOrder.status.replace("_", " ")}
+                  {t(`status.${workOrder.status}`) || workOrder.status.replace("_", " ")}
                 </Badge>
                 <Badge
                   variant="outline"
                   className={`capitalize px-3 py-1 text-sm font-medium ${getPriorityColor(workOrder.priority)}`}
                 >
-                  {t(`filters.priority.${workOrder.priority}`) || workOrder.priority}
+                  {t(`priorities.${workOrder.priority}`) || workOrder.priority}
                 </Badge>
               </div>
 
@@ -194,7 +194,7 @@ export default function WorkOrderDetailsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold capitalize text-gray-900 dark:text-white">
-                    {t(`filters.status.${workOrder.status}`) || workOrder.status.replace("_", " ")}
+                    {t(`status.${workOrder.status}`) || workOrder.status.replace("_", " ")}
                   </div>
                   <p className="text-xs text-gray-500 mt-1">{t("details.cards.status.description")}</p>
                 </CardContent>
@@ -260,18 +260,18 @@ export default function WorkOrderDetailsPage() {
               <CardContent className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Work Order Type</label>
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.type")}</label>
                     <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800">
                       <p className="text-gray-900 dark:text-gray-100 capitalize font-medium">
-                        {workOrder.type}
+                        {t(`form.types.${workOrder.type}`) || workOrder.type}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.type")}</label>
+                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.priority")}</label>
                     <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800">
                       <p className="text-gray-900 dark:text-gray-100 capitalize font-medium">
-                        {t(`filters.priority.${workOrder.priority}`) || workOrder.priority}
+                        {t(`priorities.${workOrder.priority}`) || workOrder.priority}
                       </p>
                     </div>
                   </div>
