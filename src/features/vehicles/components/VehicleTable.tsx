@@ -29,9 +29,18 @@ interface VehicleTableProps {
   isLoading: boolean;
   onEdit: (vehicle: Vehicle) => void;
   onDelete: (id: string) => void;
+  onCreateWorkOrder: (vehicle: Vehicle) => void;
+  onCreatePlan: (vehicle: Vehicle) => void;
 }
 
-export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
+export function VehicleTable({ 
+  vehicles, 
+  isLoading,
+  onEdit,
+  onDelete,
+  onCreateWorkOrder,
+  onCreatePlan
+}: VehicleTableProps) {
   const router = useRouter();
   const t = useTranslations("vehicles.details.table");
   const tf = useTranslations("vehicles.filters");
@@ -160,12 +169,28 @@ export function VehicleTable({ vehicles, isLoading }: VehicleTableProps) {
                     >
                       {t("viewDetails")}
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onEdit(vehicle)}
+                    >
+                      {t("edit")}
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onCreateWorkOrder(vehicle)}
+                    >
                       {t("createWorkOrder")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onCreatePlan(vehicle)}
+                    >
                       {t("scheduleService")}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600"
+                      onClick={() => onDelete(vehicle.id)}
+                    >
+                      {t("delete")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -13,6 +13,12 @@ import { useModal } from "@/hooks/useModal";
 import { Plus, Truck } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { useDeleteVehicle } from "@/features/vehicles/hooks/useDeleteVehicle";
+import { WorkOrderForm } from "@/features/workOrders/components/WorkOrderForm";
+import { CreateMaintenancePlanModal } from "@/features/vehicles/components/CreateMaintenancePlanModal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useCreateVehicleMaintenancePlan } from "@/features/vehicles/hooks/useVehiclePlans";
+import { CreateMaintenancePlanRequest } from "@/features/vehicles/api/vehiclePlans";
 
 export default function VehiclesPage() {
   const t = useTranslations("vehicles");
@@ -24,6 +30,14 @@ export default function VehiclesPage() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  // States for new modals
+  const [vehicleToDelete, setVehicleToDelete] = useState<string | null>(null);
+  const [woVehicle, setWoVehicle] = useState<Vehicle | null>(null);
+  const [planVehicle, setPlanVehicle] = useState<Vehicle | null>(null);
+
+  const deleteMutation = useDeleteVehicle();
+  const createPlanMutation = useCreateVehicleMaintenancePlan(planVehicle?.id || "");
 
   const handleEdit = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
@@ -42,7 +56,36 @@ export default function VehiclesPage() {
         : t("toasts.created.description"),
     });
     close();
-    // Refetch handled by React Query invalidation
+  };
+
+  const handleDelete = (id: string) => {
+    setVehicleToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (vehicleToDelete) {
+      deleteMutation.mutate(vehicleToDelete, {
+        onSuccess: () => {
+          toast.success(t("toasts.deleted.title"), {
+            description: t("toasts.deleted.description"),
+          });
+          setVehicleToDelete(null);
+        },
+        onError: () => {
+          toast.error(t("toasts.deleted.errorTitle"), {
+            description: t("toasts.deleted.errorDescription"),
+          });
+        },
+      });
+    }
+  };
+
+  const handleCreateWorkOrder = (vehicle: Vehicle) => {
+    setWoVehicle(vehicle);
+  };
+
+  const handleCreatePlan = (vehicle: Vehicle) => {
+    setPlanVehicle(vehicle);
   };
 
   const filteredVehicles = useMemo(() => {
@@ -151,12 +194,9 @@ export default function VehiclesPage() {
             vehicles={paginatedVehicles}
             isLoading={isLoading}
             onEdit={handleEdit}
-            onDelete={(id: string) => {
-              toast.success(t("toasts.deleted.title"), {
-                description: t("toasts.deleted.description"),
-              });
-              console.log("Delete", id);
-            }}
+            onDelete={handleDelete}
+            onCreateWorkOrder={handleCreateWorkOrder}
+            onCreatePlan={handleCreatePlan}
           />
           {filteredVehicles.length > 0 && (
             <Pagination
@@ -185,6 +225,48 @@ export default function VehiclesPage() {
           onCancel={close}
         />
       </Modal>
+
+      {/* Create Work Order Modal */}
+      <Modal
+        isOpen={!!woVehicle}
+        onClose={() => setWoVehicle(null)}
+        title={t("actions.createWorkOrder")}
+      >
+        <WorkOrderForm
+          vehicleId={woVehicle?.id}
+          onSuccess={() => {
+            toast.success(t("toasts.workOrderCreated.title"));
+            setWoVehicle(null);
+          }}
+          onCancel={() => setWoVehicle(null)}
+        />
+      </Modal>
+
+      {/* Create Plan Modal */}
+      {planVehicle && (
+        <CreateMaintenancePlanModal
+          isOpen={!!planVehicle}
+          onClose={() => setPlanVehicle(null)}
+          onSubmit={(data: CreateMaintenancePlanRequest) => {
+            createPlanMutation.mutate(data, {
+              onSuccess: () => {
+                toast.success(t("toasts.planCreated.title"));
+                setPlanVehicle(null);
+              },
+            });
+          }}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!vehicleToDelete}
+        onClose={() => setVehicleToDelete(null)}
+        onConfirm={confirmDelete}
+        title={t("confirmDelete.title")}
+        description={t("confirmDelete.description")}
+        variant="destructive"
+      />
     </div>
   );
 }

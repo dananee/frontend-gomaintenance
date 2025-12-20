@@ -860,6 +860,7 @@
                 "form": {
                     "odooUrl": "Odoo URL",
                     "databaseName": "Database Name",
+                    "username": "Username",
                     "apiKey": "API Key"
                 },
                 "actions": {
@@ -1079,6 +1080,10 @@
             "back": "Back",
             "backToList": "Back to list"
         },
+        "confirmDelete": {
+            "title": "Delete Vehicle",
+            "description": "Are you sure you want to delete this vehicle? This action cannot be undone."
+        },
         "edit": {
             "title": "Edit Vehicle"
         },
@@ -1116,7 +1121,15 @@
         "toasts": {
             "deleted": {
                 "title": "Vehicle deleted",
-                "description": "Vehicle has been removed from your fleet."
+                "description": "Vehicle has been removed from your fleet.",
+                "errorTitle": "Delete failed",
+                "errorDescription": "Could not delete vehicle. Please try again."
+            },
+            "workOrderCreated": {
+                "title": "Work order created"
+            },
+            "planCreated": {
+                "title": "Maintenance plan created"
             },
             "updated": {
                 "title": "Vehicle updated",
@@ -1202,6 +1215,8 @@
                     "workOrder": "Work Order"
                 },
                 "viewDetails": "View details",
+                "edit": "Edit",
+                "delete": "Delete",
                 "createWorkOrder": "Create Work Order",
                 "scheduleService": "Schedule Service",
                 "noData": "No vehicles found",

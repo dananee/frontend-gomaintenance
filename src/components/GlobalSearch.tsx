@@ -53,22 +53,38 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
 
   const categories: SearchCategory[] = ["vehicle", "work_order", "part", "user", "page"];
 
+  const [debouncedQuery, setDebouncedQuery] = React.useState(query);
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [query]);
+
   const fetchResults = React.useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (query) params.set("query", query);
+    if (debouncedQuery) params.set("query", debouncedQuery);
     if (category !== "all") params.set("category", category);
 
     const token = localStorage.getItem("auth_token");
-    const response = await fetch(`/api/search?${params.toString()}`, {
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
-    const data = (await response.json()) as { results: SearchResult[] };
-    setResults(data.results);
-    setLoading(false);
-  }, [category, query]);
+    try {
+      const response = await fetch(`/api/search?${params.toString()}`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      if (response.ok) {
+        const data = (await response.json()) as { results: SearchResult[] };
+        setResults(data.results);
+      }
+    } catch (error) {
+      console.error("Fetch search results failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [category, debouncedQuery]);
 
   React.useEffect(() => {
     fetchResults();

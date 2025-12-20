@@ -25,7 +25,7 @@ const staticPages: SearchResult[] = [
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get("query")?.toLowerCase().trim() ?? "";
+  const query = searchParams.get("query")?.trim() ?? "";
   const category = searchParams.get("category") as SearchCategory | null;
   const authHeader = request.headers.get("Authorization");
 
@@ -35,122 +35,73 @@ export async function GET(request: Request) {
     return NextResponse.json({ results: [] });
   }
 
-  const fetchBackend = async (endpoint: string) => {
-    try {
-      const url = new URL(`${API_BASE_URL}${endpoint}`);
-      if (query) url.searchParams.set("search", query);
-      url.searchParams.set("page_size", "5");
+  const results: SearchResult[] = [];
 
-      const res = await fetch(url.toString(), {
-        headers: {
-          ...(authHeader ? { Authorization: authHeader } : {}),
-        },
-        cache: "no-store",
-      });
+  // 1. Fetch from unified Go backend endpoint
+  try {
+    const url = new URL(`${API_BASE_URL}/search`);
+    if (query) url.searchParams.set("q", query);
 
-      if (!res.ok) {
-        console.error(`Backend error at ${endpoint}: ${res.status}`);
-        return { data: [] };
+    const res = await fetch(url.toString(), {
+      headers: {
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      },
+      cache: "no-store",
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      
+      // Map backend response types to SearchResult
+      if (data.vehicles) {
+        results.push(...data.vehicles);
       }
-      return await res.json();
-    } catch (e) {
-      console.error(`Error fetching from ${endpoint}:`, e);
-      return { data: [] };
+      if (data.workOrders) {
+        results.push(...data.workOrders);
+      }
+      if (data.parts) {
+        results.push(...data.parts);
+      }
+      if (data.users) {
+        results.push(...data.users);
+      }
+    } else {
+      console.error(`Backend search error: ${res.status}`);
     }
-  };
-
-  let results: SearchResult[] = [];
-  const promises: Promise<void>[] = [];
-
-  if (!category || category === "vehicle") {
-    promises.push(
-      fetchBackend("/vehicles").then((resp) => {
-        const items = resp.data || [];
-        items.forEach((v: any) => {
-          const vehicle = v.vehicle || v;
-          results.push({
-            id: vehicle.id,
-            title: `${vehicle.brand || ""} ${vehicle.model || ""}`.trim() || vehicle.plate_number,
-            subtitle: vehicle.plate_number,
-            category: "vehicle",
-            url: `/dashboard/vehicles/${vehicle.id}`,
-          });
-        });
-      })
-    );
+  } catch (e) {
+    console.error("Error fetching from Go search endpoint:", e);
   }
 
-  if (!category || category === "part") {
-    promises.push(
-      fetchBackend("/parts").then((resp) => {
-        const items = resp.data || [];
-        items.forEach((p: any) => {
-          results.push({
-            id: p.id,
-            title: p.name,
-            subtitle: p.part_number,
-            category: "part",
-            url: `/dashboard/inventory/${p.id}`,
-          });
-        });
-      })
-    );
-  }
-
-  if (!category || category === "work_order") {
-    promises.push(
-      fetchBackend("/work-orders").then((resp) => {
-        const items = resp.data || [];
-        items.forEach((wo: any) => {
-          results.push({
-            id: wo.id,
-            title: wo.title,
-            subtitle: `ID: ${wo.id.substring(0, 8)}`,
-            category: "work_order",
-            url: `/dashboard/work-orders/${wo.id}`,
-          });
-        });
-      })
-    );
-  }
-
-  if (!category || category === "user") {
-    promises.push(
-      fetchBackend("/users").then((resp) => {
-        const items = resp.data || [];
-        items.forEach((u: any) => {
-          results.push({
-            id: u.id,
-            title: `${u.first_name || ""} ${u.last_name || ""}`.trim() || u.email,
-            subtitle: u.role,
-            category: "user",
-            url: `/dashboard/users/${u.id}`,
-          });
-        });
-      })
-    );
-  }
-
+  // 2. Add static pages matching the query
   if (!category || category === "page") {
+    const lowerQuery = query.toLowerCase();
     const filteredPages = query
-      ? staticPages.filter((p) => p.title.toLowerCase().includes(query))
-      : staticPages;
+      ? staticPages.filter((p) => p.title.toLowerCase().includes(lowerQuery))
+      : [];
     results.push(...filteredPages);
   }
 
-  await Promise.allSettled(promises);
+  // 3. Filter by category if specified
+  let filteredResults = results;
+  if (category && category !== "page") {
+    filteredResults = results.filter(r => r.category === category);
+  } else if (category === "page") {
+    filteredResults = results.filter(r => r.category === "page");
+  }
 
-  console.log(`[SearchAPI] Total results found: ${results.length}`);
+  console.log(`[SearchAPI] Total results found: ${filteredResults.length}`);
 
+  // 4. Sort results if query exists
   if (query) {
-    results.sort((a, b) => {
-      const aTitleMatch = a.title.toLowerCase().startsWith(query);
-      const bTitleMatch = b.title.toLowerCase().startsWith(query);
+    const lowerQuery = query.toLowerCase();
+    filteredResults.sort((a, b) => {
+      const aTitleMatch = a.title.toLowerCase().startsWith(lowerQuery);
+      const bTitleMatch = b.title.toLowerCase().startsWith(lowerQuery);
       if (aTitleMatch && !bTitleMatch) return -1;
       if (!aTitleMatch && bTitleMatch) return 1;
       return 0;
     });
   }
 
-  return NextResponse.json({ results });
+  return NextResponse.json({ results: filteredResults });
 }

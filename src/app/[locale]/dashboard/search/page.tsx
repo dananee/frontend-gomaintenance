@@ -36,6 +36,8 @@ export default function SearchResultsPage() {
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [activeTab, setActiveTab] = useState<SearchCategory | "all">("all");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const categoryLabels: Record<SearchCategory, string> = {
     vehicle: t("tabs.vehicle"),
@@ -46,19 +48,50 @@ export default function SearchResultsPage() {
   };
 
   useEffect(() => {
+    if (!query && activeTab === "all") {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
     const params = new URLSearchParams();
     if (query) params.set("query", query);
     if (activeTab !== "all") params.set("category", activeTab);
 
-    const token = localStorage.getItem("auth_token");
-    fetch(`/api/search?${params.toString()}`, {
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    })
-      .then((res) => res.json())
-      .then((data: { results: SearchResult[] }) => setResults(data.results));
-  }, [activeTab, query]);
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      const token = localStorage.getItem("auth_token");
+
+      try {
+        const res = await fetch(`/api/search?${params.toString()}`, {
+          signal: controller.signal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+
+        if (!res.ok) throw new Error("Search failed");
+        
+        const data = (await res.json()) as { results: SearchResult[] };
+        setResults(data.results);
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          console.error("Search error:", err);
+          setError(t("errors.generic") || "An error occurred");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => controller.abort();
+  }, [activeTab, query, t]);
 
   const groupedResults = results.reduce<Record<SearchCategory, SearchResult[]>>((acc, result) => {
     if (!acc[result.category]) acc[result.category] = [] as SearchResult[];
@@ -113,13 +146,26 @@ export default function SearchResultsPage() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-8">
-          {results.length === 0 && (
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+              <span className="ml-3 text-gray-500">{t("fetching")}</span>
+            </div>
+          )}
+
+          {!loading && error && (
+            <div className="py-12 text-center text-red-500">
+              {error}
+            </div>
+          )}
+
+          {!loading && !error && results.length === 0 && (
             <div className="py-12 text-center text-gray-500">
               {t("empty.query", { query })}
             </div>
           )}
           
-          {Object.entries(groupedResults).map(([category, categoryResults]) => (
+          {!loading && !error && Object.entries(groupedResults).map(([category, categoryResults]) => (
             <div key={category} className="space-y-4">
               <h3 className="flex items-center gap-2 text-lg font-semibold capitalize">
                 {categoryIcons[category as SearchCategory]}
@@ -154,7 +200,11 @@ export default function SearchResultsPage() {
         {Object.keys(categoryLabels).map((category) => (
           <TabsContent key={category} value={category}>
              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {groupedResults[category as SearchCategory]?.map((result) => (
+                {loading ? (
+                  <div className="col-span-full flex items-center justify-center py-12">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+                  </div>
+                ) : groupedResults[category as SearchCategory]?.map((result) => (
                   <Link key={result.id} href={result.url} className="block">
                     <Card className="h-full transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
                       <CardHeader>

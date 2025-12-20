@@ -973,6 +973,7 @@
                 "form": {
                     "odooUrl": "رابط Odoo",
                     "databaseName": "اسم قاعدة البيانات",
+                    "username": "اسم المستخدم",
                     "apiKey": "مفتاح API"
                 },
                 "actions": {
@@ -1190,6 +1191,10 @@
             "back": "رجوع",
             "backToList": "العودة للقائمة"
         },
+        "confirmDelete": {
+            "title": "حذف المركبة",
+            "description": "هل أنت متأكد أنك تريد حذف هذه المركبة؟ لا يمكن التراجع عن هذا الإجراء."
+        },
         "edit": {
             "title": "تعديل المركبة"
         },
@@ -1224,7 +1229,15 @@
         "toasts": {
             "deleted": {
                 "title": "تم حذف المركبة",
-                "description": "تمت إزالة المركبة من أسطولك."
+                "description": "تمت إزالة المركبة من أسطولك.",
+                "errorTitle": "فشل الحذف",
+                "errorDescription": "تعذر حذف المركبة. يرجى المحاولة مرة أخرى."
+            },
+            "workOrderCreated": {
+                "title": "تم إنشاء أمر العمل"
+            },
+            "planCreated": {
+                "title": "تم إنشاء خطة الصيانة"
             },
             "updated": {
                 "title": "تم تحديث المركبة",
@@ -1301,12 +1314,19 @@
                     "healthScore": "نقاط الصحة",
                     "woCount": "عدد أوامر العمل",
                     "actions": "إجراءات",
+                    "edit": "تعديل",
+                    "delete": "حذف",
                     "partName": "اسم القطعة",
                     "quantity": "الكمية",
                     "cost": "التكلفة",
                     "dateUsed": "تاريخ الاستخدام",
                     "workOrder": "أمر العمل"
                 },
+                "viewDetails": "عرض التفاصيل",
+                "edit": "تعديل",
+                "delete": "حذف",
+                "createWorkOrder": "إنشاء أمر عمل",
+                "scheduleService": "جدولة الخدمة",
                 "noData": "لم يتم العثور على مركبات",
                 "noService": "لا توجد خدمة مجدولة",
                 "days": "{days} أيام",

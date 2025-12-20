@@ -875,6 +875,7 @@
                 "form": {
                     "odooUrl": "URL Odoo",
                     "databaseName": "Nom de la Base de Données",
+                    "username": "Nom d'utilisateur",
                     "apiKey": "Clé API"
                 },
                 "actions": {
@@ -1249,6 +1250,10 @@
             "back": "Retour",
             "backToList": "Retour à la liste"
         },
+        "confirmDelete": {
+            "title": "Supprimer le véhicule",
+            "description": "Êtes-vous sûr de vouloir supprimer ce véhicule ? Cette action est irréversible."
+        },
         "edit": {
             "title": "Modifier le véhicule"
         },
@@ -1286,7 +1291,15 @@
         "toasts": {
             "deleted": {
                 "title": "Véhicule supprimé",
-                "description": "Le véhicule a été retiré de votre flotte."
+                "description": "Le véhicule a été retiré de votre flotte.",
+                "errorTitle": "Échec de la suppression",
+                "errorDescription": "Impossible de supprimer le véhicule. Veuillez réessayer."
+            },
+            "workOrderCreated": {
+                "title": "Ordre de travail créé"
+            },
+            "planCreated": {
+                "title": "Plan de maintenance créé"
             },
             "updated": {
                 "title": "Véhicule mis à jour",
@@ -1372,6 +1385,8 @@
                     "workOrder": "Ordre de Travail"
                 },
                 "viewDetails": "Voir les détails",
+                "edit": "Modifier",
+                "delete": "Supprimer",
                 "createWorkOrder": "Créer un ordre de travail",
                 "scheduleService": "Planifier un service",
                 "noData": "Aucun véhicule trouvé",
