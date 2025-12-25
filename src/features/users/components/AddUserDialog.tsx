@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserStatus } from "../store/useUsersStore";
+import { useCreateUser } from "../hooks/useCreateUser";
 import { useTranslations } from "next-intl";
 
 interface AddUserDialogProps {
@@ -19,14 +20,14 @@ interface AddUserDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const roles: Role[] = ["admin", "manager", "technician", "viewer"];
+const roles: Role[] = ["admin", "manager", "technician", "viewer", "driver"];
 
 export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
   const t = useTranslations("users");
   const tc = useTranslations("common");
   const tt = useTranslations("toasts");
 
-  const addUser = useUsersStore((state) => state.addUser);
+  const { mutate: performCreate, isPending: isCreating } = useCreateUser();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("viewer");
@@ -65,12 +66,21 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
     event.preventDefault();
     if (!validate()) return;
 
-    const newUser = addUser({ name, email, role, status, avatar });
-    toast.success(tt("success.userAdded"), {
-      description: tt("success.userAddedDesc", { name: newUser.name }),
-    });
-    resetForm();
-    onOpenChange(false);
+    performCreate(
+      { name, email, role, status: status as "active" | "inactive" },
+      {
+        onSuccess: (newUser) => {
+          toast.success(tt("success.userAdded"), {
+            description: tt("success.userAddedDesc", { name: newUser.first_name + " " + newUser.last_name }),
+          });
+          resetForm();
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.error || "Failed to create user");
+        },
+      }
+    );
   };
 
   return (
@@ -152,7 +162,9 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               {tc("cancel")}
             </Button>
-            <Button type="submit">{t("form.actions.add")}</Button>
+            <Button type="submit" disabled={isCreating}>
+              {isCreating ? tc("loading") : t("form.actions.add")}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

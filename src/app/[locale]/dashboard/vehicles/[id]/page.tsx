@@ -70,6 +70,14 @@ import {
   VehicleMaintenancePlan,
 } from "@/features/vehicles/api/vehiclePlans";
 import { AddVehicleDocumentRequest } from "@/features/vehicles/api/vehicleDocuments";
+import {
+  useVehicleDrivers,
+  useAssignDrivers,
+  useUnassignDriver,
+  useSetPrimaryDriver,
+} from "@/features/vehicles/hooks/useVehicleDrivers";
+import { VehicleDriversTab } from "@/features/vehicles/components/VehicleDriversTab";
+import { useUsers } from "@/features/users/hooks/useUsers";
 import { useTranslations } from "next-intl";
 
 export default function VehicleDetailPage() {
@@ -98,6 +106,31 @@ export default function VehicleDetailPage() {
   const { data: documents = [], isLoading: isLoadingDocuments } = useVehicleDocuments(vehicleId);
   const { mutate: uploadDocument, isPending: isUploadingDocument } = useUploadVehicleDocument(vehicleId);
   const { mutate: deleteDocument, isPending: isDeletingDocument } = useDeleteVehicleDocument(vehicleId);
+
+  const { data: drivers = [], isLoading: isLoadingDrivers } = useVehicleDrivers(vehicleId);
+  const { mutate: assignDrivers, isPending: isAssigningDrivers } = useAssignDrivers(vehicleId);
+  const { mutate: unassignDriver, isPending: isUnassigningDriver } = useUnassignDriver(vehicleId);
+  const { mutate: setPrimaryDriver, isPending: isSettingPrimary } = useSetPrimaryDriver(vehicleId);
+
+  // Fetch all users to select drivers from
+  const { data: usersData, isLoading: isLoadingUsers } = useUsers({ page_size: 100 });
+  
+  const availableDrivers = useMemo(() => {
+    if (!usersData?.data) return [];
+    return usersData.data
+      .filter(u => u.role === "driver")
+      .map(u => {
+        const nameParts = (u.name || "").split(" ");
+        return {
+          id: u.id,
+          first_name: u.first_name || nameParts[0] || "",
+          last_name: u.last_name || nameParts.slice(1).join(" ") || "",
+          email: u.email,
+          phone: "", // Phone number not available on User type yet
+          avatar_url: u.avatar || "", 
+        };
+      });
+  }, [usersData]);
 
   const { mutate: updateUsage, isPending: isUpdatingUsage } = useUpdateVehicleUsage(vehicleId);
 
@@ -221,6 +254,30 @@ export default function VehicleDetailPage() {
       onError: () => toast.error("Unable to delete document"),
     });
   };
+  
+  const handleAssignDrivers = async (driverIds: string[], primaryDriverId?: string) => {
+    assignDrivers(
+      { driver_ids: driverIds, primary_driver_id: primaryDriverId },
+      {
+        onSuccess: () => toast.success("Drivers assigned successfully"),
+        onError: () => toast.error("Failed to assign drivers"),
+      }
+    );
+  };
+
+  const handleUnassignDriver = async (driverId: string) => {
+    unassignDriver(driverId, {
+      onSuccess: () => toast.success("Driver unassigned successfully"),
+      onError: () => toast.error("Failed to unassign driver"),
+    });
+  };
+
+  const handleSetPrimary = async (driverId: string) => {
+    setPrimaryDriver(driverId, {
+      onSuccess: () => toast.success("Primary driver updated"),
+      onError: () => toast.error("Failed to update primary driver"),
+    });
+  };
 
   const handleUsageUpdate = (payload: { current_km?: number; current_engine_hours?: number }) => {
     updateUsage(payload, {
@@ -295,6 +352,12 @@ export default function VehicleDetailPage() {
               className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             >
               {t("details.tabs.documents")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="drivers"
+              className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
+            >
+              {t("drivers.title")}
             </TabsTrigger>
             <TabsTrigger
               value="history"
@@ -527,6 +590,25 @@ export default function VehicleDetailPage() {
               onUpload={() => setIsUploadModalOpen(true)}
               onDelete={handleDeleteDocument}
               isDeleting={isDeletingDocument}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="drivers" className="space-y-6">
+          {isLoadingDrivers || isLoadingUsers ? (
+            <div className="space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          ) : (
+            <VehicleDriversTab
+              vehicleId={vehicleId}
+              drivers={drivers || []}
+              availableDrivers={availableDrivers}
+              onAssignDrivers={handleAssignDrivers}
+              onUnassignDriver={handleUnassignDriver}
+              onSetPrimary={handleSetPrimary}
+              isLoading={isAssigningDrivers || isUnassigningDriver || isSettingPrimary}
             />
           )}
         </TabsContent>

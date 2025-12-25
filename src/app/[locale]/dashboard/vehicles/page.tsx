@@ -10,20 +10,30 @@ import { Modal } from "@/components/ui/modal";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Pagination } from "@/components/ui/pagination";
 import { useModal } from "@/hooks/useModal";
-import { Plus, Truck } from "lucide-react";
+import { Plus, Truck, FileUp, FileDown } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useDeleteVehicle } from "@/features/vehicles/hooks/useDeleteVehicle";
 import { WorkOrderForm } from "@/features/workOrders/components/WorkOrderForm";
 import { CreateMaintenancePlanModal } from "@/features/vehicles/components/CreateMaintenancePlanModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useCreateVehicleMaintenancePlan } from "@/features/vehicles/hooks/useVehiclePlans";
 import { CreateMaintenancePlanRequest } from "@/features/vehicles/api/vehiclePlans";
+import { VehicleImportModal } from "@/features/vehicles/components/VehicleImportModal";
+import {
+  importVehicles,
+  exportVehicles,
+  downloadTemplate,
+  downloadFile,
+} from "@/features/vehicles/api/import-export";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function VehiclesPage() {
   const t = useTranslations("vehicles");
+  const locale = useLocale();
   const { data, isLoading } = useVehicles();
   const { isOpen, open, close } = useModal();
+  const queryClient = useQueryClient();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -35,9 +45,23 @@ export default function VehiclesPage() {
   const [vehicleToDelete, setVehicleToDelete] = useState<string | null>(null);
   const [woVehicle, setWoVehicle] = useState<Vehicle | null>(null);
   const [planVehicle, setPlanVehicle] = useState<Vehicle | null>(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const deleteMutation = useDeleteVehicle();
   const createPlanMutation = useCreateVehicleMaintenancePlan(planVehicle?.id || "");
+
+  const importMutation = useMutation({
+    mutationFn: importVehicles,
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+      // Success toast is handled by the modal or component showing results
+      // We can also show a generic success here if needed
+      toast.success(t("toasts.import.success"));
+    },
+    onError: () => {
+      toast.error(t("toasts.import.error"));
+    }
+  });
 
   const handleEdit = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
@@ -88,6 +112,30 @@ export default function VehiclesPage() {
     setPlanVehicle(vehicle);
   };
 
+  const handleExport = async () => {
+    try {
+      toast.promise(exportVehicles(locale), {
+        loading: t("export.downloading"),
+        success: (blob) => {
+          downloadFile(blob, `vehicles_export_${new Date().toISOString().split("T")[0]}.xlsx`);
+          return "Vehicles exported successfully";
+        },
+        error: "Failed to export vehicles",
+      });
+    } catch (error) {
+      // Error handled by toast promise
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      const blob = await downloadTemplate(locale);
+      downloadFile(blob, `vehicle_import_template_${locale}.xlsx`);
+    } catch (error) {
+      toast.error("Failed to download template");
+    }
+  };
+
   const filteredVehicles = useMemo(() => {
     const vehicles = data?.data || [];
 
@@ -117,14 +165,24 @@ export default function VehiclesPage() {
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {t("title")}
         </h1>
-        <Button onClick={handleCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("actions.add")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setIsImportModalOpen(true)}>
+            <FileUp className="mr-2 h-4 w-4" />
+            {t("import.import")}
+          </Button>
+          <Button variant="outline" onClick={handleExport}>
+            <FileDown className="mr-2 h-4 w-4" />
+            {t("export.button")}
+          </Button>
+          <Button onClick={handleCreate}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("actions.add")}
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -266,6 +324,13 @@ export default function VehiclesPage() {
         title={t("confirmDelete.title")}
         description={t("confirmDelete.description")}
         variant="destructive"
+      />
+
+      <VehicleImportModal
+        open={isImportModalOpen}
+        onOpenChange={setIsImportModalOpen}
+        onImport={(file) => importMutation.mutateAsync(file)}
+        onDownloadTemplate={handleDownloadTemplate}
       />
     </div>
   );

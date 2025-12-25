@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Role } from "@/lib/rbac/permissions";
 
-export type UserStatus = "active" | "inactive" | "suspended";
+export type UserStatus = "active" | "inactive" | "suspended" | "pending";
 
 export interface UserRecord {
   id: string;

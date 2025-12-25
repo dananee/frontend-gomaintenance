@@ -8,6 +8,7 @@ import { TableSkeleton } from "@/components/ui/skeleton";
 import { Plus, Users as UsersIcon, AlertCircle } from "lucide-react";
 import { useState, useMemo } from "react";
 import { AddUserDialog } from "@/features/users/components/AddUserDialog";
+import { InviteUserDialog } from "@/features/users/components/InviteUserDialog";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { useUsersStore } from "@/features/users/store/useUsersStore";
 import { useTranslations } from "next-intl";
@@ -15,6 +16,7 @@ import { useTranslations } from "next-intl";
 export default function UsersPage() {
   const t = useTranslations("users");
   const [open, setOpen] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -35,10 +37,16 @@ export default function UsersPage() {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {t("title")}
         </h1>
-        <Button onClick={() => setOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("actions.add")}
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => setInviteOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("actions.invite")}
+          </Button>
+          <Button onClick={() => setOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("actions.add")}
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -83,6 +91,7 @@ export default function UsersPage() {
       )}
 
       <AddUserDialog open={open} onOpenChange={setOpen} />
+      <InviteUserDialog open={inviteOpen} onOpenChange={setInviteOpen} />
     </div>
   );
 }

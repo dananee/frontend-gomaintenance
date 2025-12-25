@@ -1,4 +1,4 @@
-export type Role = "admin" | "manager" | "technician" | "viewer";
+export type Role = "admin" | "manager" | "technician" | "viewer" | "driver";
 
 export type Permission =
   | "view_dashboard"
@@ -57,4 +57,5 @@ export const rolePermissions: Record<Role, Permission[]> = {
     "view_inventory",
   ],
   viewer: ["view_dashboard", "view_vehicles", "view_work_orders"],
+  driver: ["view_vehicles", "view_work_orders", "report_incident"],
 };

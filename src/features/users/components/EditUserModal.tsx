@@ -24,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserRecord, UserStatus } from "../store/useUsersStore";
+import { useUpdateUser } from "../hooks/useUpdateUser";
 import { useTranslations } from "next-intl";
 
 interface EditUserModalProps {
@@ -32,7 +33,7 @@ interface EditUserModalProps {
   user: UserRecord;
 }
 
-const roles = ["admin", "manager", "technician", "viewer"] as const;
+const roles = ["admin", "manager", "technician", "viewer", "driver"] as const;
 
 export function EditUserModal({
   open,
@@ -43,7 +44,7 @@ export function EditUserModal({
   const tc = useTranslations("common");
   const tt = useTranslations("toasts");
 
-  const updateUser = useUsersStore((state) => state.updateUser);
+  const { mutate: performUpdate, isPending: isUpdating } = useUpdateUser();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone || "");
@@ -87,19 +88,30 @@ export function EditUserModal({
     event.preventDefault();
     if (!validate()) return;
 
-    updateUser(user.id, {
-      name,
-      email,
-      phone: phone || undefined,
-      role,
-      status,
-      avatar,
-    });
-
-    toast.success(tt("success.userUpdated"), {
-      description: tt("success.userUpdatedDesc", { name }),
-    });
-    onOpenChange(false);
+    performUpdate(
+      {
+        id: user.id,
+        updates: {
+          name,
+          email,
+          phone: phone || undefined,
+          role,
+          status,
+          avatar,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(tt("success.userUpdated"), {
+            description: tt("success.userUpdatedDesc", { name }),
+          });
+          onOpenChange(false);
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.error || "Failed to update user");
+        },
+      }
+    );
   };
 
   return (
@@ -164,6 +176,7 @@ export function EditUserModal({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder={t("form.fields.phonePlaceholder")}
+              disabled={isUpdating}
             />
           </div>
 
@@ -219,7 +232,9 @@ export function EditUserModal({
             >
               {tc("cancel")}
             </Button>
-            <Button type="submit">{t("form.actions.save")}</Button>
+            <Button type="submit" disabled={isUpdating}>
+              {isUpdating ? tc("loading") : t("form.actions.save")}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -15,7 +15,25 @@
             "invalidCredentials": "Identifiants incorrects"
         },
         "actions": {
-            "submit": "Se connecter"
+            "submit": "Se connecter",
+            "forgotPassword": "Mot de passe oublié ?"
+        },
+        "resetPassword": {
+            "title": "Définir un nouveau mot de passe",
+            "description": "Veuillez saisir votre nouveau mot de passe pour activer votre compte.",
+            "fields": {
+                "newPassword": "Nouveau mot de passe",
+                "confirmPassword": "Confirmer le mot de passe"
+            },
+            "actions": {
+                "submit": "Définir le mot de passe"
+            },
+            "errors": {
+                "mismatch": "Les mots de passe ne correspondent pas",
+                "expired": "Lien d'invitation expiré. Contactez l'administrateur.",
+                "invalid": "Jeton invalide"
+            },
+            "success": "Mot de passe défini avec succès ! Redirection vers la connexion..."
         }
     },
     "authLayout": {
@@ -39,6 +57,8 @@
         "noData": "Aucune donnée trouvée",
         "search": "Rechercher...",
         "total": "Total",
+        "language": "Langue",
+        "selectLanguage": "Choisir la langue",
         "pickDate": "Choisir une date",
         "openMenu": "Ouvrir le menu",
         "userNav": {
@@ -400,6 +420,51 @@
                 "cancel": "Annuler",
                 "create": "Créer",
                 "update": "Mettre à jour"
+            },
+            "drivers": {
+                "title": "Chauffeurs assignés",
+                "subtitle": "Gérez les chauffeurs assignés à ce véhicule",
+                "assignDrivers": "Assigner des chauffeurs",
+                "selectDrivers": "Sélectionner des chauffeurs...",
+                "driversSelected": "chauffeurs sélectionnés",
+                "allDriversAssigned": "Tous les chauffeurs disponibles sont déjà assignés",
+                "noDrivers": "Aucun chauffeur assigné",
+                "noDriversDesc": "Aucun chauffeur n'a encore été assigné à ce véhicule.",
+                "primary": "Chauffeur principal",
+                "setPrimary": "Définir comme principal",
+                "remove": "Retirer",
+                "from": "Du",
+                "to": "Au",
+                "removeDriverTitle": "Retirer l'assignation du chauffeur",
+                "removeDriverDesc": "Êtes-vous sûr de vouloir retirer ce chauffeur du véhicule ?",
+                "cancel": "Annuler"
+            },
+            "import": {
+                "title": "Importer des véhicules",
+                "description": "Téléversez un fichier Excel pour importer ou mettre à jour des véhicules en masse.",
+                "templateInfo": "Téléchargez le modèle pour voir le format requis.",
+                "downloadTemplate": "Télécharger le modèle",
+                "dragDrop": "Glissez-déposez votre fichier ici",
+                "onlyXlsx": "Seuls les fichiers .xlsx sont supportés (max 10MB)",
+                "onlyXlsxCsv": "Seuls les fichiers .xlsx et .csv sont supportés (max 10MB)",
+                "browse": "Parcourir les fichiers",
+                "removeFile": "Supprimer le fichier",
+                "import": "Importer les véhicules",
+                "importing": "Importation...",
+                "successful": "Succès",
+                "failed": "Échec",
+                "vehiclesImported": "véhicules importés avec succès",
+                "vehiclesFailed": "lignes n'ont pas pu être importées",
+                "errorDetails": "Détails des erreurs",
+                "row": "Ligne",
+                "field": "Champ",
+                "error": "Erreur",
+                "close": "Fermer",
+                "cancel": "Annuler"
+            },
+            "export": {
+                "button": "Exporter vers Excel",
+                "downloading": "Téléchargement..."
             }
         },
         "maintenance": {
@@ -1120,12 +1185,14 @@
             "admin": "Admin",
             "manager": "Gestionnaire",
             "technician": "Technicien",
-            "viewer": "Lecteur"
+            "viewer": "Lecteur",
+            "driver": "Chauffeur"
         },
         "status": {
             "active": "Actif",
             "suspended": "Suspendu",
-            "inactive": "Inactif"
+            "inactive": "Inactif",
+            "pending": "Invitation en attente"
         },
         "actions": {
             "add": "Ajouter un utilisateur",
@@ -1151,8 +1218,10 @@
         "form": {
             "title": "Ajouter un utilisateur",
             "editTitle": "Modifier l'utilisateur",
+            "inviteTitle": "Inviter un utilisateur",
             "description": "Saisissez les détails de l'utilisateur, son rôle et son statut pour intégrer de nouveaux coéquipiers.",
             "editDescription": "Mettre à jour les détails de l'utilisateur, son rôle et le statut de son compte.",
+            "inviteDescription": "Envoyer une invitation par e-mail à un nouveau membre de l'équipe.",
             "fields": {
                 "name": "Nom",
                 "namePlaceholder": "Entrez le nom complet",
@@ -1164,18 +1233,22 @@
                 "selectRole": "Sélectionner le rôle",
                 "status": "Statut",
                 "selectStatus": "Sélectionner le statut",
-                "profilePhoto": "Photo de profil"
+                "profilePhoto": "Photo de profil",
+                "language": "Langue",
+                "selectLanguage": "Choisir la langue"
             },
             "errors": {
                 "nameRequired": "Le nom est requis",
                 "emailRequired": "L'email est requis",
                 "validEmail": "Entrez un email valide",
-                "roleRequired": "Le rôle est requis"
+                "roleRequired": "Le rôle est requis",
+                "languageRequired": "La langue est requise"
             },
             "actions": {
-                "add": "Ajouter l'utilisateur",
+                "add": "Ajouter",
                 "save": "Enregistrer les modifications",
-                "cancel": "Annuler"
+                "cancel": "Annuler",
+                "invite": "Envoyer l'invitation"
             }
         },
         "details": {
@@ -1279,6 +1352,7 @@
                 "8×4": "8×4",
                 "6×4": "6×4",
                 "4×2": "4×2",
+                "seltos": "Seltos",
                 "unknown": "Inconnu"
             }
         },
@@ -1288,7 +1362,55 @@
             "notFoundTitle": "Aucun véhicule trouvé",
             "notFoundDescription": "Aucun véhicule ne correspond à vos filtres. Essayez d’ajuster les critères."
         },
+        "drivers": {
+            "title": "Chauffeurs assignés",
+            "subtitle": "Gérez les chauffeurs assignés à ce véhicule",
+            "assignDrivers": "Assigner des chauffeurs",
+            "selectDrivers": "Sélectionner des chauffeurs...",
+            "driversSelected": "chauffeurs sélectionnés",
+            "noDrivers": "Aucun chauffeur assigné",
+            "noDriversDesc": "Aucun chauffeur n'a encore été assigné à ce véhicule.",
+            "primary": "Chauffeur principal",
+            "setPrimary": "Définir comme principal",
+            "remove": "Retirer",
+            "from": "Du",
+            "to": "Au",
+            "removeDriverTitle": "Retirer l'assignation du chauffeur",
+            "removeDriverDesc": "Êtes-vous sûr de vouloir retirer ce chauffeur du véhicule ?",
+            "cancel": "Annuler"
+        },
+        "import": {
+            "title": "Importer des véhicules",
+            "description": "Téléversez un fichier Excel pour importer ou mettre à jour des véhicules en masse.",
+            "templateInfo": "Téléchargez le modèle pour voir le format requis.",
+            "downloadTemplate": "Télécharger le modèle",
+            "dragDrop": "Glissez-déposez votre fichier ici",
+            "onlyXlsx": "Seuls les fichiers .xlsx sont supportés (max 10MB)",
+            "onlyXlsxCsv": "Seuls les fichiers .xlsx et .csv sont supportés (max 10MB)",
+            "browse": "Parcourir les fichiers",
+            "removeFile": "Supprimer le fichier",
+            "import": "Importer les véhicules",
+            "importing": "Importation...",
+            "successful": "Succès",
+            "failed": "Échec",
+            "vehiclesImported": "véhicules importés avec succès",
+            "vehiclesFailed": "lignes n'ont pas pu être importées",
+            "errorDetails": "Détails des erreurs",
+            "row": "Ligne",
+            "field": "Champ",
+            "error": "Erreur",
+            "close": "Fermer",
+            "cancel": "Annuler"
+        },
+        "export": {
+            "button": "Exporter vers Excel",
+            "downloading": "Téléchargement..."
+        },
         "toasts": {
+            "import": {
+                "success": "Importation réussie",
+                "error": "Échec de l'importation"
+            },
             "deleted": {
                 "title": "Véhicule supprimé",
                 "description": "Le véhicule a été retiré de votre flotte.",
@@ -1487,10 +1609,13 @@
                 "newPlan": "Nouveau Plan",
                 "noPlans": "Aucun Plan de Maintenance",
                 "noPlansDesc": "Configurez des calendriers de maintenance récurrents.",
-                "createFirst": "Créer Premier Plan",
+                "createFirstPlan": "Créer le premier plan",
                 "customPlan": "Plan Personnalisé",
                 "paused": "En Pause",
                 "every": "Tous les",
+                "or": "ou",
+                "months": "mois",
+                "never": "Jamais",
                 "due": "Dû le : {date}",
                 "lastService": "Dernier Service",
                 "nextDue": "Prochain Dû",
@@ -1499,7 +1624,7 @@
                 "runNow": "Exécuter Maintenant",
                 "resumePlan": "Reprendre Plan",
                 "pausePlan": "Mettre en Pause",
-                "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce plan ?",
+                "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce plan ?",
                 "historyTitle": "Historique complet de maintenance pour ce véhicule",
                 "noHistory": "Aucun historique disponible",
                 "timelineTitle": "Chronologie Maintenance",
@@ -2031,6 +2156,26 @@
         "confirmDialog": {
             "defaultConfirm": "Confirmer",
             "defaultCancel": "Annuler"
+        }
+    },
+    "profilePage": {
+        "title": "Mon Profil",
+        "description": "Consultez les détails de votre profil et votre activité récente.",
+        "tabs": {
+            "overview": "Aperçu",
+            "activity": "Journal d'activité"
+        },
+        "stats": {
+            "completedWorkOrders": "Bons de travail terminés",
+            "activeTasks": "Tâches actives",
+            "participationRate": "Taux de participation"
+        },
+        "info": {
+            "title": "Informations personnelles",
+            "email": "Adresse e-mail",
+            "role": "Rôle actuel",
+            "tenant": "Organisation",
+            "joined": "Membre depuis"
         }
     }
 }

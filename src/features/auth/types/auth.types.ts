@@ -8,6 +8,7 @@ export interface User {
   last_name: string;
   role: Role;
   is_active?: boolean;
+  is_invited?: boolean;
   avatar?: string;
   created_at?: string;
   updated_at?: string;

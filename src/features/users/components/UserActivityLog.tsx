@@ -2,11 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateShort } from "@/lib/formatters";
-import { CheckCircle, Wrench, User, LogIn, Settings } from "lucide-react";
+import { CheckCircle, Wrench, User, LogIn, Settings, Truck } from "lucide-react";
 
-interface ActivityLog {
+export interface ActivityLog {
   id: string;
-  type: "login" | "work_order" | "maintenance" | "profile" | "system";
+  type: string;
   action: string;
   details?: string;
   timestamp: string;
@@ -17,7 +17,7 @@ interface UserActivityLogProps {
   activities?: ActivityLog[];
 }
 
-const activityConfig = {
+const activityConfig: Record<string, { icon: any; color: string; bg: string }> = {
   login: {
     icon: LogIn,
     color: "text-blue-500",
@@ -37,6 +37,16 @@ const activityConfig = {
     icon: User,
     color: "text-purple-500",
     bg: "bg-purple-100 dark:bg-purple-900/30",
+  },
+  user: {
+    icon: User,
+    color: "text-purple-500",
+    bg: "bg-purple-100 dark:bg-purple-900/30",
+  },
+  vehicle: {
+    icon: Truck,
+    color: "text-blue-500",
+    bg: "bg-blue-100 dark:bg-blue-900/30",
   },
   system: {
     icon: Settings,

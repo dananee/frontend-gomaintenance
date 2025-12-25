@@ -15,7 +15,25 @@
             "invalidCredentials": "بيانات تسجيل الدخول غير صحيحة"
         },
         "actions": {
-            "submit": "تسجيل الدخول"
+            "submit": "تسجيل الدخول",
+            "forgotPassword": "نسيت كلمة المرور؟"
+        },
+        "resetPassword": {
+            "title": "تعيين كلمة مرور جديدة",
+            "description": "يرجى إدخال كلمة المرور الجديدة لتنشيط حسابك.",
+            "fields": {
+                "newPassword": "كلمة المرور الجديدة",
+                "confirmPassword": "تأكيد كلمة المرور"
+            },
+            "actions": {
+                "submit": "تعيين كلمة المرور"
+            },
+            "errors": {
+                "mismatch": "كلمات المرور غير متطابقة",
+                "expired": "انتهت صلاحية رابط الدعوة. اتصل بالمسؤول.",
+                "invalid": "الرمز غير صالح"
+            },
+            "success": "تم تعيين كلمة المرور بنجاح! جاري التحويل إلى تسجيل الدخول..."
         }
     },
     "authLayout": {
@@ -38,7 +56,9 @@
         "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر: {item}؟",
         "noData": "لم يتم العثور على بيانات",
         "search": "بحث...",
-        "total": "الإجمالي"
+        "total": "الإجمالي",
+        "language": "اللغة",
+        "selectLanguage": "اختر اللغة"
     },
     "toasts": {
         "success": {
@@ -387,6 +407,51 @@
                 "cancel": "إلغاء",
                 "create": "إنشاء",
                 "update": "تحديث"
+            },
+            "drivers": {
+                "title": "السائقون المعينون",
+                "subtitle": "إدارة السائقين المعينين لهذه المركبة",
+                "assignDrivers": "تعيين سائقين",
+                "selectDrivers": "اختر سائقين...",
+                "driversSelected": "سائقين مختارين",
+                "allDriversAssigned": "تم تعيين جميع السائقين المتاحين بالفعل",
+                "noDrivers": "لا يوجد سائقين معينين",
+                "noDriversDesc": "لم يتم تعيين أي سائق لهذه المركبة بعد.",
+                "primary": "السائق الرئيسي",
+                "setPrimary": "تعيين كرئيسي",
+                "remove": "إزالة",
+                "from": "من",
+                "to": "إلى",
+                "removeDriverTitle": "إزالة تعيين السائق",
+                "removeDriverDesc": "هل أنت متأكد أنك تريد إزالة هذا السائق من المركبة؟",
+                "cancel": "إلغاء"
+            },
+            "import": {
+                "title": "استيراد المركبات",
+                "description": "قم برفع ملف Excel لاستيراد أو تحديث المركبات بشكل مجمع.",
+                "templateInfo": "قم بتحميل القالب لمعرفة التنسيق المطلوب.",
+                "downloadTemplate": "تحميل القالب",
+                "dragDrop": "اسحب وأفلت ملفك هنا",
+                "onlyXlsx": "فقط ملفات .xlsx مدعومة (بحد أقصى 10 ميجابايت)",
+                "onlyXlsxCsv": "فقط ملفات .xlsx و .csv مدعومة (بحد أقصى 10 ميجابايت)",
+                "browse": "استعراض الملفات",
+                "removeFile": "حذف الملف",
+                "import": "استيراد المركبات",
+                "importing": "جارٍ الاستيراد...",
+                "successful": "ناجح",
+                "failed": "فشل",
+                "vehiclesImported": "مركبات تم استيرادها بنجاح",
+                "vehiclesFailed": "صفوف فشل استيرادها",
+                "errorDetails": "تفاصيل الخطأ",
+                "row": "الصف",
+                "field": "الحقل",
+                "error": "خطأ",
+                "close": "إغلاق",
+                "cancel": "إلغاء"
+            },
+            "export": {
+                "button": "تصدير إلى Excel",
+                "downloading": "جارٍ التحميل..."
             }
         }
     },
@@ -1061,12 +1126,14 @@
             "admin": "مدير النظام",
             "manager": "مشرف",
             "technician": "فني",
-            "viewer": "مشاهد"
+            "viewer": "مشاهد",
+            "driver": "سائق"
         },
         "status": {
             "active": "نشط",
             "suspended": "معلق",
-            "inactive": "غير نشط"
+            "inactive": "غير نشط",
+            "pending": "دعوة معلقة"
         },
         "actions": {
             "add": "إضافة مستخدم",
@@ -1092,8 +1159,10 @@
         "form": {
             "title": "إضافة مستخدم",
             "editTitle": "تعديل المستخدم",
-            "description": "التقط تفاصيل المستخدم ودوره وحالته لضم زملاء جدد للفريق.",
-            "editDescription": "تحديث تفاصيل المستخدم ودوره وحالة حسابه.",
+            "inviteTitle": "دعوة مستخدم",
+            "description": "التقط تفاصيل المستخدم ودوره وحالته لضم أعضاء جدد إلى الفريق.",
+            "editDescription": "تحديث تفاصيل المستخدم ودوره وحالة الحساب.",
+            "inviteDescription": "إرسال دعوة بالبريد الإلكتروني لعضو جديد في الفريق.",
             "fields": {
                 "name": "الاسم",
                 "namePlaceholder": "أدخل الاسم الكامل",
@@ -1101,20 +1170,24 @@
                 "emailPlaceholder": "user@example.com",
                 "phone": "الهاتف",
                 "phonePlaceholder": "+212 6 00 00 00 00",
+                "language": "اللغة",
+                "languagePlaceholder": "اختر اللغة",
                 "role": "الدور",
                 "selectRole": "اختر الدور",
                 "status": "الحالة",
-                "selectStatus": "اختر الحالة",
+                "selectStatus": "اختر حالة المستخدم",
                 "profilePhoto": "صورة الملف الشخصي"
             },
             "errors": {
                 "nameRequired": "الاسم مطلوب",
                 "emailRequired": "البريد الإلكتروني مطلوب",
                 "validEmail": "أدخل بريداً إلكترونياً صالحاً",
-                "roleRequired": "الدور مطلوب"
+                "roleRequired": "الدور مطلوب",
+                "languageRequired": "اللغة مطلوبة"
             },
             "actions": {
                 "add": "إضافة مستخدم",
+                "invite": "إرسال دعوة",
                 "save": "حفظ التغييرات",
                 "cancel": "إلغاء"
             }
@@ -1217,6 +1290,7 @@
                 "Van": "فان",
                 "car": "سيارة",
                 "Car": "سيارة",
+                "seltos": "سيلتوس",
                 "unknown": "غير معروف"
             }
         },
@@ -1226,7 +1300,55 @@
             "notFoundTitle": "لم يتم العثور على مركبات",
             "notFoundDescription": "لا توجد مركبات تطابق عوامل التصفية الحالية. جرب تعديل معايير البحث أو عوامل التصفية."
         },
+        "drivers": {
+            "title": "السائقين المعينين",
+            "subtitle": "إدارة السائقين المعينين لهذه المركبة",
+            "assignDrivers": "تعيين سائقين",
+            "selectDrivers": "اختر السائقين...",
+            "driversSelected": "سائقين محددين",
+            "noDrivers": "لا يوجد سائقين معينين",
+            "noDriversDesc": "لم يتم تعيين أي سائق لهذه المركبة بعد.",
+            "primary": "سائق أساسي",
+            "setPrimary": "تعيين كأساسي",
+            "remove": "إزالة",
+            "from": "من",
+            "to": "إلى",
+            "removeDriverTitle": "إلغاء تعيين السائق",
+            "removeDriverDesc": "هل أنت متأكد أنك تريد إزالة هذا السائق من المركبة؟",
+            "cancel": "إلغاء"
+        },
+        "import": {
+            "title": "استيراد المركبات",
+            "description": "قم بتحميل ملف Excel لاستيراد أو تحديث المركبات بشكل جماعي.",
+            "templateInfo": "قم بتنزيل النموذج لمعرفة التنسيق المطلوب.",
+            "downloadTemplate": "تنزيل النموذج",
+            "dragDrop": "اسحب وأفلت ملفك هنا",
+            "onlyXlsx": "يتم دعم ملفات .xlsx فقط (الحد الأقصى 10 ميجابايت)",
+            "onlyXlsxCsv": "يتم دعم ملفات .xlsx و .csv فقط (الحد الأقصى 10 ميجابايت)",
+            "browse": "تصفح الملفات",
+            "removeFile": "حذف الملف",
+            "import": "استيراد المركبات",
+            "importing": "جاري الاستيراد...",
+            "successful": "ناجح",
+            "failed": "فشل",
+            "vehiclesImported": "تم استيراد المركبات بنجاح",
+            "vehiclesFailed": "فشل استيراد الصفوف",
+            "errorDetails": "تفاصيل الخطأ",
+            "row": "صف",
+            "field": "حقل",
+            "error": "خطأ",
+            "close": "إغلاق",
+            "cancel": "إلغاء"
+        },
+        "export": {
+            "button": "تصدير إلى Excel",
+            "downloading": "جاري التنزيل..."
+        },
         "toasts": {
+            "import": {
+                "success": "تم الاستيراد بنجاح",
+                "error": "فشل الاستيراد"
+            },
             "deleted": {
                 "title": "تم حذف المركبة",
                 "description": "تمت إزالة المركبة من أسطولك.",
@@ -1414,10 +1536,13 @@
                 "newPlan": "خطة جديدة",
                 "noPlans": "لا توجد خطط صيانة",
                 "noPlansDesc": "إعداد جداول صيانة متكررة للحفاظ على المركبة.",
-                "createFirst": "إنشاء أول خطة",
+                "createFirstPlan": "إنشاء الخطة الأولى",
                 "customPlan": "خطة مخصصة",
                 "paused": "متوقف مؤقتاً",
                 "every": "كل",
+                "or": "أو",
+                "months": "أشهر",
+                "never": "أبداً",
                 "due": "مستحق: {date}",
                 "lastService": "آخر خدمة",
                 "nextDue": "الاستحقاق القادم",
@@ -1426,7 +1551,7 @@
                 "runNow": "تشغيل الخطة الآن",
                 "resumePlan": "استئناف الخطة",
                 "pausePlan": "إيقاف الخطة مؤقتاً",
-                "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
+                "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
                 "historyTitle": "سجل الصيانة الكامل لهذه المركبة",
                 "noHistory": "لا يوجد سجل صيانة متاح",
                 "timelineTitle": "الجدول الزمني للصيانة",
@@ -2070,6 +2195,26 @@
         "confirmDialog": {
             "defaultConfirm": "تأكيد",
             "defaultCancel": "إلغاء"
+        }
+    },
+    "profilePage": {
+        "title": "ملفي الشخصي",
+        "description": "عرض تفاصيل ملفك الشخصي والنشاط الأخير.",
+        "tabs": {
+            "overview": "نظرة عامة",
+            "activity": "سجل النشاط"
+        },
+        "stats": {
+            "completedWorkOrders": "أوامر العمل المكتملة",
+            "activeTasks": "المهام النشطة",
+            "participationRate": "معدل المشاركة"
+        },
+        "info": {
+            "title": "معلومات شخصية",
+            "email": "عنوان البريد الإلكتروني",
+            "role": "الدور الحالي",
+            "tenant": "المؤسسة",
+            "joined": "عضو منذ"
         }
     }
 }
