@@ -2,159 +2,131 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ArrowUp, Package } from "lucide-react";
+import { ArrowDown, ArrowUp, Package, AlertCircle, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { formatDateShort } from "@/lib/formatters";
 
-interface StockMovement {
-  id: string;
-  type: "in" | "out" | "transfer" | "adjustment";
-  quantity: number;
-  warehouse: string;
-  reference?: string;
-  reason?: string;
-  createdBy: string;
-  createdAt: string;
-}
+import { StockMovement } from "../types/inventory.types";
+import { format } from "date-fns";
 
 interface PartMovementHistoryProps {
   movements?: StockMovement[];
 }
 
-const movementTypeConfig = {
-  in: {
-    label: "Stock In",
-    variant: "success" as const,
+const movementTypeConfig: Record<string, any> = {
+  PURCHASE: {
+    label: "Purchase",
+    variant: "success",
     icon: ArrowDown,
     color: "text-green-600 dark:text-green-400",
   },
-  out: {
-    label: "Stock Out",
-    variant: "destructive" as const,
+  CONSUMPTION: {
+    label: "Consumption",
+    variant: "destructive",
     icon: ArrowUp,
     color: "text-red-600 dark:text-red-400",
   },
-  transfer: {
+  TRANSFER: {
     label: "Transfer",
-    variant: "info" as const,
+    variant: "outline",
     icon: Package,
     color: "text-blue-600 dark:text-blue-400",
   },
-  adjustment: {
+  RETURN: {
+    label: "Return",
+    variant: "success",
+    icon: ArrowDown,
+    color: "text-green-600 dark:text-green-400",
+  },
+  ADJUSTMENT: {
     label: "Adjustment",
-    variant: "warning" as const,
-    icon: Package,
+    variant: "warning",
+    icon: AlertCircle,
     color: "text-yellow-600 dark:text-yellow-400",
+  },
+  SCRAP: {
+    label: "Scrap",
+    variant: "destructive",
+    icon: Trash2,
+    color: "text-gray-600 dark:text-gray-400",
   },
 };
 
 export function PartMovementHistory({ movements = [] }: PartMovementHistoryProps) {
-  const mockMovements: StockMovement[] = movements.length > 0 ? movements : [
-    {
-      id: "1",
-      type: "in",
-      quantity: 50,
-      warehouse: "Main Warehouse",
-      reference: "PO-2024-1234",
-      reason: "Purchase order received",
-      createdBy: "Admin User",
-      createdAt: "2024-11-25T10:30:00Z",
-    },
-    {
-      id: "2",
-      type: "out",
-      quantity: 15,
-      warehouse: "Main Warehouse",
-      reference: "WO-124",
-      reason: "Used in work order",
-      createdBy: "John Smith",
-      createdAt: "2024-11-24T14:20:00Z",
-    },
-    {
-      id: "3",
-      type: "transfer",
-      quantity: 10,
-      warehouse: "Main Warehouse → North Branch",
-      reference: "TRF-089",
-      reason: "Stock transfer",
-      createdBy: "Warehouse Manager",
-      createdAt: "2024-11-23T09:15:00Z",
-    },
-    {
-      id: "4",
-      type: "adjustment",
-      quantity: -3,
-      warehouse: "Main Warehouse",
-      reason: "Inventory count correction",
-      createdBy: "Admin User",
-      createdAt: "2024-11-22T16:45:00Z",
-    },
-  ];
+  const t = useTranslations("inventory.details.movements");
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Stock Movement History</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        {mockMovements.length === 0 ? (
+        {movements.length === 0 ? (
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-            No stock movements recorded
+             {t("empty")}
           </p>
         ) : (
           <div className="space-y-3">
-            {mockMovements.map((movement) => {
-              const config = movementTypeConfig[movement.type];
-              const Icon = config.icon;
+            {movements.map((movement) => {
+               const config = movementTypeConfig[movement.movement_type] || movementTypeConfig["ADJUSTMENT"];
+               const Icon = config.icon;
+               const label = t(`types.${movement.movement_type}` as any) || config.label;
 
-              return (
-                <div
-                  key={movement.id}
-                  className="rounded-lg border border-gray-200 p-4 dark:border-gray-800"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`flex-shrink-0 mt-1 ${config.color}`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-900 dark:text-gray-100">
-                              {config.label}
-                            </span>
-                            <Badge variant={config.variant} className="text-xs">
-                              {movement.quantity > 0 ? "+" : ""}
-                              {movement.quantity}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            {movement.warehouse}
-                          </p>
-                          {movement.reason && (
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                              {movement.reason}
-                            </p>
-                          )}
-                          {movement.reference && (
-                            <p className="text-xs text-gray-400 mt-1">
-                              Ref: {movement.reference}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span>{formatDateShort(movement.createdAt)}</span>
-                        {movement.createdBy && (
-                          <>
-                            <span>•</span>
-                            <span>{movement.createdBy}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
+               return (
+                 <div
+                   key={movement.id}
+                   className="rounded-lg border border-gray-200 p-4 dark:border-gray-800"
+                 >
+                   <div className="flex items-start gap-3">
+                     <div className={`flex-shrink-0 mt-1 ${config.color}`}>
+                       <Icon className="h-5 w-5" />
+                     </div>
+                     <div className="flex-1">
+                       <div className="flex items-start justify-between gap-2">
+                         <div>
+                           <div className="flex items-center gap-2">
+                             <span className="font-semibold text-gray-900 dark:text-gray-100">
+                               {label}
+                             </span>
+                             <Badge variant={config.variant} className="text-xs">
+                               {movement.quantity > 0 ? "+" : ""}
+                               {movement.quantity}
+                             </Badge>
+                             {movement.total_price_ttc > 0 && (
+                                <span className="text-xs font-medium text-gray-500">
+                                    {movement.total_price_ttc.toLocaleString()} MAD
+                                </span>
+                             )}
+                           </div>
+                           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                             {movement.warehouse?.name}
+                             {movement.to_warehouse && ` → ${movement.to_warehouse.name}`}
+                           </p>
+                           {movement.notes && (
+                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                               {movement.notes}
+                             </p>
+                           )}
+                           {movement.reference_id && (
+                             <p className="text-xs text-gray-400 mt-1">
+                               {t("ref")} {movement.reference_id}
+                             </p>
+                           )}
+                         </div>
+                       </div>
+                       <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                         <span>{format(new Date(movement.created_at), "PPP p")}</span>
+                         {movement.created_user && (
+                           <>
+                             <span>•</span>
+                             <span>{movement.created_user.first_name} {movement.created_user.last_name}</span>
+                           </>
+                         )}
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               );
             })}
           </div>
         )}

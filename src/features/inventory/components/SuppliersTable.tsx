@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Edit, Trash2, Building2, Truck, Users } from "lucide-react";
 import { Supplier } from "../types/inventory.types";
+import { useTranslations } from "next-intl";
 
 interface SuppliersTableProps {
   suppliers: Supplier[];
@@ -33,6 +34,8 @@ export function SuppliersTable({
   onDelete,
   onAdd,
 }: SuppliersTableProps) {
+  const t = useTranslations("suppliers.table");
+
   if (!isLoading && suppliers.length === 0) {
     return (
       <Card className="border-dashed">
@@ -41,14 +44,13 @@ export function SuppliersTable({
             <Truck className="h-12 w-12 text-muted-foreground/50" />
           </div>
           <h3 className="text-xl font-semibold text-foreground mb-2">
-            No suppliers yet
+            {t("empty.title")}
           </h3>
           <p className="text-muted-foreground max-w-sm mb-6">
-            Add your first supplier to start managing your parts inventory and
-            contacts efficiently.
+            {t("empty.description")}
           </p>
           <Button onClick={onAdd} className="rounded-xl">
-            Add Supplier
+            {t("empty.action")}
           </Button>
         </CardContent>
       </Card>
@@ -60,7 +62,7 @@ export function SuppliersTable({
       <CardHeader className="px-6 py-4 border-b">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Users className="h-5 w-5 text-muted-foreground" />
-          Supplier Directory
+          {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -68,19 +70,19 @@ export function SuppliersTable({
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="pl-6">Supplier Name</TableHead>
-                <TableHead>Contact Person</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Address</TableHead>
-                <TableHead className="w-[100px] text-right pr-6">Actions</TableHead>
+                <TableHead className="pl-6">{t("headers.name")}</TableHead>
+                <TableHead>{t("headers.contact")}</TableHead>
+                <TableHead>{t("headers.email")}</TableHead>
+                <TableHead>{t("headers.phone")}</TableHead>
+                <TableHead>{t("headers.address")}</TableHead>
+                <TableHead className="w-[100px] text-right pr-6">{t("headers.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-12">
-                    Loading suppliers...
+                    {t("loading")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -149,7 +151,7 @@ export function SuppliersTable({
                                 <Edit className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>Edit Supplier</TooltipContent>
+                            <TooltipContent>{t("tooltips.edit")}</TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
 
@@ -165,7 +167,7 @@ export function SuppliersTable({
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>Delete Supplier</TooltipContent>
+                            <TooltipContent>{t("tooltips.delete")}</TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                       </div>

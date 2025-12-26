@@ -37,7 +37,7 @@ export const MaintenanceTemplatesList = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t("deleteConfirm"))) return;
+    if (!confirm(t("alerts.delete.description"))) return;
     try {
       await deleteMaintenanceTemplate(id);
       toast.success(t("deleteSuccess"));

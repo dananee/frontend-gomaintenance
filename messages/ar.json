@@ -459,6 +459,7 @@
         "title": "المخزون",
         "subtitle": "إدارة القطع ومستويات المخزون والمورّدين",
         "actions": {
+            "audits": "عمليات التدقيق",
             "suppliers": "المورّدون",
             "addPart": "إضافة قطعة",
             "addFirstPart": "أضف أول قطعة",
@@ -501,6 +502,30 @@
                 "shelfB2": "الرف B-2"
             }
         },
+        "table": {
+            "headers": {
+                "name": "الاسم",
+                "sku": "SKU",
+                "category": "الفئة",
+                "location": "الموقع",
+                "supplier": "المورد",
+                "quantity": "الكمية",
+                "unitPrice": "سعر الوحدة",
+                "totalValue": "القيمة الإجمالية",
+                "actions": "إجراءات"
+            },
+            "badges": {
+                "critical": "حرج",
+                "lowStock": "مخزون منخفض",
+                "inStock": "متوفر"
+            },
+            "empty": "لم يتم العثور على قطع",
+            "actions": {
+                "edit": "تعديل",
+                "delete": "حذف"
+            },
+            "minQty": "الحد الأدنى: {count}"
+        },
         "emptyStates": {
             "noParts": {
                 "title": "لا توجد قطع في المخزون",
@@ -515,45 +540,96 @@
             "adjustStock": "تعديل المخزون",
             "editPart": "تعديل القطعة",
             "exportCSV": "تصدير CSV",
-            "upload": "رفع ملف",
+            "upload": "تحميل",
+            "updatedToday": "تم التحديث اليوم",
+            "unknownBrand": "علامة تجارية غير معروفة",
+            "generalCategory": "عام",
+            "ofTotal": "من الإجمالي",
+            "manage": "إدارة",
+            "filter": "تصفية",
+            "dateRange": "نطاق التاريخ",
+            "transferStock": "نقل المخزون",
             "tabs": {
                 "overview": "نظرة عامة",
                 "stock": "المخزون",
-                "movements": "حركات المخزون",
+                "movements": "الحركات",
                 "attachments": "المرفقات",
                 "comments": "التعليقات"
             },
+            "status": {
+                "critical": "مخزون حرج",
+                "low": "مخزون منخفض",
+                "inStock": "متوفر"
+            },
+            "toasts": {
+                "stockAdjusted": "تم تعديل المخزون بنجاح",
+                "stockAdjustError": "فشل تعديل المخزون",
+                "partUpdated": "تم تحديث القطعة بنجاح",
+                "partUpdateError": "فشل تحديث القطعة"
+            },
+            "error": {
+                "title": "خطأ",
+                "description": "فشل تحميل تفاصيل القطعة. يرجى المحاولة مرة أخرى."
+            },
+            "sku": "SKU:",
             "overview": {
                 "onHand": {
-                    "title": "المتوفر",
-                    "description": "في جميع المستودعات"
+                    "title": "متوفر حالياً",
+                    "description": "في جميع المستودعات",
+                    "units": "{count} وحدة",
+                    "healthy": "المخزون سليم",
+                    "belowTarget": "{count} أقل من المستهدف"
                 },
                 "reorderPoint": {
                     "title": "نقطة إعادة الطلب",
-                    "description": "الحد الأدنى"
+                    "description": "الحد الأدنى المطلوب",
+                    "units": "{count} وحدة"
                 },
                 "unitPrice": {
-                    "title": "السعر للوحدة",
-                    "description": "آخر تكلفة من المورّد"
+                    "title": "سعر الوحدة",
+                    "description": "التكلفة لكل وحدة"
                 },
                 "totalValue": {
                     "title": "القيمة الإجمالية",
-                    "description": "الكمية × السعر"
+                    "description": "إجمالي قيمة المخزون"
+                },
+                "description": {
+                    "title": "وصف القطعة",
+                    "empty": "لا يوجد وصف متاح لهذه القطعة."
                 }
             },
             "stock": {
-                "title": "مخزون المستودعات",
+                "title": "المخزون حسب المستودع",
                 "location": "الموقع",
                 "stock": "المخزون",
-                "lowStock": "مخزون منخفض"
+                "lowStock": "مخزون منخفض",
+                "empty": "لا توجد معلومات مخزون متاحة",
+                "unknownWarehouse": "مستودع غير معروف",
+                "total": "إجمالي",
+                "lowStockAlert": "{count} مستودع(ات) تحت الحد الأدنى للمخزون",
+                "available": "المتاح:",
+                "minQty": "الحد الأدنى:"
             },
             "movements": {
-                "title": "حركات المخزون",
-                "id": "المعرف",
+                "title": "سجل حركات المخزون",
+                "empty": "لم يتم تسجيل أي حركات مخزون",
+                "ref": "المرجع:",
+                "id": "ID",
                 "type": "النوع",
                 "quantity": "الكمية",
                 "location": "الموقع",
-                "date": "التاريخ"
+                "date": "التاريخ",
+                "unitPriceHT": "السعر (بدون ضريبة)",
+                "vatRate": "الضريبة",
+                "totalPriceTTC": "الإجمالي (شامل الضريبة)",
+                "types": {
+                    "PURCHASE": "شراء",
+                    "CONSUMPTION": "استهلاك",
+                    "TRANSFER": "نقل",
+                    "RETURN": "إرجاع",
+                    "ADJUSTMENT": "تعديل",
+                    "SCRAP": "خردة"
+                }
             },
             "attachments": {
                 "title": "المرفقات",
@@ -577,28 +653,160 @@
                 }
             },
             "editModal": {
-                "title": "تعديل القطعة",
-                "description": "تحديث بيانات القطعة وتسعيرها.",
+                "title": {
+                    "edit": "تعديل تفاصيل القطعة",
+                    "create": "إنشاء قطعة جديدة"
+                },
+                "description": {
+                    "edit": "تحديث المعلومات لـ {name}.",
+                    "create": "أدخل تفاصيل القطعة الجديدة."
+                },
                 "fields": {
                     "name": "اسم القطعة",
                     "sku": "SKU",
-                    "price": "السعر للوحدة"
+                    "part_number": "رقم القطعة",
+                    "price": "السعر للوحدة",
+                    "category": "الفئة",
+                    "supplier": "المورد",
+                    "unit": "الوحدة",
+                    "minQuantity": "الكمية الدنيا",
+                    "location": "الموقع",
+                    "brand": "العلامة التجارية",
+                    "description": "الوصف"
                 },
-                "save": "حفظ التغييرات"
+                "placeholders": {
+                    "category": "اختر الفئة",
+                    "supplier": "اختر المورد",
+                    "unit": "اختر الوحدة",
+                    "sku": "رقم التتبع الداخلي",
+                    "location": "مثلاً: الممر 5، الرف B",
+                    "none": "لا يوجد"
+                },
+                "save": "حفظ التغييرات",
+                "cancel": "إلغاء",
+                "units": {
+                    "piece": "قطعة",
+                    "liter": "لتر",
+                    "kg": "كجم",
+                    "set": "مجموعة"
+                }
             },
             "stockAdjustment": {
+                "title": "تعديل المخزون - {name}",
+                "description": "إدارة مستويات المخزون. حدد مستودعًا أو قم بتعديل المخزون غير المخصص.",
+                "targetLocation": "الموقع المستهدف",
+                "managedInSettings": "مدار في الإعدادات",
+                "configureWarehouses": "تكوين المستودعات في الإعدادات",
+                "selectLocation": "حدد الموقع",
+                "globalStock": "المخزون العام / غير المخصص",
+                "currentLevel": "المستوى الحالي:",
+                "action": "الإجراء",
+                "addStock": "إضافة مخزون",
+                "removeStock": "إزالة",
+                "setStock": "تعيين إلى",
+                "newTotalQty": "إجمالي الكمية الجديدة",
+                "qtyToAdjust": "الكمية المراد تعديلها",
+                "resultingStock": "المخزون الناتج:",
+                "overwriteWarning": "هذا سيحل محل مستوى المخزون الحالي.",
+                "reasonLabel": "سبب الحركة *",
+                "selectReason": "حدد السبب",
+                "reasons": {
+                    "received_shipment": "شحنة مستلمة",
+                    "used_in_work_order": "مستهلك (أمر عمل)",
+                    "transfer": "تحويل مخزون",
+                    "inventory_count": "جرد دوري / تدقيق",
+                    "damaged": "تالف / خردة",
+                    "returned": "مرتجع للمورد",
+                    "found": "عنصر موجود",
+                    "other": "آخر"
+                },
+                "notesLabel": "ملاحظات (اختياري)",
+                "notesPlaceholder": "رقم الدفعة، رقم أمر الشراء، الحالة المرئية...",
+                "confirmAdjustment": "تأكيد التعديل",
+                "confirmReceipt": "تأكيد الاستلام",
+                "confirmRemoval": "تأكيد الإزالة",
                 "toasts": {
                     "success": {
                         "title": "تم تعديل المخزون",
                         "description": "تم {type} المخزون."
-                    }
+                    },
+                    "cancel": "إلغاء",
+                    "warehouseRequired": "المستودع مطلوب",
+                    "reasonRequired": "السبب مطلوب",
+                    "reasonRequiredDesc": "يرجى تحديد سبب لتعديل المخزون هذا.",
+                    "invalidQty": "الكمية غير صالحة",
+                    "invalidQtyDesc": "يجب أن تكون الكمية أكبر من الصفر.",
+                    "insufficientStock": "مخزون غير كافٍ",
+                    "insufficientStockDesc": "لا يمكن إزالة {qty} وحدة. يتوفر {current} فقط."
                 },
                 "types": {
-                    "increased": "زيادته",
-                    "decreased": "إنقاصه",
-                    "updated": "تحديثه"
+                    "increased": "زيادة",
+                    "decreased": "نقص",
+                    "updated": "تحديث"
                 }
             }
+        }
+    },
+    "audits": {
+        "title": "عمليات جرد المخزون",
+        "subtitle": "إدارة والتحقق من كميات المخزون الفعلية",
+        "common": {
+            "cancel": "إلغاء"
+        },
+        "on": "في",
+        "status": {
+            "validated": "تم التحقق"
+        },
+        "actions": {
+            "new": "جلسة جرد جديدة",
+            "saveDraft": "حفظ كمسودة",
+            "validate": "التحقق وتعديل المخزون"
+        },
+        "table": {
+            "headers": {
+                "recentSessions": "الجلسات الأخيرة",
+                "partName": "اسم القطعة",
+                "sku": "وحدة حفظ المخزون (SKU)",
+                "name": "اسم الجلسة",
+                "warehouse": "المستودع",
+                "status": "الحالة",
+                "createdAt": "تاريخ الإنشاء",
+                "createdBy": "أنشئت بواسطة",
+                "systemQty": "الكمية في النظام",
+                "physicalQty": "الكمية الفعلية",
+                "diff": "الفرق",
+                "reason": "السبب"
+            },
+            "empty": "لم يتم العثور على جلسات جرد. ابدأ جلسة جديدة لتسوية مخزونك.",
+            "actions": {
+                "details": "التفاصيل"
+            }
+        },
+        "modal": {
+            "title": "جرد مخزون جديد",
+            "fields": {
+                "name": "اسم الجلسة",
+                "warehouse": "المستودع",
+                "description": "الوصف"
+            },
+            "placeholders": {
+                "name": "مثلاً: جرد نهاية عام 2024",
+                "warehouse": "اختر المستودع",
+                "description": "ملاحظات اختيارية"
+            },
+            "actions": {
+                "create": "إنشاء الجلسة"
+            }
+        },
+        "details": {
+            "title": "العد الفعلي",
+            "description": "أدخل الكميات الفعلية التي تم العثور عليها أثناء الجرد",
+            "summary": "ملخص الجرد",
+            "totalParts": "إجمالي القطع",
+            "stockSyncedTitle": "تم مزامنة المخزون",
+            "stockSyncedDesc": "تمت تسوية مخزون الجرد مع الكميات الفعلية. تم تسجيل حركات التعديل تلقائيًا.",
+            "validateConfirm": "هل أنت متأكد أنك تريد التحقق من هذا الجرد؟ سيؤدي ذلك إلى إنشاء حركات مخزون تلقائيًا لتعكس الكميات الفعلية. لا يمكن التراجع عن هذا الإجراء.",
+            "notFound": "لم يتم العثور على الجرد"
         }
     },
     "suppliers": {
@@ -610,6 +818,54 @@
         },
         "filters": {
             "searchPlaceholder": "البحث عن المورّدين..."
+        },
+        "table": {
+            "empty": {
+                "title": "لا يوجد مورّدون بعد",
+                "description": "أضف مورّدك الأول للبدء في إدارة مخزون القطع وجهات الاتصال الخاصة بك بكفاءة.",
+                "action": "إضافة مورّد"
+            },
+            "title": "دليل المورّدين",
+            "headers": {
+                "name": "اسم المورّد",
+                "contact": "الشخص المسؤول",
+                "email": "البريد الإلكتروني",
+                "phone": "الهاتف",
+                "address": "العنوان",
+                "actions": "الإجراءات"
+            },
+            "loading": "جاري تحميل المورّدين...",
+            "tooltips": {
+                "edit": "تعديل المورّد",
+                "delete": "حذف المورّد"
+            }
+        },
+        "modal": {
+            "title": {
+                "add": "إضافة مورّد جديد",
+                "edit": "تعديل المورّد"
+            },
+            "fields": {
+                "name": "اسم المورّد *",
+                "contact": "الشخص المسؤول",
+                "phone": "الهاتف",
+                "email": "البريد الإلكتروني",
+                "address": "العنوان",
+                "notes": "ملاحظات"
+            },
+            "placeholders": {
+                "name": "مثلاً: شركة قطع الغيار",
+                "contact": "أحمد محمد",
+                "phone": "05 22 XX XX XX",
+                "email": "contact@supplier.com",
+                "address": "الشارع، المدينة، الرمز البريدي",
+                "notes": "شروط الدفع، الخصومات، إلخ."
+            },
+            "actions": {
+                "save": "حفظ التغييرات",
+                "cancel": "إلغاء",
+                "add": "إضافة مورّد"
+            }
         }
     },
     "maintenance": {
@@ -645,7 +901,7 @@
             "alerts": {
                 "delete": {
                     "title": "حذف القالب",
-                    "description": "هل أنت متأكد أنك تريد حذف هذا القالب؟ لا يمكن التراجع عن هذا الإجراء."
+                    "description": "هل أنت متأكد أنك تريد حذف هذا القالب؟ سيؤدي ذلك أيضًا إلى حذف جميع خطط الصيانة النشطة المرتبطة بهذا القالب. بالنسبة لأوامر العمل التي تم إنشاؤها بالفعل، ستحتفظ بمعلوماتها ولكنها لن تعود مرتبطة بهذا القالب."
                 }
             },
             "toasts": {
@@ -655,45 +911,40 @@
                 "deleteSuccess": "تم حذف القالب بنجاح",
                 "deleteError": "فشل حذف القالب",
                 "loadError": "فشل تحميل قوالب الصيانة"
+            }
+        },
+        "schedule": {
+            "vehicle": "المركبة",
+            "selectVehicle": "اختر مركبة",
+            "selectTemplate": "اختر قالباً",
+            "title": "العنوان",
+            "description": "الوصف",
+            "scheduledDate": "تاريخ الجدولة",
+            "priority": "الأولوية",
+            "assignTo": "تعيين لـ",
+            "selectTechnician": "اختر فنياً",
+            "estimatedCost": "التكلفة التقديرية",
+            "notes": "ملاحظات",
+            "cancel": "إلغاء",
+            "create": "جدولة",
+            "update": "تحديث",
+            "success": "تمت جدولة الصيانة بنجاح",
+            "saveSuccess": "تم تحديث الصيانة بنجاح",
+            "error": "فشل في جدولة الصيانة",
+            "priorities": {
+                "low": "منخفض",
+                "medium": "متوسط",
+                "high": "عالي",
+                "critical": "حرج"
             },
-            "schedule": {
-                "vehicle": "المركبة",
-                "selectVehicle": "اختر مركبة",
-                "selectTemplate": "اختر قالباً",
-                "title": "العنوان",
-                "description": "الوصف",
-                "scheduledDate": "تاريخ الجدولة",
-                "priority": "الأولوية",
-                "assignTo": "تعيين لـ",
-                "selectTechnician": "اختر فنياً",
-                "estimatedCost": "التكلفة التقديرية",
-                "notes": "ملاحظات",
-                "cancel": "إلغاء",
-                "create": "جدولة",
-                "success": "تمت جدولة الصيانة بنجاح",
-                "error": "فشل في جدولة الصيانة",
-                "priorities": {
-                    "low": "منخفض",
-                    "medium": "متوسط",
-                    "high": "عالي",
-                    "critical": "حرج"
-                },
-                "updateTemplate": "تحديث القالب",
-                "saving": "جار الحفظ...",
-                "intervalsRecommended": "فترات الصيانة (يوصى بواحدة على الأقل)",
-                "everyKm": "كل (كم)",
-                "everyDays": "كل (أيام)",
-                "everyHours": "كل (ساعات)",
-                "maintenanceTasks": "مهام الصيانة",
-                "placeholders": {
-                    "name": "مثال: خدمة تغيير الزيت أ",
-                    "description": "صف إجراءات الصيانة...",
-                    "notes": "ملاحظات أو تعليمات إضافية..."
-                },
-                "validation": {
-                    "titleRequired": "العنوان مطلوب",
-                    "dateRequired": "تاريخ الجدولة مطلوب"
-                }
+            "placeholders": {
+                "title": "مثل: Vidange, Rotation des pneus",
+                "description": "صف عمل الصيانة...",
+                "notes": "ملاحظات أو تعليمات إضافية..."
+            },
+            "validation": {
+                "titleRequired": "العنوان مطلوب",
+                "dateRequired": "التاريخ المطلوب مطلوب"
             }
         },
         "calendar": {
@@ -911,6 +1162,7 @@
             "branding": "العلامة التجارية",
             "roles": "الأدوار والصلاحيات",
             "notifications": "الإشعارات",
+            "inventory": "المخزون",
             "integrations": "التكاملات"
         },
         "profile": {
@@ -1108,6 +1360,45 @@
                 "success": "تم تحديث الصلاحيات",
                 "error": "فشل تحديث الصلاحيات"
             }
+        },
+        "inventory": {
+            "warehouses": {
+                "title": "المستودعات",
+                "subtitle": "إدارة مواقع تخزين القطع ومراكز سلسلة التوريد",
+                "actions": {
+                    "add": "إضافة مستودع",
+                    "edit": "تعديل المستودع",
+                    "deactivate": "تعطيل"
+                },
+                "table": {
+                    "name": "الاسم",
+                    "type": "النوع",
+                    "manager": "المدير",
+                    "address": "العنوان",
+                    "status": "الحالة",
+                    "active": "نشط",
+                    "inactive": "غير نشط",
+                    "actions": "إجراءات"
+                },
+                "form": {
+                    "name": "الاسم",
+                    "type": "النوع",
+                    "address": "العنوان",
+                    "manager": "المدير",
+                    "allowNegativeStock": "السماح بالمخزون السالب",
+                    "active": "نشط",
+                    "types": {
+                        "MAIN": "مستودع رئيسي",
+                        "SITE": "تخزين في الموقع",
+                        "VAN": "شاحنة خدمة"
+                    }
+                },
+                "toasts": {
+                    "created": "تم إنشاء المستودع بنجاح",
+                    "updated": "تم تحديث المستودع بنجاح",
+                    "deactivated": "تم تعطيل المستودع"
+                }
+            }
         }
     },
     "users": {
@@ -1280,7 +1571,8 @@
                 "all": "كل الحالات",
                 "active": "نشط",
                 "maintenance": "صيانة",
-                "retired": "متقاعد"
+                "retired": "متقاعد",
+                "inactive": "غير نشط"
             },
             "type": {
                 "all": "كل الأنواع",
@@ -1291,6 +1583,8 @@
                 "car": "سيارة",
                 "Car": "سيارة",
                 "seltos": "سيلتوس",
+                "Voiture utulitaire": "سيارة نفعية",
+                "Voiture utilitaire": "سيارة نفعية",
                 "unknown": "غير معروف"
             }
         },
@@ -1593,6 +1887,27 @@
             "markDone": "تحديد كـ منجز",
             "dueTomorrow": "مستحق غدًا"
         },
+        "addPartModal": {
+            "title": "إضافة قطعة إلى أمر العمل",
+            "fields": {
+                "part": "القطعة",
+                "warehouse": "المستودع (المصدر)",
+                "quantity": "الكمية",
+                "unitPrice": "سعر الوحدة (MAD)"
+            },
+            "placeholders": {
+                "part": "اختر قطعة",
+                "warehouse": "اختر المستودع"
+            },
+            "managedInSettings": "مدار في الإعدادات",
+            "configureWarehouses": "تكوين المستودعات في الإعدادات",
+            "availableStock": "المخزون المتوفر (الإجمالي):",
+            "actions": {
+                "cancel": "إلغاء",
+                "add": "إضافة القطعة",
+                "adding": "جاري الإضافة..."
+            }
+        },
         "form": {
             "title": "إضافة مهمة جديدة",
             "editTitle": "تعديل أمر العمل",
@@ -1690,7 +2005,8 @@
             "created": {
                 "title": "تم إنشاء أمر العمل",
                 "description": "تم إنشاء أمر عمل جديد وتعيينه."
-            }
+            },
+            "deleteConfirm": "هل أنت متأكد من رغبتك في حذف أمر العمل هذا؟ سيتم أيضًا حذف جميع السجلات المرتبطة وطلبات القطع والمرفقات."
         },
         "details": {
             "notFound": {
@@ -1700,6 +2016,7 @@
             "tabs": {
                 "overview": "نظرة عامة",
                 "tasks": "المهام",
+                "parts": "قطع الغيار",
                 "attachments": "المرفقات",
                 "activity": "النشاط",
                 "comments": "التعليقات"

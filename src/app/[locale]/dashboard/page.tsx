@@ -47,11 +47,7 @@ const DowntimeChart = lazy(() =>
     default: module.DowntimeChart,
   }))
 );
-const WorkOrderPieChart = lazy(() =>
-  import("@/features/dashboard/components/WorkOrderPieChart").then(
-    (module) => ({ default: module.WorkOrderPieChart })
-  )
-);
+ 
 const FleetHealthScore = lazy(() =>
   import("@/features/dashboard/components/FleetHealthScore").then((module) => ({
     default: module.FleetHealthScore,
@@ -67,46 +63,15 @@ const TechnicianPerformanceChart = lazy(() =>
     (module) => ({ default: module.TechnicianPerformanceChart })
   )
 );
-const SLAComplianceChart = lazy(() =>
-  import("@/features/dashboard/components/SLAComplianceChart").then(
-    (module) => ({ default: module.SLAComplianceChart })
-  )
-);
-const MTTRTrendChart = lazy(() =>
-  import("@/features/dashboard/components/MTTRTrendChart").then((module) => ({
-    default: module.MTTRTrendChart,
-  }))
-);
-const CostForecastChart = lazy(() =>
-  import("@/features/dashboard/components/CostForecastChart").then(
-    (module) => ({ default: module.CostForecastChart })
-  )
-);
-const WorkloadHeatmap = lazy(() =>
-  import("@/features/dashboard/components/WorkloadHeatmap").then((module) => ({
-    default: module.WorkloadHeatmap,
-  }))
-);
-const FailurePredictionWidget = lazy(() =>
-  import("@/features/dashboard/components/FailurePredictionWidget").then(
-    (module) => ({ default: module.FailurePredictionWidget })
-  )
-);
+ 
 import { useDashboardKPIs } from "@/features/dashboard/hooks/useDashboardKPIs";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { getVehicles } from "@/features/vehicles/api/getVehicles";
 import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
 import { getFleetAvailability } from "@/features/reports/api/reports";
 import { getScheduledMaintenance } from "@/features/maintenance/api/maintenanceDashboard";
 
 export default function DashboardPage() {
-  // Fetch vehicles data
-  const { data: vehiclesData } = useQuery({
-    queryKey: ["vehicles"],
-    queryFn: () => getVehicles({ page: 1, page_size: 1000 }),
-  });
-
   // Fetch work orders data
   const { data: workOrdersData } = useQuery({
     queryKey: ["work-orders", "active"],
@@ -144,7 +109,8 @@ export default function DashboardPage() {
   // Fetch dashboard KPIs
   const { data: kpiData } = useDashboardKPIs();
 
-  const totalVehicles = vehiclesData?.total || 0;
+  // Use KPI data for vehicle count (already includes total_vehicles from backend)
+  const totalVehicles = kpiData?.fleet_kpis?.total_vehicles || 0;
   const activeWorkOrders = workOrdersData?.total || 0;
 
   // Count critical issues from both work orders and maintenance events
@@ -214,16 +180,7 @@ export default function DashboardPage() {
             variant="green"
             trend={kpiData.fleet_kpis.fleet_efficiency_trend}
           />
-          <PremiumMetricCard
-            title={t("kpis.scheduledVsCorrective.title")}
-            value={`${kpiData.fleet_kpis.scheduled_vs_corrective_ratio.toFixed(
-              1
-            )}:1`}
-            subtitle={t("kpis.scheduledVsCorrective.subtitle")}
-            icon={BarChart3}
-            variant="green"
-            trend={kpiData.fleet_kpis.scheduled_vs_corrective_trend}
-          />
+          
 
           {/* Risk KPIs - Orange/Red Gradient */}
           <Link href="/dashboard/vehicles?status=maintenance">
@@ -397,9 +354,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-2">
               <DowntimeChart data={kpiData.downtime_trend_12months} />
             </div>
-            <div>
-              <WorkOrderPieChart data={kpiData.work_order_distribution} />
-            </div>
+            
           </div>
 
           {/* Advanced Analytics */}
@@ -407,51 +362,12 @@ export default function DashboardPage() {
             <div>
               <TopFaultTypesChart data={kpiData.top_fault_types} />
             </div>
-            <div>
-              <SLAComplianceChart
-                onTime={kpiData.sla_compliance.onTime}
-                delayed={kpiData.sla_compliance.delayed}
-                breached={kpiData.sla_compliance.breached}
-                totalWOs={kpiData.sla_compliance.totalWOs}
-              />
-            </div>
+           
             <div>
               <TechnicianPerformanceChart
                 data={kpiData.technician_performance}
               />
             </div>
-          </div>
-
-          {/* Section Divider */}
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text px-4 text-sm font-semibold text-transparent">
-                {t("sections.predictiveAI")}
-              </span>
-            </div>
-          </div>
-
-          {/* Predictive Analytics Section */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 content-visibility-auto">
-            <div>
-              <MTTRTrendChart data={kpiData.mttr_trend} />
-            </div>
-            <div>
-              <CostForecastChart data={kpiData.cost_forecast} />
-            </div>
-            <div>
-              <FailurePredictionWidget
-                predictions={kpiData.failure_predictions}
-              />
-            </div>
-          </div>
-
-          {/* Workload Analysis - Full Width */}
-          <div className="mt-6 content-visibility-auto">
-            <WorkloadHeatmap data={kpiData.workload_heatmap} />
           </div>
         </Suspense>
       )}

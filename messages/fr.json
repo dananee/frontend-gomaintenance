@@ -670,7 +670,9 @@
                 "notes": "Notes",
                 "cancel": "Annuler",
                 "create": "Planifier",
+                "update": "Mettre à jour",
                 "success": "Maintenance planifiée avec succès",
+                "saveSuccess": "Maintenance mise à jour avec succès",
                 "error": "Échec de la planification de la maintenance",
                 "priorities": {
                     "low": "Basse",
@@ -703,7 +705,7 @@
                 "alerts": {
                     "delete": {
                         "title": "Supprimer le modèle",
-                        "description": "Êtes-vous sûr de vouloir supprimer ce modèle ? Cette action est irréversible."
+                        "description": "Êtes-vous sûr de vouloir supprimer ce modèle ? Cela supprimera également tous les plans de maintenance actifs associés à ce modèle. Pour les ordres de travail déjà créés, ils conserveront leurs informations mais ne seront plus liés à ce modèle."
                     }
                 },
                 "toasts": {
@@ -812,6 +814,7 @@
             "branding": "Marque",
             "roles": "Rôles et Permissions",
             "notifications": "Notifications",
+            "inventory": "Inventaire",
             "integrations": "Intégrations"
         },
         "profile": {
@@ -1010,12 +1013,52 @@
                 "success": "Permissions mises à jour",
                 "error": "Échec de la mise à jour des permissions"
             }
+        },
+        "inventory": {
+            "warehouses": {
+                "title": "Entrepôts",
+                "subtitle": "Gérez les emplacements de stockage des pièces et les centres de la chaîne d'approvisionnement",
+                "actions": {
+                    "add": "Ajouter un entrepôt",
+                    "edit": "Modifier l'entrepôt",
+                    "deactivate": "Désactiver"
+                },
+                "table": {
+                    "name": "Nom",
+                    "type": "Type",
+                    "manager": "Gestionnaire",
+                    "address": "Adresse",
+                    "status": "Statut",
+                    "active": "Actif",
+                    "inactive": "Inactif",
+                    "actions": "Actions"
+                },
+                "form": {
+                    "name": "Nom",
+                    "type": "Type",
+                    "address": "Adresse",
+                    "manager": "Gestionnaire",
+                    "allowNegativeStock": "Autoriser le stock négatif",
+                    "active": "Actif",
+                    "types": {
+                        "MAIN": "Entrepôt principal",
+                        "SITE": "Stockage sur site",
+                        "VAN": "Camionnette de service"
+                    }
+                },
+                "toasts": {
+                    "created": "Entrepôt créé avec succès",
+                    "updated": "Entrepôt mis à jour avec succès",
+                    "deactivated": "Entrepôt désactivé"
+                }
+            }
         }
     },
     "inventory": {
         "title": "Inventaire",
         "subtitle": "Gérez les pièces, les niveaux de stock et les fournisseurs",
         "actions": {
+            "audits": "Audits",
             "suppliers": "Fournisseurs",
             "addPart": "Ajouter une pièce",
             "addFirstPart": "Ajoutez votre première pièce",
@@ -1058,6 +1101,30 @@
                 "shelfB2": "Étagère B-2"
             }
         },
+        "table": {
+            "headers": {
+                "name": "Nom",
+                "sku": "SKU",
+                "category": "Catégorie",
+                "location": "Emplacement",
+                "supplier": "Fournisseur",
+                "quantity": "Quantité",
+                "unitPrice": "Prix unitaire",
+                "totalValue": "Valeur totale",
+                "actions": "Actions"
+            },
+            "badges": {
+                "critical": "Critique",
+                "lowStock": "Stock faible",
+                "inStock": "En stock"
+            },
+            "empty": "Aucune pièce trouvée",
+            "actions": {
+                "edit": "Modifier",
+                "delete": "Supprimer"
+            },
+            "minQty": "Min : {count}"
+        },
         "emptyStates": {
             "noParts": {
                 "title": "Aucune pièce dans l’inventaire",
@@ -1071,8 +1138,16 @@
         "details": {
             "adjustStock": "Ajuster le stock",
             "editPart": "Modifier la pièce",
-            "exportCSV": "Exporter en CSV",
-            "upload": "Téléverser",
+            "exportCSV": "Exporter CSV",
+            "upload": "Télécharger",
+            "updatedToday": "Mis à jour aujourd'hui",
+            "unknownBrand": "Marque inconnue",
+            "generalCategory": "Général",
+            "ofTotal": "du total",
+            "manage": "Gérer",
+            "filter": "Filtrer",
+            "dateRange": "Plage de dates",
+            "transferStock": "Transférer le stock",
             "tabs": {
                 "overview": "Aperçu",
                 "stock": "Stock",
@@ -1080,37 +1155,80 @@
                 "attachments": "Pièces jointes",
                 "comments": "Commentaires"
             },
+            "status": {
+                "critical": "Stock haché",
+                "low": "Stock faible",
+                "inStock": "En stock"
+            },
+            "toasts": {
+                "stockAdjusted": "Stock ajusté avec succès",
+                "stockAdjustError": "Échec de l'ajustement du stock",
+                "partUpdated": "Pièce mise à jour avec succès",
+                "partUpdateError": "Échec de la mise à jour de la pièce"
+            },
+            "error": {
+                "title": "Erreur",
+                "description": "Échec du chargement des détails de la pièce. Veuillez réessayer."
+            },
+            "sku": "SKU :",
             "overview": {
                 "onHand": {
-                    "title": "En stock",
-                    "description": "Dans tous les entrepôts"
+                    "title": "En main",
+                    "description": "Dans tous les entrepôts",
+                    "units": "{count} unités",
+                    "healthy": "Stock sain",
+                    "belowTarget": "{count} en dessous de la cible"
                 },
                 "reorderPoint": {
-                    "title": "Point de commande",
-                    "description": "Seuil"
+                    "title": "Point de réapprovisionnement",
+                    "description": "Niveau minimum requis",
+                    "units": "{count} unités"
                 },
                 "unitPrice": {
                     "title": "Prix unitaire",
-                    "description": "Dernier coût fournisseur"
+                    "description": "Coût par unité"
                 },
                 "totalValue": {
                     "title": "Valeur totale",
-                    "description": "Qté × prix"
+                    "description": "Valeur totale de l'inventaire"
+                },
+                "description": {
+                    "title": "Description de la pièce",
+                    "empty": "Aucune description disponible pour cette pièce."
                 }
             },
             "stock": {
-                "title": "Stock en entrepôt",
+                "title": "Stock par entrepôt",
                 "location": "Emplacement",
                 "stock": "Stock",
-                "lowStock": "Stock faible"
+                "lowStock": "Stock faible",
+                "empty": "Aucune information de stock disponible",
+                "unknownWarehouse": "Entrepôt inconnu",
+                "total": "total",
+                "lowStockAlert": "{count} entrepôt(s) sous le stock minimum",
+                "available": "Disponible :",
+                "minQty": "Min :"
             },
             "movements": {
-                "title": "Mouvements de stock",
+                "title": "Historique des mouvements de stock",
+                "empty": "Aucun mouvement de stock enregistré",
+                "ref": "Réf :",
                 "id": "ID",
                 "type": "Type",
                 "quantity": "Quantité",
                 "location": "Emplacement",
-                "date": "Date"
+                "date": "Date",
+                "unitPriceHT": "Prix (HT)",
+                "vatRate": "TVA",
+                "totalPriceTTC": "Total (TTC)",
+                "types": {
+                    "PURCHASE": "Achat",
+                    "CONSUMPTION": "Consommation",
+                    "TRANSFER": "Transfert",
+                    "RETURN": "Retour",
+                    "ADJUSTMENT": "Ajustement",
+                    "SCRAP": "Rebut"
+                }
             },
             "attachments": {
                 "title": "Pièces jointes",
@@ -1134,21 +1252,91 @@
                 }
             },
             "editModal": {
-                "title": "Modifier la pièce",
-                "description": "Mettre à jour les métadonnées et le prix de la pièce.",
+                "title": {
+                    "edit": "Modifier les détails de la pièce",
+                    "create": "Créer une nouvelle pièce"
+                },
+                "description": {
+                    "edit": "Mettre à jour les informations pour {name}.",
+                    "create": "Saisissez les détails de la nouvelle pièce."
+                },
                 "fields": {
                     "name": "Nom de la pièce",
                     "sku": "SKU",
-                    "price": "Prix unitaire"
+                    "part_number": "Numéro de pièce",
+                    "price": "Prix unitaire",
+                    "category": "Catégorie",
+                    "supplier": "Fournisseur",
+                    "unit": "Unité",
+                    "minQuantity": "Qté min.",
+                    "location": "Emplacement",
+                    "brand": "Marque",
+                    "description": "Description"
                 },
-                "save": "Enregistrer les modifications"
+                "placeholders": {
+                    "category": "Sélectionner une catégorie",
+                    "supplier": "Sélectionner un fournisseur",
+                    "unit": "Sélectionner une unité",
+                    "sku": "N° de suivi interne",
+                    "location": "ex: Allée 5, Étagère B",
+                    "none": "Aucune"
+                },
+                "save": "Enregistrer les modifications",
+                "cancel": "Annuler",
+                "units": {
+                    "piece": "Pièce",
+                    "liter": "Litre",
+                    "kg": "KG",
+                    "set": "Lot"
+                }
             },
             "stockAdjustment": {
+                "title": "Ajuster le stock - {name}",
+                "description": "Gérer les niveaux d'inventaire. Sélectionnez un entrepôt ou ajustez le stock non assigné.",
+                "targetLocation": "Emplacement cible",
+                "managedInSettings": "Géré dans Paramètres",
+                "configureWarehouses": "Configurer les entrepôts dans Paramètres",
+                "selectLocation": "Sélectionner l'emplacement",
+                "globalStock": "Stock Global / Non assigné",
+                "currentLevel": "Niveau actuel :",
+                "action": "Action",
+                "addStock": "Ajouter du stock",
+                "removeStock": "Retirer",
+                "setStock": "Définir à",
+                "newTotalQty": "Nouvelle quantité totale",
+                "qtyToAdjust": "Quantité à ajuster",
+                "resultingStock": "Stock résultant :",
+                "overwriteWarning": "Cela écrasera le niveau de stock actuel.",
+                "reasonLabel": "Raison du mouvement *",
+                "selectReason": "Sélectionner la raison",
+                "reasons": {
+                    "received_shipment": "Expédition reçue",
+                    "used_in_work_order": "Consommé (Ordre de travail)",
+                    "transfer": "Transfert de stock",
+                    "inventory_count": "Comptage de cycle / Audit",
+                    "damaged": "Endommagé / Mis au rebut",
+                    "returned": "Retourné au fournisseur",
+                    "found": "Article trouvé",
+                    "other": "Autre"
+                },
+                "notesLabel": "Notes (Optionnel)",
+                "notesPlaceholder": "N° de lot, N° de commande, condition visuelle...",
+                "confirmAdjustment": "Confirmer l'ajustement",
+                "confirmReceipt": "Confirmer la réception",
+                "confirmRemoval": "Confirmer le retrait",
                 "toasts": {
                     "success": {
                         "title": "Stock ajusté",
                         "description": "Le stock a été {type}."
-                    }
+                    },
+                    "cancel": "Annuler",
+                    "warehouseRequired": "Entrepôt requis",
+                    "reasonRequired": "Raison requise",
+                    "reasonRequiredDesc": "Veuillez sélectionner une raison pour cet ajustement de stock.",
+                    "invalidQty": "Quantité invalide",
+                    "invalidQtyDesc": "La quantité doit être supérieure à zéro.",
+                    "insufficientStock": "Stock insuffisant",
+                    "insufficientStockDesc": "Impossible de retirer {qty} unités. Seules {current} sont disponibles."
                 },
                 "types": {
                     "increased": "augmenté",
@@ -1156,6 +1344,77 @@
                     "updated": "mis à jour"
                 }
             }
+        }
+    },
+    "audits": {
+        "title": "Audits d'inventaire",
+        "subtitle": "Gérer et valider les comptages physiques des stocks",
+        "common": {
+            "cancel": "Annuler"
+        },
+        "on": "le",
+        "status": {
+            "validated": "Validé"
+        },
+        "actions": {
+            "new": "Nouvelle session d'audit",
+            "saveDraft": "Enregistrer le brouillon",
+            "validate": "Valider et ajuster le stock"
+        },
+        "table": {
+            "headers": {
+                "recentSessions": "Sessions récentes",
+                "partName": "Nom de la pièce",
+                "sku": "SKU",
+                "name": "Nom de la session",
+                "warehouse": "Entrepôt",
+                "status": "Statut",
+                "createdAt": "Créé le",
+                "createdBy": "Créé par",
+                "systemQty": "Qté système",
+                "physicalQty": "Qté physique",
+                "diff": "Diff",
+                "reason": "Raison"
+            },
+            "empty": "Aucune session d'audit trouvée. Commencez-en une nouvelle pour rapprocher votre stock.",
+            "actions": {
+                "details": "Détails"
+            }
+        },
+        "modal": {
+            "title": "Nouvel audit d'inventaire",
+            "fields": {
+                "name": "Nom de la pièce",
+                "warehouse": "Entrepôt",
+                "description": "Description",
+                "scope": "Portée de l'audit",
+                "scopeCategory": "Catégorie"
+            },
+            "placeholders": {
+                "name": "ex: Fin d'année 2024",
+                "warehouse": "Sélectionner un entrepôt",
+                "description": "Notes optionnelles",
+                "scope": "Sélectionner la portée"
+            },
+            "scopes": {
+                "all": "Tout l'inventaire",
+                "withStock": "Uniquement les pièces avec stock",
+                "category": "Par catégorie"
+            },
+            "actions": {
+                "create": "Créer la session"
+            }
+        },
+        "details": {
+            "title": "Comptage physique",
+            "description": "Saisissez les quantités physiques trouvées lors de l'audit",
+            "summary": "Résumé de l'audit",
+            "totalParts": "Total des pièces",
+            "stockSyncedTitle": "Stock synchronisé",
+            "stockSyncedDesc": "Le stock de l'inventaire a été rapproché des comptages physiques. Les mouvements d'ajustement ont été automatiquement enregistrés.",
+            "validateConfirm": "Êtes-vous sûr de vouloir valider cet audit ? Cela générera automatiquement des mouvements de stock pour refléter les comptages physiques. Cette action est irréversible.",
+            "notFound": "Audit non trouvé",
+            "scopeLabel": "Portée"
         }
     },
     "suppliers": {
@@ -1167,6 +1426,54 @@
         },
         "filters": {
             "searchPlaceholder": "Rechercher des fournisseurs..."
+        },
+        "table": {
+            "empty": {
+                "title": "Aucun fournisseur pour le moment",
+                "description": "Ajoutez votre premier fournisseur pour commencer à gérer efficacement votre stock de pièces et vos contacts.",
+                "action": "Ajouter un fournisseur"
+            },
+            "title": "Annuaire des fournisseurs",
+            "headers": {
+                "name": "Nom du fournisseur",
+                "contact": "Personne de contact",
+                "email": "E-mail",
+                "phone": "Téléphone",
+                "address": "Adresse",
+                "actions": "Actions"
+            },
+            "loading": "Chargement des fournisseurs...",
+            "tooltips": {
+                "edit": "Modifier le fournisseur",
+                "delete": "Supprimer le fournisseur"
+            }
+        },
+        "modal": {
+            "title": {
+                "add": "Ajouter un nouveau fournisseur",
+                "edit": "Modifier le fournisseur"
+            },
+            "fields": {
+                "name": "Nom du fournisseur *",
+                "contact": "Personne de contact",
+                "phone": "Téléphone",
+                "email": "E-mail",
+                "address": "Adresse",
+                "notes": "Notes"
+            },
+            "placeholders": {
+                "name": "ex : Entrepôt AutoParts",
+                "contact": "Jean Dupont",
+                "phone": "05 22 XX XX XX",
+                "email": "contact@fournisseur.com",
+                "address": "Rue, ville, code postal",
+                "notes": "Conditions de paiement, remises, etc."
+            },
+            "actions": {
+                "save": "Enregistrer les modifications",
+                "cancel": "Annuler",
+                "add": "Ajouter le fournisseur"
+            }
         }
     },
     "users": {
@@ -1339,7 +1646,8 @@
                 "all": "Tous les statuts",
                 "active": "Actif",
                 "maintenance": "Maintenance",
-                "retired": "Retiré"
+                "retired": "Retiré",
+                "inactive": "Inactif"
             },
             "type": {
                 "all": "Tous les types",
@@ -1353,6 +1661,12 @@
                 "6×4": "6×4",
                 "4×2": "4×2",
                 "seltos": "Seltos",
+                "Voiture utulitaire": "Voiture utilitaire",
+                "Voiture utilitaire": "Voiture utilitaire",
+                "VOITURE UTILITAIRE": "Voiture utilitaire",
+                "VOITURE DE SOCIETE": "Voiture de société",
+                "PICK UP": "Pick-up",
+                "TRAFIC": "Trafic",
                 "unknown": "Inconnu"
             }
         },
@@ -1655,6 +1969,27 @@
             "markDone": "Marquer comme terminé",
             "dueTomorrow": "Prévu demain"
         },
+        "addPartModal": {
+            "title": "Ajouter une pièce au bon de travail",
+            "fields": {
+                "part": "Pièce",
+                "warehouse": "Entrepôt (Source)",
+                "quantity": "Quantité",
+                "unitPrice": "Prix unitaire (MAD)"
+            },
+            "placeholders": {
+                "part": "Sélectionner une pièce",
+                "warehouse": "Sélectionner l'entrepôt"
+            },
+            "managedInSettings": "Géré dans Paramètres",
+            "configureWarehouses": "Configurer les entrepôts dans Paramètres",
+            "availableStock": "Stock disponible (Total) :",
+            "actions": {
+                "cancel": "Annuler",
+                "add": "Ajouter la pièce",
+                "adding": "Ajout en cours..."
+            }
+        },
         "form": {
             "title": "Ajouter une nouvelle tâche",
             "editTitle": "Modifier l'ordre de travail",
@@ -1755,7 +2090,8 @@
             "deleteError": {
                 "title": "\u00c9chec de la suppression de l'ordre de travail",
                 "description": "Veuillez r\u00e9essayer."
-            }
+            },
+            "deleteConfirm": "\u00cates-vous s\u00fbr de vouloir supprimer cet ordre de travail ? Toutes les archives li\u00e9es, les demandes de pi\u00e8ces et les pi\u00e8ces jointes seront \u00e9galement supprim\u00e9es."
         },
         "kanban": {
             "empty": {
@@ -1845,6 +2181,7 @@
             "tabs": {
                 "overview": "Aperçu",
                 "tasks": "Tâches",
+                "parts": "Pièces",
                 "attachments": "Pièces jointes",
                 "activity": "Activité",
                 "comments": "Commentaires"

@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, FileText, Activity, AlertTriangle } from "lucide-react";
+import { MoreHorizontal, FileText, Activity, AlertTriangle, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,7 +100,7 @@ export function VehicleTable({
                     {vehicle.brand} {vehicle.model}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {vehicle.year} • {tf(`type.${vehicle.type}`) || vehicle.type}
+                    {vehicle.year} • {tf.has(`type.${vehicle.type}`) ? tf(`type.${vehicle.type}`) : vehicle.type}
                   </span>
                 </div>
               </TableCell>
@@ -134,17 +140,68 @@ export function VehicleTable({
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-16 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                    <div
-                      className="h-full bg-green-500"
-                      style={{ width: "95%" }}
-                    />
-                  </div>
-                  <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                    95%
-                  </span>
-                </div>
+                {(() => {
+                  const healthScore = vehicle.kpis?.health_score ?? 100;
+                  const healthColor =
+                    healthScore >= 90
+                      ? "bg-green-500"
+                      : healthScore >= 70
+                      ? "bg-blue-500"
+                      : healthScore >= 50
+                      ? "bg-amber-500"
+                      : "bg-red-500";
+
+                  return (
+                    <div className="flex flex-col gap-1.5 min-w-[120px]">
+                      <div className="flex items-center justify-between text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+                        <span>{t("headers.healthScore")}</span>
+                        <span
+                          className={
+                            healthScore >= 90
+                              ? "text-green-600"
+                              : healthScore >= 70
+                              ? "text-blue-600"
+                              : healthScore >= 50
+                              ? "text-amber-600"
+                              : "text-red-600"
+                          }
+                        >
+                          {healthScore.toFixed(0)}%
+                        </span>
+                      </div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden cursor-help">
+                              <div
+                                className={`h-full ${healthColor} transition-all duration-500 ease-out`}
+                                style={{ width: `${healthScore}%` }}
+                              />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent className="p-3 max-w-[200px]">
+                            <div className="space-y-2">
+                              <p className="font-semibold text-xs border-b border-gray-100 pb-1 mb-1 dark:border-gray-800">
+                                {healthScore >= 90
+                                  ? "Excellent"
+                                  : healthScore >= 70
+                                  ? "Good"
+                                  : healthScore >= 50
+                                  ? "Fair"
+                                  : "Poor"}
+                              </p>
+                              <p className="text-[10px] text-gray-500 italic">
+                                {healthScore >= 90
+                                  ? "Perfect condition — no issues detected"
+                                  : "Score is reduced based on age, maintenance status, and reliability."}
+                              </p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  );
+                })()}
               </TableCell>
               <TableCell>
                 <Badge variant="secondary" className="font-mono">

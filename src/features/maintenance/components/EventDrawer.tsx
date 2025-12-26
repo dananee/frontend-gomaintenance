@@ -12,6 +12,9 @@ import { formatDateTime } from "../utils/dateFormatters";
 import { useRouter } from "next/navigation";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Modal } from "@/components/ui/modal";
+import { ScheduleMaintenanceModal } from "./ScheduleMaintenanceModal";
 
 interface EventDrawerProps {
   event: ScheduledMaintenanceEvent | null;
@@ -23,6 +26,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
   const router = useRouter();
   const t = useTranslations("features.maintenance.eventDrawer");
   const { deleteEvent, markEventDone, convertToWorkOrder } = useMaintenanceMutations();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Handle ESC key to close drawer
   useEffect(() => {
@@ -175,7 +179,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                 </div>
 
                 {/* Assigned Technician */}
-                {event.assigned_to && (
+                {(event.technician || event.assigned_to) && (
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
                       <User className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -185,7 +189,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
                         {t("assignedTechnician")}
                       </div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                        {event.assigned_to}
+                        {event.technician || event.assigned_to}
                       </p>
                     </div>
                   </div>
@@ -255,10 +259,7 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  // TODO: Implement edit modal
-                  toast.info(t("editSoon"));
-                }}
+                onClick={() => setIsEditModalOpen(true)}
                 className="w-full h-10 bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200 hover:border-purple-300 dark:bg-purple-900/20 dark:hover:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md"
               >
                 <Edit className="mr-2 h-4 w-4" />
@@ -297,6 +298,25 @@ export function EventDrawer({ event, isOpen, onClose }: EventDrawerProps) {
           </div>
         )}
       </div>
+      
+      {/* Edit Modal */}
+      {event && (
+        <Modal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          title={t("edit")}
+        >
+          <ScheduleMaintenanceModal 
+            event={event} 
+            onClose={() => {
+              setIsEditModalOpen(false);
+              onClose(); // Close drawer too on success/cancel? 
+              // Actually, maybe keep drawer open and let query invalidation handle UI update.
+              // But usually if you edit, you might want it refreshed.
+            }} 
+          />
+        </Modal>
+      )}
     </>
   );
 }

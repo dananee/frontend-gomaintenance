@@ -1,9 +1,12 @@
 import apiClient from "@/lib/api/axiosClient";
 
+import { Part } from "@/features/inventory/types/inventory.types";
+
 export interface WorkOrderPart {
   id: string;
   work_order_id: string;
   part_id: string;
+  part?: Part;
   quantity: number;
   unit_price: number;
   total_price: number;
@@ -14,6 +17,7 @@ export interface AddWorkOrderPartRequest {
   part_id: string;
   quantity: number;
   unit_price: number;
+  warehouse_id?: string;
 }
 
 // List all parts used in a work order

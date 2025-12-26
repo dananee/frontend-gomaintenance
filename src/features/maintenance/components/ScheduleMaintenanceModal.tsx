@@ -18,12 +18,14 @@ import {
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { useMaintenanceTemplates } from "@/features/maintenance/hooks/useMaintenanceTemplates";
-import { useCreateScheduledMaintenance } from "@/features/maintenance/hooks/useScheduledMaintenance";
+import { useCreateScheduledMaintenance, useUpdateScheduledMaintenance } from "@/features/maintenance/hooks/useScheduledMaintenance";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
 
 interface ScheduleMaintenanceModalProps {
   onClose: () => void;
+  event?: ScheduledMaintenanceEvent;
 }
 
 interface FormData {
@@ -38,12 +40,15 @@ interface FormData {
   notes: string;
 }
 
-export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalProps) {
+export function ScheduleMaintenanceModal({ onClose, event }: ScheduleMaintenanceModalProps) {
   const t = useTranslations("features.maintenance.schedule");
   const { data: vehiclesData, isLoading: vehiclesLoading } = useVehicles();
   const { data: usersData, isLoading: usersLoading } = useUsers();
   const { data: templatesData, isLoading: templatesLoading } = useMaintenanceTemplates();
   const createMutation = useCreateScheduledMaintenance();
+  const updateMutation = useUpdateScheduledMaintenance();
+
+  const isEdit = !!event;
 
   const {
     register,
@@ -54,8 +59,15 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      priority: "medium",
-      estimated_cost: 0,
+      vehicle_id: event?.vehicle_id || "",
+      template_id: event?.template_id || undefined,
+      title: event?.title || "",
+      description: event?.description || "",
+      scheduled_date: event?.scheduled_date || "",
+      priority: event?.priority || "medium",
+      assigned_to: event?.assigned_to || undefined,
+      estimated_cost: event?.estimated_cost || 0,
+      notes: event?.notes || "",
     },
   });
 
@@ -73,7 +85,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
 
   const onSubmit = async (data: FormData) => {
     try {
-      await createMutation.mutateAsync({
+      const payload = {
         vehicle_id: data.vehicle_id,
         template_id: data.template_id || undefined,
         title: data.title,
@@ -83,9 +95,19 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
         assigned_to: data.assigned_to || undefined,
         estimated_cost: data.estimated_cost || 0,
         notes: data.notes || undefined,
-      });
+      };
 
-      toast.success(t("success"));
+      if (isEdit && event?.id) {
+        await updateMutation.mutateAsync({
+          id: event.id,
+          data: payload,
+        });
+        toast.success(t("saveSuccess") || "Event updated successfully");
+      } else {
+        await createMutation.mutateAsync(payload);
+        toast.success(t("success"));
+      }
+
       onClose();
     } catch (error) {
       toast.error(t("error"));
@@ -108,7 +130,11 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             <Label htmlFor="vehicle_id">
               {t("vehicle")} <span className="text-red-500">*</span>
             </Label>
-            <Select onValueChange={(value) => setValue("vehicle_id", value)}>
+            <Select 
+              onValueChange={(value) => setValue("vehicle_id", value)}
+              defaultValue={event?.vehicle_id}
+              disabled={isEdit}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={t("selectVehicle")} />
               </SelectTrigger>
@@ -128,7 +154,10 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
           {/* Template Selection (Optional) */}
           <div className="space-y-2">
             <Label htmlFor="template_id">{t("selectTemplate")}</Label>
-            <Select onValueChange={handleTemplateChange}>
+            <Select 
+              onValueChange={handleTemplateChange}
+              defaultValue={event?.template_id}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={t("selectTemplate")} />
               </SelectTrigger>
@@ -142,10 +171,9 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             </Select>
           </div>
 
-          {/* Title */}
           <div className="space-y-2">
             <Label htmlFor="title">
-              {t("selectTemplate")} <span className="text-red-500">*</span>
+              {t("title")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="title"
@@ -195,7 +223,7 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
             <Label htmlFor="priority">{t("priority")}</Label>
             <Select
               onValueChange={(value) => setValue("priority", value as any)}
-              defaultValue="medium"
+              defaultValue={event?.priority || "medium"}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -212,7 +240,10 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
           {/* Assigned To */}
           <div className="space-y-2">
             <Label htmlFor="assigned_to">{t("assignTo")}</Label>
-            <Select onValueChange={(value) => setValue("assigned_to", value)}>
+            <Select 
+              onValueChange={(value) => setValue("assigned_to", value)}
+              defaultValue={event?.assigned_to}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={t("selectTechnician")} />
               </SelectTrigger>
@@ -257,15 +288,15 @@ export function ScheduleMaintenanceModal({ onClose }: ScheduleMaintenanceModalPr
               type="button"
               variant="outline"
               onClick={onClose}
-              disabled={createMutation.isPending}
+              disabled={createMutation.isPending || updateMutation.isPending}
             >
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending && (
+            <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+              {(createMutation.isPending || updateMutation.isPending) && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              {t("create")}
+              {isEdit ? t("update") || "Update" : t("create")}
             </Button>
           </div>
         </>

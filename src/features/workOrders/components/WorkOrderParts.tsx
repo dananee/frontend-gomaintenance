@@ -2,54 +2,45 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Package } from "lucide-react";
+import { Plus, Package, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-
-interface Part {
-  id: string;
-  name: string;
-  sku?: string;
-  quantity: number;
-  unitPrice: number;
-}
+import { useWorkOrderParts, useAddWorkOrderPart, useRemoveWorkOrderPart } from "../hooks/useWorkOrderParts";
+import { AddPartToWorkOrderModal } from "./AddPartToWorkOrderModal";
+import { useState } from "react";
+import { WorkOrderPart } from "../api/workOrderParts";
 
 interface WorkOrderPartsProps {
-  parts?: Part[];
+  workOrderId: string;
 }
 
 export function WorkOrderParts({
-  parts = [],
+  workOrderId,
 }: WorkOrderPartsProps) {
   const t = useTranslations("workOrders");
   const tc = useTranslations("common");
+  
+  const { data: parts, isLoading } = useWorkOrderParts(workOrderId);
+  const addPartMutation = useAddWorkOrderPart(workOrderId);
+  const removePartMutation = useRemoveWorkOrderPart(workOrderId);
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const mockParts: Part[] = parts.length > 0 ? parts : [
-    {
-      id: "1",
-      name: "Brake Pads (Ceramic)",
-      sku: "BRK-PAD-001",
-      quantity: 2,
-      unitPrice: 120.00,
-    },
-    {
-      id: "2",
-      name: "Brake Cleaner Spray",
-      sku: "BRK-CLN-001",
-      quantity: 1,
-      unitPrice: 15.99,
-    },
-    {
-      id: "3",
-      name: "Labor",
-      quantity: 3,
-      unitPrice: 85.00,
-    },
-  ];
-
-  const totalCost = mockParts.reduce(
-    (sum, part) => sum + part.quantity * part.unitPrice,
+  const totalCost = parts?.reduce(
+    (sum, part) => sum + part.total_price,
     0
-  );
+  ) || 0;
+
+  const handleAdd = (data: any) => {
+    addPartMutation.mutate(data, {
+        onSuccess: () => setIsModalOpen(false)
+    });
+  };
+
+  const handleRemove = (id: string) => {
+    if (confirm("Are you sure you want to remove this part?")) {
+        removePartMutation.mutate(id);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -62,20 +53,20 @@ export function WorkOrderParts({
             {/* Description can be added here if needed */}
           </p>
         </div>
-        <Button size="sm" variant="outline">
+        <Button size="sm" variant="outline" onClick={() => setIsModalOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           {tc("create")}
         </Button>
       </div>
 
-      {mockParts.length === 0 ? (
+      {(!parts || parts.length === 0) ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Package className="h-12 w-12 text-gray-400 dark:text-gray-600" />
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
               {tc("noData")}
             </p>
-            <Button variant="outline" className="mt-4" size="sm">
+            <Button variant="outline" className="mt-4" size="sm" onClick={() => setIsModalOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               {tc("create")}
             </Button>
@@ -96,22 +87,27 @@ export function WorkOrderParts({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                  {mockParts.map((part) => (
+                  {parts.map((part) => (
                     <tr key={part.id} className="text-sm">
                       <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
-                        {part.name}
+                        {part.part?.name}
                       </td>
                       <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {part.sku || "—"}
+                        {part.part?.sku || "—"}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
                         {part.quantity}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
-                        ${part.unitPrice.toFixed(2)}
+                        {part.unit_price.toFixed(2)}
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-gray-100">
-                        ${(part.quantity * part.unitPrice).toFixed(2)}
+                        {part.total_price.toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <Button variant="ghost" size="icon" onClick={() => handleRemove(part.id)} className="text-destructive hover:text-destructive/90">
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -131,6 +127,12 @@ export function WorkOrderParts({
           </CardContent>
         </Card>
       )}
+      <AddPartToWorkOrderModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAdd={handleAdd}
+        isLoading={addPartMutation.isPending}
+      />
     </div>
   );
 }

@@ -23,8 +23,11 @@ import {
 import { CreateStockMovementRequest, InventoryStock } from "../types/inventory.types";
 import { Warehouse } from "@/features/inventory/api/inventory";
 import { Plus, Minus, RotateCcw } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 interface StockAdjustmentModalProps {
   isOpen: boolean;
@@ -47,97 +50,57 @@ export function StockAdjustmentModal({
   stocks,
   onSave,
 }: StockAdjustmentModalProps) {
+  const t = useTranslations("inventory.details.stockAdjustment");
+  const { user } = useAuth();
   const [adjustmentType, setAdjustmentType] = useState<
     "add" | "remove" | "set"
   >("add");
   const [quantity, setQuantity] = useState<number>(0);
   const [reason, setReason] = useState("");
   const [notes, setNotes] = useState("");
-  const [warehouseId, setWarehouseId] = useState<string>("none"); // Default to none (Global)
+  const [warehouseId, setWarehouseId] = useState<string>(""); 
   
-  // Inline creation state
-  const [isCreatingWarehouse, setIsCreatingWarehouse] = useState(false);
-  const [newWarehouseName, setNewWarehouseName] = useState("");
-  const [newWarehouseLocation, setNewWarehouseLocation] = useState("");
-
-  // Get current stock for selected warehouse (or global if none)
-  const selectedStockEntry = warehouseId && warehouseId !== "none" && warehouseId !== "new"
+  // Get current stock for selected warehouse
+  const selectedStockEntry = warehouseId 
     ? stocks?.find(s => s.warehouse_id === warehouseId)
-    : stocks?.find(s => !s.warehouse_id); // Find global stock (null warehouse_id)
+    : undefined;
 
   const currentLevel = selectedStockEntry?.quantity || 0;
-
-  const handleWarehouseChange = (value: string) => {
-      if (value === "new") {
-          setIsCreatingWarehouse(true);
-          setWarehouseId("new");
-      } else {
-          setIsCreatingWarehouse(false);
-          setWarehouseId(value);
-      }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 1. Handle New Warehouse Creation
-    let finalWarehouseId = warehouseId;
-    
-    if (warehouseId === "new") {
-        if (!newWarehouseName.trim()) {
-            toast.error("Warehouse Name Required", { description: "Please enter a name for the new warehouse." });
-            return;
-        }
-        
-        try {
-            // Need to import createWarehouse
-            const { createWarehouse } = await import("@/features/inventory/api/inventory");
-            const newWarehouse = await createWarehouse({
-                name: newWarehouseName,
-                location: newWarehouseLocation
-            });
-            finalWarehouseId = newWarehouse.id;
-            toast.success("Warehouse Created", { description: `${newWarehouse.name} created successfully.` });
-        } catch (error) {
-            toast.error("Failed to create warehouse");
-            return;
-        }
+    // 1. Validation
+    if (!warehouseId) {
+      toast.error(t("toasts.warehouseRequired") || "Warehouse required");
+      return;
     }
 
-    // 2. Validation
     if (!reason.trim()) {
-      toast.error("Reason required", { description: "Please select a reason for this stock adjustment." });
+      toast.error(t("toasts.reasonRequired"), { description: t("toasts.reasonRequiredDesc") });
       return;
     }
 
     if (quantity <= 0) {
-      toast.error("Invalid quantity", { description: "Quantity must be greater than zero." });
+      toast.error(t("toasts.invalidQty"), { description: t("toasts.invalidQtyDesc") });
       return;
     }
 
     // Validation against specific stock context
     if (adjustmentType === "remove" && quantity > currentLevel) {
-      toast.error("Insufficient stock", {
-        description: `Cannot remove ${quantity} units. Only ${currentLevel} units available in this context.`,
+      toast.error(t("toasts.insufficientStock"), {
+        description: t("toasts.insufficientStockDesc", { qty: quantity, current: currentLevel }),
       });
       return;
     }
 
-    // 3. Map to backend
+    // 2. Map to backend
     const movementType = 
         adjustmentType === "add" ? "in" :
         adjustmentType === "remove" ? "out" : 
         "adjustment";
     
-    // If "none", send empty string or handle as optional. Backend expects empty string for nullable if not provided? 
-    // Wait, backend `warehouse_id` is now POINTER. 
-    // If I send empty string "", `uuid.Parse` fails.
-    // I need the parent `onSave` to handle this?
-    // Parent `handleStockAdjustment` maps `CreateStockMovementRequest`.
-    // Let's pass undefined or empty string, and ensure parent handles it.
-    // Actually, passing `undefined` for `none` is safer if the request type allows optional.
-    
-    const requestWarehouseId = finalWarehouseId === "none" ? undefined : finalWarehouseId;
+    const requestWarehouseId = warehouseId === "none" ? undefined : warehouseId;
 
     onSave({
       part_id: "", 
@@ -145,7 +108,7 @@ export function StockAdjustmentModal({
       movement_type: movementType,
       quantity,
       reason: notes ? `${reason} - ${notes}` : reason,
-    } as any); // Cast because CreateStockMovementRequest might be strict about warehouse_id string vs undefined
+    } as any); 
 
     // Reset
     setAdjustmentType("add");
@@ -153,9 +116,6 @@ export function StockAdjustmentModal({
     setReason("");
     setNotes("");
     setWarehouseId("none");
-    setIsCreatingWarehouse(false);
-    setNewWarehouseName("");
-    setNewWarehouseLocation("");
     onClose();
   };
 
@@ -172,9 +132,9 @@ export function StockAdjustmentModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Adjust Stock - {partName}</DialogTitle>
+          <DialogTitle>{t("title", { name: partName })}</DialogTitle>
           <DialogDescription>
-             Manage inventory levels. Select a warehouse or adjust unassigned stock.
+             {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -182,59 +142,42 @@ export function StockAdjustmentModal({
           {/* Warehouse Selection */}
           <div className="space-y-3 p-4 bg-muted/30 rounded-lg border">
             <div className="space-y-2">
-                <Label htmlFor="warehouse">Target Location</Label>
-                <Select value={warehouseId} onValueChange={handleWarehouseChange}>
+                <div className="flex justify-between items-center">
+                    <Label htmlFor="warehouse">{t("targetLocation")}</Label>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("managedInSettings") || "Managed in Settings"}</p>
+                </div>
+                <Select value={warehouseId} onValueChange={setWarehouseId}>
                     <SelectTrigger className="bg-background">
-                        <SelectValue placeholder="Select location" />
+                        <SelectValue placeholder={t("selectLocation")} />
                     </SelectTrigger>
                     <SelectContent>
-                         <SelectItem value="none">
-                            <span className="font-medium text-blue-600 dark:text-blue-400">Global / Unassigned Stock</span>
-                         </SelectItem>
                         {warehouses?.map((w) => (
                             <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
                         ))}
-                        <div className="border-t my-1" />
-                        <SelectItem value="new" className="text-green-600 font-medium">
-                            + Create New Warehouse
-                        </SelectItem>
+                        {(!warehouses || warehouses.length === 0) && (user?.role === "admin" || user?.role === "manager") && (
+                            <div className="p-2 border-t mt-1">
+                                <Link 
+                                    href="/dashboard/settings/inventory/warehouses"
+                                    className="text-xs text-primary hover:underline flex items-center justify-center py-1 gap-1"
+                                >
+                                    <Plus className="h-3 w-3" />
+                                    {t("configureWarehouses")}
+                                </Link>
+                            </div>
+                        )}
                     </SelectContent>
                 </Select>
             </div>
-
-            {/* Inline Creation Fields */}
-            {isCreatingWarehouse && (
-                <div className="grid grid-cols-2 gap-3 pt-2 animate-in fade-in slide-in-from-top-1">
-                    <div className="space-y-1">
-                        <Label className="text-xs">New Name *</Label>
-                        <Input 
-                            value={newWarehouseName} 
-                            onChange={e => setNewWarehouseName(e.target.value)} 
-                            placeholder="Main Storage" 
-                            className="h-8 text-sm"
-                        />
-                    </div>
-                    <div className="space-y-1">
-                        <Label className="text-xs">Location/Address</Label>
-                        <Input 
-                            value={newWarehouseLocation} 
-                            onChange={e => setNewWarehouseLocation(e.target.value)} 
-                            placeholder="Building 5" 
-                            className="h-8 text-sm"
-                        />
-                    </div>
-                </div>
-            )}
             
             <div className="flex justify-between items-center text-sm pt-2 border-t mt-3">
-                 <span className="text-muted-foreground">Current Level:</span>
+                 <span className="text-muted-foreground">{t("currentLevel")}</span>
                  <span className="font-bold text-xl">{currentLevel}</span>
             </div>
           </div>
 
           {/* Adjustment Type */}
           <div className="space-y-2">
-            <Label>Action</Label>
+            <Label>{t("action")}</Label>
             <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
@@ -243,7 +186,7 @@ export function StockAdjustmentModal({
                 className="justify-start"
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add Stock
+                {t("addStock")}
               </Button>
               <Button
                 type="button"
@@ -252,7 +195,7 @@ export function StockAdjustmentModal({
                 className="justify-start"
               >
                 <Minus className="mr-2 h-4 w-4" />
-                Remove
+                {t("removeStock")}
               </Button>
               <Button
                 type="button"
@@ -261,7 +204,7 @@ export function StockAdjustmentModal({
                 className="justify-start"
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
-                Set To
+                {t("setStock")}
               </Button>
             </div>
           </div>
@@ -269,7 +212,7 @@ export function StockAdjustmentModal({
           {/* Quantity */}
           <div className="space-y-2">
             <Label htmlFor="quantity">
-              {adjustmentType === "set" ? "New Total Quantity" : "Quantity to Adjust"}
+              {adjustmentType === "set" ? t("newTotalQty") : t("qtyToAdjust")}
             </Label>
             <Input
               id="quantity"
@@ -289,12 +232,12 @@ export function StockAdjustmentModal({
                         className={`${adjustmentType === "set" ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10" : ""}`}>
                     <AlertDescription className="w-full">
                         <div className="flex justify-between items-center font-medium text-lg">
-                            <span>Resulting Stock:</span>
+                            <span>{t("resultingStock")}</span>
                             <span>{getNewLevel()}</span>
                         </div>
                         {adjustmentType === "set" && (
                             <div className="text-xs text-yellow-700 dark:text-yellow-400 mt-1">
-                                ⚠️ This will overwrite the current stock level.
+                                ⚠️ {t("overwriteWarning")}
                             </div>
                         )}
                     </AlertDescription>
@@ -303,42 +246,42 @@ export function StockAdjustmentModal({
 
           {/* Reason */}
           <div className="space-y-2">
-            <Label htmlFor="reason">Reason for Movement *</Label>
+            <Label htmlFor="reason">{t("reasonLabel")}</Label>
             <Select value={reason} onValueChange={setReason} required>
               <SelectTrigger>
-                <SelectValue placeholder="Select reason" />
+                <SelectValue placeholder={t("selectReason")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="received_shipment">Received Shipment</SelectItem>
-                <SelectItem value="used_in_work_order">Consumed (Work Order)</SelectItem>
-                <SelectItem value="transfer">Stock Transfer</SelectItem>
-                <SelectItem value="inventory_count">Cycle Count / Audit</SelectItem>
-                <SelectItem value="damaged">Damaged / Scrapped</SelectItem>
-                <SelectItem value="returned">Returned to Supplier</SelectItem>
-                <SelectItem value="found">Found Item</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="received_shipment">{t("reasons.received_shipment")}</SelectItem>
+                <SelectItem value="used_in_work_order">{t("reasons.used_in_work_order")}</SelectItem>
+                <SelectItem value="transfer">{t("reasons.transfer")}</SelectItem>
+                <SelectItem value="inventory_count">{t("reasons.inventory_count")}</SelectItem>
+                <SelectItem value="damaged">{t("reasons.damaged")}</SelectItem>
+                <SelectItem value="returned">{t("reasons.returned")}</SelectItem>
+                <SelectItem value="found">{t("reasons.found")}</SelectItem>
+                <SelectItem value="other">{t("reasons.other")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Notes */}
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes (Optional)</Label>
+            <Label htmlFor="notes">{t("notesLabel")}</Label>
             <Textarea
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Batch #, PO #, visual condition..."
+              placeholder={t("notesPlaceholder")}
               rows={2}
             />
           </div>
 
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" variant={adjustmentType === "remove" ? "destructive" : "primary"}>
-                Confirm {adjustmentType === "set" ? "Adjustment" : adjustmentType === "add" ? "Receipt" : "Removal"}
+                {adjustmentType === "set" ? t("confirmAdjustment") : adjustmentType === "add" ? t("confirmReceipt") : t("confirmRemoval")}
             </Button>
           </DialogFooter>
         </form>
