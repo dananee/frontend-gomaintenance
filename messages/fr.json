@@ -1121,7 +1121,8 @@
             "empty": "Aucune pièce trouvée",
             "actions": {
                 "edit": "Modifier",
-                "delete": "Supprimer"
+                "delete": "Supprimer",
+                "receiveStock": "Recevoir du stock"
             },
             "minQty": "Min : {count}"
         },
@@ -1134,6 +1135,46 @@
                 "title": "Aucune pièce trouvée",
                 "description": "Aucune pièce ne correspond à vos filtres. Essayez de modifier vos critères de recherche ou vos filtres."
             }
+        },
+        "stockReception": {
+            "title": "Réception de Stock",
+            "description": "Ajouter des quantités à l'inventaire et créer des lots FIFO",
+            "fields": {
+                "warehouse": "Entrepôt",
+                "quantity": "Quantité à recevoir",
+                "unitCostHT": "Coût unitaire HT",
+                "vatRate": "Taux de TVA (%)",
+                "dateReceived": "Date de réception",
+                "supplier": "Fournisseur",
+                "referenceType": "Type de référence",
+                "referenceNo": "Numéro de référence",
+                "notes": "Notes de réception",
+                "totalHT": "Total HT",
+                "totalVAT": "Total TVA",
+                "totalTTC": "Total TTC (MAD)"
+            },
+            "placeholders": {
+                "warehouse": "Sélectionner un entrepôt actif",
+                "quantity": "0",
+                "unitCostHT": "0.00",
+                "supplier": "Sélectionner un fournisseur (optionnel)",
+                "referenceNo": "ex: BL-2025-001",
+                "notes": "État, détails de stockage, etc."
+            },
+            "referenceTypes": {
+                "supplier_invoice": "Facture Fournisseur",
+                "delivery_note": "Bon de Livraison",
+                "manual": "Saisie Manuelle"
+            },
+            "toasts": {
+                "success": "Stock reçu avec succès",
+                "error": "Échec de la réception du stock"
+            },
+            "actions": {
+                "submit": "Recevoir le Stock",
+                "cancel": "Annuler"
+            },
+            "managedInSettings": "Les champs marqués d'un astérisque (*) sont obligatoires"
         },
         "details": {
             "adjustStock": "Ajuster le stock",
@@ -1262,14 +1303,17 @@
                 },
                 "fields": {
                     "name": "Nom de la pièce",
-                    "sku": "SKU",
-                    "part_number": "Numéro de pièce",
-                    "price": "Prix unitaire",
+                    "sku": "SKU interne",
+                    "part_number": "Référence fabricant (MPN)",
+                    "price": "Prix unitaire HT",
+                    "vat_rate": "Taux TVA (%)",
+                    "price_ttc": "Prix TTC",
+                    "is_critical": "Pièce critique",
                     "category": "Catégorie",
                     "supplier": "Fournisseur",
                     "unit": "Unité",
                     "minQuantity": "Qté min.",
-                    "location": "Emplacement",
+                    "location": "Emplacement par défaut",
                     "brand": "Marque",
                     "description": "Description"
                 },
@@ -1277,7 +1321,8 @@
                     "category": "Sélectionner une catégorie",
                     "supplier": "Sélectionner un fournisseur",
                     "unit": "Sélectionner une unité",
-                    "sku": "N° de suivi interne",
+                    "sku": "ex: SKU-12345",
+                    "part_number": "ex: MPN-67890",
                     "location": "ex: Allée 5, Étagère B",
                     "none": "Aucune"
                 },

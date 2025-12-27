@@ -522,7 +522,8 @@
             "empty": "لم يتم العثور على قطع",
             "actions": {
                 "edit": "تعديل",
-                "delete": "حذف"
+                "delete": "حذف",
+                "receiveStock": "استلام المخزون"
             },
             "minQty": "الحد الأدنى: {count}"
         },
@@ -535,6 +536,46 @@
                 "title": "لم يتم العثور على قطع",
                 "description": "لا توجد قطع مطابقة لعوامل التصفية الحالية. جرّب تعديل معايير البحث أو التصفية."
             }
+        },
+        "stockReception": {
+            "title": "استلام المخزون",
+            "description": "إضافة كميات إلى المخزون وإنشاء دفعات FIFO",
+            "fields": {
+                "warehouse": "المستودع",
+                "quantity": "الكمية المراد استلامها",
+                "unitCostHT": "تكلفة الوحدة (HT)",
+                "vatRate": "نسبة الضريبة (%)",
+                "dateReceived": "تاريخ الاستلام",
+                "supplier": "المورد",
+                "referenceType": "نوع المرجع",
+                "referenceNo": "رقم المرجع",
+                "notes": "ملاحظات الاستلام",
+                "totalHT": "إجمالي HT",
+                "totalVAT": "إجمالي TVA",
+                "totalTTC": "إجمالي TTC (MAD)"
+            },
+            "placeholders": {
+                "warehouse": "اختر مستودعاً نشطاً",
+                "quantity": "0",
+                "unitCostHT": "0.00",
+                "supplier": "اختر مورداً (اختياري)",
+                "referenceNo": "مثال: BL-2025-001",
+                "notes": "الحالة، تفاصيل التخزين، إلخ."
+            },
+            "referenceTypes": {
+                "supplier_invoice": "فاتورة المورد",
+                "delivery_note": "وصل التسليم",
+                "manual": "إدخال يدوي"
+            },
+            "toasts": {
+                "success": "تم استلام المخزون بنجاح",
+                "error": "فشل في استلام المخزون"
+            },
+            "actions": {
+                "submit": "استلام المخزون",
+                "cancel": "إلغاء"
+            },
+            "managedInSettings": "الحقول المشار إليها بنجمة (*) مطلوبة"
         },
         "details": {
             "adjustStock": "تعديل المخزون",
@@ -663,14 +704,17 @@
                 },
                 "fields": {
                     "name": "اسم القطعة",
-                    "sku": "SKU",
-                    "part_number": "رقم القطعة",
-                    "price": "السعر للوحدة",
+                    "sku": "SKU داخلي",
+                    "part_number": "رقم مرجع المصنع (MPN)",
+                    "price": "سعر الوحدة HT",
+                    "vat_rate": "نسبة الضريبة (%)",
+                    "price_ttc": "السعر الإجمالي (TTC)",
+                    "is_critical": "قطعة حرجة",
                     "category": "الفئة",
                     "supplier": "المورد",
                     "unit": "الوحدة",
                     "minQuantity": "الكمية الدنيا",
-                    "location": "الموقع",
+                    "location": "الموقع الافتراضي",
                     "brand": "العلامة التجارية",
                     "description": "الوصف"
                 },
@@ -678,7 +722,8 @@
                     "category": "اختر الفئة",
                     "supplier": "اختر المورد",
                     "unit": "اختر الوحدة",
-                    "sku": "رقم التتبع الداخلي",
+                    "sku": "مثلاً: SKU-12345",
+                    "part_number": "مثلاً: MPN-67890",
                     "location": "مثلاً: الممر 5، الرف B",
                     "none": "لا يوجد"
                 },
@@ -787,1514 +832,208 @@
             "fields": {
                 "name": "اسم الجلسة",
                 "warehouse": "المستودع",
-                "description": "الوصف"
+                "description": "الوصف",
+                "scope": "نطاق الجرد",
+                "scopeCategory": "الفئة"
             },
             "placeholders": {
                 "name": "مثلاً: جرد نهاية عام 2024",
                 "warehouse": "اختر المستودع",
-                "description": "ملاحظات اختيارية"
+                "description": "ملاحظات اختيارية",
+                "scope": "اختر النطاق"
             },
-            "actions": {
-                "create": "إنشاء الجلسة"
-            }
-        },
-        "details": {
-            "title": "العد الفعلي",
-            "description": "أدخل الكميات الفعلية التي تم العثور عليها أثناء الجرد",
-            "summary": "ملخص الجرد",
-            "totalParts": "إجمالي القطع",
-            "stockSyncedTitle": "تم مزامنة المخزون",
-            "stockSyncedDesc": "تمت تسوية مخزون الجرد مع الكميات الفعلية. تم تسجيل حركات التعديل تلقائيًا.",
-            "validateConfirm": "هل أنت متأكد أنك تريد التحقق من هذا الجرد؟ سيؤدي ذلك إلى إنشاء حركات مخزون تلقائيًا لتعكس الكميات الفعلية. لا يمكن التراجع عن هذا الإجراء.",
-            "notFound": "لم يتم العثور على الجرد"
-        }
-    },
-    "suppliers": {
-        "title": "المورّدون",
-        "subtitle": "إدارة المورّدين وجهات الاتصال",
-        "actions": {
-            "addSupplier": "إضافة مورّد",
-            "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا المورّد؟"
-        },
-        "filters": {
-            "searchPlaceholder": "البحث عن المورّدين..."
-        },
-        "table": {
-            "empty": {
-                "title": "لا يوجد مورّدون بعد",
-                "description": "أضف مورّدك الأول للبدء في إدارة مخزون القطع وجهات الاتصال الخاصة بك بكفاءة.",
-                "action": "إضافة مورّد"
+            "scopes": {
+                "all": "كل المخزون",
+                "withStock": "القطع التي بها مخزون فقط",
+                "category": "حسب الفئة"
             },
-            "title": "دليل المورّدين",
-            "headers": {
-                "name": "اسم المورّد",
-                "contact": "الشخص المسؤول",
-                "email": "البريد الإلكتروني",
-                "phone": "الهاتف",
-                "address": "العنوان",
-                "actions": "الإجراءات"
-            },
-            "loading": "جاري تحميل المورّدين...",
-            "tooltips": {
-                "edit": "تعديل المورّد",
-                "delete": "حذف المورّد"
-            }
-        },
-        "modal": {
-            "title": {
-                "add": "إضافة مورّد جديد",
-                "edit": "تعديل المورّد"
-            },
-            "fields": {
-                "name": "اسم المورّد *",
-                "contact": "الشخص المسؤول",
-                "phone": "الهاتف",
-                "email": "البريد الإلكتروني",
-                "address": "العنوان",
-                "notes": "ملاحظات"
-            },
-            "placeholders": {
-                "name": "مثلاً: شركة قطع الغيار",
-                "contact": "أحمد محمد",
-                "phone": "05 22 XX XX XX",
-                "email": "contact@supplier.com",
-                "address": "الشارع، المدينة، الرمز البريدي",
-                "notes": "شروط الدفع، الخصومات، إلخ."
-            },
-            "actions": {
-                "save": "حفظ التغييرات",
-                "cancel": "إلغاء",
-                "add": "إضافة مورّد"
-            }
-        }
-    },
-    "maintenance": {
-        "dashboard": {
-            "title": "الصيانة",
-            "subtitle": "إدارة جداول الصيانة الوقائية وخطط الصيانة النشطة",
-            "actions": {
-                "templates": "القوالب",
-                "schedule": "جدولة الصيانة"
-            },
-            "tabs": {
-                "calendar": "التقويم",
-                "activePlans": "الخطط النشطة"
-            },
-            "modals": {
-                "schedule": {
-                    "title": "جدولة الصيانة"
-                }
-            }
-        },
-        "templates": {
-            "title": "قوالب الصيانة",
-            "subtitle": "إنشاء وإدارة قوالب الصيانة الوقائية",
-            "actions": {
-                "create": "إنشاء قالب",
-                "delete": "حذف",
-                "cancel": "إلغاء"
-            },
-            "modals": {
-                "create": "إنشاء قالب",
-                "edit": "تعديل القالب"
-            },
-            "alerts": {
-                "delete": {
-                    "title": "حذف القالب",
-                    "description": "هل أنت متأكد أنك تريد حذف هذا القالب؟ سيؤدي ذلك أيضًا إلى حذف جميع خطط الصيانة النشطة المرتبطة بهذا القالب. بالنسبة لأوامر العمل التي تم إنشاؤها بالفعل، ستحتفظ بمعلوماتها ولكنها لن تعود مرتبطة بهذا القالب."
-                }
-            },
-            "toasts": {
-                "createSuccess": "تم إنشاء القالب بنجاح",
-                "updateSuccess": "تم تحديث القالب بنجاح",
-                "saveError": "فشل حفظ القالب",
-                "deleteSuccess": "تم حذف القالب بنجاح",
-                "deleteError": "فشل حذف القالب",
-                "loadError": "فشل تحميل قوالب الصيانة"
-            }
-        },
-        "schedule": {
-            "vehicle": "المركبة",
-            "selectVehicle": "اختر مركبة",
-            "selectTemplate": "اختر قالباً",
-            "title": "العنوان",
-            "description": "الوصف",
-            "scheduledDate": "تاريخ الجدولة",
-            "priority": "الأولوية",
-            "assignTo": "تعيين لـ",
-            "selectTechnician": "اختر فنياً",
-            "estimatedCost": "التكلفة التقديرية",
-            "notes": "ملاحظات",
-            "cancel": "إلغاء",
-            "create": "جدولة",
-            "update": "تحديث",
-            "success": "تمت جدولة الصيانة بنجاح",
-            "saveSuccess": "تم تحديث الصيانة بنجاح",
-            "error": "فشل في جدولة الصيانة",
-            "priorities": {
-                "low": "منخفض",
-                "medium": "متوسط",
-                "high": "عالي",
-                "critical": "حرج"
-            },
-            "placeholders": {
-                "title": "مثل: Vidange, Rotation des pneus",
-                "description": "صف عمل الصيانة...",
-                "notes": "ملاحظات أو تعليمات إضافية..."
-            },
-            "validation": {
-                "titleRequired": "العنوان مطلوب",
-                "dateRequired": "التاريخ المطلوب مطلوب"
-            }
-        },
-        "calendar": {
-            "today": "اليوم",
-            "event": "حدث",
-            "events": "أحداث",
-            "weekdays": {
-                "sun": "أحد",
-                "mon": "إثنين",
-                "tue": "ثلاثاء",
-                "wed": "أربعاء",
-                "thu": "خميس",
-                "fri": "جمعة",
-                "sat": "سبت"
-            }
-        },
-        "table": {
-            "searchPlaceholder": "بحث عن خطط...",
-            "noPlansFound": "لم يتم العثور على خطط",
-            "plan": "خطة",
-            "plans": "خطط",
-            "headers": {
-                "asset": "الأصل",
-                "planName": "اسم الخطة",
-                "recurrence": "التكرار",
-                "nextDue": "الاستحقاق التالي",
-                "status": "الحالة"
-            },
-            "actions": {
-                "runNow": "تشغيل الآن",
-                "pause": "إيقاف مؤقت",
-                "resume": "استئناف",
-                "viewVehicle": "عرض المركبة",
-                "delete": "حذف",
-                "confirmDelete": "هل أنت متأكد أنك تريد حذف خطة الصيانة هذه؟"
-            },
-            "recurrence": {
-                "daily": "يومي",
-                "weekly": "أسبوعي",
-                "monthly": "شهري",
-                "everyDays": "كل {days} أيام",
-                "everyKm": "كل {km} كم",
-                "everyHours": "كل {hours} ساعة",
-                "custom": "مخصص"
-            },
-            "status": {
-                "active": "نشط",
-                "inactive": "غير نشط"
-            },
-            "pagination": {
-                "showing": "عرض",
-                "to": "إلى",
-                "of": "من",
-                "page": "صفحة",
-                "previous": "السابق",
-                "next": "التالي"
-            }
-        },
-        "card": {
-            "progress": "التقدم",
-            "lastPerformed": "آخر تنفيذ",
-            "nextDue": "الاستحقاق التالي",
-            "never": "أبداً",
-            "overdue": "متأخر",
-            "active": "نشط",
-            "markCompleted": "تحديد كمكتمل"
-        },
-        "form": {
-            "scheduleTitle": "جدولة الصيانة",
-            "editTemplate": "تعديل القالب",
-            "createTemplate": "إنشاء قالب صيانة",
-            "templateName": "اسم القالب",
-            "description": "الوصف",
-            "intervalRules": "قواعد الفاصل الزمني",
-            "type": "النوع",
-            "value": "القيمة",
-            "taskChecklist": "قائمة مهام",
-            "addTask": "إضافة مهمة",
-            "saveTemplate": "حفظ القالب",
-            "cancel": "إلغاء",
-            "create": "جدولة الصيانة",
-            "vehicle": "المركبة",
-            "selectVehicle": "اختر مركبة",
-            "selectTemplate": "اختر قالباً (اختياري)",
-            "scheduledDate": "التاريخ المجدول",
-            "priority": "الأولوية",
-            "assignTo": "تعيين إلى (اختياري)",
-            "estimatedCost": "التكلفة التقديرية",
-            "notes": "ملاحظات",
-            "optional": "(اختياري)",
-            "selectTechnician": "اختر فنياً (اختياري)",
-            "task": "مهمة",
-            "items": {
-                "distance": "المسافة (كم)",
-                "time": "الوقت (أشهر)",
-                "engineHours": "ساعات المحرك"
-            },
-            "priorities": {
-                "low": "منخفض",
-                "medium": "متوسط",
-                "high": "عالي",
-                "critical": "حرج"
-            },
-            "success": "تمت جدولة الصيانة بنجاح",
-            "error": "فشل في جدولة الصيانة"
-        }
-    },
-    "notifications": {
-        "common": {
-            "categories": {
-                "work_order": "أوامر العمل",
-                "inventory": "المخزون",
-                "maintenance": "الصيانة",
-                "system": "النظام"
-            }
-        },
-        "dashboard": {
-            "title": "الإشعارات",
-            "subtitle": "إدارة التنبيهات والتحديثات الخاصة بك",
-            "actions": {
-                "viewAll": "عرض الكل",
-                "markAllRead": "تعيين الكل كمقروء"
-            },
-            "filters": {
-                "searchPlaceholder": "البحث في الإشعارات...",
-                "filterBy": "التصفية حسب",
-                "options": {
-                    "all": "جميع الإشعارات",
-                    "unread": "غير المقروءة فقط"
-                }
-            },
-            "empty": "لا توجد إشعارات مطابقة لمعايير البحث.",
-            "pagination": "عرض {start}-{end} من {total}"
-        },
-        "all": {
-            "title": "جميع الإشعارات",
-            "subtitle": "سجل كامل مع عوامل تصفية، ترقيم صفحات، وضوابط مجمّعة.",
-            "actions": {
-                "markAllRead": "تعيين كل الإشعارات كمقروءة",
-                "backToDashboard": "العودة إلى لوحة التحكم"
-            },
-            "sections": {
-                "filters": "عوامل التصفية",
-                "stream": "سجل الإشعارات",
-                "summary": "الملخص"
-            },
-            "filters": {
-                "searchPlaceholder": "البحث حسب العنوان أو الرسالة",
-                "filterByType": "التصفية حسب النوع",
-                "options": {
-                    "all": "جميع الفئات"
-                }
-            },
-            "stats": {
-                "unread": "غير المقروءة",
-                "total": "الإجمالي"
-            },
-            "empty": "لا توجد إشعارات مطابقة لعوامل التصفية."
-        }
-    },
-    "reports": {
-        "title": "التقارير",
-        "subtitle": "تحليلات الأسطول ومقاييس الأداء",
-        "actions": {
-            "exportCSV": "تصدير CSV",
-            "exportPDF": "تصدير PDF",
-            "clear": "مسح"
-        },
-        "filters": {
-            "startDate": "تاريخ البدء",
-            "endDate": "تاريخ الانتهاء",
-            "showingDataFor": "عرض البيانات لـ:"
-        },
-        "toasts": {
-            "exportPDF": {
-                "title": "تصدير إلى PDF",
-                "description": "جارٍ إنشاء تقرير PDF...",
-                "successTitle": "تم إنشاء ملف PDF",
-                "successDescription": "تم تنزيل تقريرك."
-            },
-            "exportCSV": {
-                "title": "تصدير إلى CSV",
-                "description": "جارٍ إنشاء ملف CSV...",
-                "successTitle": "تم تنزيل ملف CSV",
-                "successDescription": "تم تصدير بياناتك."
-            }
-        }
-    },
-    "search": {
-        "title": "نتائج البحث",
-        "subtitle": "تصفح النتائج حسب الفئة مع عرض كامل للصفحة.",
-        "quickSearch": "اضغط / أو ⌘K للبحث في أي مكان",
-        "cardTitle": "بحث",
-        "placeholder": "البحث في المركبات وأوامر العمل والقطع والمستخدمين والصفحات",
-        "update": "تحديث النتائج",
-        "tabs": {
-            "all": "الكل",
-            "vehicle": "المركبات",
-            "work_order": "أوامر العمل",
-            "part": "القطع",
-            "user": "المستخدمون",
-            "page": "الصفحات"
-        },
-        "empty": {
-            "query": "لم يتم العثور على نتائج لـ \"{query}\"",
-            "category": "لا توجد نتائج في هذه الفئة"
-        }
-    },
-    "settings": {
-        "title": "الإعدادات",
-        "subtitle": "أدر حسابك وتفضيلات مساحة العمل",
-        "navigation": {
-            "profile": "الملف الشخصي",
-            "company": "الشركة",
-            "branding": "العلامة التجارية",
-            "roles": "الأدوار والصلاحيات",
-            "notifications": "الإشعارات",
-            "inventory": "المخزون",
-            "integrations": "التكاملات"
-        },
-        "profile": {
-            "title": "إعدادات الملف الشخصي",
-            "subtitle": "إدارة معلوماتك الشخصية",
-            "description": "إدارة معلوماتك الشخصية وصورة الملف الشخصي.",
-            "form": {
-                "firstName": "الاسم الأول",
-                "lastName": "اسم العائلة",
-                "email": "البريد الإلكتروني",
-                "role": "الدور",
-                "bio": "نبذة",
-                "avatar": "الصورة الشخصية",
-                "upload": "رفع",
-                "uploadAvatar": "رفع صورة شخصية",
-                "changeAvatar": "تغيير الصورة",
-                "save": "حفظ التغييرات",
-                "saving": "جاري الحفظ...",
-                "jobTitle": "المسمى الوظيفي",
-                "bioPlaceholder": "أخبرنا القليل عن نفسك...",
-                "emailHelp": "البريد الإلكتروني غير قابل للتغيير"
-            },
-            "avatar": {
-                "uploading": "جاري الرفع...",
-                "change": "تغيير الصورة الرمزية"
-            },
-            "toasts": {
-                "success": "تم تحديث الملف الشخصي بنجاح",
-                "error": "فشل تحديث الملف الشخصي",
-                "avatarSuccess": "تم رفع الصورة بنجاح",
-                "avatarError": "فشل رفع الصورة"
-            }
-        },
-        "company": {
-            "title": "إعدادات الشركة",
-            "subtitle": "إدارة تفاصيل الشركة والعلامة التجارية",
-            "description": "إدارة تفاصيل شركتك ومعلومات الاتصال.",
-            "accessRestricted": "الدخول مقيد",
-            "accessRestrictedDesc": "المسؤولون فقط يمكنهم تعديل إعدادات الشركة.",
-            "form": {
-                "name": "اسم الشركة",
-                "website": "الموقع الإلكتروني",
-                "address": "العنوان",
-                "city": "المدينة",
-                "country": "البلد",
-                "save": "حفظ التغييرات",
-                "saving": "جاري الحفظ..."
-            },
-            "toasts": {
-                "success": "تم تحديث إعدادات الشركة",
-                "error": "فشل تحديث إعدادات الشركة"
-            }
-        },
-        "branding": {
-            "title": "العلامة التجارية",
-            "subtitle": "تخصيص المظهر والشعور",
-            "description": "تخصيص مظهر التطبيق.",
-            "accessRestricted": {
-                "title": "الدخول مقيد",
-                "description": "المسؤولون فقط يمكنهم تعديل إعدادات العلامة التجارية."
-            },
-            "form": {
-                "companyLogo": "شعار الشركة",
-                "noLogo": "لا يوجد شعار",
-                "uploadLogo": "رفع الشعار",
-                "logoHelp": "الملفات المسموح بها: JPG، PNG. الحجم الأقصى: 1 ميجابايت.",
-                "primaryColor": "اللون الأساسي",
-                "accentColor": "لون التمييز",
-                "save": "حفظ التغييرات",
-                "saving": "جاري الحفظ..."
-            },
-            "toasts": {
-                "success": "تم تحديث العلامة التجارية بنجاح",
-                "error": "فشل تحديث العلامة التجارية",
-                "logoSuccess": "تم رفع الشعار بنجاح"
-            }
-        },
-        "notifications": {
-            "title": "الإشعارات",
-            "subtitle": "إدارة إشعارات البريد الإلكتروني والدفع",
-            "description": "إدارة متى وكيف تتلقى الإشعارات.",
-            "form": {
-                "workOrderUpdates": {
-                    "title": "تحديثات أوامر العمل",
-                    "description": "تلقي إشعارات عند تغيير حالة أمر العمل."
-                },
-                "lowStockAlerts": {
-                    "title": "تنبيهات المخزون المنخفض",
-                    "description": "الحصول على تنبيه عندما يكون مخزون القطع منخفضًا."
-                },
-                "maintenanceReminders": {
-                    "title": "تذكيرات الصيانة",
-                    "description": "إشعارات الصيانة المجدولة القادمة."
-                },
-                "realtimeAlerts": {
-                    "title": "تنبيهات فورية",
-                    "description": "عرض إشعارات فورية للأحداث المباشرة في التطبيق."
-                },
-                "save": "حفظ التفضيلات",
-                "saving": "جاري الحفظ..."
-            },
-            "toasts": {
-                "updateSuccess": "تم تحديث تفضيلات الإشعارات",
-                "updateError": "فشل تحديث تفضيلات الإشعارات"
-            }
-        },
-        "integrations": {
-            "title": "التكاملات",
-            "subtitle": "الاتصال بأدوات الطرف الثالث",
-            "description": "ربط سير عمل الصيانة بالأنظمة الخارجية.",
-            "odoo": {
-                "cardTitle": "تكامل Odoo",
-                "cardDescription": "مزامنة المخزون والقطع مع Odoo ERP",
-                "status": {
-                    "active": "نشط",
-                    "connected": "متصل"
-                },
+            "stockReception": {
+                "title": "استلام المخزون",
+                "description": "إضافة كميات إلى المخزون وإنشاء دفعات FIFO",
                 "fields": {
-                    "baseUrl": "الرابط الأساسي",
-                    "database": "قاعدة البيانات",
-                    "lastSync": "آخر مزامنة",
-                    "status": "الحالة",
-                    "never": "أبداً"
+                    "warehouse": "المستودع",
+                    "quantity": "الكمية المراد استلامها",
+                    "unitCostHT": "تكلفة الوحدة (HT)",
+                    "vatRate": "نسبة الضريبة (%)",
+                    "dateReceived": "تاريخ الاستلام",
+                    "supplier": "المورد",
+                    "referenceType": "نوع المرجع",
+                    "referenceNo": "رقم المرجع",
+                    "notes": "ملاحظات الاستلام",
+                    "totalHT": "إجمالي HT",
+                    "totalVAT": "إجمالي TVA",
+                    "totalTTC": "إجمالي TTC (MAD)"
                 },
-                "form": {
-                    "odooUrl": "رابط Odoo",
-                    "databaseName": "اسم قاعدة البيانات",
-                    "username": "اسم المستخدم",
-                    "apiKey": "مفتاح API"
+                "placeholders": {
+                    "warehouse": "اختر مستودعاً نشطاً",
+                    "quantity": "0",
+                    "unitCostHT": "0.00",
+                    "referenceNo": "مثال: BL-2025-001",
+                    "notes": "الحالة، تفاصيل التخزين، إلخ."
                 },
-                "actions": {
-                    "connect": "اتصال",
-                    "disconnect": "قطع الاتصال",
-                    "testConnection": "اختبار الاتصال"
-                },
-                "toasts": {
-                    "connectSuccess": "تم الاتصال بـ Odoo بنجاح",
-                    "connectError": "فشل الاتصال بـ Odoo",
-                    "testSuccess": "نجح اختبار الاتصال! التأخير: {latency}",
-                    "testError": "فشل اختبار الاتصال",
-                    "disconnectSuccess": "تم قطع الاتصال بـ Odoo",
-                    "disconnectError": "فشل قطع الاتصال"
-                }
-            }
-        },
-        "roles": {
-            "title": "الأدوار والصلاحيات",
-            "subtitle": "إدارة مستويات وصول المستخدمين",
-            "description": "إدارة الأدوار وتكوين التحكم في الوصول لفريقك.",
-            "create": "إنشاء دور",
-            "createRole": "إنشاء دور مخصص",
-            "table": {
-                "role": "الدور",
-                "roleName": "اسم الدور",
-                "users": "المستخدمون",
-                "activeUsers": "المستخدمون النشطون",
-                "actions": "إجراءات",
-                "edit": "تعديل الصلاحيات",
-                "managePermissions": "إدارة الصلاحيات",
-                "delete": "حذف الدور",
-                "permissions": "الصلاحيات",
-                "description": "الوصف",
-                "modules": "وحدات",
-                "noRoles": "لم يتم العثور على أدوار"
-            },
-            "drawer": {
-                "title": "تعديل صلاحيات {role}",
-                "description": "تكوين التحكم في الوصول الدقيق لهذا الدور.",
-                "save": "حفظ الصلاحيات",
-                "saving": "جاري الحفظ...",
-                "cancel": "إلغاء",
-                "modules": {
-                    "users": "المستخدمون",
-                    "vehicles": "المركبات",
-                    "work_orders": "أوامر العمل",
-                    "inventory": "المخزون",
-                    "maintenance": "الصيانة",
-                    "reports": "التقارير",
-                    "settings": "الإعدادات"
-                },
-                "types": {
-                    "read": "قراءة",
-                    "create": "إنشاء",
-                    "update": "تحديث",
-                    "delete": "حذف"
-                }
-            },
-            "form": {
-                "name": "اسم الدور",
-                "description": "الوصف",
-                "save": "حفظ الدور",
-                "create": "إنشاء دور"
-            },
-            "toasts": {
-                "success": "تم تحديث الصلاحيات",
-                "error": "فشل تحديث الصلاحيات"
-            }
-        },
-        "inventory": {
-            "warehouses": {
-                "title": "المستودعات",
-                "subtitle": "إدارة مواقع تخزين القطع ومراكز سلسلة التوريد",
-                "actions": {
-                    "add": "إضافة مستودع",
-                    "edit": "تعديل المستودع",
-                    "deactivate": "تعطيل"
-                },
-                "table": {
-                    "name": "الاسم",
-                    "type": "النوع",
-                    "manager": "المدير",
-                    "address": "العنوان",
-                    "status": "الحالة",
-                    "active": "نشط",
-                    "inactive": "غير نشط",
-                    "actions": "إجراءات"
-                },
-                "form": {
-                    "name": "الاسم",
-                    "type": "النوع",
-                    "address": "العنوان",
-                    "manager": "المدير",
-                    "allowNegativeStock": "السماح بالمخزون السالب",
-                    "active": "نشط",
-                    "types": {
-                        "MAIN": "مستودع رئيسي",
-                        "SITE": "تخزين في الموقع",
-                        "VAN": "شاحنة خدمة"
-                    }
+                "referenceTypes": {
+                    "supplier_invoice": "فاتورة المورد",
+                    "delivery_note": "وصل التسليم",
+                    "manual": "إدخال يدوي"
                 },
                 "toasts": {
-                    "created": "تم إنشاء المستودع بنجاح",
-                    "updated": "تم تحديث المستودع بنجاح",
-                    "deactivated": "تم تعطيل المستودع"
+                    "success": "تم استلام المخزون بنجاح",
+                    "error": "فشل في استلام المخزون"
+                },
+                "actions": {
+                    "submit": "استلام المخزون",
+                    "cancel": "إلغاء"
                 }
-            }
-        }
-    },
-    "users": {
-        "title": "المستخدمون",
-        "subtitle": "إدارة فريقك ومستويات وصولهم",
-        "table": {
-            "headers": {
-                "user": "المستخدم",
-                "email": "البريد الإلكتروني",
-                "role": "الدور",
-                "status": "الحالة",
-                "actions": "الإجراءات"
+            },
+            "details": {
+                "title": "العد الفعلي",
+                "description": "أدخل الكميات الفعلية التي تم العثور عليها أثناء الجرد",
+                "summary": "ملخص الجرد",
+                "totalParts": "إجمالي القطع",
+                "stockSyncedTitle": "تم مزامنة المخزون",
+                "stockSyncedDesc": "تمت تسوية مخزون الجرد مع الكميات الفعلية. تم تسجيل حركات التعديل تلقائيًا.",
+                "validateConfirm": "هل أنت متأكد أنك تريد التحقق من هذا الجرد؟ سيؤدي ذلك إلى إنشاء حركات مخزون تلقائيًا لتعكس الكميات الفعلية. لا يمكن التراجع عن هذا الإجراء.",
+                "notFound": "لم يتم العثور على الجرد",
+                "scopeLabel": "النطاق"
             }
         },
-        "roles": {
-            "admin": "مدير النظام",
-            "manager": "مشرف",
-            "technician": "فني",
-            "viewer": "مشاهد",
-            "driver": "سائق"
-        },
-        "status": {
-            "active": "نشط",
-            "suspended": "معلق",
-            "inactive": "غير نشط",
-            "pending": "دعوة معلقة"
-        },
-        "actions": {
-            "add": "إضافة مستخدم",
-            "addFirst": "أضف مستخدمك الأول",
-            "view": "عرض التفاصيل",
-            "edit": "تعديل الملف الشخصي",
-            "suspend": "تعليق المستخدم",
-            "reactivate": "إعادة تفعيل المستخدم",
-            "delete": "حذف المستخدم",
-            "invite": "دعوة/إعادة إرسال"
-        },
-        "confirmSuspend": "هل أنت متأكد أنك تريد تعليق {name}؟",
-        "confirmDelete": "هل أنت متأكد أنك تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
-        "errors": {
-            "loadFailed": "فشل تحميل المستخدمين",
-            "generic": "حدث خطأ أثناء جلب المستخدمين",
-            "notFound": "المستخدم غير موجود"
-        },
-        "empty": {
-            "title": "لا يوجد مستخدمون حتى الان",
-            "description": "أضف أعضاء الفريق لإدارة أسطولك. قم بتعيين الأدوار وتتبع الأنشطة والتعاون بفعالية."
-        },
-        "form": {
-            "title": "إضافة مستخدم",
-            "editTitle": "تعديل المستخدم",
-            "inviteTitle": "دعوة مستخدم",
-            "description": "التقط تفاصيل المستخدم ودوره وحالته لضم أعضاء جدد إلى الفريق.",
-            "editDescription": "تحديث تفاصيل المستخدم ودوره وحالة الحساب.",
-            "inviteDescription": "إرسال دعوة بالبريد الإلكتروني لعضو جديد في الفريق.",
-            "fields": {
-                "name": "الاسم",
-                "namePlaceholder": "أدخل الاسم الكامل",
-                "email": "البريد الإلكتروني",
-                "emailPlaceholder": "user@example.com",
-                "phone": "الهاتف",
-                "phonePlaceholder": "+212 6 00 00 00 00",
-                "language": "اللغة",
-                "languagePlaceholder": "اختر اللغة",
-                "role": "الدور",
-                "selectRole": "اختر الدور",
-                "status": "الحالة",
-                "selectStatus": "اختر حالة المستخدم",
-                "profilePhoto": "صورة الملف الشخصي"
-            },
-            "errors": {
-                "nameRequired": "الاسم مطلوب",
-                "emailRequired": "البريد الإلكتروني مطلوب",
-                "validEmail": "أدخل بريداً إلكترونياً صالحاً",
-                "roleRequired": "الدور مطلوب",
-                "languageRequired": "اللغة مطلوبة"
-            },
+        "suppliers": {
+            "title": "المورّدون",
+            "subtitle": "إدارة المورّدين وجهات الاتصال",
             "actions": {
-                "add": "إضافة مستخدم",
-                "invite": "إرسال دعوة",
-                "save": "حفظ التغييرات",
-                "cancel": "إلغاء"
-            }
-        },
-        "details": {
-            "overview": "نظرة عامة",
-            "roles": "الأدوار والصلاحيات",
-            "skills": "المهارات والشهادات",
-            "activity": "النشاط",
-            "attachments": "المرفقات",
-            "notes": "ملاحظات",
-            "information": {
-                "title": "معلومات المستخدم",
-                "subtitle": "التفاصيل الشخصية ومعلومات الاتصال",
-                "email": "البريد الإلكتروني",
-                "phone": "الهاتف",
-                "jobTitle": "المسمى الوظيفي",
-                "department": "القسم",
-                "site": "الموقع",
-                "shift": "الوردية",
-                "joined": "تاريخ الانضمام",
-                "lastActive": "آخر نشاط"
+                "addSupplier": "إضافة مورّد",
+                "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا المورّد؟"
             },
-            "performance": {
-                "title": "مقاييس الأداء",
-                "subtitle": "مؤشرات الأداء الرئيسية والإنتاجية",
-                "completedWOs": "أوامر العمل المكتملة",
-                "avgCompletion": "متوسط الإكمال",
-                "mttr": "MTTR",
-                "backlog": "المتأخرات",
-                "productivity": "الإنتاجية",
-                "vsLastMonth": "+12% مقابل الشهر الماضي",
-                "perWorkOrder": "لكل أمر عمل",
-                "meanTimeToRepair": "متوسط وقت الإصلاح",
-                "pendingTasks": "المهام المعلقة"
-            },
-            "assignedWorkOrders": {
-                "title": "أوامر العمل المعينة",
-                "subtitle": "المهام الحالية والمهام القادمة",
-                "active": "{count} نشط",
-                "due": "يستحق"
-            }
-        },
-        "toasts": {
-            "filesUploaded": {
-                "title": "تم رفع الملفات",
-                "description": "تم رفع {count} ملف (ملفات) بنجاح."
-            },
-            "suspended": {
-                "title": "تم تعليق المستخدم",
-                "description": "تم تعليق {name}."
-            },
-            "reactivated": {
-                "title": "تم إعادة تفعيل المستخدم",
-                "description": "تم إعادة تفعيل {name}."
-            },
-            "noteAdded": "تم إضافة الملاحظة بنجاح",
-            "invitationSent": {
-                "title": "تم إرسال الدعوة",
-                "description": "تم إرسال دعوة بالبريد الإلكتروني إلى {email}"
-            },
-            "fileDeleted": "تم حذف الملف"
-        }
-    },
-    "vehicles": {
-        "title": "المركبات",
-        "actions": {
-            "add": "إضافة مركبة",
-            "addFirst": "أضف مركبتك الأولى",
-            "clearFilters": "مسح عوامل التصفية",
-            "updateUsage": "تحديث الاستخدام",
-            "edit": "تعديل المركبة",
-            "createWorkOrder": "إنشاء أمر عمل",
-            "back": "رجوع",
-            "backToList": "العودة للقائمة"
-        },
-        "confirmDelete": {
-            "title": "حذف المركبة",
-            "description": "هل أنت متأكد أنك تريد حذف هذه المركبة؟ لا يمكن التراجع عن هذا الإجراء."
-        },
-        "edit": {
-            "title": "تعديل المركبة"
-        },
-        "errors": {
-            "notFound": "المركبة غير موجودة"
-        },
-        "filters": {
-            "searchPlaceholder": "البحث بالاسم أو اللوحة",
-            "status": {
-                "all": "كل الحالات",
-                "active": "نشط",
-                "maintenance": "صيانة",
-                "retired": "متقاعد",
-                "inactive": "غير نشط"
-            },
-            "type": {
-                "all": "كل الأنواع",
-                "truck": "شاحنة",
-                "Truck": "شاحنة",
-                "van": "فان",
-                "Van": "فان",
-                "car": "سيارة",
-                "Car": "سيارة",
-                "seltos": "سيلتوس",
-                "Voiture utulitaire": "سيارة نفعية",
-                "Voiture utilitaire": "سيارة نفعية",
-                "unknown": "غير معروف"
-            }
-        },
-        "empty": {
-            "title": "لا توجد مركبات بعد",
-            "description": "ابدأ بإضافة مركبتك الأولى إلى الأسطول. تتبع الصيانة والتعيينات والأداء في مكان واحد.",
-            "notFoundTitle": "لم يتم العثور على مركبات",
-            "notFoundDescription": "لا توجد مركبات تطابق عوامل التصفية الحالية. جرب تعديل معايير البحث أو عوامل التصفية."
-        },
-        "drivers": {
-            "title": "السائقين المعينين",
-            "subtitle": "إدارة السائقين المعينين لهذه المركبة",
-            "assignDrivers": "تعيين سائقين",
-            "selectDrivers": "اختر السائقين...",
-            "driversSelected": "سائقين محددين",
-            "noDrivers": "لا يوجد سائقين معينين",
-            "noDriversDesc": "لم يتم تعيين أي سائق لهذه المركبة بعد.",
-            "primary": "سائق أساسي",
-            "setPrimary": "تعيين كأساسي",
-            "remove": "إزالة",
-            "from": "من",
-            "to": "إلى",
-            "removeDriverTitle": "إلغاء تعيين السائق",
-            "removeDriverDesc": "هل أنت متأكد أنك تريد إزالة هذا السائق من المركبة؟",
-            "cancel": "إلغاء"
-        },
-        "import": {
-            "title": "استيراد المركبات",
-            "description": "قم بتحميل ملف Excel لاستيراد أو تحديث المركبات بشكل جماعي.",
-            "templateInfo": "قم بتنزيل النموذج لمعرفة التنسيق المطلوب.",
-            "downloadTemplate": "تنزيل النموذج",
-            "dragDrop": "اسحب وأفلت ملفك هنا",
-            "onlyXlsx": "يتم دعم ملفات .xlsx فقط (الحد الأقصى 10 ميجابايت)",
-            "onlyXlsxCsv": "يتم دعم ملفات .xlsx و .csv فقط (الحد الأقصى 10 ميجابايت)",
-            "browse": "تصفح الملفات",
-            "removeFile": "حذف الملف",
-            "import": "استيراد المركبات",
-            "importing": "جاري الاستيراد...",
-            "successful": "ناجح",
-            "failed": "فشل",
-            "vehiclesImported": "تم استيراد المركبات بنجاح",
-            "vehiclesFailed": "فشل استيراد الصفوف",
-            "errorDetails": "تفاصيل الخطأ",
-            "row": "صف",
-            "field": "حقل",
-            "error": "خطأ",
-            "close": "إغلاق",
-            "cancel": "إلغاء"
-        },
-        "export": {
-            "button": "تصدير إلى Excel",
-            "downloading": "جاري التنزيل..."
-        },
-        "toasts": {
-            "import": {
-                "success": "تم الاستيراد بنجاح",
-                "error": "فشل الاستيراد"
-            },
-            "deleted": {
-                "title": "تم حذف المركبة",
-                "description": "تمت إزالة المركبة من أسطولك.",
-                "errorTitle": "فشل الحذف",
-                "errorDescription": "تعذر حذف المركبة. يرجى المحاولة مرة أخرى."
-            },
-            "workOrderCreated": {
-                "title": "تم إنشاء أمر العمل"
-            },
-            "planCreated": {
-                "title": "تم إنشاء خطة الصيانة"
-            },
-            "updated": {
-                "title": "تم تحديث المركبة",
-                "description": "تم تحديث معلومات المركبة بنجاح."
-            },
-            "created": {
-                "title": "تم إنشاء المركبة",
-                "description": "تمت إضافة مركبة جديدة إلى أسطولك."
-            }
-        },
-        "details": {
-            "tabs": {
-                "عام": "نظرة عامة",
-                "plans": "خطط الصيانة",
-                "documents": "المستندات",
-                "history": "التاريخ"
-            },
-            "performanceMetrics": {
-                "title": "مقاييس الأداء"
-            },
-            "analytics": {
-                "title": "التحليلات",
-                "mileageGrowth": "نمو المسافة المقطوعة",
-                "chartDataAvailable": "بيانات الرسم البياني متاحة",
-                "noMileageHistory": "لا يوجد سجل للمسافة المقطوعة"
-            },
-            "partsUsed": {
-                "title": "القطع المستخدمة والتكاليف",
-                "partName": "اسم القطعة",
-                "quantity": "الكمية",
-                "cost": "التكلفة",
-                "dateUsed": "تاريخ الاستخدام",
-                "workOrder": "أمر العمل",
-                "noPartsUsed": "لم يتم استخدام أي قطع بعد",
-                "viewWorkOrder": "عرض أمر العمل"
-            },
-            "metrics": {
-                "title": "مقاييس الأداء",
-                "totalCost": "إجمالي تكلفة الصيانة",
-                "avgRepair": "متوسط تكلفة الإصلاح",
-                "avgRepairCost": "متوسط تكلفة الإصلاح",
-                "perWorkOrder": "لكل أمر عمل",
-                "costPerKm": "التكلفة لكل كم",
-                "mtbf": "MTBF",
-                "meanTimeBetweenFailures": "متوسط الوقت بين الأعطال",
-                "reliabilityScore": "درجة الموثوقية",
-                "reliability": "درجة الموثوقية",
-                "totalDowntime": "إجمالي وقت التوقف",
-                "downtime": "إجمالي وقت التوقف",
-                "mttr": "MTTR",
-                "meanTimeToRepair": "متوسط وقت الإصلاح",
-                "workOrders": "أوامر العمل",
-                "totalCompleted": "العدد الإجمالي للمكتملة"
-            },
-            "parts": {
-                "title": "القطع المستخدمة والتكاليف",
-                "name": "اسم القطعة",
-                "quantity": "الكمية",
-                "cost": "التكلفة",
-                "date": "تاريخ الاستخدام",
-                "workOrder": "أمر العمل",
-                "empty": "لم يتم استخدام قطع بعد",
-                "viewWorkOrder": "عرض أمر العمل"
+            "filters": {
+                "searchPlaceholder": "البحث عن المورّدين..."
             },
             "table": {
+                "empty": {
+                    "title": "لا يوجد مورّدون بعد",
+                    "description": "أضف مورّدك الأول للبدء في إدارة مخزون القطع وجهات الاتصال الخاصة بك بكفاءة.",
+                    "action": "إضافة مورّد"
+                },
+                "title": "دليل المورّدين",
                 "headers": {
-                    "vehicle": "المركبة",
-                    "plate": "لوحة الترخيص",
-                    "status": "الحالة",
-                    "mileage": "المسافة المقطوعة",
-                    "totalCost": "إجمالي تكلفة الصيانة",
-                    "downtime": "وقت التوقف",
-                    "nextService": "الخدمة القادمة",
-                    "healthScore": "نقاط الصحة",
-                    "woCount": "عدد أوامر العمل",
-                    "actions": "إجراءات",
-                    "edit": "تعديل",
-                    "delete": "حذف",
-                    "partName": "اسم القطعة",
-                    "quantity": "الكمية",
-                    "cost": "التكلفة",
-                    "dateUsed": "تاريخ الاستخدام",
-                    "workOrder": "أمر العمل"
+                    "name": "اسم المورّد",
+                    "contact": "الشخص المسؤول",
+                    "email": "البريد الإلكتروني",
+                    "phone": "الهاتف",
+                    "address": "العنوان",
+                    "actions": "الإجراءات"
                 },
-                "viewDetails": "عرض التفاصيل",
-                "edit": "تعديل",
-                "delete": "حذف",
-                "createWorkOrder": "إنشاء أمر عمل",
-                "scheduleService": "جدولة الخدمة",
-                "noData": "لم يتم العثور على مركبات",
-                "noService": "لا توجد خدمة مجدولة",
-                "days": "{days} أيام",
-                "title": "قطع الغيار المستخدمة والتكاليف",
-                "exportCSV": "تصدير CSV",
-                "filterName": "تصفية حسب اسم القطعة...",
-                "clear": "مسح",
-                "totalParts": "الإجمالي ({count} قطعة)"
-            },
-            "form": {
-                "createTitle": "إنشاء خطة صيانة",
-                "editTitle": "تعديل خطة الصيانة",
-                "description": "إعداد فترات الخدمة المتكررة للحفاظ على جدول المركبة.",
-                "brand": "الماركة",
-                "model": "الموديل",
-                "year": "السنة",
-                "type": "النوع",
-                "plate": "لوحة الترخيص",
-                "vin": "رقم الهيكل (VIN)",
-                "status": "الحالة",
-                "updateTitle": "تحديث الاستخدام",
-                "updateDesc": "سجل المسافة المقطوعة الجديدة أو ساعات المحرك للحفاظ على دقة استخدام المركبة.",
-                "currentMileage": "المسافة الحالية (كم)",
-                "engineHours": "ساعات المحرك",
-                "saveUsage": "حفظ الاستخدام",
-                "cancel": "إلغاء",
-                "save": "حفظ التغييرات",
-                "create": "إنشاء الخطة",
-                "update": "تحديث المركبة",
-                "createVehicle": "إنشاء مركبة",
-                "template": "قالب الصيانة",
-                "templateRequired": "القالب مطلوب",
-                "templateDesc": "ستقوم فترات القالب بملء الحقول أدناه تلقائيًا.",
-                "serviceIntervals": "فترات الخدمة",
-                "intervalKm": "الفترة (كم)",
-                "intervalMonths": "الفترة (شهور)",
-                "intervalError": "يجب أن تكون فترة واحدة على الأقل (كم أو شهور) أكبر من 0",
-                "lastServiceInfo": "معلومات آخر خدمة",
-                "lastServiceKm": "كم آخر خدمة",
-                "lastServiceDate": "تاريخ آخر خدمة",
-                "selectTemplate": "اختر قالب صيانة...",
-                "searchTemplates": "البحث في القوالب...",
-                "noTemplates": "لم يتم العثور على قوالب."
-            },
-            "kpis": {
-                "predictive": {
-                    "title": "الصيانة التنبؤية",
-                    "predictedFailure": "الفشل المتوقع",
-                    "days": "{days} أيام",
-                    "basedOn": "بناءً على أنماط الاستخدام",
-                    "nextOilChange": "تغيير الزيت القادم",
-                    "kmRemaining": "كم متبقي ({km} كم)",
-                    "riskAssessment": "تقييم المخاطر",
-                    "aiRecommendations": "توصيات الذكاء الاصطناعي"
-                },
-                "serviceSummary": {
-                    "title": "ملخص الخدمة",
-                    "lastMaintenance": "آخر صيانة",
-                    "lastCost": "آخر تكلفة",
-                    "lastTechnician": "آخر فني",
-                    "nextServiceDue": "استحقاق الخدمة القادم",
-                    "serviceInterval": "فترة الخدمة"
-                }
-            },
-            "documents": {
-                "title": "مستندات المركبة",
-                "subtitle": "إدارة التأمين والترخيص وتقارير الفحص",
-                "upload": "رفع مستند",
-                "noDocs": "لا توجد مستندات مرفوعة",
-                "noDocsDesc": "احتفظ بجميع سجلات مركبتك في مكان واحد.",
-                "name": "اسم المستند",
-                "type": "النوع",
-                "size": "الحجم",
-                "uploaded": "تم الرفع",
-                "actions": "إجراءات",
-                "untitled": "مستند بدون عنوان",
-                "modalTitle": "رفع مستند",
-                "modalDesc": "إرفاق بطاقات التأمين والترخيص والتقارير",
-                "fileName": "اسم الملف",
-                "fileUrl": "رابط الملف"
-            },
-            "maintenance": {
-                "plansTitle": "الخطط النشطة",
-                "plansSubtitle": "إدارة جداول الصيانة المتكررة",
-                "newPlan": "خطة جديدة",
-                "noPlans": "لا توجد خطط صيانة",
-                "noPlansDesc": "إعداد جداول صيانة متكررة للحفاظ على المركبة.",
-                "createFirstPlan": "إنشاء الخطة الأولى",
-                "customPlan": "خطة مخصصة",
-                "paused": "متوقف مؤقتاً",
-                "every": "كل",
-                "or": "أو",
-                "months": "أشهر",
-                "never": "أبداً",
-                "due": "مستحق: {date}",
-                "lastService": "آخر خدمة",
-                "nextDue": "الاستحقاق القادم",
-                "editConfig": "تعديل التكوين",
-                "deletePlan": "حذف الخطة",
-                "runNow": "تشغيل الخطة الآن",
-                "resumePlan": "استئناف الخطة",
-                "pausePlan": "إيقاف الخطة مؤقتاً",
-                "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
-                "historyTitle": "سجل الصيانة الكامل لهذه المركبة",
-                "noHistory": "لا يوجد سجل صيانة متاح",
-                "timelineTitle": "الجدول الزمني للصيانة",
-                "technician": "فني: {name}",
-                "types": {
-                    "preventive": "وقائية",
-                    "corrective": "اصلاحية",
-                    "emergency": "طارئة",
-                    "scheduled": "مجدولة"
-                }
-            },
-            "activity": {
-                "title": "الجدول الزمني للنشاط",
-                "historyTitle": "سجل النشاط الكامل لهذه المركبة",
-                "noActivity": "لم يتم تسجيل أي نشاط لهذه المركبة بعد.",
-                "noLogs": "لا توجد سجلات نشاط متاحة"
-            },
-            "workOrders": {
-                "title": "جميع أوامر العمل المرتبطة بهذه المركبة",
-                "noWos": "لا توجد أوامر عمل لهذه المركبة",
-                "scheduled": "مجدول: {date}"
-            }
-        }
-    },
-    "workOrders": {
-        "title": "أوامر العمل",
-        "checklist": {
-            "title": "قائمة المهام",
-            "subtitle": "إدارة وتتبع مهام أمر العمل",
-            "addTask": "إضافة مهمة",
-            "addFirstTask": "إضافة أول مهمة",
-            "progress": "التقدم العام",
-            "completedOf": "تم إنجاز {completed} من أصل {total} مهمة",
-            "noTasks": "لا توجد مهام حتى الآن",
-            "noTasksDesc": "ابدأ بإضافة المهمة الأولى لهذا الأمر العمل.",
-            "todo": "يجب عمله",
-            "done": "منجز",
-            "markToDo": "تحديد كـ يجب عمله",
-            "markDone": "تحديد كـ منجز",
-            "dueTomorrow": "مستحق غدًا"
-        },
-        "addPartModal": {
-            "title": "إضافة قطعة إلى أمر العمل",
-            "fields": {
-                "part": "القطعة",
-                "warehouse": "المستودع (المصدر)",
-                "quantity": "الكمية",
-                "unitPrice": "سعر الوحدة (MAD)"
-            },
-            "placeholders": {
-                "part": "اختر قطعة",
-                "warehouse": "اختر المستودع"
-            },
-            "managedInSettings": "مدار في الإعدادات",
-            "configureWarehouses": "تكوين المستودعات في الإعدادات",
-            "availableStock": "المخزون المتوفر (الإجمالي):",
-            "actions": {
-                "cancel": "إلغاء",
-                "add": "إضافة القطعة",
-                "adding": "جاري الإضافة..."
-            }
-        },
-        "form": {
-            "title": "إضافة مهمة جديدة",
-            "editTitle": "تعديل أمر العمل",
-            "createTitle": "إنشاء أمر عمل",
-            "description": "إنشاء مهمة مفصلة لهذا الأمر العمل",
-            "editDescription": "تحديث تفاصيل أمر العمل هذا.",
-            "createDescription": "إنشاء أمر عمل صيانة جديد.",
-            "fields": {
-                "title": "العنوان",
-                "titlePlaceholder": "مثال: فحص الفرامل",
-                "type": "النوع",
-                "selectType": "اختر النوع",
-                "description": "الوصف",
-                "descriptionPlaceholder": "صف المشكلة أو الصيانة المطلوبة...",
-                "priority": "الأولوية",
-                "selectPriority": "اختر الأولوية",
-                "status": "الحالة",
-                "selectStatus": "اختر الحالة",
-                "assignee": "المسؤول عن التنفيذ",
-                "selectTechnician": "اختر فنياً",
-                "category": "الفئة",
-                "selectCategory": "اختر الفئة",
-                "estimatedDuration": "الوقت المتوقع (بالساعات)",
-                "durationPlaceholder": "مثال: 2.5",
-                "estimatedCost": "التكلفة المتوقعة ({currency})",
-                "costPlaceholder": "0.00",
-                "notes": "ملاحظات إضافية",
-                "notesPlaceholder": "أي ملاحظات أو تعليمات إضافية...",
-                "attachments": "المرفقات",
-                "uploadText": "انقر لتحميل الملفات أو قم بسحبها وإفلاتها",
-                "uploadHint": "PDF، PNG، JPG حتى 10 ميجابايت"
-            },
-            "types": {
-                "preventive": "وقائي",
-                "corrective": "تصحيحي",
-                "inspection": "فحص"
-            },
-            "categories": {
-                "mechanical": "ميكانيكي",
-                "electrical": "كهربائي",
-                "body": "هيكل",
-                "tires": "إطارات",
-                "other": "أخرى"
-            },
-            "actions": {
-                "create": "إنشاء أمر عمل",
-                "save": "حفظ التغييرات"
-            }
-        },
-        "parts": {
-            "title": "قطع الغيار",
-            "headers": {
-                "name": "اسم القطعة",
-                "sku": "SKU",
-                "qty": "الكمية",
-                "price": "سعر الوحدة",
-                "total": "الإجمالي"
-            }
-        },
-        "status": {
-            "pending": "قيد الانتظار",
-            "in_progress": "قيد التنفيذ",
-            "completed": "مكتمل",
-            "cancelled": "ملغى"
-        },
-        "priorities": {
-            "low": "منخفض",
-            "medium": "متوسط",
-            "high": "عالي",
-            "urgent": "عاجل"
-        },
-        "actions": {
-            "new": "أمر عمل جديد",
-            "edit": "تعديل التفاصيل",
-            "markComplete": "وضع علامة كـ مكتمل",
-            "goBack": "رجوع",
-            "saveChanges": "حفظ التغييرات"
-        },
-        "filters": {
-            "searchPlaceholder": "البحث بواسطة المعرف أو العنوان",
-            "priority": {
-                "all": "جميع الأولويات",
-                "high": "عالي",
-                "medium": "متوسط",
-                "low": "منخفض"
-            },
-            "status": {
-                "all": "جميع الحالات",
-                "pending": "قيد الانتظار",
-                "inProgress": "قيد التنفيذ",
-                "completed": "مكتمل"
-            }
-        },
-        "toasts": {
-            "created": {
-                "title": "تم إنشاء أمر العمل",
-                "description": "تم إنشاء أمر عمل جديد وتعيينه."
-            },
-            "deleteConfirm": "هل أنت متأكد من رغبتك في حذف أمر العمل هذا؟ سيتم أيضًا حذف جميع السجلات المرتبطة وطلبات القطع والمرفقات."
-        },
-        "details": {
-            "notFound": {
-                "title": "لم يتم العثور على أمر العمل",
-                "description": "تعذر تحديد موقع أمر العمل المطلوب."
-            },
-            "tabs": {
-                "overview": "نظرة عامة",
-                "tasks": "المهام",
-                "parts": "قطع الغيار",
-                "attachments": "المرفقات",
-                "activity": "النشاط",
-                "comments": "التعليقات"
-            },
-            "cards": {
-                "status": {
-                    "title": "الحالة",
-                    "description": "المرحلة الحالية لسير العمل"
-                },
-                "dueDate": {
-                    "title": "تاريخ الاستحقاق",
-                    "description": "تاريخ الإنجاز المستهدف",
-                    "none": "لا يوجد تاريخ"
-                },
-                "vehicle": {
-                    "title": "المركبة",
-                    "description": "الأصل المرتبط",
-                    "unknown": "غير معروف"
-                },
-                "assignee": {
-                    "title": "المعين له",
-                    "role": "فني",
-                    "unassigned": "غير معين"
-                },
-                "details": {
-                    "title": "التفاصيل والوصف",
-                    "type": "نوع أمر العمل",
-                    "priority": "مستوى الأولوية",
-                    "description": "الوصف",
-                    "notes": "ملاحظات إضافية"
+                "loading": "جاري تحميل المورّدين...",
+                "tooltips": {
+                    "edit": "تعديل المورّد",
+                    "delete": "حذف المورّد"
                 }
             },
             "modal": {
-                "title": "تعديل أمر العمل",
-                "description": "تحديث حالة أمر العمل أو المعين له أو تاريخ الاستحقاق.",
-                "titleLabel": "العنوان",
-                "dueDateLabel": "تاريخ الاستحقاق"
-            }
-        }
-    },
-    "forbidden": {
-        "error": "خطأ 403",
-        "title": "الدخول ممنوع",
-        "description": "ليس لديك إذن لعرض هذه الصفحة. يرجى التحقق من دورك أو الاتصال بالمسؤول.",
-        "actions": {
-            "switchAccount": "تبديل الحساب",
-            "backToDashboard": "العودة إلى لوحة التحكم"
-        }
-    },
-    "partRequests": {
-        "approvals": {
-            "title": "الموافقة على طلبات القطع",
-            "subtitle": "مراجعة واعتماد طلبات القطع المعلقة",
-            "searchPlaceholder": "البحث باسم القطعة أو SKU أو أمر العمل...",
-            "loading": "جاري تحميل طلبات الموافقة المعلقة...",
-            "error": "فشل تحميل طلبات الموافقة المعلقة. يرجى المحاولة مرة أخرى.",
-            "empty": {
-                "title": "أنت مُواكب لكل شيء!",
-                "description": "لا توجد طلبات قطع معلّقة للمراجعة حالياً."
-            },
-            "noPendingApprovals": "لا توجد موافقات معلّقة",
-            "allProcessed": "تمت معالجة جميع طلبات القطع.",
-            "actions": {
-                "approve": "اعتماد",
-                "reject": "رفض",
-                "previous": "السابق",
-                "next": "التالي"
-            },
-            "notifications": {
-                "approveSuccess": "تمت الموافقة على طلب القطعة وإنشاء أمر شراء في أودو",
-                "approveError": "فشل في الموافقة على الطلب",
-                "rejectSuccess": "تم رفض طلب القطعة",
-                "rejectError": "فشل في رفض الطلب"
-            },
-            "fields": {
-                "workOrder": "أمر العمل",
-                "requestedBy": "طُلب بواسطة",
-                "requested": "تاريخ الطلب",
-                "notes": "ملاحظات",
-                "sku": "SKU",
-                "quantity": "الكمية"
-            },
-            "pagination": "الصفحة {page} من {total}",
-            "fallback": {
-                "unknownPart": "قطعة غير معروفة",
-                "na": "غير متوفر"
-            }
-        },
-        "confirmation": {
-            "approveModal": {
-                "title": "الموافقة على طلب القطعة",
-                "description": "سيتم إنشاء أمر شراء في أودو",
-                "note": "سيؤدي اعتماد هذا الطلب تلقائياً إلى إنشاء أمر شراء في أودو وإخطار مقدم الطلب."
-            },
-            "rejectModal": {
-                "title": "رفض طلب القطعة",
-                "description": "يرجى تقديم سبب الرفض",
-                "placeholder": "اشرح سبب رفض هذا الطلب..."
-            },
-            "fields": {
-                "part": "القطعة",
-                "quantity": "الكمية",
-                "note": "ملاحظة",
-                "rejectionReason": "سبب الرفض"
-            },
-            "actions": {
-                "cancel": "إلغاء",
-                "approving": "جاري الاعتماد...",
-                "rejecting": "جاري الرفض...",
-                "confirmApproval": "تأكيد الاعتماد",
-                "confirmRejection": "تأكيد الرفض"
-            }
-        },
-        "premium": {
-            "tab": {
-                "title": "طلبات القطع",
-                "subtitle": "اطلب وتابع القطع لهذا أمر العمل",
-                "error": "فشل تحميل طلبات القطع. يرجى المحاولة مرة أخرى.",
-                "actions": {
-                    "requestPart": "طلب قطعة"
+                "title": {
+                    "add": "إضافة مورّد جديد",
+                    "edit": "تعديل المورّد"
                 },
-                "empty": {
-                    "title": "لا توجد طلبات قطع بعد",
-                    "description": "ابدأ بطلب قطعة لهذا أمر العمل. تابع الموافقات والطلبات والتسليمات في مكان واحد.",
-                    "cta": "اطلب أول قطعة لك"
-                }
-            },
-            "table": {
-                "fallback": {
-                    "unknownPart": "قطعة غير معروفة",
-                    "na": "غير متوفر"
-                },
-                "labels": {
-                    "sku": "SKU",
-                    "quantity": "الكمية",
-                    "poNumber": "رقم أمر الشراء",
-                    "approvedBy": "تمت الموافقة بواسطة"
-                },
-                "actions": {
-                    "markUsed": "تحديدها كمستخدمة"
-                },
-                "sections": {
-                    "statusTimeline": "الخط الزمني للحالة",
-                    "notes": "ملاحظات",
-                    "rejectionReason": "سبب الرفض",
-                    "purchaseOrder": "أمر الشراء",
-                    "invoiceAttachments": "مرفقات الفاتورة"
-                },
-                "statuses": {
-                    "draft": "مسودة",
-                    "pendingApproval": "بانتظار الموافقة",
-                    "approved": "تمت الموافقة",
-                    "sentToOdoo": "أُرسل إلى أودو",
-                    "ordered": "تم الطلب",
-                    "received": "تم الاستلام",
-                    "rejected": "مرفوض",
-                    "cancelled": "ملغي",
-                    "unknown": "غير معروف"
-                }
-            },
-            "requestModal": {
-                "title": "طلب قطعة",
                 "fields": {
-                    "search": "البحث عن قطع",
-                    "sku": "SKU",
-                    "quantity": "الكمية",
-                    "notes": "ملاحظات (اختياري)"
+                    "name": "اسم المورّد *",
+                    "contact": "الشخص المسؤول",
+                    "phone": "الهاتف",
+                    "email": "البريد الإلكتروني",
+                    "address": "العنوان",
+                    "notes": "ملاحظات"
                 },
                 "placeholders": {
-                    "search": "ابحث بالاسم أو SKU أو رقم القطعة...",
-                    "quantity": "أدخل الكمية",
-                    "notes": "أضف أي ملاحظات إضافية..."
-                },
-                "stock": {
-                    "inStock": "متوفر: {quantity}",
-                    "lowStock": "منخفض: {quantity}",
-                    "outOfStock": "غير متوفر"
-                },
-                "alerts": {
-                    "createSuccess": "تم إنشاء طلب القطعة بنجاح",
-                    "createError": "فشل إنشاء طلب القطعة"
+                    "name": "مثلاً: شركة قطع الغيار",
+                    "contact": "أحمد محمد",
+                    "phone": "05 22 XX XX XX",
+                    "email": "contact@supplier.com",
+                    "address": "الشارع، المدينة، الرمز البريدي",
+                    "notes": "شروط الدفع، الخصومات، إلخ."
                 },
                 "actions": {
-                    "change": "تغيير",
+                    "save": "حفظ التغييرات",
                     "cancel": "إلغاء",
-                    "requesting": "جاري الطلب...",
-                    "requestPart": "طلب قطعة"
+                    "add": "إضافة مورّد"
                 }
-            },
-            "consumeModal": {
-                "title": "تحديد القطع كمستخدمة",
-                "fields": {
-                    "sku": "SKU",
-                    "approved": "المعتمد",
-                    "quantityUsed": "الكمية المستخدمة"
-                },
-                "placeholders": {
-                    "quantityUsed": "أدخل الكمية (الحد الأقصى: {max})"
-                },
-                "alerts": {
-                    "exceeds": "لا يمكن أن تتجاوز الكمية المستخدمة الكمية المعتمدة ({quantity})",
-                    "success": "تم تسجيل استهلاك القطع بنجاح",
-                    "error": "فشل تسجيل استهلاك القطع",
-                    "quantityWarning": "الكمية تتجاوز الحد المعتمد"
-                },
-                "info": {
-                    "noteLabel": "ملاحظة:",
-                    "description": "سيؤدي تسجيل استهلاك القطع إلى تحديث مستويات المخزون في أودو ووضع علامة على هذا الطلب كمستهلك."
-                },
-                "actions": {
-                    "cancel": "إلغاء",
-                    "recording": "جارٍ التسجيل...",
-                    "confirm": "تأكيد الاستخدام"
-                }
-            },
-            "attachments": {
-                "meta": {
-                    "unknownSize": "حجم غير معروف"
-                },
-                "actions": {
-                    "view": "عرض",
-                    "download": "تنزيل"
-                },
-                "viewer": {
-                    "loading": "جارٍ تحميل ملف PDF...",
-                    "loadError": "فشل تحميل ملف PDF",
-                    "renderError": "تعذر عرض ملف PDF"
-                }
-            },
-            "timeline": {
-                "steps": {
-                    "requested": "تم الطلب",
-                    "approved": "تمت الموافقة",
-                    "poCreated": "تم إنشاء أمر شراء",
-                    "received": "تم الاستلام"
-                },
-                "statuses": {
-                    "rejected": "مرفوض",
-                    "cancelled": "ملغي"
-                }
-            },
-            "errorBoundary": {
-                "title": "حدث خطأ ما",
-                "description": "حدث خطأ غير متوقع في نظام القطع",
-                "actions": {
-                    "retry": "إعادة المحاولة"
-                }
-            }
-        },
-        "myRequests": {
-            "title": "طلباتي للقطع",
-            "subtitle": "عرض سجل طلبات القطع الخاصة بك",
-            "searchPlaceholder": "البحث باسم القطعة أو SKU أو الحالة...",
-            "empty": {
-                "title": "لا توجد طلبات",
-                "description": "لم تقم بطلب أي قطع حتى الآن."
-            },
-            "fields": {
-                "approvedBy": "معتمد من",
-                "rejected": "مرفوض",
-                "qty": "الكمية"
             }
         },
         "maintenance": {
             "dashboard": {
-                "activePlansTitle": "خطط الصيانة النشطة",
-                "noActivePlans": "لا توجد خطط صيانة نشطة",
-                "emptyDescription": "يتم إنشاء خطط الصيانة من صفحات المركبات الفردية. انتقل إلى صفحة تفاصيل المركبة وأنشئ خطة صيانة متكررة بناءً على قالب.",
-                "viewVehicles": "عرض المركبات",
-                "viewDetails": "عرض التفاصيل",
-                "editPlan": "تعديل الخطة",
-                "deactivate": "تعطيل",
-                "template": "قالب",
-                "nextDue": "الاستحقاق التالي",
-                "notScheduled": "غير مجدول",
-                "dueAtKm": "مستحق عند كم",
-                "activeStatus": "الخطة نشطة وتتم مراقبتها",
-                "attentionStatus": "الخطة تحتاج إلى اهتمام"
+                "title": "الصيانة",
+                "subtitle": "إدارة جداول الصيانة الوقائية وخطط الصيانة النشطة",
+                "actions": {
+                    "templates": "القوالب",
+                    "schedule": "جدولة الصيانة"
+                },
+                "tabs": {
+                    "calendar": "التقويم",
+                    "activePlans": "الخطط النشطة"
+                },
+                "modals": {
+                    "schedule": {
+                        "title": "جدولة الصيانة"
+                    }
+                }
+            },
+            "templates": {
+                "title": "قوالب الصيانة",
+                "subtitle": "إنشاء وإدارة قوالب الصيانة الوقائية",
+                "actions": {
+                    "create": "إنشاء قالب",
+                    "delete": "حذف",
+                    "cancel": "إلغاء"
+                },
+                "modals": {
+                    "create": "إنشاء قالب",
+                    "edit": "تعديل القالب"
+                },
+                "alerts": {
+                    "delete": {
+                        "title": "حذف القالب",
+                        "description": "هل أنت متأكد أنك تريد حذف هذا القالب؟ سيؤدي ذلك أيضًا إلى حذف جميع خطط الصيانة النشطة المرتبطة بهذا القالب. بالنسبة لأوامر العمل التي تم إنشاؤها بالفعل، ستحتفظ بمعلوماتها ولكنها لن تعود مرتبطة بهذا القالب."
+                    }
+                },
+                "toasts": {
+                    "createSuccess": "تم إنشاء القالب بنجاح",
+                    "updateSuccess": "تم تحديث القالب بنجاح",
+                    "saveError": "فشل حفظ القالب",
+                    "deleteSuccess": "تم حذف القالب بنجاح",
+                    "deleteError": "فشل حذف القالب",
+                    "loadError": "فشل تحميل قوالب الصيانة"
+                }
+            },
+            "schedule": {
+                "vehicle": "المركبة",
+                "selectVehicle": "اختر مركبة",
+                "selectTemplate": "اختر قالباً",
+                "title": "العنوان",
+                "description": "الوصف",
+                "scheduledDate": "تاريخ الجدولة",
+                "priority": "الأولوية",
+                "assignTo": "تعيين لـ",
+                "selectTechnician": "اختر فنياً",
+                "estimatedCost": "التكلفة التقديرية",
+                "notes": "ملاحظات",
+                "cancel": "إلغاء",
+                "create": "جدولة",
+                "update": "تحديث",
+                "success": "تمت جدولة الصيانة بنجاح",
+                "saveSuccess": "تم تحديث الصيانة بنجاح",
+                "error": "فشل في جدولة الصيانة",
+                "priorities": {
+                    "low": "منخفض",
+                    "medium": "متوسط",
+                    "high": "عالي",
+                    "critical": "حرج"
+                },
+                "placeholders": {
+                    "title": "مثل: Vidange, Rotation des pneus",
+                    "description": "صف عمل الصيانة...",
+                    "notes": "ملاحظات أو تعليمات إضافية..."
+                },
+                "validation": {
+                    "titleRequired": "العنوان مطلوب",
+                    "dateRequired": "التاريخ المطلوب مطلوب"
+                }
             },
             "calendar": {
                 "today": "اليوم",
@@ -2308,60 +1047,7 @@
                     "thu": "خميس",
                     "fri": "جمعة",
                     "sat": "سبت"
-                },
-                "moreEvents": "+{count} المزيد",
-                "eventsTitle": "أحداث {date}",
-                "priority": "الأولوية",
-                "assigned": "مُعين لـ",
-                "oneEvent": "حدث واحد",
-                "multipleEvents": "{count} أحداث"
-            },
-            "eventDrawer": {
-                "title": "تفاصيل الحدث",
-                "highPriority": "أولوية عالية",
-                "equipment": "المعدات",
-                "scheduledDate": "تاريخ الجدولة",
-                "assignedTechnician": "الفني المعين",
-                "estimatedCost": "التكلفة التقديرية",
-                "description": "الوصف",
-                "notes": "ملاحظات",
-                "notFoundTitle": "لم يتم العثور على الحدث",
-                "notFoundDesc": "ربما تم حذف هذا الحدث أو ليس لديك إذن لعرضه.",
-                "editSoon": "وظيفة التعديل قريبا",
-                "edit": "تعديل",
-                "done": "منجز",
-                "viewWO": "عرض أمر العمل",
-                "wo": "أمر العمل",
-                "deleteEvent": "حذف الحدث",
-                "confirmDelete": "⚠️ هل أنت متأكد أنك تريد حذف حدث الصيانة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
-                "confirmComplete": "✅ هل تريد تحديد هذه الصيانة كمكتملة؟"
-            },
-            "tooltips": {
-                "technician": "فني",
-                "highPriorityMaintenance": "⚠️ صيانة ذات أولوية قصوى"
-            },
-            "card": {
-                "overdue": "متأخر",
-                "active": "نشط",
-                "progress": "التقدم",
-                "lastPerformed": "أخر تنفيذ",
-                "never": "أبدا",
-                "nextDue": "الاستحقاق القادم",
-                "markCompleted": "تحديد كمكتمل"
-            },
-            "filter": {
-                "label": "تصفية",
-                "title": "تصفية",
-                "resetAll": "إعادة تعيين الكل",
-                "status": "الحالة",
-                "apply": "تطبيق المرشحات"
-            },
-            "status": {
-                "scheduled": "مجدول",
-                "in_progress": "قيد التنفيذ",
-                "completed": "مكتمل",
-                "cancelled": "ملغى",
-                "overdue": "متأخر"
+                }
             },
             "table": {
                 "searchPlaceholder": "بحث عن خطط...",
@@ -2405,27 +1091,14 @@
                     "next": "التالي"
                 }
             },
-            "templatesList": {
-                "table": {
-                    "name": "الاسم",
-                    "description": "الوصف",
-                    "frequency": "التكرار",
-                    "intervals": "فترات",
-                    "tasks": "مهام",
-                    "actions": "الإجراءات",
-                    "empty": "لم يتم العثور على قوالب.",
-                    "noIntervals": "لم يتم تعيين فترات",
-                    "units": {
-                        "km": "كم",
-                        "days": "أيام",
-                        "hours": "ساعة"
-                    },
-                    "tasksCount": "{count} مهمة/مهام"
-                },
-                "emptyState": {
-                    "title": "لم يتم العثور على قوالب",
-                    "description": "قم بإنشاء نموذج الصيانة الأول الخاص بك للبدء."
-                }
+            "card": {
+                "progress": "التقدم",
+                "lastPerformed": "آخر تنفيذ",
+                "nextDue": "الاستحقاق التالي",
+                "never": "أبداً",
+                "overdue": "متأخر",
+                "active": "نشط",
+                "markCompleted": "تحديد كمكتمل"
             },
             "form": {
                 "scheduleTitle": "جدولة الصيانة",
@@ -2439,10 +1112,6 @@
                 "taskChecklist": "قائمة مهام",
                 "addTask": "إضافة مهمة",
                 "saveTemplate": "حفظ القالب",
-                "validation": {
-                    "nameRequired": "اسم القالب مطلوب"
-                },
-                "placeholders": {},
                 "cancel": "إلغاء",
                 "create": "جدولة الصيانة",
                 "vehicle": "المركبة",
@@ -2457,81 +1126,1501 @@
                 "selectTechnician": "اختر فنياً (اختياري)",
                 "task": "مهمة",
                 "items": {
-                    "distance": "المسافة",
-                    "time": "الوقت",
+                    "distance": "المسافة (كم)",
+                    "time": "الوقت (أشهر)",
                     "engineHours": "ساعات المحرك"
                 },
+                "priorities": {
+                    "low": "منخفض",
+                    "medium": "متوسط",
+                    "high": "عالي",
+                    "critical": "حرج"
+                },
+                "success": "تمت جدولة الصيانة بنجاح",
                 "error": "فشل في جدولة الصيانة"
             }
-        }
-    },
-    "notAuthorized": {
-        "title": "تم رفض الوصول",
-        "description": "ليس لديك الإذن للوصول إلى هذه الصفحة. يرجى التواصل مع المسؤول إذا كنت تعتقد أن هذا خطأ.",
-        "actions": {
-            "goBack": "رجوع",
-            "goToDashboard": "الانتقال إلى لوحة التحكم"
-        }
-    },
-    "errorPage": {
-        "title": "حدث خطأ ما!",
-        "defaultMessage": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
-        "actions": {
-            "reloadPage": "إعادة تحميل الصفحة",
-            "tryAgain": "المحاولة مرة أخرى"
-        }
-    },
-    "notFoundPage": {
-        "title": "404",
-        "description": "الصفحة غير موجودة",
-        "actions": {
-            "backToDashboard": "العودة إلى لوحة التحكم",
-            "viewWorkOrders": "عرض أوامر العمل"
-        }
-    },
-    "integrationExample": {
-        "tabs": {
-            "details": "التفاصيل",
-            "tasks": "المهام",
-            "parts": "القطع",
-            "comments": "التعليقات",
-            "costs": "التكاليف"
-        }
-    },
-    "homePage": {
-        "redirecting": "جارٍ إعادة التوجيه..."
-    },
-    "components": {
-        "pagination": {
-            "showing": "عرض",
-            "to": "إلى",
-            "of": "من",
-            "results": "نتائج",
-            "rowsPerPage": "صفوف لكل صفحة:"
         },
-        "confirmDialog": {
-            "defaultConfirm": "تأكيد",
-            "defaultCancel": "إلغاء"
-        }
-    },
-    "profilePage": {
-        "title": "ملفي الشخصي",
-        "description": "عرض تفاصيل ملفك الشخصي والنشاط الأخير.",
-        "tabs": {
-            "overview": "نظرة عامة",
-            "activity": "سجل النشاط"
+        "notifications": {
+            "common": {
+                "categories": {
+                    "work_order": "أوامر العمل",
+                    "inventory": "المخزون",
+                    "maintenance": "الصيانة",
+                    "system": "النظام"
+                }
+            },
+            "dashboard": {
+                "title": "الإشعارات",
+                "subtitle": "إدارة التنبيهات والتحديثات الخاصة بك",
+                "actions": {
+                    "viewAll": "عرض الكل",
+                    "markAllRead": "تعيين الكل كمقروء"
+                },
+                "filters": {
+                    "searchPlaceholder": "البحث في الإشعارات...",
+                    "filterBy": "التصفية حسب",
+                    "options": {
+                        "all": "جميع الإشعارات",
+                        "unread": "غير المقروءة فقط"
+                    }
+                },
+                "empty": "لا توجد إشعارات مطابقة لمعايير البحث.",
+                "pagination": "عرض {start}-{end} من {total}"
+            },
+            "all": {
+                "title": "جميع الإشعارات",
+                "subtitle": "سجل كامل مع عوامل تصفية، ترقيم صفحات، وضوابط مجمّعة.",
+                "actions": {
+                    "markAllRead": "تعيين كل الإشعارات كمقروءة",
+                    "backToDashboard": "العودة إلى لوحة التحكم"
+                },
+                "sections": {
+                    "filters": "عوامل التصفية",
+                    "stream": "سجل الإشعارات",
+                    "summary": "الملخص"
+                },
+                "filters": {
+                    "searchPlaceholder": "البحث حسب العنوان أو الرسالة",
+                    "filterByType": "التصفية حسب النوع",
+                    "options": {
+                        "all": "جميع الفئات"
+                    }
+                },
+                "stats": {
+                    "unread": "غير المقروءة",
+                    "total": "الإجمالي"
+                },
+                "empty": "لا توجد إشعارات مطابقة لعوامل التصفية."
+            }
         },
-        "stats": {
-            "completedWorkOrders": "أوامر العمل المكتملة",
-            "activeTasks": "المهام النشطة",
-            "participationRate": "معدل المشاركة"
+        "reports": {
+            "title": "التقارير",
+            "subtitle": "تحليلات الأسطول ومقاييس الأداء",
+            "actions": {
+                "exportCSV": "تصدير CSV",
+                "exportPDF": "تصدير PDF",
+                "clear": "مسح"
+            },
+            "filters": {
+                "startDate": "تاريخ البدء",
+                "endDate": "تاريخ الانتهاء",
+                "showingDataFor": "عرض البيانات لـ:"
+            },
+            "toasts": {
+                "exportPDF": {
+                    "title": "تصدير إلى PDF",
+                    "description": "جارٍ إنشاء تقرير PDF...",
+                    "successTitle": "تم إنشاء ملف PDF",
+                    "successDescription": "تم تنزيل تقريرك."
+                },
+                "exportCSV": {
+                    "title": "تصدير إلى CSV",
+                    "description": "جارٍ إنشاء ملف CSV...",
+                    "successTitle": "تم تنزيل ملف CSV",
+                    "successDescription": "تم تصدير بياناتك."
+                }
+            }
         },
-        "info": {
-            "title": "معلومات شخصية",
-            "email": "عنوان البريد الإلكتروني",
-            "role": "الدور الحالي",
-            "tenant": "المؤسسة",
-            "joined": "عضو منذ"
+        "search": {
+            "title": "نتائج البحث",
+            "subtitle": "تصفح النتائج حسب الفئة مع عرض كامل للصفحة.",
+            "quickSearch": "اضغط / أو ⌘K للبحث في أي مكان",
+            "cardTitle": "بحث",
+            "placeholder": "البحث في المركبات وأوامر العمل والقطع والمستخدمين والصفحات",
+            "update": "تحديث النتائج",
+            "tabs": {
+                "all": "الكل",
+                "vehicle": "المركبات",
+                "work_order": "أوامر العمل",
+                "part": "القطع",
+                "user": "المستخدمون",
+                "page": "الصفحات"
+            },
+            "empty": {
+                "query": "لم يتم العثور على نتائج لـ \"{query}\"",
+                "category": "لا توجد نتائج في هذه الفئة"
+            }
+        },
+        "settings": {
+            "title": "الإعدادات",
+            "subtitle": "أدر حسابك وتفضيلات مساحة العمل",
+            "navigation": {
+                "profile": "الملف الشخصي",
+                "company": "الشركة",
+                "branding": "العلامة التجارية",
+                "roles": "الأدوار والصلاحيات",
+                "notifications": "الإشعارات",
+                "inventory": "المخزون",
+                "integrations": "التكاملات"
+            },
+            "profile": {
+                "title": "إعدادات الملف الشخصي",
+                "subtitle": "إدارة معلوماتك الشخصية",
+                "description": "إدارة معلوماتك الشخصية وصورة الملف الشخصي.",
+                "form": {
+                    "firstName": "الاسم الأول",
+                    "lastName": "اسم العائلة",
+                    "email": "البريد الإلكتروني",
+                    "role": "الدور",
+                    "bio": "نبذة",
+                    "avatar": "الصورة الشخصية",
+                    "upload": "رفع",
+                    "uploadAvatar": "رفع صورة شخصية",
+                    "changeAvatar": "تغيير الصورة",
+                    "save": "حفظ التغييرات",
+                    "saving": "جاري الحفظ...",
+                    "jobTitle": "المسمى الوظيفي",
+                    "bioPlaceholder": "أخبرنا القليل عن نفسك...",
+                    "emailHelp": "البريد الإلكتروني غير قابل للتغيير"
+                },
+                "avatar": {
+                    "uploading": "جاري الرفع...",
+                    "change": "تغيير الصورة الرمزية"
+                },
+                "toasts": {
+                    "success": "تم تحديث الملف الشخصي بنجاح",
+                    "error": "فشل تحديث الملف الشخصي",
+                    "avatarSuccess": "تم رفع الصورة بنجاح",
+                    "avatarError": "فشل رفع الصورة"
+                }
+            },
+            "company": {
+                "title": "إعدادات الشركة",
+                "subtitle": "إدارة تفاصيل الشركة والعلامة التجارية",
+                "description": "إدارة تفاصيل شركتك ومعلومات الاتصال.",
+                "accessRestricted": "الدخول مقيد",
+                "accessRestrictedDesc": "المسؤولون فقط يمكنهم تعديل إعدادات الشركة.",
+                "form": {
+                    "name": "اسم الشركة",
+                    "website": "الموقع الإلكتروني",
+                    "address": "العنوان",
+                    "city": "المدينة",
+                    "country": "البلد",
+                    "save": "حفظ التغييرات",
+                    "saving": "جاري الحفظ..."
+                },
+                "toasts": {
+                    "success": "تم تحديث إعدادات الشركة",
+                    "error": "فشل تحديث إعدادات الشركة"
+                }
+            },
+            "branding": {
+                "title": "العلامة التجارية",
+                "subtitle": "تخصيص المظهر والشعور",
+                "description": "تخصيص مظهر التطبيق.",
+                "accessRestricted": {
+                    "title": "الدخول مقيد",
+                    "description": "المسؤولون فقط يمكنهم تعديل إعدادات العلامة التجارية."
+                },
+                "form": {
+                    "companyLogo": "شعار الشركة",
+                    "noLogo": "لا يوجد شعار",
+                    "uploadLogo": "رفع الشعار",
+                    "logoHelp": "الملفات المسموح بها: JPG، PNG. الحجم الأقصى: 1 ميجابايت.",
+                    "primaryColor": "اللون الأساسي",
+                    "accentColor": "لون التمييز",
+                    "save": "حفظ التغييرات",
+                    "saving": "جاري الحفظ..."
+                },
+                "toasts": {
+                    "success": "تم تحديث العلامة التجارية بنجاح",
+                    "error": "فشل تحديث العلامة التجارية",
+                    "logoSuccess": "تم رفع الشعار بنجاح"
+                }
+            },
+            "notifications": {
+                "title": "الإشعارات",
+                "subtitle": "إدارة إشعارات البريد الإلكتروني والدفع",
+                "description": "إدارة متى وكيف تتلقى الإشعارات.",
+                "form": {
+                    "workOrderUpdates": {
+                        "title": "تحديثات أوامر العمل",
+                        "description": "تلقي إشعارات عند تغيير حالة أمر العمل."
+                    },
+                    "lowStockAlerts": {
+                        "title": "تنبيهات المخزون المنخفض",
+                        "description": "الحصول على تنبيه عندما يكون مخزون القطع منخفضًا."
+                    },
+                    "maintenanceReminders": {
+                        "title": "تذكيرات الصيانة",
+                        "description": "إشعارات الصيانة المجدولة القادمة."
+                    },
+                    "realtimeAlerts": {
+                        "title": "تنبيهات فورية",
+                        "description": "عرض إشعارات فورية للأحداث المباشرة في التطبيق."
+                    },
+                    "save": "حفظ التفضيلات",
+                    "saving": "جاري الحفظ..."
+                },
+                "toasts": {
+                    "updateSuccess": "تم تحديث تفضيلات الإشعارات",
+                    "updateError": "فشل تحديث تفضيلات الإشعارات"
+                }
+            },
+            "integrations": {
+                "title": "التكاملات",
+                "subtitle": "الاتصال بأدوات الطرف الثالث",
+                "description": "ربط سير عمل الصيانة بالأنظمة الخارجية.",
+                "odoo": {
+                    "cardTitle": "تكامل Odoo",
+                    "cardDescription": "مزامنة المخزون والقطع مع Odoo ERP",
+                    "status": {
+                        "active": "نشط",
+                        "connected": "متصل"
+                    },
+                    "fields": {
+                        "baseUrl": "الرابط الأساسي",
+                        "database": "قاعدة البيانات",
+                        "lastSync": "آخر مزامنة",
+                        "status": "الحالة",
+                        "never": "أبداً"
+                    },
+                    "form": {
+                        "odooUrl": "رابط Odoo",
+                        "databaseName": "اسم قاعدة البيانات",
+                        "username": "اسم المستخدم",
+                        "apiKey": "مفتاح API"
+                    },
+                    "actions": {
+                        "connect": "اتصال",
+                        "disconnect": "قطع الاتصال",
+                        "testConnection": "اختبار الاتصال"
+                    },
+                    "toasts": {
+                        "connectSuccess": "تم الاتصال بـ Odoo بنجاح",
+                        "connectError": "فشل الاتصال بـ Odoo",
+                        "testSuccess": "نجح اختبار الاتصال! التأخير: {latency}",
+                        "testError": "فشل اختبار الاتصال",
+                        "disconnectSuccess": "تم قطع الاتصال بـ Odoo",
+                        "disconnectError": "فشل قطع الاتصال"
+                    }
+                }
+            },
+            "roles": {
+                "title": "الأدوار والصلاحيات",
+                "subtitle": "إدارة مستويات وصول المستخدمين",
+                "description": "إدارة الأدوار وتكوين التحكم في الوصول لفريقك.",
+                "create": "إنشاء دور",
+                "createRole": "إنشاء دور مخصص",
+                "table": {
+                    "role": "الدور",
+                    "roleName": "اسم الدور",
+                    "users": "المستخدمون",
+                    "activeUsers": "المستخدمون النشطون",
+                    "actions": "إجراءات",
+                    "edit": "تعديل الصلاحيات",
+                    "managePermissions": "إدارة الصلاحيات",
+                    "delete": "حذف الدور",
+                    "permissions": "الصلاحيات",
+                    "description": "الوصف",
+                    "modules": "وحدات",
+                    "noRoles": "لم يتم العثور على أدوار"
+                },
+                "drawer": {
+                    "title": "تعديل صلاحيات {role}",
+                    "description": "تكوين التحكم في الوصول الدقيق لهذا الدور.",
+                    "save": "حفظ الصلاحيات",
+                    "saving": "جاري الحفظ...",
+                    "cancel": "إلغاء",
+                    "modules": {
+                        "users": "المستخدمون",
+                        "vehicles": "المركبات",
+                        "work_orders": "أوامر العمل",
+                        "inventory": "المخزون",
+                        "maintenance": "الصيانة",
+                        "reports": "التقارير",
+                        "settings": "الإعدادات"
+                    },
+                    "types": {
+                        "read": "قراءة",
+                        "create": "إنشاء",
+                        "update": "تحديث",
+                        "delete": "حذف"
+                    }
+                },
+                "form": {
+                    "name": "اسم الدور",
+                    "description": "الوصف",
+                    "save": "حفظ الدور",
+                    "create": "إنشاء دور"
+                },
+                "toasts": {
+                    "success": "تم تحديث الصلاحيات",
+                    "error": "فشل تحديث الصلاحيات"
+                }
+            },
+            "inventory": {
+                "warehouses": {
+                    "title": "المستودعات",
+                    "subtitle": "إدارة مواقع تخزين القطع ومراكز سلسلة التوريد",
+                    "actions": {
+                        "add": "إضافة مستودع",
+                        "edit": "تعديل المستودع",
+                        "deactivate": "تعطيل"
+                    },
+                    "table": {
+                        "name": "الاسم",
+                        "type": "النوع",
+                        "manager": "المدير",
+                        "address": "العنوان",
+                        "status": "الحالة",
+                        "active": "نشط",
+                        "inactive": "غير نشط",
+                        "actions": "إجراءات"
+                    },
+                    "form": {
+                        "name": "الاسم",
+                        "type": "النوع",
+                        "address": "العنوان",
+                        "manager": "المدير",
+                        "allowNegativeStock": "السماح بالمخزون السالب",
+                        "active": "نشط",
+                        "types": {
+                            "MAIN": "مستودع رئيسي",
+                            "SITE": "تخزين في الموقع",
+                            "VAN": "شاحنة خدمة"
+                        }
+                    },
+                    "toasts": {
+                        "created": "تم إنشاء المستودع بنجاح",
+                        "updated": "تم تحديث المستودع بنجاح",
+                        "deactivated": "تم تعطيل المستودع"
+                    }
+                }
+            }
+        },
+        "users": {
+            "title": "المستخدمون",
+            "subtitle": "إدارة فريقك ومستويات وصولهم",
+            "table": {
+                "headers": {
+                    "user": "المستخدم",
+                    "email": "البريد الإلكتروني",
+                    "role": "الدور",
+                    "status": "الحالة",
+                    "actions": "الإجراءات"
+                }
+            },
+            "roles": {
+                "admin": "مدير النظام",
+                "manager": "مشرف",
+                "technician": "فني",
+                "viewer": "مشاهد",
+                "driver": "سائق"
+            },
+            "status": {
+                "active": "نشط",
+                "suspended": "معلق",
+                "inactive": "غير نشط",
+                "pending": "دعوة معلقة"
+            },
+            "actions": {
+                "add": "إضافة مستخدم",
+                "addFirst": "أضف مستخدمك الأول",
+                "view": "عرض التفاصيل",
+                "edit": "تعديل الملف الشخصي",
+                "suspend": "تعليق المستخدم",
+                "reactivate": "إعادة تفعيل المستخدم",
+                "delete": "حذف المستخدم",
+                "invite": "دعوة/إعادة إرسال"
+            },
+            "confirmSuspend": "هل أنت متأكد أنك تريد تعليق {name}؟",
+            "confirmDelete": "هل أنت متأكد أنك تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+            "errors": {
+                "loadFailed": "فشل تحميل المستخدمين",
+                "generic": "حدث خطأ أثناء جلب المستخدمين",
+                "notFound": "المستخدم غير موجود"
+            },
+            "empty": {
+                "title": "لا يوجد مستخدمون حتى الان",
+                "description": "أضف أعضاء الفريق لإدارة أسطولك. قم بتعيين الأدوار وتتبع الأنشطة والتعاون بفعالية."
+            },
+            "form": {
+                "title": "إضافة مستخدم",
+                "editTitle": "تعديل المستخدم",
+                "inviteTitle": "دعوة مستخدم",
+                "description": "التقط تفاصيل المستخدم ودوره وحالته لضم أعضاء جدد إلى الفريق.",
+                "editDescription": "تحديث تفاصيل المستخدم ودوره وحالة الحساب.",
+                "inviteDescription": "إرسال دعوة بالبريد الإلكتروني لعضو جديد في الفريق.",
+                "fields": {
+                    "name": "الاسم",
+                    "namePlaceholder": "أدخل الاسم الكامل",
+                    "email": "البريد الإلكتروني",
+                    "emailPlaceholder": "user@example.com",
+                    "phone": "الهاتف",
+                    "phonePlaceholder": "+212 6 00 00 00 00",
+                    "language": "اللغة",
+                    "languagePlaceholder": "اختر اللغة",
+                    "role": "الدور",
+                    "selectRole": "اختر الدور",
+                    "status": "الحالة",
+                    "selectStatus": "اختر حالة المستخدم",
+                    "profilePhoto": "صورة الملف الشخصي"
+                },
+                "errors": {
+                    "nameRequired": "الاسم مطلوب",
+                    "emailRequired": "البريد الإلكتروني مطلوب",
+                    "validEmail": "أدخل بريداً إلكترونياً صالحاً",
+                    "roleRequired": "الدور مطلوب",
+                    "languageRequired": "اللغة مطلوبة"
+                },
+                "actions": {
+                    "add": "إضافة مستخدم",
+                    "invite": "إرسال دعوة",
+                    "save": "حفظ التغييرات",
+                    "cancel": "إلغاء"
+                }
+            },
+            "details": {
+                "overview": "نظرة عامة",
+                "roles": "الأدوار والصلاحيات",
+                "skills": "المهارات والشهادات",
+                "activity": "النشاط",
+                "attachments": "المرفقات",
+                "notes": "ملاحظات",
+                "information": {
+                    "title": "معلومات المستخدم",
+                    "subtitle": "التفاصيل الشخصية ومعلومات الاتصال",
+                    "email": "البريد الإلكتروني",
+                    "phone": "الهاتف",
+                    "jobTitle": "المسمى الوظيفي",
+                    "department": "القسم",
+                    "site": "الموقع",
+                    "shift": "الوردية",
+                    "joined": "تاريخ الانضمام",
+                    "lastActive": "آخر نشاط"
+                },
+                "performance": {
+                    "title": "مقاييس الأداء",
+                    "subtitle": "مؤشرات الأداء الرئيسية والإنتاجية",
+                    "completedWOs": "أوامر العمل المكتملة",
+                    "avgCompletion": "متوسط الإكمال",
+                    "mttr": "MTTR",
+                    "backlog": "المتأخرات",
+                    "productivity": "الإنتاجية",
+                    "vsLastMonth": "+12% مقابل الشهر الماضي",
+                    "perWorkOrder": "لكل أمر عمل",
+                    "meanTimeToRepair": "متوسط وقت الإصلاح",
+                    "pendingTasks": "المهام المعلقة"
+                },
+                "assignedWorkOrders": {
+                    "title": "أوامر العمل المعينة",
+                    "subtitle": "المهام الحالية والمهام القادمة",
+                    "active": "{count} نشط",
+                    "due": "يستحق"
+                }
+            },
+            "toasts": {
+                "filesUploaded": {
+                    "title": "تم رفع الملفات",
+                    "description": "تم رفع {count} ملف (ملفات) بنجاح."
+                },
+                "suspended": {
+                    "title": "تم تعليق المستخدم",
+                    "description": "تم تعليق {name}."
+                },
+                "reactivated": {
+                    "title": "تم إعادة تفعيل المستخدم",
+                    "description": "تم إعادة تفعيل {name}."
+                },
+                "noteAdded": "تم إضافة الملاحظة بنجاح",
+                "invitationSent": {
+                    "title": "تم إرسال الدعوة",
+                    "description": "تم إرسال دعوة بالبريد الإلكتروني إلى {email}"
+                },
+                "fileDeleted": "تم حذف الملف"
+            }
+        },
+        "vehicles": {
+            "title": "المركبات",
+            "actions": {
+                "add": "إضافة مركبة",
+                "addFirst": "أضف مركبتك الأولى",
+                "clearFilters": "مسح عوامل التصفية",
+                "updateUsage": "تحديث الاستخدام",
+                "edit": "تعديل المركبة",
+                "createWorkOrder": "إنشاء أمر عمل",
+                "back": "رجوع",
+                "backToList": "العودة للقائمة"
+            },
+            "confirmDelete": {
+                "title": "حذف المركبة",
+                "description": "هل أنت متأكد أنك تريد حذف هذه المركبة؟ لا يمكن التراجع عن هذا الإجراء."
+            },
+            "edit": {
+                "title": "تعديل المركبة"
+            },
+            "errors": {
+                "notFound": "المركبة غير موجودة"
+            },
+            "filters": {
+                "searchPlaceholder": "البحث بالاسم أو اللوحة",
+                "status": {
+                    "all": "كل الحالات",
+                    "active": "نشط",
+                    "maintenance": "صيانة",
+                    "retired": "متقاعد",
+                    "inactive": "غير نشط"
+                },
+                "type": {
+                    "all": "كل الأنواع",
+                    "truck": "شاحنة",
+                    "Truck": "شاحنة",
+                    "van": "فان",
+                    "Van": "فان",
+                    "car": "سيارة",
+                    "Car": "سيارة",
+                    "seltos": "سيلتوس",
+                    "Voiture utulitaire": "سيارة نفعية",
+                    "Voiture utilitaire": "سيارة نفعية",
+                    "unknown": "غير معروف"
+                }
+            },
+            "empty": {
+                "title": "لا توجد مركبات بعد",
+                "description": "ابدأ بإضافة مركبتك الأولى إلى الأسطول. تتبع الصيانة والتعيينات والأداء في مكان واحد.",
+                "notFoundTitle": "لم يتم العثور على مركبات",
+                "notFoundDescription": "لا توجد مركبات تطابق عوامل التصفية الحالية. جرب تعديل معايير البحث أو عوامل التصفية."
+            },
+            "drivers": {
+                "title": "السائقين المعينين",
+                "subtitle": "إدارة السائقين المعينين لهذه المركبة",
+                "assignDrivers": "تعيين سائقين",
+                "selectDrivers": "اختر السائقين...",
+                "driversSelected": "سائقين محددين",
+                "noDrivers": "لا يوجد سائقين معينين",
+                "noDriversDesc": "لم يتم تعيين أي سائق لهذه المركبة بعد.",
+                "primary": "سائق أساسي",
+                "setPrimary": "تعيين كأساسي",
+                "remove": "إزالة",
+                "from": "من",
+                "to": "إلى",
+                "removeDriverTitle": "إلغاء تعيين السائق",
+                "removeDriverDesc": "هل أنت متأكد أنك تريد إزالة هذا السائق من المركبة؟",
+                "cancel": "إلغاء"
+            },
+            "import": {
+                "title": "استيراد المركبات",
+                "description": "قم بتحميل ملف Excel لاستيراد أو تحديث المركبات بشكل جماعي.",
+                "templateInfo": "قم بتنزيل النموذج لمعرفة التنسيق المطلوب.",
+                "downloadTemplate": "تنزيل النموذج",
+                "dragDrop": "اسحب وأفلت ملفك هنا",
+                "onlyXlsx": "يتم دعم ملفات .xlsx فقط (الحد الأقصى 10 ميجابايت)",
+                "onlyXlsxCsv": "يتم دعم ملفات .xlsx و .csv فقط (الحد الأقصى 10 ميجابايت)",
+                "browse": "تصفح الملفات",
+                "removeFile": "حذف الملف",
+                "import": "استيراد المركبات",
+                "importing": "جاري الاستيراد...",
+                "successful": "ناجح",
+                "failed": "فشل",
+                "vehiclesImported": "تم استيراد المركبات بنجاح",
+                "vehiclesFailed": "فشل استيراد الصفوف",
+                "errorDetails": "تفاصيل الخطأ",
+                "row": "صف",
+                "field": "حقل",
+                "error": "خطأ",
+                "close": "إغلاق",
+                "cancel": "إلغاء"
+            },
+            "export": {
+                "button": "تصدير إلى Excel",
+                "downloading": "جاري التنزيل..."
+            },
+            "toasts": {
+                "import": {
+                    "success": "تم الاستيراد بنجاح",
+                    "error": "فشل الاستيراد"
+                },
+                "deleted": {
+                    "title": "تم حذف المركبة",
+                    "description": "تمت إزالة المركبة من أسطولك.",
+                    "errorTitle": "فشل الحذف",
+                    "errorDescription": "تعذر حذف المركبة. يرجى المحاولة مرة أخرى."
+                },
+                "workOrderCreated": {
+                    "title": "تم إنشاء أمر العمل"
+                },
+                "planCreated": {
+                    "title": "تم إنشاء خطة الصيانة"
+                },
+                "updated": {
+                    "title": "تم تحديث المركبة",
+                    "description": "تم تحديث معلومات المركبة بنجاح."
+                },
+                "created": {
+                    "title": "تم إنشاء المركبة",
+                    "description": "تمت إضافة مركبة جديدة إلى أسطولك."
+                }
+            },
+            "details": {
+                "tabs": {
+                    "عام": "نظرة عامة",
+                    "plans": "خطط الصيانة",
+                    "documents": "المستندات",
+                    "history": "التاريخ"
+                },
+                "performanceMetrics": {
+                    "title": "مقاييس الأداء"
+                },
+                "analytics": {
+                    "title": "التحليلات",
+                    "mileageGrowth": "نمو المسافة المقطوعة",
+                    "chartDataAvailable": "بيانات الرسم البياني متاحة",
+                    "noMileageHistory": "لا يوجد سجل للمسافة المقطوعة"
+                },
+                "partsUsed": {
+                    "title": "القطع المستخدمة والتكاليف",
+                    "partName": "اسم القطعة",
+                    "quantity": "الكمية",
+                    "cost": "التكلفة",
+                    "dateUsed": "تاريخ الاستخدام",
+                    "workOrder": "أمر العمل",
+                    "noPartsUsed": "لم يتم استخدام أي قطع بعد",
+                    "viewWorkOrder": "عرض أمر العمل"
+                },
+                "metrics": {
+                    "title": "مقاييس الأداء",
+                    "totalCost": "إجمالي تكلفة الصيانة",
+                    "avgRepair": "متوسط تكلفة الإصلاح",
+                    "avgRepairCost": "متوسط تكلفة الإصلاح",
+                    "perWorkOrder": "لكل أمر عمل",
+                    "costPerKm": "التكلفة لكل كم",
+                    "mtbf": "MTBF",
+                    "meanTimeBetweenFailures": "متوسط الوقت بين الأعطال",
+                    "reliabilityScore": "درجة الموثوقية",
+                    "reliability": "درجة الموثوقية",
+                    "totalDowntime": "إجمالي وقت التوقف",
+                    "downtime": "إجمالي وقت التوقف",
+                    "mttr": "MTTR",
+                    "meanTimeToRepair": "متوسط وقت الإصلاح",
+                    "workOrders": "أوامر العمل",
+                    "totalCompleted": "العدد الإجمالي للمكتملة"
+                },
+                "parts": {
+                    "title": "القطع المستخدمة والتكاليف",
+                    "name": "اسم القطعة",
+                    "quantity": "الكمية",
+                    "cost": "التكلفة",
+                    "date": "تاريخ الاستخدام",
+                    "workOrder": "أمر العمل",
+                    "empty": "لم يتم استخدام قطع بعد",
+                    "viewWorkOrder": "عرض أمر العمل"
+                },
+                "table": {
+                    "headers": {
+                        "vehicle": "المركبة",
+                        "plate": "لوحة الترخيص",
+                        "status": "الحالة",
+                        "mileage": "المسافة المقطوعة",
+                        "totalCost": "إجمالي تكلفة الصيانة",
+                        "downtime": "وقت التوقف",
+                        "nextService": "الخدمة القادمة",
+                        "healthScore": "نقاط الصحة",
+                        "woCount": "عدد أوامر العمل",
+                        "actions": "إجراءات",
+                        "edit": "تعديل",
+                        "delete": "حذف",
+                        "partName": "اسم القطعة",
+                        "quantity": "الكمية",
+                        "cost": "التكلفة",
+                        "dateUsed": "تاريخ الاستخدام",
+                        "workOrder": "أمر العمل"
+                    },
+                    "viewDetails": "عرض التفاصيل",
+                    "edit": "تعديل",
+                    "delete": "حذف",
+                    "createWorkOrder": "إنشاء أمر عمل",
+                    "scheduleService": "جدولة الخدمة",
+                    "noData": "لم يتم العثور على مركبات",
+                    "noService": "لا توجد خدمة مجدولة",
+                    "days": "{days} أيام",
+                    "title": "قطع الغيار المستخدمة والتكاليف",
+                    "exportCSV": "تصدير CSV",
+                    "filterName": "تصفية حسب اسم القطعة...",
+                    "clear": "مسح",
+                    "totalParts": "الإجمالي ({count} قطعة)"
+                },
+                "form": {
+                    "createTitle": "إنشاء خطة صيانة",
+                    "editTitle": "تعديل خطة الصيانة",
+                    "description": "إعداد فترات الخدمة المتكررة للحفاظ على جدول المركبة.",
+                    "brand": "الماركة",
+                    "model": "الموديل",
+                    "year": "السنة",
+                    "type": "النوع",
+                    "plate": "لوحة الترخيص",
+                    "vin": "رقم الهيكل (VIN)",
+                    "status": "الحالة",
+                    "updateTitle": "تحديث الاستخدام",
+                    "updateDesc": "سجل المسافة المقطوعة الجديدة أو ساعات المحرك للحفاظ على دقة استخدام المركبة.",
+                    "currentMileage": "المسافة الحالية (كم)",
+                    "engineHours": "ساعات المحرك",
+                    "saveUsage": "حفظ الاستخدام",
+                    "cancel": "إلغاء",
+                    "save": "حفظ التغييرات",
+                    "create": "إنشاء الخطة",
+                    "update": "تحديث المركبة",
+                    "createVehicle": "إنشاء مركبة",
+                    "template": "قالب الصيانة",
+                    "templateRequired": "القالب مطلوب",
+                    "templateDesc": "ستقوم فترات القالب بملء الحقول أدناه تلقائيًا.",
+                    "serviceIntervals": "فترات الخدمة",
+                    "intervalKm": "الفترة (كم)",
+                    "intervalMonths": "الفترة (شهور)",
+                    "intervalError": "يجب أن تكون فترة واحدة على الأقل (كم أو شهور) أكبر من 0",
+                    "lastServiceInfo": "معلومات آخر خدمة",
+                    "lastServiceKm": "كم آخر خدمة",
+                    "lastServiceDate": "تاريخ آخر خدمة",
+                    "selectTemplate": "اختر قالب صيانة...",
+                    "searchTemplates": "البحث في القوالب...",
+                    "noTemplates": "لم يتم العثور على قوالب."
+                },
+                "kpis": {
+                    "predictive": {
+                        "title": "الصيانة التنبؤية",
+                        "predictedFailure": "الفشل المتوقع",
+                        "days": "{days} أيام",
+                        "basedOn": "بناءً على أنماط الاستخدام",
+                        "nextOilChange": "تغيير الزيت القادم",
+                        "kmRemaining": "كم متبقي ({km} كم)",
+                        "riskAssessment": "تقييم المخاطر",
+                        "aiRecommendations": "توصيات الذكاء الاصطناعي"
+                    },
+                    "serviceSummary": {
+                        "title": "ملخص الخدمة",
+                        "lastMaintenance": "آخر صيانة",
+                        "lastCost": "آخر تكلفة",
+                        "lastTechnician": "آخر فني",
+                        "nextServiceDue": "استحقاق الخدمة القادم",
+                        "serviceInterval": "فترة الخدمة"
+                    }
+                },
+                "documents": {
+                    "title": "مستندات المركبة",
+                    "subtitle": "إدارة التأمين والترخيص وتقارير الفحص",
+                    "upload": "رفع مستند",
+                    "noDocs": "لا توجد مستندات مرفوعة",
+                    "noDocsDesc": "احتفظ بجميع سجلات مركبتك في مكان واحد.",
+                    "name": "اسم المستند",
+                    "type": "النوع",
+                    "size": "الحجم",
+                    "uploaded": "تم الرفع",
+                    "actions": "إجراءات",
+                    "untitled": "مستند بدون عنوان",
+                    "modalTitle": "رفع مستند",
+                    "modalDesc": "إرفاق بطاقات التأمين والترخيص والتقارير",
+                    "fileName": "اسم الملف",
+                    "fileUrl": "رابط الملف"
+                },
+                "maintenance": {
+                    "plansTitle": "الخطط النشطة",
+                    "plansSubtitle": "إدارة جداول الصيانة المتكررة",
+                    "newPlan": "خطة جديدة",
+                    "noPlans": "لا توجد خطط صيانة",
+                    "noPlansDesc": "إعداد جداول صيانة متكررة للحفاظ على المركبة.",
+                    "createFirstPlan": "إنشاء الخطة الأولى",
+                    "customPlan": "خطة مخصصة",
+                    "paused": "متوقف مؤقتاً",
+                    "every": "كل",
+                    "or": "أو",
+                    "months": "أشهر",
+                    "never": "أبداً",
+                    "due": "مستحق: {date}",
+                    "lastService": "آخر خدمة",
+                    "nextDue": "الاستحقاق القادم",
+                    "editConfig": "تعديل التكوين",
+                    "deletePlan": "حذف الخطة",
+                    "runNow": "تشغيل الخطة الآن",
+                    "resumePlan": "استئناف الخطة",
+                    "pausePlan": "إيقاف الخطة مؤقتاً",
+                    "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
+                    "historyTitle": "سجل الصيانة الكامل لهذه المركبة",
+                    "noHistory": "لا يوجد سجل صيانة متاح",
+                    "timelineTitle": "الجدول الزمني للصيانة",
+                    "technician": "فني: {name}",
+                    "types": {
+                        "preventive": "وقائية",
+                        "corrective": "اصلاحية",
+                        "emergency": "طارئة",
+                        "scheduled": "مجدولة"
+                    }
+                },
+                "activity": {
+                    "title": "الجدول الزمني للنشاط",
+                    "historyTitle": "سجل النشاط الكامل لهذه المركبة",
+                    "noActivity": "لم يتم تسجيل أي نشاط لهذه المركبة بعد.",
+                    "noLogs": "لا توجد سجلات نشاط متاحة"
+                },
+                "workOrders": {
+                    "title": "جميع أوامر العمل المرتبطة بهذه المركبة",
+                    "noWos": "لا توجد أوامر عمل لهذه المركبة",
+                    "scheduled": "مجدول: {date}"
+                }
+            }
+        },
+        "workOrders": {
+            "title": "أوامر العمل",
+            "checklist": {
+                "title": "قائمة المهام",
+                "subtitle": "إدارة وتتبع مهام أمر العمل",
+                "addTask": "إضافة مهمة",
+                "addFirstTask": "إضافة أول مهمة",
+                "progress": "التقدم العام",
+                "completedOf": "تم إنجاز {completed} من أصل {total} مهمة",
+                "noTasks": "لا توجد مهام حتى الآن",
+                "noTasksDesc": "ابدأ بإضافة المهمة الأولى لهذا الأمر العمل.",
+                "todo": "يجب عمله",
+                "done": "منجز",
+                "markToDo": "تحديد كـ يجب عمله",
+                "markDone": "تحديد كـ منجز",
+                "dueTomorrow": "مستحق غدًا"
+            },
+            "addPartModal": {
+                "title": "إضافة قطعة إلى أمر العمل",
+                "fields": {
+                    "part": "القطعة",
+                    "warehouse": "المستودع (المصدر)",
+                    "quantity": "الكمية",
+                    "unitPrice": "سعر الوحدة (MAD)"
+                },
+                "placeholders": {
+                    "part": "اختر قطعة",
+                    "warehouse": "اختر المستودع"
+                },
+                "managedInSettings": "مدار في الإعدادات",
+                "configureWarehouses": "تكوين المستودعات في الإعدادات",
+                "availableStock": "المخزون المتوفر (الإجمالي):",
+                "actions": {
+                    "cancel": "إلغاء",
+                    "add": "إضافة القطعة",
+                    "adding": "جاري الإضافة..."
+                }
+            },
+            "form": {
+                "title": "إضافة مهمة جديدة",
+                "editTitle": "تعديل أمر العمل",
+                "createTitle": "إنشاء أمر عمل",
+                "description": "إنشاء مهمة مفصلة لهذا الأمر العمل",
+                "editDescription": "تحديث تفاصيل أمر العمل هذا.",
+                "createDescription": "إنشاء أمر عمل صيانة جديد.",
+                "fields": {
+                    "title": "العنوان",
+                    "titlePlaceholder": "مثال: فحص الفرامل",
+                    "type": "النوع",
+                    "selectType": "اختر النوع",
+                    "description": "الوصف",
+                    "descriptionPlaceholder": "صف المشكلة أو الصيانة المطلوبة...",
+                    "priority": "الأولوية",
+                    "selectPriority": "اختر الأولوية",
+                    "status": "الحالة",
+                    "selectStatus": "اختر الحالة",
+                    "assignee": "المسؤول عن التنفيذ",
+                    "selectTechnician": "اختر فنياً",
+                    "category": "الفئة",
+                    "selectCategory": "اختر الفئة",
+                    "estimatedDuration": "الوقت المتوقع (بالساعات)",
+                    "durationPlaceholder": "مثال: 2.5",
+                    "estimatedCost": "التكلفة المتوقعة ({currency})",
+                    "costPlaceholder": "0.00",
+                    "notes": "ملاحظات إضافية",
+                    "notesPlaceholder": "أي ملاحظات أو تعليمات إضافية...",
+                    "attachments": "المرفقات",
+                    "uploadText": "انقر لتحميل الملفات أو قم بسحبها وإفلاتها",
+                    "uploadHint": "PDF، PNG، JPG حتى 10 ميجابايت"
+                },
+                "types": {
+                    "preventive": "وقائي",
+                    "corrective": "تصحيحي",
+                    "inspection": "فحص"
+                },
+                "categories": {
+                    "mechanical": "ميكانيكي",
+                    "electrical": "كهربائي",
+                    "body": "هيكل",
+                    "tires": "إطارات",
+                    "other": "أخرى"
+                },
+                "actions": {
+                    "create": "إنشاء أمر عمل",
+                    "save": "حفظ التغييرات"
+                }
+            },
+            "parts": {
+                "title": "قطع الغيار",
+                "headers": {
+                    "name": "اسم القطعة",
+                    "sku": "SKU",
+                    "qty": "الكمية",
+                    "price": "سعر الوحدة",
+                    "total": "الإجمالي"
+                }
+            },
+            "status": {
+                "pending": "قيد الانتظار",
+                "in_progress": "قيد التنفيذ",
+                "completed": "مكتمل",
+                "cancelled": "ملغى"
+            },
+            "priorities": {
+                "low": "منخفض",
+                "medium": "متوسط",
+                "high": "عالي",
+                "urgent": "عاجل"
+            },
+            "actions": {
+                "new": "أمر عمل جديد",
+                "edit": "تعديل التفاصيل",
+                "markComplete": "وضع علامة كـ مكتمل",
+                "goBack": "رجوع",
+                "saveChanges": "حفظ التغييرات"
+            },
+            "filters": {
+                "searchPlaceholder": "البحث بواسطة المعرف أو العنوان",
+                "priority": {
+                    "all": "جميع الأولويات",
+                    "high": "عالي",
+                    "medium": "متوسط",
+                    "low": "منخفض"
+                },
+                "status": {
+                    "all": "جميع الحالات",
+                    "pending": "قيد الانتظار",
+                    "inProgress": "قيد التنفيذ",
+                    "completed": "مكتمل"
+                }
+            },
+            "toasts": {
+                "created": {
+                    "title": "تم إنشاء أمر العمل",
+                    "description": "تم إنشاء أمر عمل جديد وتعيينه."
+                },
+                "deleteConfirm": "هل أنت متأكد من رغبتك في حذف أمر العمل هذا؟ سيتم أيضًا حذف جميع السجلات المرتبطة وطلبات القطع والمرفقات."
+            },
+            "details": {
+                "notFound": {
+                    "title": "لم يتم العثور على أمر العمل",
+                    "description": "تعذر تحديد موقع أمر العمل المطلوب."
+                },
+                "tabs": {
+                    "overview": "نظرة عامة",
+                    "tasks": "المهام",
+                    "parts": "قطع الغيار",
+                    "attachments": "المرفقات",
+                    "activity": "النشاط",
+                    "comments": "التعليقات"
+                },
+                "cards": {
+                    "status": {
+                        "title": "الحالة",
+                        "description": "المرحلة الحالية لسير العمل"
+                    },
+                    "dueDate": {
+                        "title": "تاريخ الاستحقاق",
+                        "description": "تاريخ الإنجاز المستهدف",
+                        "none": "لا يوجد تاريخ"
+                    },
+                    "vehicle": {
+                        "title": "المركبة",
+                        "description": "الأصل المرتبط",
+                        "unknown": "غير معروف"
+                    },
+                    "assignee": {
+                        "title": "المعين له",
+                        "role": "فني",
+                        "unassigned": "غير معين"
+                    },
+                    "details": {
+                        "title": "التفاصيل والوصف",
+                        "type": "نوع أمر العمل",
+                        "priority": "مستوى الأولوية",
+                        "description": "الوصف",
+                        "notes": "ملاحظات إضافية"
+                    }
+                },
+                "modal": {
+                    "title": "تعديل أمر العمل",
+                    "description": "تحديث حالة أمر العمل أو المعين له أو تاريخ الاستحقاق.",
+                    "titleLabel": "العنوان",
+                    "dueDateLabel": "تاريخ الاستحقاق"
+                }
+            }
+        },
+        "forbidden": {
+            "error": "خطأ 403",
+            "title": "الدخول ممنوع",
+            "description": "ليس لديك إذن لعرض هذه الصفحة. يرجى التحقق من دورك أو الاتصال بالمسؤول.",
+            "actions": {
+                "switchAccount": "تبديل الحساب",
+                "backToDashboard": "العودة إلى لوحة التحكم"
+            }
+        },
+        "partRequests": {
+            "approvals": {
+                "title": "الموافقة على طلبات القطع",
+                "subtitle": "مراجعة واعتماد طلبات القطع المعلقة",
+                "searchPlaceholder": "البحث باسم القطعة أو SKU أو أمر العمل...",
+                "loading": "جاري تحميل طلبات الموافقة المعلقة...",
+                "error": "فشل تحميل طلبات الموافقة المعلقة. يرجى المحاولة مرة أخرى.",
+                "empty": {
+                    "title": "أنت مُواكب لكل شيء!",
+                    "description": "لا توجد طلبات قطع معلّقة للمراجعة حالياً."
+                },
+                "noPendingApprovals": "لا توجد موافقات معلّقة",
+                "allProcessed": "تمت معالجة جميع طلبات القطع.",
+                "actions": {
+                    "approve": "اعتماد",
+                    "reject": "رفض",
+                    "previous": "السابق",
+                    "next": "التالي"
+                },
+                "notifications": {
+                    "approveSuccess": "تمت الموافقة على طلب القطعة وإنشاء أمر شراء في أودو",
+                    "approveError": "فشل في الموافقة على الطلب",
+                    "rejectSuccess": "تم رفض طلب القطعة",
+                    "rejectError": "فشل في رفض الطلب"
+                },
+                "fields": {
+                    "workOrder": "أمر العمل",
+                    "requestedBy": "طُلب بواسطة",
+                    "requested": "تاريخ الطلب",
+                    "notes": "ملاحظات",
+                    "sku": "SKU",
+                    "quantity": "الكمية"
+                },
+                "pagination": "الصفحة {page} من {total}",
+                "fallback": {
+                    "unknownPart": "قطعة غير معروفة",
+                    "na": "غير متوفر"
+                }
+            },
+            "confirmation": {
+                "approveModal": {
+                    "title": "الموافقة على طلب القطعة",
+                    "description": "سيتم إنشاء أمر شراء في أودو",
+                    "note": "سيؤدي اعتماد هذا الطلب تلقائياً إلى إنشاء أمر شراء في أودو وإخطار مقدم الطلب."
+                },
+                "rejectModal": {
+                    "title": "رفض طلب القطعة",
+                    "description": "يرجى تقديم سبب الرفض",
+                    "placeholder": "اشرح سبب رفض هذا الطلب..."
+                },
+                "fields": {
+                    "part": "القطعة",
+                    "quantity": "الكمية",
+                    "note": "ملاحظة",
+                    "rejectionReason": "سبب الرفض"
+                },
+                "actions": {
+                    "cancel": "إلغاء",
+                    "approving": "جاري الاعتماد...",
+                    "rejecting": "جاري الرفض...",
+                    "confirmApproval": "تأكيد الاعتماد",
+                    "confirmRejection": "تأكيد الرفض"
+                }
+            },
+            "premium": {
+                "tab": {
+                    "title": "طلبات القطع",
+                    "subtitle": "اطلب وتابع القطع لهذا أمر العمل",
+                    "error": "فشل تحميل طلبات القطع. يرجى المحاولة مرة أخرى.",
+                    "actions": {
+                        "requestPart": "طلب قطعة"
+                    },
+                    "empty": {
+                        "title": "لا توجد طلبات قطع بعد",
+                        "description": "ابدأ بطلب قطعة لهذا أمر العمل. تابع الموافقات والطلبات والتسليمات في مكان واحد.",
+                        "cta": "اطلب أول قطعة لك"
+                    }
+                },
+                "table": {
+                    "fallback": {
+                        "unknownPart": "قطعة غير معروفة",
+                        "na": "غير متوفر"
+                    },
+                    "labels": {
+                        "sku": "SKU",
+                        "quantity": "الكمية",
+                        "poNumber": "رقم أمر الشراء",
+                        "approvedBy": "تمت الموافقة بواسطة"
+                    },
+                    "actions": {
+                        "markUsed": "تحديدها كمستخدمة"
+                    },
+                    "sections": {
+                        "statusTimeline": "الخط الزمني للحالة",
+                        "notes": "ملاحظات",
+                        "rejectionReason": "سبب الرفض",
+                        "purchaseOrder": "أمر الشراء",
+                        "invoiceAttachments": "مرفقات الفاتورة"
+                    },
+                    "statuses": {
+                        "draft": "مسودة",
+                        "pendingApproval": "بانتظار الموافقة",
+                        "approved": "تمت الموافقة",
+                        "sentToOdoo": "أُرسل إلى أودو",
+                        "ordered": "تم الطلب",
+                        "received": "تم الاستلام",
+                        "rejected": "مرفوض",
+                        "cancelled": "ملغي",
+                        "unknown": "غير معروف"
+                    }
+                },
+                "requestModal": {
+                    "title": "طلب قطعة",
+                    "fields": {
+                        "search": "البحث عن قطع",
+                        "sku": "SKU",
+                        "quantity": "الكمية",
+                        "notes": "ملاحظات (اختياري)"
+                    },
+                    "placeholders": {
+                        "search": "ابحث بالاسم أو SKU أو رقم القطعة...",
+                        "quantity": "أدخل الكمية",
+                        "notes": "أضف أي ملاحظات إضافية..."
+                    },
+                    "stock": {
+                        "inStock": "متوفر: {quantity}",
+                        "lowStock": "منخفض: {quantity}",
+                        "outOfStock": "غير متوفر"
+                    },
+                    "alerts": {
+                        "createSuccess": "تم إنشاء طلب القطعة بنجاح",
+                        "createError": "فشل إنشاء طلب القطعة"
+                    },
+                    "actions": {
+                        "change": "تغيير",
+                        "cancel": "إلغاء",
+                        "requesting": "جاري الطلب...",
+                        "requestPart": "طلب قطعة"
+                    }
+                },
+                "consumeModal": {
+                    "title": "تحديد القطع كمستخدمة",
+                    "fields": {
+                        "sku": "SKU",
+                        "approved": "المعتمد",
+                        "quantityUsed": "الكمية المستخدمة"
+                    },
+                    "placeholders": {
+                        "quantityUsed": "أدخل الكمية (الحد الأقصى: {max})"
+                    },
+                    "alerts": {
+                        "exceeds": "لا يمكن أن تتجاوز الكمية المستخدمة الكمية المعتمدة ({quantity})",
+                        "success": "تم تسجيل استهلاك القطع بنجاح",
+                        "error": "فشل تسجيل استهلاك القطع",
+                        "quantityWarning": "الكمية تتجاوز الحد المعتمد"
+                    },
+                    "info": {
+                        "noteLabel": "ملاحظة:",
+                        "description": "سيؤدي تسجيل استهلاك القطع إلى تحديث مستويات المخزون في أودو ووضع علامة على هذا الطلب كمستهلك."
+                    },
+                    "actions": {
+                        "cancel": "إلغاء",
+                        "recording": "جارٍ التسجيل...",
+                        "confirm": "تأكيد الاستخدام"
+                    }
+                },
+                "attachments": {
+                    "meta": {
+                        "unknownSize": "حجم غير معروف"
+                    },
+                    "actions": {
+                        "view": "عرض",
+                        "download": "تنزيل"
+                    },
+                    "viewer": {
+                        "loading": "جارٍ تحميل ملف PDF...",
+                        "loadError": "فشل تحميل ملف PDF",
+                        "renderError": "تعذر عرض ملف PDF"
+                    }
+                },
+                "timeline": {
+                    "steps": {
+                        "requested": "تم الطلب",
+                        "approved": "تمت الموافقة",
+                        "poCreated": "تم إنشاء أمر شراء",
+                        "received": "تم الاستلام"
+                    },
+                    "statuses": {
+                        "rejected": "مرفوض",
+                        "cancelled": "ملغي"
+                    }
+                },
+                "errorBoundary": {
+                    "title": "حدث خطأ ما",
+                    "description": "حدث خطأ غير متوقع في نظام القطع",
+                    "actions": {
+                        "retry": "إعادة المحاولة"
+                    }
+                }
+            },
+            "myRequests": {
+                "title": "طلباتي للقطع",
+                "subtitle": "عرض سجل طلبات القطع الخاصة بك",
+                "searchPlaceholder": "البحث باسم القطعة أو SKU أو الحالة...",
+                "empty": {
+                    "title": "لا توجد طلبات",
+                    "description": "لم تقم بطلب أي قطع حتى الآن."
+                },
+                "fields": {
+                    "approvedBy": "معتمد من",
+                    "rejected": "مرفوض",
+                    "qty": "الكمية"
+                }
+            },
+            "maintenance": {
+                "dashboard": {
+                    "activePlansTitle": "خطط الصيانة النشطة",
+                    "noActivePlans": "لا توجد خطط صيانة نشطة",
+                    "emptyDescription": "يتم إنشاء خطط الصيانة من صفحات المركبات الفردية. انتقل إلى صفحة تفاصيل المركبة وأنشئ خطة صيانة متكررة بناءً على قالب.",
+                    "viewVehicles": "عرض المركبات",
+                    "viewDetails": "عرض التفاصيل",
+                    "editPlan": "تعديل الخطة",
+                    "deactivate": "تعطيل",
+                    "template": "قالب",
+                    "nextDue": "الاستحقاق التالي",
+                    "notScheduled": "غير مجدول",
+                    "dueAtKm": "مستحق عند كم",
+                    "activeStatus": "الخطة نشطة وتتم مراقبتها",
+                    "attentionStatus": "الخطة تحتاج إلى اهتمام"
+                },
+                "calendar": {
+                    "today": "اليوم",
+                    "event": "حدث",
+                    "events": "أحداث",
+                    "weekdays": {
+                        "sun": "أحد",
+                        "mon": "إثنين",
+                        "tue": "ثلاثاء",
+                        "wed": "أربعاء",
+                        "thu": "خميس",
+                        "fri": "جمعة",
+                        "sat": "سبت"
+                    },
+                    "moreEvents": "+{count} المزيد",
+                    "eventsTitle": "أحداث {date}",
+                    "priority": "الأولوية",
+                    "assigned": "مُعين لـ",
+                    "oneEvent": "حدث واحد",
+                    "multipleEvents": "{count} أحداث"
+                },
+                "eventDrawer": {
+                    "title": "تفاصيل الحدث",
+                    "highPriority": "أولوية عالية",
+                    "equipment": "المعدات",
+                    "scheduledDate": "تاريخ الجدولة",
+                    "assignedTechnician": "الفني المعين",
+                    "estimatedCost": "التكلفة التقديرية",
+                    "description": "الوصف",
+                    "notes": "ملاحظات",
+                    "notFoundTitle": "لم يتم العثور على الحدث",
+                    "notFoundDesc": "ربما تم حذف هذا الحدث أو ليس لديك إذن لعرضه.",
+                    "editSoon": "وظيفة التعديل قريبا",
+                    "edit": "تعديل",
+                    "done": "منجز",
+                    "viewWO": "عرض أمر العمل",
+                    "wo": "أمر العمل",
+                    "deleteEvent": "حذف الحدث",
+                    "confirmDelete": "⚠️ هل أنت متأكد أنك تريد حذف حدث الصيانة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
+                    "confirmComplete": "✅ هل تريد تحديد هذه الصيانة كمكتملة؟"
+                },
+                "tooltips": {
+                    "technician": "فني",
+                    "highPriorityMaintenance": "⚠️ صيانة ذات أولوية قصوى"
+                },
+                "card": {
+                    "overdue": "متأخر",
+                    "active": "نشط",
+                    "progress": "التقدم",
+                    "lastPerformed": "أخر تنفيذ",
+                    "never": "أبدا",
+                    "nextDue": "الاستحقاق القادم",
+                    "markCompleted": "تحديد كمكتمل"
+                },
+                "filter": {
+                    "label": "تصفية",
+                    "title": "تصفية",
+                    "resetAll": "إعادة تعيين الكل",
+                    "status": "الحالة",
+                    "apply": "تطبيق المرشحات"
+                },
+                "status": {
+                    "scheduled": "مجدول",
+                    "in_progress": "قيد التنفيذ",
+                    "completed": "مكتمل",
+                    "cancelled": "ملغى",
+                    "overdue": "متأخر"
+                },
+                "table": {
+                    "searchPlaceholder": "بحث عن خطط...",
+                    "noPlansFound": "لم يتم العثور على خطط",
+                    "plan": "خطة",
+                    "plans": "خطط",
+                    "headers": {
+                        "asset": "الأصل",
+                        "planName": "اسم الخطة",
+                        "recurrence": "التكرار",
+                        "nextDue": "الاستحقاق التالي",
+                        "status": "الحالة"
+                    },
+                    "actions": {
+                        "runNow": "تشغيل الآن",
+                        "pause": "إيقاف مؤقت",
+                        "resume": "استئناف",
+                        "viewVehicle": "عرض المركبة",
+                        "delete": "حذف",
+                        "confirmDelete": "هل أنت متأكد أنك تريد حذف خطة الصيانة هذه؟"
+                    },
+                    "recurrence": {
+                        "daily": "يومي",
+                        "weekly": "أسبوعي",
+                        "monthly": "شهري",
+                        "everyDays": "كل {days} أيام",
+                        "everyKm": "كل {km} كم",
+                        "everyHours": "كل {hours} ساعة",
+                        "custom": "مخصص"
+                    },
+                    "status": {
+                        "active": "نشط",
+                        "inactive": "غير نشط"
+                    },
+                    "pagination": {
+                        "showing": "عرض",
+                        "to": "إلى",
+                        "of": "من",
+                        "page": "صفحة",
+                        "previous": "السابق",
+                        "next": "التالي"
+                    }
+                },
+                "templatesList": {
+                    "table": {
+                        "name": "الاسم",
+                        "description": "الوصف",
+                        "frequency": "التكرار",
+                        "intervals": "فترات",
+                        "tasks": "مهام",
+                        "actions": "الإجراءات",
+                        "empty": "لم يتم العثور على قوالب.",
+                        "noIntervals": "لم يتم تعيين فترات",
+                        "units": {
+                            "km": "كم",
+                            "days": "أيام",
+                            "hours": "ساعة"
+                        },
+                        "tasksCount": "{count} مهمة/مهام"
+                    },
+                    "emptyState": {
+                        "title": "لم يتم العثور على قوالب",
+                        "description": "قم بإنشاء نموذج الصيانة الأول الخاص بك للبدء."
+                    }
+                },
+                "form": {
+                    "scheduleTitle": "جدولة الصيانة",
+                    "editTemplate": "تعديل القالب",
+                    "createTemplate": "إنشاء قالب صيانة",
+                    "templateName": "اسم القالب",
+                    "description": "الوصف",
+                    "intervalRules": "قواعد الفاصل الزمني",
+                    "type": "النوع",
+                    "value": "القيمة",
+                    "taskChecklist": "قائمة مهام",
+                    "addTask": "إضافة مهمة",
+                    "saveTemplate": "حفظ القالب",
+                    "validation": {
+                        "nameRequired": "اسم القالب مطلوب"
+                    },
+                    "placeholders": {},
+                    "cancel": "إلغاء",
+                    "create": "جدولة الصيانة",
+                    "vehicle": "المركبة",
+                    "selectVehicle": "اختر مركبة",
+                    "selectTemplate": "اختر قالباً (اختياري)",
+                    "scheduledDate": "التاريخ المجدول",
+                    "priority": "الأولوية",
+                    "assignTo": "تعيين إلى (اختياري)",
+                    "estimatedCost": "التكلفة التقديرية",
+                    "notes": "ملاحظات",
+                    "optional": "(اختياري)",
+                    "selectTechnician": "اختر فنياً (اختياري)",
+                    "task": "مهمة",
+                    "items": {
+                        "distance": "المسافة",
+                        "time": "الوقت",
+                        "engineHours": "ساعات المحرك"
+                    },
+                    "error": "فشل في جدولة الصيانة"
+                }
+            }
+        },
+        "notAuthorized": {
+            "title": "تم رفض الوصول",
+            "description": "ليس لديك الإذن للوصول إلى هذه الصفحة. يرجى التواصل مع المسؤول إذا كنت تعتقد أن هذا خطأ.",
+            "actions": {
+                "goBack": "رجوع",
+                "goToDashboard": "الانتقال إلى لوحة التحكم"
+            }
+        },
+        "errorPage": {
+            "title": "حدث خطأ ما!",
+            "defaultMessage": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+            "actions": {
+                "reloadPage": "إعادة تحميل الصفحة",
+                "tryAgain": "المحاولة مرة أخرى"
+            }
+        },
+        "notFoundPage": {
+            "title": "404",
+            "description": "الصفحة غير موجودة",
+            "actions": {
+                "backToDashboard": "العودة إلى لوحة التحكم",
+                "viewWorkOrders": "عرض أوامر العمل"
+            }
+        },
+        "integrationExample": {
+            "tabs": {
+                "details": "التفاصيل",
+                "tasks": "المهام",
+                "parts": "القطع",
+                "comments": "التعليقات",
+                "costs": "التكاليف"
+            }
+        },
+        "homePage": {
+            "redirecting": "جارٍ إعادة التوجيه..."
+        },
+        "components": {
+            "pagination": {
+                "showing": "عرض",
+                "to": "إلى",
+                "of": "من",
+                "results": "نتائج",
+                "rowsPerPage": "صفوف لكل صفحة:"
+            },
+            "confirmDialog": {
+                "defaultConfirm": "تأكيد",
+                "defaultCancel": "إلغاء"
+            }
+        },
+        "profilePage": {
+            "title": "ملفي الشخصي",
+            "description": "عرض تفاصيل ملفك الشخصي والنشاط الأخير.",
+            "tabs": {
+                "overview": "نظرة عامة",
+                "activity": "سجل النشاط"
+            },
+            "stats": {
+                "completedWorkOrders": "أوامر العمل المكتملة",
+                "activeTasks": "المهام النشطة",
+                "participationRate": "معدل المشاركة"
+            },
+            "info": {
+                "title": "معلومات شخصية",
+                "email": "عنوان البريد الإلكتروني",
+                "role": "الدور الحالي",
+                "tenant": "المؤسسة",
+                "joined": "عضو منذ"
+            }
         }
     }
 }

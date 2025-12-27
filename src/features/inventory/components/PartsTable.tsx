@@ -22,9 +22,10 @@ interface PartsTableProps {
   isLoading: boolean;
   onEdit?: (part: Part) => void;
   onDelete?: (part: Part) => void;
+  onReceiveStock?: (part: Part) => void;
 }
 
-export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTableProps) {
+export function PartsTable({ parts, isLoading, onEdit, onDelete, onReceiveStock }: PartsTableProps) {
   const t = useTranslations("inventory.table");
 
   if (isLoading) {
@@ -65,7 +66,7 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTablePro
             {parts.map((part) => {
               const isLowStock = part.total_quantity <= part.min_quantity;
               const isCriticalStock = part.total_quantity < part.min_quantity * 0.5;
-              const totalValue = part.total_quantity * (part.unit_price || 0);
+              const totalValue = part.total_quantity * (part.unit_price_ht || 0);
 
               return (
                 <TableRow
@@ -113,7 +114,7 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTablePro
                       "-"
                     )}
                   </TableCell>
-                  <TableCell>{part.location}</TableCell>
+                  <TableCell>{part.default_location}</TableCell>
                   <TableCell>{part.supplier?.name || "-"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex flex-col items-end">
@@ -133,7 +134,7 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTablePro
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(part.unit_price || 0)}
+                    {formatCurrency(part.unit_price_ht || 0)}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     {formatCurrency(totalValue)}
@@ -151,6 +152,20 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete }: PartsTablePro
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
+                      {onReceiveStock && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onReceiveStock(part);
+                          }}
+                          title={t("actions.receiveStock")}
+                          className="text-primary hover:text-primary hover:bg-primary/10"
+                        >
+                          <Package className="h-4 w-4" />
+                        </Button>
+                      )}
                       {onDelete && (
                         <Button
                           variant="ghost"

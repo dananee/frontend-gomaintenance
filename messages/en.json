@@ -540,7 +540,8 @@
             "empty": "No parts found",
             "actions": {
                 "edit": "Edit",
-                "delete": "Delete"
+                "delete": "Delete",
+                "receiveStock": "Receive Stock"
             },
             "minQty": "Min: {count}"
         },
@@ -553,6 +554,46 @@
                 "title": "No parts found",
                 "description": "No parts match your current filters. Try adjusting your search criteria or filters."
             }
+        },
+        "stockReception": {
+            "title": "Stock Reception",
+            "description": "Add quantities to inventory and create FIFO batches",
+            "fields": {
+                "warehouse": "Warehouse",
+                "quantity": "Quantity to receive",
+                "unitCostHT": "Unit Cost HT",
+                "vatRate": "VAT Rate (%)",
+                "dateReceived": "Reception Date",
+                "supplier": "Supplier",
+                "referenceType": "Reference Type",
+                "referenceNo": "Reference Number",
+                "notes": "Reception Notes",
+                "totalHT": "Total HT",
+                "totalVAT": "Total VAT",
+                "totalTTC": "Total TTC (MAD)"
+            },
+            "placeholders": {
+                "warehouse": "Select an active warehouse",
+                "quantity": "0",
+                "unitCostHT": "0.00",
+                "supplier": "Select a supplier (optional)",
+                "referenceNo": "e.g., BL-2025-001",
+                "notes": "Condition, storage details, etc."
+            },
+            "referenceTypes": {
+                "supplier_invoice": "Supplier Invoice",
+                "delivery_note": "Delivery Note",
+                "manual": "Manual Entry"
+            },
+            "toasts": {
+                "success": "Stock received successfully",
+                "error": "Failed to receive stock"
+            },
+            "actions": {
+                "submit": "Receive Stock",
+                "cancel": "Cancel"
+            },
+            "managedInSettings": "Fields marked with an asterisk (*) are required"
         },
         "details": {
             "adjustStock": "Adjust Stock",
@@ -681,14 +722,17 @@
                 },
                 "fields": {
                     "name": "Part name",
-                    "sku": "SKU",
-                    "part_number": "Part Number",
-                    "price": "Unit price",
+                    "sku": "Internal SKU",
+                    "part_number": "Manufacturer Ref (MPN)",
+                    "price": "Unit price HT",
+                    "vat_rate": "VAT Rate (%)",
+                    "price_ttc": "Total price (TTC)",
+                    "is_critical": "Critical Part",
                     "category": "Category",
                     "supplier": "Supplier",
                     "unit": "Unit",
                     "minQuantity": "Min. Quantity",
-                    "location": "Location",
+                    "location": "Default Location",
                     "brand": "Brand",
                     "description": "Description"
                 },
@@ -696,7 +740,8 @@
                     "category": "Select category",
                     "supplier": "Select supplier",
                     "unit": "Select unit",
-                    "sku": "Internal tracking #",
+                    "sku": "e.g. SKU-12345",
+                    "part_number": "e.g. MPN-67890",
                     "location": "e.g. Aisle 5, Shelf B",
                     "none": "None"
                 },
@@ -805,12 +850,20 @@
             "fields": {
                 "name": "Session Name",
                 "warehouse": "Warehouse",
-                "description": "Description"
+                "description": "Description",
+                "scope": "Audit Scope",
+                "scopeCategory": "Category"
             },
             "placeholders": {
                 "name": "e.g. End of Year 2024",
                 "warehouse": "Select Warehouse",
-                "description": "Optional notes"
+                "description": "Optional notes",
+                "scope": "Select scope"
+            },
+            "scopes": {
+                "all": "All Inventory",
+                "withStock": "Only Parts with Stock",
+                "category": "By Category"
             },
             "actions": {
                 "create": "Create Session"
@@ -824,7 +877,8 @@
             "stockSyncedTitle": "Stock Synced",
             "stockSyncedDesc": "The inventory stock has been reconciled with the physical counts. Adjustment movements were automatically logged.",
             "validateConfirm": "Are you sure you want to validate this audit? This will automatically generate stock movements to reflect the physical counts. This action cannot be undone.",
-            "notFound": "Audit not found"
+            "notFound": "Audit not found",
+            "scopeLabel": "Scope"
         }
     },
     "suppliers": {

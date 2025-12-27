@@ -2,6 +2,7 @@
 
 import { useAudits, useCreateAudit } from "@/features/inventory/hooks/useAudits";
 import { useWarehouses } from "@/features/inventory/hooks/useWarehouses";
+import { usePartCategories } from "@/features/inventory/hooks/usePartCategories";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Package, Calendar, User, ArrowRight } from "lucide-react";
+import { Plus, Package, Calendar, User, ArrowRight, Filter } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -22,24 +23,46 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AuditsPage() {
   const { user } = useAuth();
   const t = useTranslations("audits");
   const { data: audits, isLoading } = useAudits();
   const { data: warehouses } = useWarehouses(true);
+  const { data: categories } = usePartCategories();
   const createAuditMutation = useCreateAudit();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newAudit, setNewAudit] = useState({ name: "", warehouse_id: "", description: "" });
+  const [newAudit, setNewAudit] = useState({ 
+    name: "", 
+    warehouse_id: "", 
+    description: "",
+    scope: "ALL",
+    scope_category_id: ""
+  });
 
   const handleCreate = async () => {
     await createAuditMutation.mutateAsync({
       name: newAudit.name,
       warehouse_id: newAudit.warehouse_id,
-      description: newAudit.description
+      description: newAudit.description,
+      scope: newAudit.scope,
+      scope_category_id: newAudit.scope === "CATEGORY" ? newAudit.scope_category_id : ""
     });
     setIsModalOpen(false);
-    setNewAudit({ name: "", warehouse_id: "", description: "" });
+    setNewAudit({ 
+      name: "", 
+      warehouse_id: "", 
+      description: "",
+      scope: "ALL",
+      scope_category_id: ""
+    });
   };
 
   return (
@@ -57,7 +80,10 @@ export default function AuditsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("table.headers.recentSessions") || "Recent Sessions"}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-muted-foreground" />
+            {t("table.headers.recentSessions") || "Recent Sessions"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -74,7 +100,17 @@ export default function AuditsPage() {
             <TableBody>
               {audits?.map((audit) => (
                 <TableRow key={audit.id}>
-                  <TableCell className="font-medium">{audit.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex flex-col">
+                        <span>{audit.name}</span>
+                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Filter className="h-2 w-2" />
+                            {audit.scope === "ALL" ? t("modal.scopes.all") : 
+                             audit.scope === "WITH_STOCK" ? t("modal.scopes.withStock") : 
+                             t("modal.scopes.category")}
+                        </span>
+                    </div>
+                  </TableCell>
                   <TableCell>{audit.warehouse?.name || "Global"}</TableCell>
                   <TableCell>
                     <Badge variant={
@@ -114,7 +150,7 @@ export default function AuditsPage() {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{t("modal.title")}</DialogTitle>
           </DialogHeader>
@@ -127,21 +163,25 @@ export default function AuditsPage() {
                 onChange={(e) => setNewAudit({ ...newAudit, name: e.target.value })}
               />
             </div>
+            
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label>{t("modal.fields.warehouse")}</Label>
                 <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Managed in Settings</span>
               </div>
-              <select 
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              <Select 
                 value={newAudit.warehouse_id}
-                onChange={(e) => setNewAudit({ ...newAudit, warehouse_id: e.target.value })}
+                onValueChange={(value) => setNewAudit({ ...newAudit, warehouse_id: value })}
               >
-                <option value="">{t("modal.placeholders.warehouse")}</option>
-                {warehouses?.map(w => (
-                  <option key={w.id} value={w.id}>{w.name}</option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder={t("modal.placeholders.warehouse")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {warehouses?.map(w => (
+                    <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {(!warehouses || warehouses.length === 0) && (user?.role === "admin" || user?.role === "manager") && (
                 <div className="mt-1">
                     <Link 
@@ -154,6 +194,43 @@ export default function AuditsPage() {
                 </div>
               )}
             </div>
+
+            <div className="space-y-2">
+              <Label>{t("modal.fields.scope")}</Label>
+              <Select 
+                value={newAudit.scope}
+                onValueChange={(value) => setNewAudit({ ...newAudit, scope: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("modal.placeholders.scope")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">{t("modal.scopes.all")}</SelectItem>
+                  <SelectItem value="WITH_STOCK">{t("modal.scopes.withStock")}</SelectItem>
+                  <SelectItem value="CATEGORY">{t("modal.scopes.category")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {newAudit.scope === "CATEGORY" && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-1">
+                <Label>{t("modal.fields.scopeCategory")}</Label>
+                <Select 
+                  value={newAudit.scope_category_id}
+                  onValueChange={(value) => setNewAudit({ ...newAudit, scope_category_id: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("inventory.details.editModal.placeholders.category") || "Select category"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories?.map(c => (
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label>{t("modal.fields.description")}</Label>
               <Input 
@@ -165,7 +242,7 @@ export default function AuditsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>{t("common.cancel") || "Cancel"}</Button>
-            <Button onClick={handleCreate} disabled={!newAudit.name || !newAudit.warehouse_id}>
+            <Button onClick={handleCreate} disabled={!newAudit.name || !newAudit.warehouse_id || (newAudit.scope === "CATEGORY" && !newAudit.scope_category_id)}>
               {t("modal.actions.create")}
             </Button>
           </DialogFooter>

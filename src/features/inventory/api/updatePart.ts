@@ -8,10 +8,12 @@ export interface UpdatePartRequest {
   description?: string;
   category_id?: string;
   brand?: string;
-  unit_price?: number;
+  unit_price_ht?: number;
+  vat_rate?: number;
+  is_critical?: boolean;
   min_quantity?: number;
   unit?: string;
-  location?: string;
+  default_location?: string;
   supplier_id?: string;
 }
 

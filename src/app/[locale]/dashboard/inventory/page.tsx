@@ -4,6 +4,8 @@ import { PartsTable } from "@/features/inventory/components/PartsTable";
 import { EditPartModal } from "@/features/inventory/components/EditPartModal";
 import { useParts } from "@/features/inventory/hooks/useParts";
 import { useCreatePart, useUpdatePart, useDeletePart } from "@/features/inventory/hooks/usePartMutations";
+import { StockReceptionModal } from "@/features/inventory/components/StockReceptionModal";
+import { useSuppliers } from "@/features/inventory/hooks/useSuppliers";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -50,6 +52,8 @@ export default function InventoryPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPart, setEditingPart] = useState<Part | undefined>(undefined);
+  const [receptionPart, setReceptionPart] = useState<Part | undefined>(undefined);
+  const { data: suppliers } = useSuppliers();
 
   const lowStockCount = useMemo(() => {
     const rows = parts?.data || [];
@@ -58,7 +62,7 @@ export default function InventoryPage() {
 
   const totalValue = useMemo(() => {
     const rows = parts?.data || [];
-    return rows.reduce((sum, part) => sum + part.total_quantity * (part.unit_price || 0), 0);
+    return rows.reduce((sum, part) => sum + part.total_quantity * (part.unit_price_ht || 0), 0);
   }, [parts?.data]);
 
   const hasParts = (parts?.data || []).length > 0;
@@ -74,7 +78,7 @@ export default function InventoryPage() {
         part.name.toLowerCase().includes(search.toLowerCase()) ||
         part.part_number?.toLowerCase().includes(search.toLowerCase());
       const matchesWarehouse =
-        warehouse === "all" || part.location === warehouse;
+        warehouse === "all" || part.default_location === warehouse;
       const matchesCategory = category === "all" || part.category_id === category;
       const matchesLowStock =
         !lowStockOnly || part.total_quantity <= part.min_quantity;
@@ -116,9 +120,11 @@ export default function InventoryPage() {
             description: partData.description,
             category_id: partData.category_id,
             brand: partData.brand,
-            unit_price: partData.unit_price || 0,
+            unit_price_ht: partData.unit_price_ht || 0,
+            vat_rate: partData.vat_rate || 20,
+            is_critical: partData.is_critical || false,
             unit: partData.unit || "piece",
-            location: partData.location,
+            default_location: partData.default_location,
             supplier_id: partData.supplier_id,
             min_quantity: partData.min_quantity || 0,
           },
@@ -139,9 +145,11 @@ export default function InventoryPage() {
           description: partData.description,
           category_id: partData.category_id,
           brand: partData.brand,
-          unit_price: partData.unit_price || 0,
+          unit_price_ht: partData.unit_price_ht || 0,
+          vat_rate: partData.vat_rate || 20,
+          is_critical: partData.is_critical || false,
           unit: partData.unit || "piece",
-          location: partData.location,
+          default_location: partData.default_location,
           supplier_id: partData.supplier_id,
           min_quantity: partData.min_quantity || 0,
         },
@@ -332,6 +340,7 @@ export default function InventoryPage() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onReceiveStock={(part) => setReceptionPart(part)}
           />
           {filteredParts.length > 0 && (
             <Pagination
@@ -355,6 +364,17 @@ export default function InventoryPage() {
         part={editingPart}
         onSave={handleSave}
       />
+
+      {receptionPart && (
+        <StockReceptionModal
+          isOpen={!!receptionPart}
+          onClose={() => setReceptionPart(undefined)}
+          partId={receptionPart.id}
+          partName={receptionPart.name}
+          warehouses={warehouses}
+          suppliers={suppliers?.data}
+        />
+      )}
     </div>
   );
 }
