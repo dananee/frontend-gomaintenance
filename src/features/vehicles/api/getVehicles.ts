@@ -13,7 +13,8 @@ export interface GetVehiclesResponse {
   data: Vehicle[];
   page: number;
   page_size: number;
-  total: number;
+  total_items: number;
+  total_pages: number;
 }
 
 export const getVehicles = async (params: GetVehiclesParams = {}): Promise<GetVehiclesResponse> => {

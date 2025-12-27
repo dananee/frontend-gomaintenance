@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  Package,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -34,6 +35,7 @@ import { WorkOrderTasks } from "@/features/workOrders/components/WorkOrderTasks"
 import { WorkOrderAttachments } from "@/features/workOrders/components/WorkOrderAttachments";
 import { WorkOrderTimeline } from "@/features/workOrders/components/WorkOrderTimeline";
 import { WorkOrderComments } from "@/features/workOrders/components/WorkOrderComments";
+import { WorkOrderParts } from "@/features/workOrders/components/WorkOrderParts";
 import { useWorkOrder } from "@/features/workOrders/hooks/useWorkOrder";
 import { formatDateShort } from "@/lib/formatters";
 import { motion } from "framer-motion";
@@ -161,6 +163,13 @@ export default function WorkOrderDetailsPage() {
             >
               <CheckCircle2 className="h-4 w-4 mr-2" />
               {t("details.tabs.tasks")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="parts"
+              className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none px-2 py-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            >
+              <Package className="h-4 w-4 mr-2" />
+              {t("details.tabs.parts")}
             </TabsTrigger>
             <TabsTrigger
               value="attachments"
@@ -304,6 +313,10 @@ export default function WorkOrderDetailsPage() {
 
           <TabsContent value="tasks" className="space-y-6 animate-in fade-in-50 duration-300 slide-in-from-bottom-2">
             <WorkOrderTasks />
+          </TabsContent>
+
+          <TabsContent value="parts" className="space-y-6 animate-in fade-in-50 duration-300 slide-in-from-bottom-2">
+            <WorkOrderParts workOrderId={workOrder.id} />
           </TabsContent>
 
           <TabsContent value="attachments" className="space-y-6 animate-in fade-in-50 duration-300 slide-in-from-bottom-2">

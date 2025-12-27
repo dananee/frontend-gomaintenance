@@ -31,15 +31,21 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export default function VehiclesPage() {
   const t = useTranslations("vehicles");
   const locale = useLocale();
-  const { data, isLoading } = useVehicles();
-  const { isOpen, open, close } = useModal();
-  const queryClient = useQueryClient();
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const { data, isLoading } = useVehicles({
+    page: currentPage,
+    page_size: pageSize,
+    search: search || undefined,
+    status: statusFilter === "all" ? undefined : statusFilter,
+    type: typeFilter === "all" ? undefined : typeFilter,
+  });
+  const { isOpen, open, close } = useModal();
+  const queryClient = useQueryClient();
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   // States for new modals
   const [vehicleToDelete, setVehicleToDelete] = useState<string | null>(null);
@@ -136,31 +142,11 @@ export default function VehiclesPage() {
     }
   };
 
-  const filteredVehicles = useMemo(() => {
-    const vehicles = data?.data || [];
+  const vehicles = data?.data || [];
+  const totalPages = data?.total_pages || 1;
+  const totalItems = data?.total_items || 0;
 
-    return vehicles.filter((vehicle) => {
-      const matchesStatus =
-        statusFilter === "all" || vehicle.status === statusFilter;
-      const matchesType = typeFilter === "all" || vehicle.type === typeFilter;
-      const matchesSearch =
-        !search ||
-        vehicle.brand.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.model.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.plate_number?.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.vin?.toLowerCase().includes(search.toLowerCase());
-
-      return matchesStatus && matchesType && matchesSearch;
-    });
-  }, [data?.data, search, statusFilter, typeFilter]);
-
-  const totalPages = Math.ceil(filteredVehicles.length / pageSize);
-  const paginatedVehicles = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    return filteredVehicles.slice(startIndex, startIndex + pageSize);
-  }, [filteredVehicles, currentPage, pageSize]);
-
-  const hasVehicles = (data?.data || []).length > 0;
+  const hasVehicles = totalItems > 0;
   const hasFilters = search || statusFilter !== "all" || typeFilter !== "all";
 
   return (
@@ -208,9 +194,12 @@ export default function VehiclesPage() {
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">{t("filters.type.all")}</option>
-          <option value="truck">{t("filters.type.truck")}</option>
-          <option value="van">{t("filters.type.van")}</option>
-          <option value="car">{t("filters.type.car")}</option>
+          <option value="truck">{t.has("filters.type.truck") ? t("filters.type.truck") : "truck"}</option>
+          <option value="van">{t.has("filters.type.van") ? t("filters.type.van") : "van"}</option>
+          <option value="car">{t.has("filters.type.car") ? t("filters.type.car") : "car"}</option>
+          <option value="VOITURE DE SOCIETE">{t.has("filters.type.VOITURE DE SOCIETE") ? t("filters.type.VOITURE DE SOCIETE") : "VOITURE DE SOCIETE"}</option>
+          <option value="PICK UP">{t.has("filters.type.PICK UP") ? t("filters.type.PICK UP") : "PICK UP"}</option>
+          <option value="TRAFIC">{t.has("filters.type.TRAFIC") ? t("filters.type.TRAFIC") : "TRAFIC"}</option>
         </select>
       </div>
 
@@ -226,7 +215,7 @@ export default function VehiclesPage() {
             }}
           />
         </div>
-      ) : !isLoading && filteredVehicles.length === 0 && hasFilters ? (
+      ) : !isLoading && vehicles.length === 0 && hasFilters ? (
         <div className="rounded-lg border border-gray-200 dark:border-gray-700">
           <EmptyState
             icon={Truck}
@@ -249,19 +238,19 @@ export default function VehiclesPage() {
       ) : (
         <>
           <VehicleTable
-            vehicles={paginatedVehicles}
+            vehicles={vehicles}
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onCreateWorkOrder={handleCreateWorkOrder}
             onCreatePlan={handleCreatePlan}
           />
-          {filteredVehicles.length > 0 && (
+          {vehicles.length > 0 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               pageSize={pageSize}
-              totalItems={filteredVehicles.length}
+              totalItems={totalItems}
               onPageChange={(page) => setCurrentPage(page)}
               onPageSizeChange={(size) => {
                 setPageSize(size);

@@ -10,6 +10,7 @@ export interface ProfileData {
     department: string;
     bio?: string;
     avatar_url?: string;
+    role: string;
 }
 
 export interface UpdateProfileRequest {

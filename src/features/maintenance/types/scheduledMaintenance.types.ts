@@ -42,6 +42,8 @@ export interface CreateScheduledMaintenanceRequest {
 }
 
 export interface UpdateScheduledMaintenanceRequest {
+  vehicle_id: string;
+  template_id?: string;
   title: string;
   description?: string;
   scheduled_date: string;

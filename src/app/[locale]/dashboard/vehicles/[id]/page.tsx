@@ -15,7 +15,6 @@ import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
 import { ServiceSummary } from "@/features/vehicles/components/ServiceSummary";
 import { CostTrendChart } from "@/features/dashboard/components/CostTrendChart";
 import { DowntimeChart } from "@/features/dashboard/components/DowntimeChart";
-import { WorkOrderPieChart } from "@/features/dashboard/components/WorkOrderPieChart";
 import {
   Activity,
   CalendarRange,
@@ -472,21 +471,7 @@ export default function VehicleDetailPage() {
                   label: `${item.value.toFixed(0)}h`,
                 }))}
               />
-              <WorkOrderPieChart
-                data={(charts.workOrderDistribution || []).map((item) => ({
-                  status: item.name,
-                  count: item.value,
-                  percentage: metrics.totalWorkOrders > 0 ? (item.value / metrics.totalWorkOrders) * 100 : 0,
-                  color:
-                    item.name === "preventive"
-                      ? "#10b981"
-                      : item.name === "corrective"
-                        ? "#f59e0b"
-                        : item.name === "breakdown"
-                          ? "#ef4444"
-                          : "#3b82f6",
-                }))}
-              />
+            
               <Card className="shadow-sm">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl font-semibold">{t("details.analytics.mileageGrowth")}</CardTitle>

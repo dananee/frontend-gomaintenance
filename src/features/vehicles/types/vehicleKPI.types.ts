@@ -75,8 +75,14 @@ export interface KPITrend {
 
 export interface VehicleHealthScore {
   overall_score: number; // 0-100
-  maintenance_score: number;
-  reliability_score: number;
-  cost_efficiency_score: number;
-  status: "excellent" | "good" | "fair" | "poor" | "critical";
+  maintenance_score?: number;
+  reliability_score?: number;
+  cost_efficiency_score?: number;
+  age_penalty?: number;
+  maintenance_penalty?: number;
+  breakdown_penalty?: number;
+  downtime_penalty?: number;
+  mileage_penalty?: number;
+  status: "excellent" | "good" | "fair" | "poor";
+  message?: string;
 }

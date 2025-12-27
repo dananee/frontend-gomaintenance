@@ -8,9 +8,11 @@ export interface ScheduledMaintenanceEvent {
   status: "pending" | "in_progress" | "completed" | "cancelled" | "overdue";
   priority: "low" | "medium" | "high" | "critical";
   assigned_to?: string;
+  technician?: string;
   estimated_cost?: number;
   notes?: string;
   work_order_id?: string;
+  template_id?: string;
 }
 
 export interface ActiveMaintenancePlan {

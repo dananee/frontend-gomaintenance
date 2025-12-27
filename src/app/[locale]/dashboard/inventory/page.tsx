@@ -4,6 +4,8 @@ import { PartsTable } from "@/features/inventory/components/PartsTable";
 import { EditPartModal } from "@/features/inventory/components/EditPartModal";
 import { useParts } from "@/features/inventory/hooks/useParts";
 import { useCreatePart, useUpdatePart, useDeletePart } from "@/features/inventory/hooks/usePartMutations";
+import { StockReceptionModal } from "@/features/inventory/components/StockReceptionModal";
+import { useSuppliers } from "@/features/inventory/hooks/useSuppliers";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -21,13 +23,20 @@ import { Part } from "@/features/inventory/types/inventory.types";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { usePartCategories } from "@/features/inventory/hooks/usePartCategories";
+import { formatCurrency } from "@/lib/formatters";
+import { useQuery } from "@tanstack/react-query";
+import { getWarehouses, Warehouse } from "@/features/inventory/api/inventory";
+import { useWarehouses } from "@/features/inventory/hooks/useWarehouses";
+import { useProfile } from "@/hooks/useProfile";
+import { Download, FileUp, FileOutput } from "lucide-react";
+import { ImportInventoryModal } from "@/features/inventory/components/ImportInventoryModal";
+import { getInventoryImportTemplate, exportInventoryExcel } from "@/features/inventory/api/inventoryExcel";
+import { useLocale } from "next-intl";
 
 export default function InventoryPage() {
   const t = useTranslations("inventory");
-  const { data: parts, isLoading } = useParts();
-  const createPartMutation = useCreatePart();
-  const updatePartMutation = useUpdatePart();
-  const deletePartMutation = useDeletePart();
+  const { data: warehouses } = useWarehouses(true);
   const [search, setSearch] = useState("");
   const [warehouse, setWarehouse] = useState("all");
   const [category, setCategory] = useState("all");
@@ -35,17 +44,37 @@ export default function InventoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  const { data: parts, isLoading } = useParts({
+    page: currentPage,
+    page_size: pageSize,
+    search: search,
+    category_id: category === "all" ? "" : category,
+  });
+  const { data: categories } = usePartCategories();
+  const createPartMutation = useCreatePart();
+  const updatePartMutation = useUpdatePart();
+  const deletePartMutation = useDeletePart();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPart, setEditingPart] = useState<Part | undefined>(undefined);
+  const [receptionPart, setReceptionPart] = useState<Part | undefined>(undefined);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const { data: suppliers } = useSuppliers();
+  const { profile } = useProfile();
+  const locale = useLocale();
+
+  const role = profile?.role;
+  const canImport = role && ["admin", "manager", "storekeeper"].includes(role);
+  const canExport = role && ["admin", "manager"].includes(role);
 
   const lowStockCount = useMemo(() => {
     const rows = parts?.data || [];
-    return rows.filter((part) => part.quantity <= part.min_quantity).length;
+    return rows.filter((part) => part.total_quantity <= part.min_quantity).length;
   }, [parts?.data]);
 
   const totalValue = useMemo(() => {
     const rows = parts?.data || [];
-    return rows.reduce((sum, part) => sum + part.quantity * part.cost, 0);
+    return rows.reduce((sum, part) => sum + part.total_quantity * (part.unit_price_ht || 0), 0);
   }, [parts?.data]);
 
   const hasParts = (parts?.data || []).length > 0;
@@ -61,10 +90,10 @@ export default function InventoryPage() {
         part.name.toLowerCase().includes(search.toLowerCase()) ||
         part.part_number?.toLowerCase().includes(search.toLowerCase());
       const matchesWarehouse =
-        warehouse === "all" || part.location === warehouse;
-      const matchesCategory = category === "all" || part.category === category;
+        warehouse === "all" || part.default_location === warehouse;
+      const matchesCategory = category === "all" || part.category_id === category;
       const matchesLowStock =
-        !lowStockOnly || part.quantity <= part.min_quantity;
+        !lowStockOnly || part.total_quantity <= part.min_quantity;
 
       return (
         matchesSearch && matchesWarehouse && matchesCategory && matchesLowStock
@@ -88,6 +117,14 @@ export default function InventoryPage() {
     setIsModalOpen(true);
   };
 
+  const handleDownloadTemplate = async () => {
+    try {
+      await getInventoryImportTemplate();
+    } catch (error) {
+      toast.error("Failed to download template");
+    }
+  };
+
   const handleSave = (partData: Partial<Part>) => {
     const isEditing = !!editingPart;
     
@@ -97,11 +134,19 @@ export default function InventoryPage() {
         {
           id: editingPart.id,
           data: {
-            part_number: partData.part_number,
-            name: partData.name,
+            part_number: partData.part_number!,
+            sku: partData.sku || "",
+            name: partData.name!,
             description: partData.description,
+            category_id: partData.category_id,
             brand: partData.brand,
-            unit_price: partData.unit_price || partData.cost,
+            unit_price_ht: partData.unit_price_ht || 0,
+            vat_rate: partData.vat_rate || 20,
+            is_critical: partData.is_critical || false,
+            unit: partData.unit || "piece",
+            default_location: partData.default_location,
+            supplier_id: partData.supplier_id,
+            min_quantity: partData.min_quantity || 0,
           },
         },
         {
@@ -115,10 +160,18 @@ export default function InventoryPage() {
       createPartMutation.mutate(
         {
           part_number: partData.part_number!,
+          sku: partData.sku || "",
           name: partData.name!,
           description: partData.description,
+          category_id: partData.category_id,
           brand: partData.brand,
-          unit_price: partData.unit_price || partData.cost || 0,
+          unit_price_ht: partData.unit_price_ht || 0,
+          vat_rate: partData.vat_rate || 20,
+          is_critical: partData.is_critical || false,
+          unit: partData.unit || "piece",
+          default_location: partData.default_location,
+          supplier_id: partData.supplier_id,
+          min_quantity: partData.min_quantity || 0,
         },
         {
           onSuccess: () => {
@@ -147,6 +200,27 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          {canExport && (
+            <Button variant="outline" onClick={() => exportInventoryExcel(locale)}>
+              <FileOutput className="mr-2 h-4 w-4" />
+              {t("actions.exportExcel")}
+            </Button>
+          )}
+          {canImport && (
+            <>
+             
+              <Button variant="outline" onClick={() => setIsImportModalOpen(true)}>
+                <FileUp className="mr-2 h-4 w-4" />
+                {t("actions.importExcel")}
+              </Button>
+            </>
+          )}
+          <Link href="/dashboard/inventory/audits">
+              <Button variant="outline">
+                <Package className="mr-2 h-4 w-4" />
+                {t("actions.audits")}
+              </Button>
+          </Link>
           <Link href="/dashboard/inventory/suppliers">
             <Button variant="outline">
               <Users className="mr-2 h-4 w-4" />
@@ -196,10 +270,7 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {totalValue.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })} MAD
+                {formatCurrency(totalValue)}
               </div>
               <p className="text-xs text-gray-500">{t("stats.totalValue.description")}</p>
             </CardContent>
@@ -210,7 +281,7 @@ export default function InventoryPage() {
               <Package className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">5</div>
+              <div className="text-2xl font-bold">{categories?.length || 0}</div>
               <p className="text-xs text-gray-500">{t("stats.categories.description")}</p>
             </CardContent>
           </Card>
@@ -230,11 +301,11 @@ export default function InventoryPage() {
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">{t("filters.allCategories")}</option>
-          <option value="Engine">{t("filters.categories.engine")}</option>
-          <option value="Brakes">{t("filters.categories.brakes")}</option>
-          <option value="Tires">{t("filters.categories.tires")}</option>
-          <option value="Filters">{t("filters.categories.filters")}</option>
-          <option value="Fluids">{t("filters.categories.fluids")}</option>
+          {categories?.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
         </select>
         <select
           value={warehouse}
@@ -242,8 +313,12 @@ export default function InventoryPage() {
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">{t("filters.allWarehouses")}</option>
-          <option value="Shelf A-1">{t("filters.warehouses.shelfA1")}</option>
-          <option value="Shelf B-2">{t("filters.warehouses.shelfB2")}</option>
+          <option value="none">{t("details.stockAdjustment.globalStock")}</option>
+          {warehouses?.map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.name}
+            </option>
+          ))}
         </select>
         <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           <input
@@ -300,6 +375,7 @@ export default function InventoryPage() {
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onReceiveStock={(part) => setReceptionPart(part)}
           />
           {filteredParts.length > 0 && (
             <Pagination
@@ -322,6 +398,22 @@ export default function InventoryPage() {
         onClose={() => setIsModalOpen(false)}
         part={editingPart}
         onSave={handleSave}
+      />
+
+      {receptionPart && (
+        <StockReceptionModal
+          isOpen={!!receptionPart}
+          onClose={() => setReceptionPart(undefined)}
+          partId={receptionPart.id}
+          partName={receptionPart.name}
+          warehouses={warehouses}
+          suppliers={suppliers?.data}
+        />
+      )}
+
+      <ImportInventoryModal 
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
       />
     </div>
   );

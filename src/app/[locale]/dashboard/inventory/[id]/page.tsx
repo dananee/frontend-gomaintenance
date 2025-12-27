@@ -6,7 +6,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import {
+import { formatCurrency } from "@/lib/formatters";
+import { 
   Activity,
   Archive,
   Boxes,
@@ -44,7 +45,7 @@ import { DetailPageSkeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useModal } from "@/hooks/useModal";
 import { StockAdjustmentModal } from "@/features/inventory/components/StockAdjustmentModal";
-import { StockAdjustment, Part } from "@/features/inventory/types/inventory.types";
+import { CreateStockMovementRequest, Part } from "@/features/inventory/types/inventory.types";
 
 import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
 import { Progress } from "@/components/ui/progress";
@@ -62,8 +63,8 @@ import {
   adjustPartStock,
   updatePart 
 } from "@/features/inventory/api/partDetails";
-import { getWarehouses } from "@/features/inventory/api/inventory";
-import { CreateStockMovementRequest } from "@/features/inventory/types/inventory.types";
+import { getWarehouses, getActiveWarehouses, Warehouse } from "@/features/inventory/api/inventory";
+import { useWarehouses } from "@/features/inventory/hooks/useWarehouses";
 import { EditPartModal } from "@/features/inventory/components/EditPartModal";
 import { CommentTimeline } from "@/features/inventory/components/CommentTimeline";
 import { DocumentGrid } from "@/features/inventory/components/DocumentGrid";
@@ -120,10 +121,7 @@ export default function InventoryPartDetailsPage() {
     enabled: !!part,
   });
 
-  const { data: warehouses } = useQuery({
-    queryKey: ["warehouses"],
-    queryFn: () => getWarehouses(),
-  });
+  const { data: warehouses } = useWarehouses(true);
 
   // Mutations
   const addCommentMutation = useMutation({
@@ -175,10 +173,10 @@ export default function InventoryPartDetailsPage() {
         queryClient.invalidateQueries({ queryKey: ["part-stock", id] });
         queryClient.invalidateQueries({ queryKey: ["part", id] }); // Total quantity might change
         queryClient.invalidateQueries({ queryKey: ["part-movements", id] });
-        toast.success("Stock adjusted successfully"); // TODO: Translate
+        toast.success(t("toasts.stockAdjusted"));
     },
     onError: (err: any) => {
-        toast.error(err.response?.data?.error || "Failed to adjust stock");
+        toast.error(err.response?.data?.error || t("toasts.stockAdjustError"));
     }
   });
 
@@ -186,11 +184,11 @@ export default function InventoryPartDetailsPage() {
     mutationFn: (data: Partial<Part>) => updatePart(id, data as any),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["part", id] });
-      toast.success("Part updated successfully");
+      toast.success(t("toasts.partUpdated"));
       close();
     },
     onError: () => {
-      toast.error("Failed to update part");
+      toast.error(t("toasts.partUpdateError"));
     },
   });
 
@@ -208,8 +206,8 @@ export default function InventoryPartDetailsPage() {
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>Failed to load part details. Please try again.</AlertDescription>
+        <AlertTitle>{t("error.title")}</AlertTitle>
+        <AlertDescription>{t("error.description")}</AlertDescription>
       </Alert>
     );
   }
@@ -232,7 +230,7 @@ export default function InventoryPartDetailsPage() {
     stockAdjustmentMutation.mutate(adjustment);
   };
 
-  const currentTotalStock = stockLevels?.reduce((acc, s) => acc + s.quantity, 0) || part.quantity || 0;
+  const currentTotalStock = stockLevels?.reduce((acc, s) => acc + s.quantity, 0) || part.total_quantity || 0;
   const totalValue = currentTotalStock * (part.unit_price || 0);
 
   // Status Logic
@@ -244,7 +242,7 @@ export default function InventoryPartDetailsPage() {
       if (isLow) return "text-orange-600 bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 border-orange-200 dark:border-orange-800";
       return "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800";
   };
-  const statusLabel = isCritical ? "Critical Stock" : isLow ? "Low Stock" : "In Stock";
+  const statusLabel = isCritical ? t("status.critical") : isLow ? t("status.low") : t("status.inStock");
   const statusIcon = isCritical ? AlertCircle : isLow ? AlertTriangle : CheckCircle2;
   const StatusIcon = statusIcon;
 
@@ -259,7 +257,7 @@ export default function InventoryPartDetailsPage() {
                    <StatusIcon className="h-3.5 w-3.5" />
                    {statusLabel}
                 </Badge>
-                <span className="text-sm text-muted-foreground">Updated today</span>
+                <span className="text-sm text-muted-foreground">{t("updatedToday")}</span>
             </div>
 
             <div className="space-y-1">
@@ -267,12 +265,12 @@ export default function InventoryPartDetailsPage() {
                 {part.name}
                 </h1>
                 <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-medium text-foreground">{part.brand || "Unknown Brand"}</span>
+                    <span className="font-medium text-foreground">{part.brand || t("unknownBrand")}</span>
                     <span>•</span>
-                    <span className="font-mono">SKU: {part.part_number}</span>
+                    <span className="font-mono">{t("sku")} {part.part_number}</span>
                     <span>•</span>
                     <Badge variant="secondary" className="rounded-md px-2 font-normal capitalize">
-                        {part.category || "General"}
+                        {part.category?.name || t("generalCategory")}
                     </Badge>
                 </div>
             </div>
@@ -315,41 +313,44 @@ export default function InventoryPartDetailsPage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <PremiumMetricCard
                 title={t("overview.onHand.title")}
-                value={`${currentTotalStock} units`}
+                value={t("overview.onHand.units", { count: currentTotalStock })}
                 icon={Boxes}
                 variant={isCritical ? "rose" : isLow ? "orange" : "blue"}
-                subtitle={isLow ? `${minQty - currentTotalStock} below target` : "Stock healthy"}
+                subtitle={isLow 
+                  ? t("overview.onHand.belowTarget", { count: minQty - currentTotalStock })
+                  : t("overview.onHand.healthy")
+                }
             />
             <PremiumMetricCard
                 title={t("overview.reorderPoint.title")}
-                value={`${minQty} units`}
+                value={t("overview.reorderPoint.units", { count: minQty })}
                 icon={AlertTriangle}
                 variant="slate"
-                subtitle="Minimum required level"
+                subtitle={t("overview.reorderPoint.description")}
             />
             <PremiumMetricCard
                 title={t("overview.unitPrice.title")}
-                value={`$${(part.unit_price || 0).toFixed(2)}`}
+                value={formatCurrency(part.unit_price || 0)}
                 icon={Tag}
                 variant="teal"
-                subtitle="Cost per unit"
+                subtitle={t("overview.unitPrice.description")}
             />
             <PremiumMetricCard
                 title={t("overview.totalValue.title")}
-                value={`$${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                value={formatCurrency(totalValue)}
                 icon={Coins}
                 variant="green"
-                subtitle="Total inventory value"
+                subtitle={t("overview.totalValue.description")}
             />
           </div>
 
           <Card>
               <CardHeader>
-                  <CardTitle>Part Description</CardTitle>
+                  <CardTitle>{t("overview.description.title")}</CardTitle>
               </CardHeader>
               <CardContent>
                   <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                      {part.description || "No description available for this part."}
+                      {part.description || t("overview.description.empty")}
                   </p>
               </CardContent>
           </Card>
@@ -360,7 +361,7 @@ export default function InventoryPartDetailsPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t("stock.title")}</CardTitle>
               <Button variant="outline" size="sm" onClick={openStockModal}>
-                  <TrendingUp className="mr-2 h-4 w-4" /> Transfer Stock
+                  <TrendingUp className="mr-2 h-4 w-4" /> {t("transferStock")}
               </Button>
             </CardHeader>
             <CardContent>
@@ -375,7 +376,6 @@ export default function InventoryPartDetailsPage() {
                 </TableHeader>
                 <TableBody>
                   {stockLevels?.map((stock) => {
-                    const maxCapacity = 100; // Mock max for visualization, or use logic
                     const percentage = Math.min((stock.quantity / Math.max(currentTotalStock, 1)) * 100, 100);
 
                     return (
@@ -385,28 +385,28 @@ export default function InventoryPartDetailsPage() {
                             <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center dark:bg-gray-800">
                                 <Boxes className="h-4 w-4 text-gray-500" />
                             </div>
-                            {stock.warehouse?.name || "Unknown Warehouse"}
+                            {stock.warehouse?.name || t("stock.unknownWarehouse")}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-2 max-w-[200px]">
                            <div className="flex justify-between text-xs text-muted-foreground">
                                 <span className={stock.quantity <= part.min_quantity ? "text-orange-500 font-medium" : ""}>
-                                    {stock.quantity} units
+                                    {t("overview.onHand.units", { count: stock.quantity })}
                                 </span>
-                                <span>{percentage.toFixed(0)}% of total</span>
+                                <span>{percentage.toFixed(0)}% {t("ofTotal")}</span>
                            </div>
                            <Progress value={percentage} className="h-2" />
                         </div>
                       </TableCell>
                       <TableCell>
-                         <Button variant="ghost" size="sm">Manage</Button>
+                         <Button variant="ghost" size="sm">{t("manage")}</Button>
                       </TableCell>
                     </TableRow>
                     );
                   })}
                   {(!stockLevels || stockLevels.length === 0) && (
-                      <TableRow><TableCell colSpan={3} className="text-center text-gray-500 py-8">No stock information available</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={3} className="text-center text-gray-500 py-8">{t("stock.empty")}</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -420,8 +420,8 @@ export default function InventoryPartDetailsPage() {
              <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t("movements.title")}</CardTitle>
               <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="h-8">Filter</Button>
-                  <Button variant="outline" size="sm" className="h-8">Date Range</Button>
+                  <Button variant="outline" size="sm" className="h-8">{t("filter")}</Button>
+                  <Button variant="outline" size="sm" className="h-8">{t("dateRange")}</Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -446,19 +446,19 @@ export default function InventoryPartDetailsPage() {
                         <Badge
                           variant="secondary"
                           className={
-                              move.movement_type === "in"
+                              move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT"
                               ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100"
-                              : move.movement_type === "out"
+                              : move.movement_type === "CONSUMPTION" || move.movement_type === "SCRAP"
                               ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100"
                               : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
                           }
                         >
-                          {move.movement_type.toUpperCase()}
+                          {t(`movements.types.${move.movement_type.toUpperCase()}`)}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                          <span className={move.movement_type === "in" ? "text-emerald-600 font-medium" : "text-gray-900 dark:text-gray-100"}>
-                            {move.movement_type === "in" ? "+" : ""}{move.quantity}
+                          <span className={move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT" ? "text-emerald-600 font-medium" : "text-gray-900 dark:text-gray-100"}>
+                            {move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT" ? "+" : ""}{move.quantity}
                           </span>
                       </TableCell>
                       <TableCell>{move.warehouse?.name || "-"}</TableCell>
@@ -466,7 +466,7 @@ export default function InventoryPartDetailsPage() {
                     </TableRow>
                   ))}
                    {(!movements || movements.length === 0) && (
-                      <TableRow><TableCell colSpan={5} className="text-center text-gray-500 py-8">No stock movements found</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-gray-500 py-8">{t("movements.empty")}</TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>

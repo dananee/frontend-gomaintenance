@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface StockByWarehouse {
   warehouse: string;
@@ -16,6 +17,7 @@ interface PartStockByWarehouseProps {
 }
 
 export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) {
+  const t = useTranslations("inventory.details.stock");
   const mockStock: StockByWarehouse[] = stock.length > 0 ? stock : [
     {
       warehouse: "Main Warehouse",
@@ -44,13 +46,13 @@ export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) 
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Stock by Warehouse</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
           <div className="flex items-center gap-2">
             <Package className="h-5 w-5 text-gray-500" />
             <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {totalQuantity}
             </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">total</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{t("total")}</span>
           </div>
         </div>
       </CardHeader>
@@ -58,7 +60,7 @@ export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) 
         {lowStockWarehouses.length > 0 && (
           <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-900/50 dark:bg-yellow-900/20">
             <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">
-              ⚠️ {lowStockWarehouses.length} warehouse(s) below minimum stock
+               ⚠️ {t("lowStockAlert", { count: lowStockWarehouses.length })}
             </p>
           </div>
         )}
@@ -83,7 +85,7 @@ export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) 
                       </h4>
                       {isLowStock && (
                         <Badge variant="warning" className="text-xs">
-                          Low Stock
+                          {t("lowStock")}
                         </Badge>
                       )}
                     </div>
@@ -93,7 +95,7 @@ export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) 
                     <div className="mt-2 flex items-center gap-4 text-sm">
                       <div>
                         <span className="text-gray-500 dark:text-gray-400">
-                          Available:
+                          {t("available")}
                         </span>{" "}
                         <span className={`font-semibold ${isLowStock ? "text-yellow-600 dark:text-yellow-400" : "text-gray-900 dark:text-gray-100"}`}>
                           {item.quantity}
@@ -101,7 +103,7 @@ export function PartStockByWarehouse({ stock = [] }: PartStockByWarehouseProps) 
                       </div>
                       <div>
                         <span className="text-gray-500 dark:text-gray-400">
-                          Min:
+                           {t("minQty")}
                         </span>{" "}
                         <span className="font-medium text-gray-700 dark:text-gray-300">
                           {item.minQuantity}

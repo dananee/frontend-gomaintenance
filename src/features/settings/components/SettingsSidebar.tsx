@@ -20,7 +20,8 @@ import {
   Palette,
   Shield,
   Bell,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Warehouse as WarehouseIcon
 } from "lucide-react";
 
 export function SettingsSidebar() {
@@ -55,6 +56,11 @@ export function SettingsSidebar() {
       title: t("notifications"),
       href: "/dashboard/settings/notifications",
       icon: Bell,
+    },
+    {
+      title: t("inventory"),
+      href: "/dashboard/settings/inventory/warehouses",
+      icon: WarehouseIcon,
     },
     {
       title: t("integrations"),

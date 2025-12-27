@@ -477,12 +477,33 @@
         "title": "Inventory",
         "subtitle": "Manage parts, stock levels, and suppliers",
         "actions": {
+            "audits": "Audits",
             "suppliers": "Suppliers",
             "addPart": "Add Part",
             "addFirstPart": "Add Your First Part",
             "manageSuppliers": "Manage Suppliers",
             "clearFilters": "Clear Filters",
-            "deleteConfirm": "Are you sure you want to delete \"{name}\"?"
+            "deleteConfirm": "Are you sure you want to delete \"{name}\"?",
+            "downloadTemplate": "Download Template",
+            "importExcel": "Import Excel",
+            "exportExcel": "Export Excel"
+        },
+        "excel": {
+            "importTitle": "Import Inventory",
+            "importDescription": "Upload an Excel file to receive stock or adjust inventory levels in bulk.",
+            "selectFile": "Select Excel File",
+            "onlyXlsx": "Only .xlsx files are supported",
+            "templateInfo": "Please use our template to ensure all mandatory fields are present.",
+            "downloadTemplate": "Download Template",
+            "import": "Import",
+            "importing": "Importing...",
+            "success": "Import completed",
+            "importedCount": "{count} rows imported successfully",
+            "failedCount": "{count} rows failed",
+            "errors": "Error Details",
+            "noFile": "No file selected",
+            "warehouseRequired": "Warehouse is required for all rows",
+            "close": "Close"
         },
         "stats": {
             "totalParts": {
@@ -519,6 +540,31 @@
                 "shelfB2": "Shelf B-2"
             }
         },
+        "table": {
+            "headers": {
+                "name": "Name",
+                "sku": "SKU",
+                "category": "Category",
+                "location": "Location",
+                "supplier": "Supplier",
+                "quantity": "Quantity",
+                "unitPrice": "Unit Price",
+                "totalValue": "Total Value",
+                "actions": "Actions"
+            },
+            "badges": {
+                "critical": "Critical",
+                "lowStock": "Low Stock",
+                "inStock": "In Stock"
+            },
+            "empty": "No parts found",
+            "actions": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "receiveStock": "Receive Stock"
+            },
+            "minQty": "Min: {count}"
+        },
         "emptyStates": {
             "noParts": {
                 "title": "No parts in inventory",
@@ -529,11 +575,59 @@
                 "description": "No parts match your current filters. Try adjusting your search criteria or filters."
             }
         },
+        "stockReception": {
+            "title": "Stock Reception",
+            "description": "Add quantities to inventory and create FIFO batches",
+            "fields": {
+                "warehouse": "Warehouse",
+                "quantity": "Quantity to receive",
+                "unitCostHT": "Unit Cost HT",
+                "vatRate": "VAT Rate (%)",
+                "dateReceived": "Reception Date",
+                "supplier": "Supplier",
+                "referenceType": "Reference Type",
+                "referenceNo": "Reference Number",
+                "notes": "Reception Notes",
+                "totalHT": "Total HT",
+                "totalVAT": "Total VAT",
+                "totalTTC": "Total TTC (MAD)"
+            },
+            "placeholders": {
+                "warehouse": "Select an active warehouse",
+                "quantity": "0",
+                "unitCostHT": "0.00",
+                "supplier": "Select a supplier (optional)",
+                "referenceNo": "e.g., BL-2025-001",
+                "notes": "Condition, storage details, etc."
+            },
+            "referenceTypes": {
+                "supplier_invoice": "Supplier Invoice",
+                "delivery_note": "Delivery Note",
+                "manual": "Manual Entry"
+            },
+            "toasts": {
+                "success": "Stock received successfully",
+                "error": "Failed to receive stock"
+            },
+            "actions": {
+                "submit": "Receive Stock",
+                "cancel": "Cancel"
+            },
+            "managedInSettings": "Fields marked with an asterisk (*) are required"
+        },
         "details": {
             "adjustStock": "Adjust Stock",
             "editPart": "Edit Part",
             "exportCSV": "Export CSV",
             "upload": "Upload",
+            "updatedToday": "Updated today",
+            "unknownBrand": "Unknown Brand",
+            "generalCategory": "General",
+            "ofTotal": "of total",
+            "manage": "Manage",
+            "filter": "Filter",
+            "dateRange": "Date Range",
+            "transferStock": "Transfer Stock",
             "tabs": {
                 "overview": "Overview",
                 "stock": "Stock",
@@ -541,37 +635,80 @@
                 "attachments": "Attachments",
                 "comments": "Comments"
             },
+            "status": {
+                "critical": "Critical Stock",
+                "low": "Low Stock",
+                "inStock": "In Stock"
+            },
+            "toasts": {
+                "stockAdjusted": "Stock adjusted successfully",
+                "stockAdjustError": "Failed to adjust stock",
+                "partUpdated": "Part updated successfully",
+                "partUpdateError": "Failed to update part"
+            },
+            "error": {
+                "title": "Error",
+                "description": "Failed to load part details. Please try again."
+            },
+            "sku": "SKU:",
             "overview": {
                 "onHand": {
                     "title": "On Hand",
-                    "description": "Across all warehouses"
+                    "description": "Across all warehouses",
+                    "units": "{count} units",
+                    "healthy": "Stock healthy",
+                    "belowTarget": "{count} below target"
                 },
                 "reorderPoint": {
                     "title": "Reorder Point",
-                    "description": "Threshold"
+                    "description": "Minimum required level",
+                    "units": "{count} units"
                 },
                 "unitPrice": {
                     "title": "Unit Price",
-                    "description": "Latest supplier cost"
+                    "description": "Cost per unit"
                 },
                 "totalValue": {
                     "title": "Total Value",
-                    "description": "Qty × price"
+                    "description": "Total inventory value"
+                },
+                "description": {
+                    "title": "Part Description",
+                    "empty": "No description available for this part."
                 }
             },
             "stock": {
-                "title": "Warehouse Stock",
+                "title": "Stock by Warehouse",
                 "location": "Location",
                 "stock": "Stock",
-                "lowStock": "Low stock"
+                "lowStock": "Low Stock",
+                "empty": "No stock information available",
+                "unknownWarehouse": "Unknown Warehouse",
+                "total": "total",
+                "lowStockAlert": "{count} warehouse(s) below minimum stock",
+                "available": "Available:",
+                "minQty": "Min:"
             },
             "movements": {
-                "title": "Stock Movements",
+                "title": "Stock Movement History",
+                "empty": "No stock movements recorded",
+                "ref": "Ref:",
                 "id": "ID",
                 "type": "Type",
                 "quantity": "Quantity",
                 "location": "Location",
-                "date": "Date"
+                "date": "Date",
+                "unitPriceHT": "Price (HT)",
+                "vatRate": "VAT",
+                "totalPriceTTC": "Total (TTC)",
+                "types": {
+                    "PURCHASE": "Purchase",
+                    "CONSUMPTION": "Consumption",
+                    "TRANSFER": "Transfer",
+                    "RETURN": "Return",
+                    "ADJUSTMENT": "Adjustment",
+                    "SCRAP": "Scrap"
+                }
             },
             "attachments": {
                 "title": "Attachments",
@@ -595,21 +732,95 @@
                 }
             },
             "editModal": {
-                "title": "Edit Part",
-                "description": "Update part metadata and pricing.",
+                "title": {
+                    "edit": "Edit Part Details",
+                    "create": "Create New Part"
+                },
+                "description": {
+                    "edit": "Update the information for {name}.",
+                    "create": "Enter the details for the new part."
+                },
                 "fields": {
                     "name": "Part name",
-                    "sku": "SKU",
-                    "price": "Unit price"
+                    "sku": "Internal SKU",
+                    "part_number": "Manufacturer Ref (MPN)",
+                    "price": "Unit price HT",
+                    "vat_rate": "VAT Rate (%)",
+                    "price_ttc": "Total price (TTC)",
+                    "is_critical": "Critical Part",
+                    "category": "Category",
+                    "supplier": "Supplier",
+                    "unit": "Unit",
+                    "minQuantity": "Min. Quantity",
+                    "location": "Default Location",
+                    "brand": "Brand",
+                    "description": "Description"
                 },
-                "save": "Save changes"
+                "placeholders": {
+                    "category": "Select category",
+                    "supplier": "Select supplier",
+                    "unit": "Select unit",
+                    "sku": "e.g. SKU-12345",
+                    "part_number": "e.g. MPN-67890",
+                    "location": "e.g. Aisle 5, Shelf B",
+                    "none": "None"
+                },
+                "save": "Save changes",
+                "cancel": "Cancel",
+                "units": {
+                    "piece": "Piece",
+                    "liter": "Liter",
+                    "kg": "KG",
+                    "set": "Set"
+                }
             },
             "stockAdjustment": {
+                "title": "Adjust Stock - {name}",
+                "description": "Manage inventory levels. Select a warehouse or adjust unassigned stock.",
+                "targetLocation": "Target Location",
+                "managedInSettings": "Managed in Settings",
+                "configureWarehouses": "Configure Warehouses in Settings",
+                "selectLocation": "Select location",
+                "globalStock": "Global / Unassigned Stock",
+                "currentLevel": "Current Level:",
+                "action": "Action",
+                "addStock": "Add Stock",
+                "removeStock": "Remove",
+                "setStock": "Set To",
+                "newTotalQty": "New Total Quantity",
+                "qtyToAdjust": "Quantity to Adjust",
+                "resultingStock": "Resulting Stock:",
+                "overwriteWarning": "This will overwrite the current stock level.",
+                "reasonLabel": "Reason for Movement *",
+                "selectReason": "Select reason",
+                "reasons": {
+                    "received_shipment": "Received Shipment",
+                    "used_in_work_order": "Consumed (Work Order)",
+                    "transfer": "Stock Transfer",
+                    "inventory_count": "Cycle Count / Audit",
+                    "damaged": "Damaged / Scrapped",
+                    "returned": "Returned to Supplier",
+                    "found": "Found Item",
+                    "other": "Other"
+                },
+                "notesLabel": "Notes (Optional)",
+                "notesPlaceholder": "Batch #, PO #, visual condition...",
+                "confirmAdjustment": "Confirm Adjustment",
+                "confirmReceipt": "Confirm Receipt",
+                "confirmRemoval": "Confirm Removal",
+                "cancel": "Cancel",
                 "toasts": {
                     "success": {
                         "title": "Stock adjusted",
                         "description": "Stock has been {type}."
-                    }
+                    },
+                    "warehouseRequired": "Warehouse required",
+                    "reasonRequired": "Reason required",
+                    "reasonRequiredDesc": "Please select a reason for this stock adjustment.",
+                    "invalidQty": "Invalid quantity",
+                    "invalidQtyDesc": "Quantity must be greater than zero.",
+                    "insufficientStock": "Insufficient stock",
+                    "insufficientStockDesc": "Cannot remove {qty} units. Only {current} available."
                 },
                 "types": {
                     "increased": "increased",
@@ -617,16 +828,136 @@
                     "updated": "updated"
                 }
             }
+        }
+    },
+    "audits": {
+        "title": "Inventory Audits",
+        "subtitle": "Manage and validate physical stock counts",
+        "common": {
+            "cancel": "Cancel"
         },
-        "suppliers": {
-            "title": "Suppliers",
-            "subtitle": "Manage your suppliers and contacts",
-            "actions": {
-                "addSupplier": "Add Supplier",
-                "deleteConfirm": "Are you sure you want to delete this supplier?"
+        "on": "on",
+        "status": {
+            "validated": "Validated"
+        },
+        "actions": {
+            "new": "New Audit Session",
+            "saveDraft": "Save Draft",
+            "validate": "Validate & Adjust Stock"
+        },
+        "table": {
+            "headers": {
+                "recentSessions": "Recent Sessions",
+                "partName": "Part Name",
+                "sku": "SKU",
+                "name": "Session Name",
+                "warehouse": "Warehouse",
+                "status": "Status",
+                "createdAt": "Created At",
+                "createdBy": "Created By",
+                "systemQty": "System Qty",
+                "physicalQty": "Physical Qty",
+                "diff": "Diff",
+                "reason": "Reason"
             },
-            "filters": {
-                "searchPlaceholder": "Search suppliers..."
+            "empty": "No audit sessions found. Start a new one to reconcile your stock.",
+            "actions": {
+                "details": "Details"
+            }
+        },
+        "modal": {
+            "title": "New Inventory Audit",
+            "fields": {
+                "name": "Session Name",
+                "warehouse": "Warehouse",
+                "description": "Description",
+                "scope": "Audit Scope",
+                "scopeCategory": "Category"
+            },
+            "placeholders": {
+                "name": "e.g. End of Year 2024",
+                "warehouse": "Select Warehouse",
+                "description": "Optional notes",
+                "scope": "Select scope"
+            },
+            "scopes": {
+                "all": "All Inventory",
+                "withStock": "Only Parts with Stock",
+                "category": "By Category"
+            },
+            "actions": {
+                "create": "Create Session"
+            }
+        },
+        "details": {
+            "title": "Physical Count",
+            "description": "Enter the physical quantities found during the audit",
+            "summary": "Audit Summary",
+            "totalParts": "Total Parts",
+            "stockSyncedTitle": "Stock Synced",
+            "stockSyncedDesc": "The inventory stock has been reconciled with the physical counts. Adjustment movements were automatically logged.",
+            "validateConfirm": "Are you sure you want to validate this audit? This will automatically generate stock movements to reflect the physical counts. This action cannot be undone.",
+            "notFound": "Audit not found",
+            "scopeLabel": "Scope",
+            "missingReasonsError": "Please provide a reason for all parts with stock discrepancies."
+        }
+    },
+    "suppliers": {
+        "title": "Suppliers",
+        "subtitle": "Manage your suppliers and contacts",
+        "actions": {
+            "addSupplier": "Add Supplier",
+            "deleteConfirm": "Are you sure you want to delete this supplier?"
+        },
+        "filters": {
+            "searchPlaceholder": "Search suppliers..."
+        },
+        "table": {
+            "empty": {
+                "title": "No suppliers yet",
+                "description": "Add your first supplier to start managing your parts inventory and contacts efficiently.",
+                "action": "Add Supplier"
+            },
+            "title": "Supplier Directory",
+            "headers": {
+                "name": "Supplier Name",
+                "contact": "Contact Person",
+                "email": "Email",
+                "phone": "Phone",
+                "address": "Address",
+                "actions": "Actions"
+            },
+            "loading": "Loading suppliers...",
+            "tooltips": {
+                "edit": "Edit Supplier",
+                "delete": "Delete Supplier"
+            }
+        },
+        "modal": {
+            "title": {
+                "add": "Add New Supplier",
+                "edit": "Edit Supplier"
+            },
+            "fields": {
+                "name": "Supplier Name *",
+                "contact": "Contact Person",
+                "phone": "Phone",
+                "email": "Email",
+                "address": "Address",
+                "notes": "Notes"
+            },
+            "placeholders": {
+                "name": "e.g., AutoParts Warehouse",
+                "contact": "John Doe",
+                "phone": "(555) 123-4567",
+                "email": "contact@supplier.com",
+                "address": "Street address, city, state, ZIP",
+                "notes": "Payment terms, discounts, etc."
+            },
+            "actions": {
+                "save": "Save Changes",
+                "cancel": "Cancel",
+                "add": "Add Supplier"
             }
         }
     },
@@ -648,6 +979,40 @@
                 }
             }
         },
+        "schedule": {
+            "vehicle": "Vehicle",
+            "selectVehicle": "Select a vehicle",
+            "selectTemplate": "Select a template",
+            "title": "Title",
+            "description": "Description",
+            "scheduledDate": "Scheduled Date",
+            "priority": "Priority",
+            "assignTo": "Assign To",
+            "selectTechnician": "Select a technician",
+            "estimatedCost": "Estimated Cost",
+            "notes": "Notes",
+            "cancel": "Cancel",
+            "create": "Schedule",
+            "update": "Update",
+            "success": "Maintenance scheduled successfully",
+            "saveSuccess": "Maintenance updated successfully",
+            "error": "Failed to schedule maintenance",
+            "priorities": {
+                "low": "Low",
+                "medium": "Medium",
+                "high": "High",
+                "critical": "Critical"
+            },
+            "placeholders": {
+                "title": "e.g., Oil Change, Tire Rotation",
+                "description": "Describe the maintenance work...",
+                "notes": "Additional notes or instructions..."
+            },
+            "validation": {
+                "titleRequired": "Title is required",
+                "dateRequired": "Scheduled date is required"
+            }
+        },
         "templates": {
             "title": "Maintenance Templates",
             "subtitle": "Create and manage preventive maintenance templates",
@@ -663,7 +1028,7 @@
             "alerts": {
                 "delete": {
                     "title": "Delete Template",
-                    "description": "Are you sure you want to delete this template? This action cannot be undone."
+                    "description": "Are you sure you want to delete this template? This will also delete all active maintenance plans associated with this template. Existing work orders will remain but will no longer be linked to this template."
                 }
             },
             "toasts": {
@@ -798,6 +1163,7 @@
             "branding": "Branding",
             "roles": "Roles & Permissions",
             "notifications": "Notifications",
+            "inventory": "Inventory",
             "integrations": "Integrations"
         },
         "profile": {
@@ -996,6 +1362,45 @@
                 "success": "Permissions updated",
                 "error": "Failed to update permissions"
             }
+        },
+        "inventory": {
+            "warehouses": {
+                "title": "Warehouses",
+                "subtitle": "Manage parts storage locations and supply chain centers",
+                "actions": {
+                    "add": "Add Warehouse",
+                    "edit": "Edit Warehouse",
+                    "deactivate": "Deactivate"
+                },
+                "table": {
+                    "name": "Name",
+                    "type": "Type",
+                    "manager": "Manager",
+                    "address": "Address",
+                    "status": "Status",
+                    "active": "Active",
+                    "inactive": "Inactive",
+                    "actions": "Actions"
+                },
+                "form": {
+                    "name": "Name",
+                    "type": "Type",
+                    "address": "Address",
+                    "manager": "Manager",
+                    "allowNegativeStock": "Allow Negative Stock",
+                    "active": "Active",
+                    "types": {
+                        "MAIN": "Main Warehouse",
+                        "SITE": "On-Site Storage",
+                        "VAN": "Service Van"
+                    }
+                },
+                "toasts": {
+                    "created": "Warehouse created successfully",
+                    "updated": "Warehouse updated successfully",
+                    "deactivated": "Warehouse deactivated"
+                }
+            }
         }
     },
     "users": {
@@ -1169,7 +1574,8 @@
                 "all": "All status",
                 "active": "Active",
                 "maintenance": "Maintenance",
-                "retired": "Retired"
+                "retired": "Retired",
+                "inactive": "Inactive"
             },
             "type": {
                 "all": "All types",
@@ -1183,6 +1589,12 @@
                 "6×4": "6×4",
                 "4×2": "4×2",
                 "seltos": "Seltos",
+                "Voiture utulitaire": "Utility Vehicle",
+                "Voiture utilitaire": "Utility Vehicle",
+                "VOITURE UTILITAIRE": "Utility Vehicle",
+                "VOITURE DE SOCIETE": "Company Car",
+                "PICK UP": "Pick Up",
+                "TRAFIC": "Traffic",
                 "unknown": "Unknown"
             }
         },
@@ -1191,6 +1603,33 @@
             "description": "Get started by adding your first vehicle to the fleet. Track maintenance, assignments, and performance all in one place.",
             "notFoundTitle": "No vehicles found",
             "notFoundDescription": "No vehicles match your current filters. Try adjusting your search criteria or filters."
+        },
+        "import": {
+            "title": "Import Vehicles",
+            "description": "Upload an Excel file to import or update vehicles in bulk.",
+            "templateInfo": "Download the template to see the required format.",
+            "downloadTemplate": "Download Template",
+            "dragDrop": "Drag & drop your file here",
+            "onlyXlsx": "Only .xlsx files are supported (max 10MB)",
+            "onlyXlsxCsv": "Only .xlsx and .csv files are supported (max 10MB)",
+            "browse": "Browse Files",
+            "removeFile": "Remove file",
+            "import": "Import Vehicles",
+            "importing": "Importing...",
+            "successful": "Successful",
+            "failed": "Failed",
+            "vehiclesImported": "vehicles imported successfully",
+            "vehiclesFailed": "rows failed to import",
+            "errorDetails": "Error Details",
+            "row": "Row",
+            "field": "Field",
+            "error": "Error",
+            "close": "Close",
+            "cancel": "Cancel"
+        },
+        "export": {
+            "button": "Export to Excel",
+            "downloading": "Downloading..."
         },
         "toasts": {
             "import": {
@@ -1441,6 +1880,27 @@
             "markDone": "Mark as Done",
             "dueTomorrow": "Due Tomorrow"
         },
+        "addPartModal": {
+            "title": "Add Part to Work Order",
+            "fields": {
+                "part": "Part",
+                "warehouse": "Warehouse (Source)",
+                "quantity": "Quantity",
+                "unitPrice": "Unit Price (MAD)"
+            },
+            "placeholders": {
+                "part": "Select a part",
+                "warehouse": "Select warehouse"
+            },
+            "managedInSettings": "Managed in Settings",
+            "configureWarehouses": "Configure Warehouses in Settings",
+            "availableStock": "Available Stock (Total):",
+            "actions": {
+                "cancel": "Cancel",
+                "add": "Add Part",
+                "adding": "Adding..."
+            }
+        },
         "form": {
             "title": "Add New Task",
             "editTitle": "Edit Work Order",
@@ -1577,7 +2037,8 @@
             "deleteError": {
                 "title": "Failed to delete work order",
                 "description": "Please try again."
-            }
+            },
+            "deleteConfirm": "Are you sure you want to delete this work order? All associated logs, part requests, and attachments will also be deleted."
         },
         "kanban": {
             "empty": {
@@ -1631,6 +2092,7 @@
             "tabs": {
                 "overview": "Overview",
                 "tasks": "Tasks",
+                "parts": "Parts",
                 "attachments": "Attachments",
                 "activity": "Activity",
                 "comments": "Comments"

@@ -247,7 +247,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
   };
 
   const handleDelete = (order: WorkOrder) => {
-    if (confirm(`Delete work order "${order.title}"?`)) {
+    if (confirm(t("toasts.deleteConfirm"))) {
       deleteWorkOrderMutation.mutate(order.id, {
         onSuccess: () => {
           toast.success(t("toasts.deleteSuccess.title"), {

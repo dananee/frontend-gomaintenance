@@ -99,11 +99,14 @@ function getMockVehicleKPIs(vehicleId: string): VehicleKPIResponse {
 
 function getMockHealthScore(): VehicleHealthScore {
   return {
-    overall_score: 85,
-    maintenance_score: 88,
-    reliability_score: 87,
-    cost_efficiency_score: 82,
-    status: "good",
+    overall_score: 100,
+    age_penalty: 0,
+    maintenance_penalty: 0,
+    breakdown_penalty: 0,
+    downtime_penalty: 0,
+    mileage_penalty: 0,
+    status: "excellent",
+    message: "Perfect condition — no issues detected",
   };
 }
 
