@@ -43,7 +43,7 @@ export default function AuditsPage() {
     name: "", 
     warehouse_id: "", 
     description: "",
-    scope: "ALL",
+    scope_type: "ALL",
     scope_category_id: ""
   });
 
@@ -52,15 +52,15 @@ export default function AuditsPage() {
       name: newAudit.name,
       warehouse_id: newAudit.warehouse_id,
       description: newAudit.description,
-      scope: newAudit.scope,
-      scope_category_id: newAudit.scope === "CATEGORY" ? newAudit.scope_category_id : ""
+      scope_type: newAudit.scope_type,
+      scope_category_id: newAudit.scope_type === "CATEGORY" ? newAudit.scope_category_id : undefined
     });
     setIsModalOpen(false);
     setNewAudit({ 
       name: "", 
       warehouse_id: "", 
       description: "",
-      scope: "ALL",
+      scope_type: "ALL",
       scope_category_id: ""
     });
   };
@@ -105,8 +105,8 @@ export default function AuditsPage() {
                         <span>{audit.name}</span>
                         <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <Filter className="h-2 w-2" />
-                            {audit.scope === "ALL" ? t("modal.scopes.all") : 
-                             audit.scope === "WITH_STOCK" ? t("modal.scopes.withStock") : 
+                            {audit.scope_type === "ALL" ? t("modal.scopes.all") : 
+                             audit.scope_type === "IN_STOCK_ONLY" ? t("modal.scopes.withStock") : 
                              t("modal.scopes.category")}
                         </span>
                     </div>
@@ -182,37 +182,26 @@ export default function AuditsPage() {
                   ))}
                 </SelectContent>
               </Select>
-              {(!warehouses || warehouses.length === 0) && (user?.role === "admin" || user?.role === "manager") && (
-                <div className="mt-1">
-                    <Link 
-                        href="/dashboard/settings/inventory/warehouses"
-                        className="text-xs text-primary hover:underline flex items-center py-1 gap-1"
-                    >
-                        <Plus className="h-3 w-3" />
-                        Configure Warehouses in Settings
-                    </Link>
-                </div>
-              )}
             </div>
 
             <div className="space-y-2">
               <Label>{t("modal.fields.scope")}</Label>
               <Select 
-                value={newAudit.scope}
-                onValueChange={(value) => setNewAudit({ ...newAudit, scope: value })}
+                value={newAudit.scope_type}
+                onValueChange={(value) => setNewAudit({ ...newAudit, scope_type: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder={t("modal.placeholders.scope")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">{t("modal.scopes.all")}</SelectItem>
-                  <SelectItem value="WITH_STOCK">{t("modal.scopes.withStock")}</SelectItem>
+                  <SelectItem value="IN_STOCK_ONLY">{t("modal.scopes.withStock")}</SelectItem>
                   <SelectItem value="CATEGORY">{t("modal.scopes.category")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {newAudit.scope === "CATEGORY" && (
+            {newAudit.scope_type === "CATEGORY" && (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-1">
                 <Label>{t("modal.fields.scopeCategory")}</Label>
                 <Select 
@@ -242,7 +231,7 @@ export default function AuditsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>{t("common.cancel") || "Cancel"}</Button>
-            <Button onClick={handleCreate} disabled={!newAudit.name || !newAudit.warehouse_id || (newAudit.scope === "CATEGORY" && !newAudit.scope_category_id)}>
+            <Button onClick={handleCreate} disabled={!newAudit.name || !newAudit.warehouse_id || (newAudit.scope_type === "CATEGORY" && !newAudit.scope_category_id)}>
               {t("modal.actions.create")}
             </Button>
           </DialogFooter>

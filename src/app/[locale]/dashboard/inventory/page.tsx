@@ -28,6 +28,11 @@ import { formatCurrency } from "@/lib/formatters";
 import { useQuery } from "@tanstack/react-query";
 import { getWarehouses, Warehouse } from "@/features/inventory/api/inventory";
 import { useWarehouses } from "@/features/inventory/hooks/useWarehouses";
+import { useProfile } from "@/hooks/useProfile";
+import { Download, FileUp, FileOutput } from "lucide-react";
+import { ImportInventoryModal } from "@/features/inventory/components/ImportInventoryModal";
+import { getInventoryImportTemplate, exportInventoryExcel } from "@/features/inventory/api/inventoryExcel";
+import { useLocale } from "next-intl";
 
 export default function InventoryPage() {
   const t = useTranslations("inventory");
@@ -53,7 +58,14 @@ export default function InventoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPart, setEditingPart] = useState<Part | undefined>(undefined);
   const [receptionPart, setReceptionPart] = useState<Part | undefined>(undefined);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const { data: suppliers } = useSuppliers();
+  const { profile } = useProfile();
+  const locale = useLocale();
+
+  const role = profile?.role;
+  const canImport = role && ["admin", "manager", "storekeeper"].includes(role);
+  const canExport = role && ["admin", "manager"].includes(role);
 
   const lowStockCount = useMemo(() => {
     const rows = parts?.data || [];
@@ -103,6 +115,14 @@ export default function InventoryPage() {
   const handleEdit = (part: Part) => {
     setEditingPart(part);
     setIsModalOpen(true);
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      await getInventoryImportTemplate();
+    } catch (error) {
+      toast.error("Failed to download template");
+    }
   };
 
   const handleSave = (partData: Partial<Part>) => {
@@ -180,6 +200,21 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          {canExport && (
+            <Button variant="outline" onClick={() => exportInventoryExcel(locale)}>
+              <FileOutput className="mr-2 h-4 w-4" />
+              {t("actions.exportExcel")}
+            </Button>
+          )}
+          {canImport && (
+            <>
+             
+              <Button variant="outline" onClick={() => setIsImportModalOpen(true)}>
+                <FileUp className="mr-2 h-4 w-4" />
+                {t("actions.importExcel")}
+              </Button>
+            </>
+          )}
           <Link href="/dashboard/inventory/audits">
               <Button variant="outline">
                 <Package className="mr-2 h-4 w-4" />
@@ -375,6 +410,11 @@ export default function InventoryPage() {
           suppliers={suppliers?.data}
         />
       )}
+
+      <ImportInventoryModal 
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
     </div>
   );
 }

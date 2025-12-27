@@ -1064,7 +1064,27 @@
             "addFirstPart": "Ajoutez votre première pièce",
             "manageSuppliers": "Gérer les fournisseurs",
             "clearFilters": "Réinitialiser les filtres",
-            "deleteConfirm": "Voulez-vous vraiment supprimer « {name} » ?"
+            "deleteConfirm": "Voulez-vous vraiment supprimer « {name} » ?",
+            "downloadTemplate": "Télécharger le modèle",
+            "importExcel": "Importer Excel",
+            "exportExcel": "Exporter Excel"
+        },
+        "excel": {
+            "importTitle": "Importer l'inventaire",
+            "importDescription": "Téléchargez un fichier Excel pour recevoir du stock ou ajuster les niveaux d'inventaire en masse.",
+            "selectFile": "Sélectionner le fichier Excel",
+            "onlyXlsx": "Seuls les fichiers .xlsx sont supportés",
+            "templateInfo": "Veuillez utiliser notre modèle pour vous assurer que tous les champs obligatoires sont présents.",
+            "downloadTemplate": "Télécharger le modèle",
+            "import": "Importer",
+            "importing": "Importation...",
+            "success": "Importation terminée",
+            "importedCount": "{count} lignes importées avec succès",
+            "failedCount": "{count} lignes ont échoué",
+            "errors": "Détails des erreurs",
+            "noFile": "Aucun fichier sélectionné",
+            "warehouseRequired": "L'entrepôt est requis pour toutes les lignes",
+            "close": "Fermer"
         },
         "stats": {
             "totalParts": {
@@ -1369,12 +1389,12 @@
                 "confirmAdjustment": "Confirmer l'ajustement",
                 "confirmReceipt": "Confirmer la réception",
                 "confirmRemoval": "Confirmer le retrait",
+                "cancel": "Annuler",
                 "toasts": {
                     "success": {
                         "title": "Stock ajusté",
                         "description": "Le stock a été {type}."
                     },
-                    "cancel": "Annuler",
                     "warehouseRequired": "Entrepôt requis",
                     "reasonRequired": "Raison requise",
                     "reasonRequiredDesc": "Veuillez sélectionner une raison pour cet ajustement de stock.",
@@ -1459,7 +1479,8 @@
             "stockSyncedDesc": "Le stock de l'inventaire a été rapproché des comptages physiques. Les mouvements d'ajustement ont été automatiquement enregistrés.",
             "validateConfirm": "Êtes-vous sûr de vouloir valider cet audit ? Cela générera automatiquement des mouvements de stock pour refléter les comptages physiques. Cette action est irréversible.",
             "notFound": "Audit non trouvé",
-            "scopeLabel": "Portée"
+            "scopeLabel": "Portée",
+            "missingReasonsError": "Veuillez fournir une raison pour toutes les pièces présentant des écarts de stock."
         }
     },
     "suppliers": {

@@ -483,7 +483,27 @@
             "addFirstPart": "Add Your First Part",
             "manageSuppliers": "Manage Suppliers",
             "clearFilters": "Clear Filters",
-            "deleteConfirm": "Are you sure you want to delete \"{name}\"?"
+            "deleteConfirm": "Are you sure you want to delete \"{name}\"?",
+            "downloadTemplate": "Download Template",
+            "importExcel": "Import Excel",
+            "exportExcel": "Export Excel"
+        },
+        "excel": {
+            "importTitle": "Import Inventory",
+            "importDescription": "Upload an Excel file to receive stock or adjust inventory levels in bulk.",
+            "selectFile": "Select Excel File",
+            "onlyXlsx": "Only .xlsx files are supported",
+            "templateInfo": "Please use our template to ensure all mandatory fields are present.",
+            "downloadTemplate": "Download Template",
+            "import": "Import",
+            "importing": "Importing...",
+            "success": "Import completed",
+            "importedCount": "{count} rows imported successfully",
+            "failedCount": "{count} rows failed",
+            "errors": "Error Details",
+            "noFile": "No file selected",
+            "warehouseRequired": "Warehouse is required for all rows",
+            "close": "Close"
         },
         "stats": {
             "totalParts": {
@@ -788,12 +808,12 @@
                 "confirmAdjustment": "Confirm Adjustment",
                 "confirmReceipt": "Confirm Receipt",
                 "confirmRemoval": "Confirm Removal",
+                "cancel": "Cancel",
                 "toasts": {
                     "success": {
                         "title": "Stock adjusted",
                         "description": "Stock has been {type}."
                     },
-                    "cancel": "Cancel",
                     "warehouseRequired": "Warehouse required",
                     "reasonRequired": "Reason required",
                     "reasonRequiredDesc": "Please select a reason for this stock adjustment.",
@@ -878,7 +898,8 @@
             "stockSyncedDesc": "The inventory stock has been reconciled with the physical counts. Adjustment movements were automatically logged.",
             "validateConfirm": "Are you sure you want to validate this audit? This will automatically generate stock movements to reflect the physical counts. This action cannot be undone.",
             "notFound": "Audit not found",
-            "scopeLabel": "Scope"
+            "scopeLabel": "Scope",
+            "missingReasonsError": "Please provide a reason for all parts with stock discrepancies."
         }
     },
     "suppliers": {

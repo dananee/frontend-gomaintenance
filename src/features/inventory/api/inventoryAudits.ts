@@ -15,14 +15,14 @@ export const createAudit = async (data: {
   warehouse_id: string; 
   name: string; 
   description?: string;
-  scope?: string;
+  scope_type: string;
   scope_category_id?: string;
 }): Promise<InventoryAudit> => {
   const response = await apiClient.post<InventoryAudit>("/inventory/audits", data);
   return response.data;
 };
 
-export const updateAuditLines = async (id: string, lines: { part_id: string; physical_quantity: number; adjustment_reason?: string }[]): Promise<any> => {
+export const updateAuditLines = async (id: string, lines: { line_id: string; physical_qty: number | null; reason_code?: string; notes?: string }[]): Promise<any> => {
   const response = await apiClient.patch(`/inventory/audits/${id}/lines`, { lines });
   return response.data;
 };

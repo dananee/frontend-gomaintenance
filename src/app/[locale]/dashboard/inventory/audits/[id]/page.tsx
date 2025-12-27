@@ -28,40 +28,53 @@ export default function AuditDetailPage() {
   const updateLinesMutation = useUpdateAuditLines(id as string);
   const validateMutation = useValidateAudit(id as string);
   
-  const [lineChanges, setLineChanges] = useState<Record<string, { physical_quantity: number, adjustment_reason?: string }>>({});
+  const [lineChanges, setLineChanges] = useState<Record<string, { physical_qty: number | null, reason_code?: string, notes?: string }>>({});
 
   useEffect(() => {
     if (audit?.lines) {
-        const initialChanges: Record<string, { physical_quantity: number, adjustment_reason?: string }> = {};
+        const initialChanges: Record<string, { physical_qty: number | null, reason_code?: string, notes?: string }> = {};
         audit.lines.forEach(line => {
-            initialChanges[line.part_id] = {
-                physical_quantity: line.physical_quantity,
-                adjustment_reason: line.adjustment_reason
+            initialChanges[line.id] = {
+                physical_qty: line.physical_qty,
+                reason_code: line.reason_code,
+                notes: line.notes
             };
         });
         setLineChanges(initialChanges);
     }
   }, [audit?.lines]);
 
-  const handleLineChange = (partId: string, field: string, value: any) => {
+  const handleLineChange = (lineId: string, field: string, value: any) => {
     setLineChanges(prev => ({
         ...prev,
-        [partId]: {
-            ...prev[partId],
+        [lineId]: {
+            ...prev[lineId],
             [field]: value
         }
     }));
   };
 
   const handleSave = async () => {
-    const lines = Object.entries(lineChanges).map(([partId, data]) => ({
-        part_id: partId,
+    const lines = Object.entries(lineChanges).map(([lineId, data]) => ({
+        line_id: lineId,
         ...data
     }));
     await updateLinesMutation.mutateAsync(lines);
   };
 
+  const hasMissingReasons = audit?.lines?.some(line => {
+    const change = lineChanges[line.id];
+    const physical = change?.physical_qty;
+    if (physical === null || physical === undefined) return false;
+    const diff = physical - line.system_qty_snapshot;
+    return diff !== 0 && !change?.reason_code;
+  });
+
   const handleValidate = async () => {
+    if (hasMissingReasons) {
+        alert(t("details.missingReasonsError") || "Please provide a reason for all parts with stock discrepancies.");
+        return;
+    }
     if (confirm(t("details.validateConfirm"))) {
         await validateMutation.mutateAsync();
     }
@@ -69,6 +82,8 @@ export default function AuditDetailPage() {
 
   if (isLoading) return <div className="p-8 text-center">{commonT("loading") || "Loading..."}</div>;
   if (!audit) return <div className="p-8 text-center">{t("details.notFound") || "Audit not found"}</div>;
+
+  const isReadOnly = audit.status === "VALIDATED";
 
   return (
     <div className="space-y-6 pb-20">
@@ -86,23 +101,28 @@ export default function AuditDetailPage() {
           </p>
         </div>
         <div className="ml-auto flex gap-2">
-          {audit.status !== "VALIDATED" && audit.status !== "CANCELLED" && (
+          {!isReadOnly && audit.status !== "CANCELLED" && (
             <>
                 <Button variant="outline" onClick={handleSave} disabled={updateLinesMutation.isPending}>
                     <Save className="mr-2 h-4 w-4" />
                     {t("actions.saveDraft")}
                 </Button>
-                <Button onClick={handleValidate} disabled={validateMutation.isPending}>
+                <Button onClick={handleValidate} disabled={validateMutation.isPending || hasMissingReasons}>
                     <CheckCircle2 className="mr-2 h-4 w-4" />
                     {t("actions.validate")}
                 </Button>
             </>
           )}
-          {audit.status === "VALIDATED" && (
-            <Badge variant="default" className="px-4 py-2 text-md flex items-center bg-green-600 hover:bg-green-700">
-                <CheckCircle2 className="mr-2 h-4 w-4" />
-                {t("status.validated") || "Validated"} {t("on") || "on"} {audit.validated_at && format(new Date(audit.validated_at), "PPP")}
-            </Badge>
+          {isReadOnly && (
+            <div className="flex flex-col items-end gap-1">
+                <Badge variant="default" className="px-4 py-2 text-md flex items-center bg-green-600 hover:bg-green-700">
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    {t("status.validated") || "Validated"}
+                </Badge>
+                <span className="text-[10px] text-muted-foreground italic">
+                    {t("on") || "on"} {audit.validated_at && format(new Date(audit.validated_at), "PPP p")}
+                </span>
+            </div>
           )}
         </div>
       </div>
@@ -121,8 +141,8 @@ export default function AuditDetailPage() {
                         {t("details.scopeLabel") || "Scope"}
                     </span>
                     <Badge variant="outline" className="capitalize">
-                        {audit.scope === "ALL" ? t("modal.scopes.all") : 
-                         audit.scope === "WITH_STOCK" ? t("modal.scopes.withStock") : 
+                        {audit.scope_type === "ALL" ? t("modal.scopes.all") : 
+                         audit.scope_type === "IN_STOCK_ONLY" ? t("modal.scopes.withStock") : 
                          t("modal.scopes.category")}
                     </Badge>
                 </div>
@@ -142,35 +162,43 @@ export default function AuditDetailPage() {
               </TableHeader>
               <TableBody>
                 {audit.lines?.map((line) => {
-                  const currentPhysical = lineChanges[line.part_id]?.physical_quantity ?? 0;
-                  const diff = currentPhysical - line.system_quantity;
-                  
+                  const currentPhysical = lineChanges[line.id]?.physical_qty;
+                  const diff = currentPhysical !== null && currentPhysical !== undefined ? currentPhysical - line.system_qty_snapshot : 0;
+                  const needsReason = diff !== 0;
+                  const hasReason = !!lineChanges[line.id]?.reason_code;
+
                   return (
-                    <TableRow key={line.id}>
-                      <TableCell className="font-medium pl-6">{line.part?.name}</TableCell>
-                      <TableCell className="font-mono text-[10px] text-muted-foreground">
-                        {line.part?.sku || line.part?.part_number}
+                    <TableRow key={line.id} className={needsReason && !hasReason && !isReadOnly ? "bg-rose-50/50 dark:bg-rose-950/10" : ""}>
+                      <TableCell className="font-medium pl-6">
+                        <div className="flex flex-col">
+                            <span>{line.name_snapshot}</span>
+                            {line.part?.brand && <span className="text-[10px] text-muted-foreground">{line.part.brand}</span>}
+                        </div>
                       </TableCell>
-                      <TableCell className="text-right font-semibold">{line.system_quantity}</TableCell>
+                      <TableCell className="font-mono text-[10px] text-muted-foreground">
+                        {line.sku_snapshot}
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">{line.system_qty_snapshot}</TableCell>
                       <TableCell>
                         <Input 
                             type="number" 
                             className="h-8 w-20 text-right"
-                            value={currentPhysical}
-                            disabled={audit.status === "VALIDATED"}
-                            onChange={(e) => handleLineChange(line.part_id, "physical_quantity", parseInt(e.target.value) || 0)}
+                            value={currentPhysical ?? ""}
+                            placeholder="--"
+                            disabled={isReadOnly}
+                            onChange={(e) => handleLineChange(line.id, "physical_qty", e.target.value === "" ? null : parseInt(e.target.value))}
                         />
                       </TableCell>
                       <TableCell className={`text-right font-bold pr-6 ${diff > 0 ? "text-emerald-600" : diff < 0 ? "text-rose-600" : "text-muted-foreground"}`}>
-                        {diff > 0 ? `+${diff}` : diff}
+                        {currentPhysical !== null && currentPhysical !== undefined ? (diff > 0 ? `+${diff}` : diff) : "--"}
                       </TableCell>
                       <TableCell>
                         <Input 
                             placeholder={t("table.headers.reason") + "..."} 
-                            className="h-8"
-                            value={lineChanges[line.part_id]?.adjustment_reason || ""}
-                            disabled={audit.status === "VALIDATED"}
-                            onChange={(e) => handleLineChange(line.part_id, "adjustment_reason", e.target.value)}
+                            className={`h-8 ${needsReason && !hasReason && !isReadOnly ? "border-rose-500 focus-visible:ring-rose-500" : ""}`}
+                            value={lineChanges[line.id]?.reason_code || ""}
+                            disabled={isReadOnly}
+                            onChange={(e) => handleLineChange(line.id, "reason_code", e.target.value)}
                         />
                       </TableCell>
                     </TableRow>
@@ -210,17 +238,17 @@ export default function AuditDetailPage() {
                 </CardContent>
             </Card>
 
-            {audit.status === "VALIDATED" && (
+            {isReadOnly && (
                 <Card className="border-emerald-200 bg-emerald-50 dark:bg-emerald-950/20 shadow-sm">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-md flex items-center text-emerald-700 dark:text-emerald-400">
                             <CheckCircle2 className="mr-2 h-5 w-5" />
-                            {t("details.stockSyncedTitle")}
+                            {t("details.stockSyncedTitle") || "Audit Validated"}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-emerald-700/80 dark:text-emerald-500/80 leading-relaxed">
-                            {t("details.stockSyncedDesc")}
+                            {t("details.stockSyncedDesc") || "Stock levels have been adjusted and FIFO batches were created/consumed where necessary."}
                         </p>
                     </CardContent>
                 </Card>

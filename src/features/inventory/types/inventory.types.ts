@@ -74,7 +74,7 @@ export interface InventoryAudit {
   name: string;
   description?: string;
   status: 'DRAFT' | 'IN_PROGRESS' | 'VALIDATED' | 'CANCELLED';
-  scope: 'ALL' | 'WITH_STOCK' | 'CATEGORY';
+  scope_type: 'ALL' | 'IN_STOCK_ONLY' | 'CATEGORY';
   scope_category_id?: string;
   created_by: string;
   created_user?: { first_name: string, last_name: string };
@@ -90,10 +90,13 @@ export interface InventoryAuditLine {
   audit_id: string;
   part_id: string;
   part?: Part;
-  system_quantity: number;
-  physical_quantity: number;
+  sku_snapshot: string;
+  name_snapshot: string;
+  system_qty_snapshot: number;
+  physical_qty: number | null;
   difference: number;
-  adjustment_reason?: string;
+  reason_code?: string;
+  notes?: string;
 }
 
 export interface PartDocument {
