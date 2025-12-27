@@ -38,7 +38,7 @@ export function AddPartToWorkOrderModal({ isOpen, onClose, onAdd, isLoading }: A
   
   useEffect(() => {
     if (selectedPart) {
-        setUnitPrice(selectedPart.unit_price || 0);
+        setUnitPrice(selectedPart.unit_price_ht || 0);
     }
   }, [selectedPart]);
 

@@ -34,35 +34,43 @@ function TopFaultTypesChartComponent({ data }: TopFaultTypesChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {data.map((fault, index) => {
-            const percentage = (fault.count / maxCount) * 100;
+        {data.length === 0 || maxCount <= 0 ? (
+          <div className="flex h-[200px] flex-col items-center justify-center space-y-2 rounded-lg border border-dashed text-muted-foreground">
+            <AlertCircle className="h-8 w-8 opacity-20" />
+            <p className="text-sm font-medium">Aucun défaut signalé</p>
+            <p className="text-xs">Les types de défauts apparaîtront ici.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {data.map((fault, index) => {
+              const percentage = (fault.count / maxCount) * 100;
 
-            return (
-              <div key={fault.type} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      #{index + 1}
-                    </span>
-                    <span className="text-sm font-medium">{fault.type}</span>
+              return (
+                <div key={fault.type} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        #{index + 1}
+                      </span>
+                      <span className="text-sm font-medium capitalize">{fault.type}</span>
+                    </div>
+                    <span className="text-sm font-bold">{fault.count}</span>
                   </div>
-                  <span className="text-sm font-bold">{fault.count}</span>
+                  <div className="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-150 hover:opacity-80"
+                      style={{
+                        width: `${percentage}%`,
+                        backgroundColor: fault.color,
+                        willChange: "opacity",
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-150 hover:opacity-80"
-                    style={{
-                      width: `${percentage}%`,
-                      backgroundColor: fault.color,
-                      willChange: "opacity",
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

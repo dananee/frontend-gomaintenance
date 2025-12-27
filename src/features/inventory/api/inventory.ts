@@ -89,7 +89,13 @@ export const getWarehouseStock = async (warehouseId: string): Promise<StockItem[
 };
 
 // Stock Movements
-export const getStockMovements = async (params?: { part_id?: string; warehouse_id?: string; type?: string }): Promise<StockMovement[]> => {
+export const getStockMovements = async (params?: { 
+  part_id?: string; 
+  warehouse_id?: string; 
+  type?: string;
+  start_date?: string;
+  end_date?: string;
+}): Promise<StockMovement[]> => {
   const response = await apiClient.get('/stock-movements', { params });
   // Unwrap paginated response
   return (response.data as any).data || (response.data as any).items || response.data;
