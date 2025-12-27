@@ -210,7 +210,12 @@
         },
         "sections": {
             "fleetAnalytics": "Fleet Analytics",
-            "predictiveAI": "Predictive Analytics & AI Insights"
+            "predictiveAI": "Predictive Analytics & AI Insights",
+            "strategicIndicators": "Strategic Indicators",
+            "operationalPerformance": "Operational Performance",
+            "analyticsTrends": "Analytics & Trends",
+            "alertsActions": "Alerts & Required Actions",
+            "deepAnalysis": "Deep Analysis"
         },
         "stats": {
             "totalVehicles": {
@@ -707,7 +712,28 @@
                     "TRANSFER": "Transfer",
                     "RETURN": "Return",
                     "ADJUSTMENT": "Adjustment",
-                    "SCRAP": "Scrap"
+                    "SCRAP": "Scrap",
+                    "IN": "In",
+                    "OUT": "Out",
+                    "in": "In",
+                    "out": "Out"
+                },
+                "dateRangePicker": {
+                    "header": "Choose a period",
+                    "selectRange": "Select range",
+                    "quickFilters": "Quick Filters",
+                    "selection": "Selection",
+                    "from": "From",
+                    "to": "To",
+                    "reset": "Reset",
+                    "apply": "Apply",
+                    "presets": {
+                        "today": "Today",
+                        "last7days": "Last 7 days",
+                        "last30days": "Last 30 days",
+                        "thisMonth": "This month",
+                        "lastMonth": "Previous month"
+                    }
                 }
             },
             "attachments": {

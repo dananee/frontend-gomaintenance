@@ -48,7 +48,7 @@ const DowntimeChart = lazy(() =>
   }))
 );
  
-const FleetHealthScore = lazy(() =>
+const FleetHealthScoreChart = lazy(() =>
   import("@/features/dashboard/components/FleetHealthScore").then((module) => ({
     default: module.FleetHealthScore,
   }))
@@ -127,180 +127,44 @@ export default function DashboardPage() {
   const t = useTranslations("dashboard");
 
   return (
-    <div className="space-y-6 p-6">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-        {t("title")}
-      </h1>
-
-      {/* Fleet KPIs */}
-      {kpiData && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {/* Financial KPIs - Purple/Blue Gradient */}
-          <Link href="/dashboard/vehicles">
-            <PremiumMetricCard
-              title={t("kpis.totalFleetValue.title")}
-              value={`$${(kpiData.fleet_kpis.total_fleet_value / 1000).toFixed(
-                0
-              )}K`}
-              subtitle={t("kpis.totalFleetValue.subtitle")}
-              icon={DollarSign}
-              variant="purple"
-            />
-          </Link>
-          <Link href="/dashboard/reports?type=cost">
-            <PremiumMetricCard
-              title={t("kpis.maintenanceCostYTD.title")}
-              value={`$${(
-                kpiData.fleet_kpis.total_maintenance_cost_ytd / 1000
-              ).toFixed(0)}K`}
-              subtitle={t("kpis.maintenanceCostYTD.subtitle")}
-              icon={Wrench}
-              variant="purple"
-              trend={kpiData.fleet_kpis.total_maintenance_cost_ytd_trend}
-            />
-          </Link>
-          <Link href="/dashboard/reports?type=tco">
-            <PremiumMetricCard
-              title={t("kpis.totalCostOfOwnership.title")}
-              value={`$${(
-                kpiData.fleet_kpis.total_cost_of_ownership / 1000
-              ).toFixed(0)}K`}
-              subtitle={t("kpis.totalCostOfOwnership.subtitle")}
-              icon={DollarSign}
-              variant="purple"
-            />
-          </Link>
-
-          {/* Performance KPIs - Green/Blue Gradient */}
-          <PremiumMetricCard
-            title={t("kpis.fleetEfficiency.title")}
-            value={`${kpiData.fleet_kpis.fleet_efficiency_score}%`}
-            subtitle={t("kpis.fleetEfficiency.subtitle")}
-            icon={Activity}
-            variant="green"
-            trend={kpiData.fleet_kpis.fleet_efficiency_trend}
-          />
-          
-
-          {/* Risk KPIs - Orange/Red Gradient */}
-          <Link href="/dashboard/vehicles?status=maintenance">
-            <PremiumMetricCard
-              title={t("kpis.downtimeMonth.title")}
-              value={`${kpiData.fleet_kpis.total_downtime_hours_month}h`}
-              subtitle={t("kpis.downtimeMonth.subtitle")}
-              icon={Clock}
-              variant="orange"
-              trend={kpiData.fleet_kpis.total_downtime_hours_month_trend}
-            />
-          </Link>
-          <PremiumMetricCard
-            title={t("kpis.avgDowntimeVehicle.title")}
-            value={`${kpiData.fleet_kpis.avg_downtime_per_vehicle.toFixed(1)}h`}
-            subtitle={t("kpis.avgDowntimeVehicle.subtitle")}
-            icon={Clock}
-            variant="orange"
-            trend={kpiData.fleet_kpis.avg_downtime_per_vehicle_trend}
-          />
-
-          {/* Availability KPIs - Cyan/Blue Gradient */}
-          <PremiumMetricCard
-            title={t("kpis.mttr.title")}
-            value={`${kpiData.fleet_kpis.fleet_mttr}h`}
-            subtitle={t("kpis.mttr.subtitle")}
-            icon={Timer}
-            variant="teal"
-          />
-          <PremiumMetricCard
-            title={t("kpis.mtbf.title")}
-            value={`${kpiData.fleet_kpis.fleet_mtbf}h`}
-            subtitle={t("kpis.mtbf.subtitle")}
-            icon={Zap}
-            variant="teal"
-          />
-          <PremiumMetricCard
-            title={t("kpis.avgCostVehicle.title")}
-            value={`$${kpiData.fleet_kpis.avg_maintenance_cost_per_vehicle.toLocaleString()}`}
-            subtitle={t("kpis.avgCostVehicle.subtitle")}
-            icon={TrendingUp}
-            variant="teal"
-            trend={kpiData.fleet_kpis.avg_cost_per_vehicle_trend}
-          />
-
-          {/* Additional Premium KPIs - Row 2 */}
-          <Link href="/dashboard/work-orders?filter=sla">
-            <PremiumMetricCard
-              title={t("kpis.woSlaCompliance.title")}
-              value={`${kpiData.fleet_kpis.work_order_sla_compliance.toFixed(
-                1
-              )}%`}
-              subtitle={t("kpis.woSlaCompliance.subtitle")}
-              icon={Target}
-              variant="green"
-              trend={kpiData.fleet_kpis.work_order_sla_compliance_trend}
-            />
-          </Link>
-          <Link href="/dashboard/vehicles?view=health">
-            <PremiumMetricCard
-              title={t("kpis.fleetHealthScore.title")}
-              value={`${kpiData.fleet_kpis.global_fleet_health_score}%`}
-              subtitle={t("kpis.fleetHealthScore.subtitle")}
-              icon={Shield}
-              variant="blue"
-              trend={kpiData.fleet_kpis.global_fleet_health_trend}
-            />
-          </Link>
-          <Link href="/dashboard/work-orders">
-            <PremiumMetricCard
-              title={t("kpis.woCompletionRate.title")}
-              value={`${kpiData.fleet_kpis.work_order_completion_rate_week.toFixed(
-                1
-              )}%`}
-              subtitle={t("kpis.woCompletionRate.subtitle")}
-              icon={CheckCircle2}
-              variant="green"
-              trend={kpiData.fleet_kpis.work_order_completion_rate_trend}
-            />
-          </Link>
-          <Link href="/dashboard/maintenance?type=preventive">
-            <PremiumMetricCard
-              title={t("kpis.pmCompliance.title")}
-              value={`${kpiData.fleet_kpis.preventive_maintenance_compliance.toFixed(
-                1
-              )}%`}
-              subtitle={t("kpis.pmCompliance.subtitle")}
-              icon={Gauge}
-              variant="purple"
-              trend={kpiData.fleet_kpis.preventive_maintenance_compliance_trend}
-            />
-          </Link>
-        </div>
-      )}
-
-      {/* Section Divider with Gradient */}
-      <div className="relative my-8">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text px-4 text-sm font-semibold text-transparent">
-            {t("sections.fleetAnalytics")}
-          </span>
+    <div className="space-y-8 p-6 bg-slate-50/50 dark:bg-transparent min-h-screen">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Gérez votre flotte et suivez les indicateurs de performance en temps réel.
+          </p>
         </div>
       </div>
 
-      {/* Stats Grid - Replaced with PremiumMetricCard */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Link href="/dashboard/vehicles">
+      {/* SECTION 1 — Executive KPIs (Top row – MAX 5) */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <Activity className="h-4 w-4" />
+          {t("sections.strategicIndicators")}
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
+          {/* Fleet Availability */}
           <PremiumMetricCard
-            title={t("stats.totalVehicles.title")}
-            value={totalVehicles}
-            subtitle={t("stats.totalVehicles.subtitle")}
-            icon={Truck}
+            title={t("stats.fleetAvailability.title")}
+            value={`${fleetAvailability.toFixed(1)}%`}
+            subtitle={t("stats.fleetAvailability.subtitle")}
+            icon={CheckCircle}
+            variant="green"
+          />
+
+          {/* Fleet Health Score */}
+          <PremiumMetricCard
+            title={t("kpis.fleetHealthScore.title")}
+            value={`${kpiData?.fleet_kpis?.global_fleet_health_score || 0}%`}
+            subtitle={t("kpis.fleetHealthScore.subtitle")}
+            icon={Shield}
             variant="blue"
           />
-        </Link>
 
-        <Link href="/dashboard/work-orders">
+          {/* Active Work Orders */}
           <PremiumMetricCard
             title={t("stats.activeWorkOrders.title")}
             value={activeWorkOrders}
@@ -308,9 +172,8 @@ export default function DashboardPage() {
             icon={Wrench}
             variant="orange"
           />
-        </Link>
 
-        <Link href="/dashboard/maintenance">
+          {/* Critical Issues */}
           <PremiumMetricCard
             title={t("stats.criticalIssues.title")}
             value={criticalIssues}
@@ -318,81 +181,114 @@ export default function DashboardPage() {
             icon={AlertTriangle}
             variant="rose"
           />
-        </Link>
 
-        <Link href="/dashboard/reports">
+          {/* Downtime (hours) */}
           <PremiumMetricCard
-            title={t("stats.fleetAvailability.title")}
-            value={`${fleetAvailability.toFixed(0)}%`}
-            subtitle={t("stats.fleetAvailability.subtitle")}
-            icon={CheckCircle}
-            variant="green"
+            title={t("kpis.downtimeMonth.title")}
+            value={`${kpiData?.fleet_kpis?.total_downtime_hours_month || 0}h`}
+            subtitle={t("kpis.downtimeMonth.subtitle")}
+            icon={Clock}
+            variant="purple"
           />
-        </Link>
-      </div>
+        </div>
+      </section>
 
-      {/* Widgets Row */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <OverdueWorkOrders data={kpiData?.overdue_work_orders || []} />
-        <VehiclesNeedingMaintenance data={kpiData?.vehicles_needing_maintenance || []} />
-      </div>
+      {/* SECTION 2 — Operational KPIs */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <Wrench className="h-4 w-4" />
+          {t("sections.operationalPerformance")}
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <PremiumMetricCard
+            title={t("kpis.mttr.title")}
+            value={`${kpiData?.fleet_kpis?.fleet_mttr || 0}h`}
+            subtitle={t("kpis.mttr.subtitle")}
+            icon={Timer}
+            variant="teal"
+          />
+          <PremiumMetricCard
+            title={t("kpis.mtbf.title")}
+            value={`${kpiData?.fleet_kpis?.fleet_mtbf || 0}h`}
+            subtitle={t("kpis.mtbf.subtitle")}
+            icon={Zap}
+            variant="teal"
+          />
+          <PremiumMetricCard
+            title={t("kpis.woSlaCompliance.title")}
+            value={`${kpiData?.fleet_kpis?.work_order_sla_compliance?.toFixed(1) || 0}%`}
+            subtitle={t("kpis.woSlaCompliance.subtitle")}
+            icon={Target}
+            variant="blue"
+          />
+          <PremiumMetricCard
+            title={t("kpis.pmCompliance.title")}
+            value={`${kpiData?.fleet_kpis?.preventive_maintenance_compliance?.toFixed(1) || 0}%`}
+            subtitle={t("kpis.pmCompliance.subtitle")}
+            icon={Gauge}
+            variant="purple"
+          />
+        </div>
+      </section>
 
-      {/* Charts Grid */}
-      {kpiData && (
-        <Suspense
-          fallback={
-            <div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
-          }
-        >
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 content-visibility-auto">
-            <div className="lg:col-span-2">
-              <CostTrendChart data={kpiData.cost_trend_12months} />
-            </div>
-            <div>
-              <FleetHealthScore data={kpiData.fleet_health} />
-            </div>
-            <div className="lg:col-span-2">
-              <DowntimeChart data={kpiData.downtime_trend_12months} />
-            </div>
-            
+      {/* SECTION 3 — Trends & Analytics (Charts) */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <BarChart3 className="h-4 w-4" />
+          {t("sections.analyticsTrends")}
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <Suspense fallback={<div className="h-[350px] w-full animate-pulse rounded-xl bg-muted" />}>
+              <CostTrendChart data={kpiData?.cost_trend_12months || []} />
+            </Suspense>
           </div>
+          <div>
+            <Suspense fallback={<div className="h-[350px] w-full animate-pulse rounded-xl bg-muted" />}>
+              {kpiData?.fleet_health && <FleetHealthScoreChart data={kpiData.fleet_health} />}
+            </Suspense>
+          </div>
+          <div className="lg:col-span-3">
+            <Suspense fallback={<div className="h-[350px] w-full animate-pulse rounded-xl bg-muted" />}>
+              <DowntimeChart data={kpiData?.downtime_trend_12months || []} />
+            </Suspense>
+          </div>
+        </div>
+      </section>
 
-          {/* Advanced Analytics */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-6 content-visibility-auto">
-            <div>
-              <TopFaultTypesChart data={kpiData.top_fault_types} />
-            </div>
-           
-            <div>
+      {/* SECTION 4 — Alerts & Actions */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4" />
+          {t("sections.alertsActions")}
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <OverdueWorkOrders data={kpiData?.overdue_work_orders || []} />
+          <VehiclesNeedingMaintenance data={kpiData?.vehicles_needing_maintenance || []} />
+        </div>
+      </section>
+
+      {/* SECTION 5 — Deep Analysis */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+          <Activity className="h-4 w-4" />
+          {t("sections.deepAnalysis")}
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <Suspense fallback={<div className="h-[300px] w-full animate-pulse rounded-xl bg-muted" />}>
+              <TopFaultTypesChart data={kpiData?.top_fault_types || []} />
+            </Suspense>
+          </div>
+          <div className="lg:col-span-2">
+            <Suspense fallback={<div className="h-[300px] w-full animate-pulse rounded-xl bg-muted" />}>
               <TechnicianPerformanceChart
-                data={kpiData.technician_performance}
+                data={kpiData?.technician_performance || []}
               />
-            </div>
+            </Suspense>
           </div>
-        </Suspense>
-      )}
-
-      {/* Original Charts */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 content-visibility-auto">
-        <div className="col-span-4">
-          <Suspense
-            fallback={
-              <div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
-            }
-          >
-            <CostChart />
-          </Suspense>
         </div>
-        <div className="col-span-3">
-          <Suspense
-            fallback={
-              <div className="h-96 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
-            }
-          >
-            <AvailabilityChart />
-          </Suspense>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

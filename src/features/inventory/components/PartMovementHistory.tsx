@@ -50,6 +50,18 @@ const movementTypeConfig: Record<string, any> = {
     icon: Trash2,
     color: "text-gray-600 dark:text-gray-400",
   },
+  IN: {
+    label: "In",
+    variant: "success",
+    icon: ArrowDown,
+    color: "text-green-600 dark:text-green-400",
+  },
+  OUT: {
+    label: "Out",
+    variant: "destructive",
+    icon: ArrowUp,
+    color: "text-red-600 dark:text-red-400",
+  },
 };
 
 export function PartMovementHistory({ movements = [] }: PartMovementHistoryProps) {
@@ -107,9 +119,9 @@ export function PartMovementHistory({ movements = [] }: PartMovementHistoryProps
                                {movement.notes}
                              </p>
                            )}
-                           {movement.reference_id && (
+                           {movement.reference_no && (
                              <p className="text-xs text-gray-400 mt-1">
-                               {t("ref")} {movement.reference_id}
+                               {t("ref")} {movement.reference_no}
                              </p>
                            )}
                          </div>

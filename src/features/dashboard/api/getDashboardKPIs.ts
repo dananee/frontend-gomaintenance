@@ -45,10 +45,11 @@ export const getDashboardKPIs = async (): Promise<DashboardKPIResponse> => {
     };
     work_orders_by_status: { status: string; count: number }[];
     work_orders_by_priority: { priority: string; count: number }[];
-    maintenance_trends: { date: string; count: number; cost: number }[];
+    maintenance_trends: { date: string; month: string; count: number; cost: number; downtime: number }[];
     top_vehicles: any[];
     upcoming_maintenance: any[];
     overdue_work_orders: any[];
+    top_fault_types: { type: string; count: number; color: string }[];
     cost_breakdown: { category: string; amount: number; percentage: number }[];
     technician_performance: { name: string; completed_wos: number; avg_time: number; efficiency_score: number }[];
     cost_forecast: { month: string; actual?: number; predicted: number }[];
@@ -84,11 +85,15 @@ export const getDashboardKPIs = async (): Promise<DashboardKPIResponse> => {
       preventive_maintenance_compliance: data.stats.preventive_compliance,
     },
     cost_trend_12months: (data.maintenance_trends || []).map(t => ({
-      month: new Date(t.date).toLocaleString('default', { month: 'short' }),
+      month: t.month || new Date(t.date).toLocaleString('default', { month: 'short' }),
       value: t.cost,
-      label: new Date(t.date).toLocaleDateString()
+      label: t.month || new Date(t.date).toLocaleDateString()
     })),
-    downtime_trend_12months: [], // Keep empty for now or map if backend provides
+    downtime_trend_12months: (data.maintenance_trends || []).map(t => ({
+      month: t.month || new Date(t.date).toLocaleString('default', { month: 'short' }),
+      value: t.downtime || 0,
+      label: t.month || new Date(t.date).toLocaleDateString()
+    })),
     work_order_distribution: data.work_orders_by_status.map(s => ({
       status: s.status,
       count: s.count,
@@ -116,7 +121,11 @@ export const getDashboardKPIs = async (): Promise<DashboardKPIResponse> => {
       critical_vehicles: data.stats.critical_alerts,
       status: data.stats.global_health_score > 90 ? "excellent" : data.stats.global_health_score > 70 ? "good" : "fair"
     },
-    top_fault_types: [], // Backend doesn't provide yet
+    top_fault_types: (data.top_fault_types || []).map(f => ({
+      type: f.type,
+      count: f.count,
+      color: f.color
+    })),
     technician_performance: (data.technician_performance || []).map(tp => ({
       name: tp.name,
       completed_wos: tp.completed_wos,
@@ -129,7 +138,10 @@ export const getDashboardKPIs = async (): Promise<DashboardKPIResponse> => {
       breached: 0,
       totalWOs: 0
     },
-    mttr_trend: [],
+    mttr_trend: (data.maintenance_trends || []).map(t => ({
+      month: t.month,
+      mttr: t.count > 0 ? t.downtime / t.count : 0, // Simplified MTTR trend
+    })),
     cost_forecast: (data.cost_forecast || []).map(cf => ({
       month: cf.month,
       actual: cf.actual,

@@ -95,18 +95,29 @@ export function StockAdjustmentModal({
     }
 
     // 2. Map to backend
-    const movementType = 
-        adjustmentType === "add" ? "in" :
-        adjustmentType === "remove" ? "out" : 
-        "adjustment";
+    let movementType: string;
+    let finalQuantity: number;
+
+    if (adjustmentType === "set") {
+      const delta = quantity - currentLevel;
+      if (delta === 0) {
+        onClose();
+        return;
+      }
+      movementType = delta > 0 ? "PURCHASE" : "CONSUMPTION";
+      finalQuantity = Math.abs(delta);
+    } else {
+      movementType = adjustmentType === "add" ? "PURCHASE" : "CONSUMPTION";
+      finalQuantity = quantity;
+    }
     
     const requestWarehouseId = warehouseId === "none" ? undefined : warehouseId;
 
     onSave({
       part_id: "", 
-      warehouse_id: requestWarehouseId, // undefined if global
+      warehouse_id: requestWarehouseId,
       movement_type: movementType,
-      quantity,
+      quantity: finalQuantity,
       reason: notes ? `${reason} - ${notes}` : reason,
     } as any); 
 

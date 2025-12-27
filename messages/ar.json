@@ -670,6 +670,23 @@
                     "RETURN": "إرجاع",
                     "ADJUSTMENT": "تعديل",
                     "SCRAP": "خردة"
+                },
+                "dateRangePicker": {
+                    "header": "اختر فترة",
+                    "selectRange": "اختر فترة",
+                    "quickFilters": "فلاتر سريعة",
+                    "selection": "التحديد",
+                    "from": "من",
+                    "to": "إلى",
+                    "reset": "إعادة تعيين",
+                    "apply": "تطبيق",
+                    "presets": {
+                        "today": "اليوم",
+                        "last7days": "آخر 7 أيام",
+                        "last30days": "آخر 30 يومًا",
+                        "thisMonth": "هذا الشهر",
+                        "lastMonth": "الشهر السابق"
+                    }
                 }
             },
             "attachments": {

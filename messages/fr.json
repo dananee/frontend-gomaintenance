@@ -1288,7 +1288,29 @@
                     "TRANSFER": "Transfert",
                     "RETURN": "Retour",
                     "ADJUSTMENT": "Ajustement",
-                    "SCRAP": "Rebut"
+                    "SCRAP": "Rebut",
+                    "IN": "Entrée",
+                    "OUT": "Sortie",
+                    "in": "Entrée",
+                    "out": "Sortie"
+                },
+                "dateRangePicker": {
+                    "header": "Choisir une période",
+                    "selectRange": "Sélectionner une période",
+                    "quickFilters": "Filtres rapides",
+                    "selection": "Sélection",
+                    "from": "Du",
+                    "to": "Au",
+                    "reset": "Réinitialiser",
+                    "apply": "Appliquer",
+                    "placeholder": "Sélectionner une date",
+                    "presets": {
+                        "today": "Aujourd'hui",
+                        "last7days": "7 derniers jours",
+                        "last30days": "30 derniers jours",
+                        "thisMonth": "Ce mois-ci",
+                        "lastMonth": "Mois précédent"
+                    }
                 }
             },
             "attachments": {
