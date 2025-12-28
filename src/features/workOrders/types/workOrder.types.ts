@@ -34,11 +34,14 @@ export interface WorkOrder {
   updated_at: string;
   vehicle?: {
     id: string;
-    make: string;
+    plate_number: string;
+    brand: string;
     model: string;
-    license_plate: string;
+    year?: number;
+    type?: string;
+    status?: string;
   };
-  assigned_user?: User; // Backward compatibility
+  assigned_user?: Partial<User>; // Backward compatibility
   cost?: WorkOrderCost;
 }
 
@@ -49,8 +52,8 @@ export interface WorkOrderCost {
   parts_cost: number;
   external_service_cost: number;
   total_cost: number;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface WorkOrderBoardUpdateEvent {

@@ -12,16 +12,19 @@ export const getWorkOrder = async (id: string): Promise<WorkOrder> => {
     vehicle_name: wo.vehicle 
       ? `${wo.vehicle.plate_number} - ${wo.vehicle.brand} ${wo.vehicle.model}`
       : undefined,
-    type: wo.type,
+    type: wo.type as any,
     title: wo.title,
     description: wo.description || "",
-    status: wo.status,
-    priority: wo.priority,
+    status: wo.status as any,
+    priority: wo.priority as any,
     assigned_to: wo.assigned_to,
     assigned_to_name: wo.assigned_user 
       ? `${wo.assigned_user.first_name} ${wo.assigned_user.last_name}`
       : undefined,
-    assignees: wo.assignees || [], // Pass assignees array
+    assignees: (wo.assignees || []).map((a: any) => ({
+      ...a,
+      role: a.role as any
+    })),
     scheduled_date: wo.scheduled_date,
     completed_date: wo.completed_date,
     estimated_duration: wo.estimated_duration,
