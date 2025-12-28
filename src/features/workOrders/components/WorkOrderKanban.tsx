@@ -193,7 +193,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: Partial<WorkOrder> & { assignee_ids?: string[] }) => {
+  const handleSave = (data: Partial<WorkOrder> & { assignee_ids?: string[]; labor_cost?: number; external_service_cost?: number }) => {
     if (editingOrder) {
       // Update existing using mutation
       updateWorkOrder.mutate(

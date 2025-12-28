@@ -51,6 +51,12 @@ export type VehicleDetailsResponse = {
     cost?: number;
     status: "completed" | "cancelled";
     technician?: string;
+    assignees?: Array<{
+      id: string;
+      first_name: string;
+      last_name: string;
+      avatar_url?: string;
+    }>;
   }>;
   activityLog?: Array<{
     id: string;
@@ -58,6 +64,23 @@ export type VehicleDetailsResponse = {
     description?: string;
     date: string;
     type?: string;
+  }>;
+  upcomingMaintenance?: Array<{
+    id: string;
+    title: string;
+    description?: string;
+    scheduled_date: string;
+    status: string;
+    priority: string;
+    estimated_cost?: number;
+    notes?: string;
+    template?: {
+      name: string;
+    };
+    assigned_user?: {
+      first_name: string;
+      last_name: string;
+    };
   }>;
 };
 

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/formatters";
 import { AlertTriangle, Edit, Package, Trash2 } from "lucide-react";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -72,10 +73,10 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete, onReceiveStock 
                 <TableRow
                   key={part.id}
                   className={`cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${isCriticalStock
-                      ? "bg-red-50/50 dark:bg-red-900/10 border-l-4 border-l-red-500"
-                      : isLowStock
-                        ? "bg-yellow-50/50 dark:bg-yellow-900/10 border-l-4 border-l-yellow-500"
-                        : ""
+                    ? "bg-red-50/50 dark:bg-red-900/10 border-l-4 border-l-red-500"
+                    : isLowStock
+                      ? "bg-yellow-50/50 dark:bg-yellow-900/10 border-l-4 border-l-yellow-500"
+                      : ""
                     }`}
                 >
                   <TableCell className="font-medium">
@@ -120,24 +121,24 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete, onReceiveStock 
                     <div className="flex flex-col items-end">
                       <span
                         className={`font-semibold ${isCriticalStock
-                            ? "text-red-600 dark:text-red-400"
-                            : isLowStock
-                              ? "text-yellow-600 dark:text-yellow-400"
-                               : "text-gray-900 dark:text-gray-100"
+                          ? "text-red-600 dark:text-red-400"
+                          : isLowStock
+                            ? "text-yellow-600 dark:text-yellow-400"
+                            : "text-gray-900 dark:text-gray-100"
                           }`}
                       >
-                        {part.total_quantity} <span className="text-xs font-normal text-muted-foreground">{part.unit}</span>
+                        <AnimatedNumber value={part.total_quantity} decimals={0} /> <span className="text-xs font-normal text-muted-foreground">{part.unit}</span>
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {t("minQty", { count: part.min_quantity })}
+                        {t.rich("minQty", { count: () => <AnimatedNumber value={part.min_quantity} decimals={0} /> })}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(part.unit_price_ht || 0)}
+                    <AnimatedNumber value={part.unit_price_ht || 0} currency="MAD" />
                   </TableCell>
                   <TableCell className="text-right font-medium">
-                    {formatCurrency(totalValue)}
+                    <AnimatedNumber value={totalValue} currency="MAD" />
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">

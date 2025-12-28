@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { usePartCategories } from "@/features/inventory/hooks/usePartCategories";
 import { formatCurrency } from "@/lib/formatters";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 import { useQuery } from "@tanstack/react-query";
 import { getWarehouses, Warehouse } from "@/features/inventory/api/inventory";
 import { useWarehouses } from "@/features/inventory/hooks/useWarehouses";
@@ -127,7 +128,7 @@ export default function InventoryPage() {
 
   const handleSave = (partData: Partial<Part>) => {
     const isEditing = !!editingPart;
-    
+
     if (isEditing && editingPart?.id) {
       // Update existing part
       updatePartMutation.mutate(
@@ -208,7 +209,7 @@ export default function InventoryPage() {
           )}
           {canImport && (
             <>
-             
+
               <Button variant="outline" onClick={() => setIsImportModalOpen(true)}>
                 <FileUp className="mr-2 h-4 w-4" />
                 {t("actions.importExcel")}
@@ -216,10 +217,10 @@ export default function InventoryPage() {
             </>
           )}
           <Link href="/dashboard/inventory/audits">
-              <Button variant="outline">
-                <Package className="mr-2 h-4 w-4" />
-                {t("actions.audits")}
-              </Button>
+            <Button variant="outline">
+              <Package className="mr-2 h-4 w-4" />
+              {t("actions.audits")}
+            </Button>
           </Link>
           <Link href="/dashboard/inventory/suppliers">
             <Button variant="outline">
@@ -246,7 +247,7 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {parts?.data?.length || 0}
+                <AnimatedNumber value={parts?.data?.length || 0} decimals={0} />
               </div>
               <p className="text-xs text-gray-500">{t("stats.totalParts.description")}</p>
             </CardContent>
@@ -258,7 +259,7 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                {lowStockCount}
+                <AnimatedNumber value={lowStockCount} decimals={0} />
               </div>
               <p className="text-xs text-gray-500">{t("stats.lowStock.description")}</p>
             </CardContent>
@@ -270,7 +271,7 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatCurrency(totalValue)}
+                <AnimatedNumber value={totalValue} currency="MAD" />
               </div>
               <p className="text-xs text-gray-500">{t("stats.totalValue.description")}</p>
             </CardContent>
@@ -281,7 +282,9 @@ export default function InventoryPage() {
               <Package className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{categories?.length || 0}</div>
+              <div className="text-2xl font-bold">
+                <AnimatedNumber value={categories?.length || 0} decimals={0} />
+              </div>
               <p className="text-xs text-gray-500">{t("stats.categories.description")}</p>
             </CardContent>
           </Card>
@@ -411,7 +414,7 @@ export default function InventoryPage() {
         />
       )}
 
-      <ImportInventoryModal 
+      <ImportInventoryModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
       />

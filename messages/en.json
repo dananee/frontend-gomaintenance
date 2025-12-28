@@ -1870,7 +1870,7 @@
                 "historyTitle": "Complete maintenance history for this vehicle",
                 "noHistory": "No maintenance history available",
                 "timelineTitle": "Maintenance Timeline",
-                "technician": "Technician: {name}",
+                "technician": "Technician",
                 "types": {
                     "preventive": "Preventive",
                     "corrective": "Corrective",
@@ -1907,6 +1907,9 @@
             "markToDo": "Mark as To Do",
             "markDone": "Mark as Done",
             "dueTomorrow": "Due Tomorrow"
+        },
+        "messages": {
+            "updateSuccess": "Work order updated successfully"
         },
         "addPartModal": {
             "title": "Add Part to Work Order",
@@ -1951,6 +1954,7 @@
                 "selectStatus": "Select status",
                 "assignee": "Assigned To",
                 "scheduledDate": "Scheduled Date",
+                "dueDate": "Due Date",
                 "selectTechnician": "Select Technician",
                 "category": "Category",
                 "selectCategory": "Select category",
@@ -2085,6 +2089,9 @@
             "noDate": "No date",
             "unassigned": "Unassigned",
             "multipleAssignees": "{count} technicians",
+            "assignee": {
+                "role": "Technician"
+            },
             "actions": {
                 "edit": "Edit Work Order",
                 "delete": "Delete"
@@ -2154,6 +2161,10 @@
                     "priority": "Priority Level",
                     "description": "Description",
                     "notes": "Additional Notes"
+                },
+                "cost": {
+                    "title": "Total Cost",
+                    "description": "Total maintenance cost"
                 }
             },
             "modal": {

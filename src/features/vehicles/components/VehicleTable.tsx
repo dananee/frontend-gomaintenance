@@ -39,8 +39,8 @@ interface VehicleTableProps {
   onCreatePlan: (vehicle: Vehicle) => void;
 }
 
-export function VehicleTable({ 
-  vehicles, 
+export function VehicleTable({
+  vehicles,
   isLoading,
   onEdit,
   onDelete,
@@ -125,10 +125,10 @@ export function VehicleTable({
                   </span>
                 </div>
               </TableCell>
-              <TableCell>{formatCurrency(0)}</TableCell>
+              <TableCell>{formatCurrency(vehicle.kpis?.total_maintenance_cost || 0)}</TableCell>
               <TableCell>
                 <span className="text-gray-500">
-                    {t("days", { days: 0 })}
+                  {t("days", { days: 0 })}
                 </span>
               </TableCell>
               <TableCell>
@@ -146,10 +146,10 @@ export function VehicleTable({
                     healthScore >= 90
                       ? "bg-green-500"
                       : healthScore >= 70
-                      ? "bg-blue-500"
-                      : healthScore >= 50
-                      ? "bg-amber-500"
-                      : "bg-red-500";
+                        ? "bg-blue-500"
+                        : healthScore >= 50
+                          ? "bg-amber-500"
+                          : "bg-red-500";
 
                   return (
                     <div className="flex flex-col gap-1.5 min-w-[120px]">
@@ -160,10 +160,10 @@ export function VehicleTable({
                             healthScore >= 90
                               ? "text-green-600"
                               : healthScore >= 70
-                              ? "text-blue-600"
-                              : healthScore >= 50
-                              ? "text-amber-600"
-                              : "text-red-600"
+                                ? "text-blue-600"
+                                : healthScore >= 50
+                                  ? "text-amber-600"
+                                  : "text-red-600"
                           }
                         >
                           {healthScore.toFixed(0)}%
@@ -185,10 +185,10 @@ export function VehicleTable({
                                 {healthScore >= 90
                                   ? "Excellent"
                                   : healthScore >= 70
-                                  ? "Good"
-                                  : healthScore >= 50
-                                  ? "Fair"
-                                  : "Poor"}
+                                    ? "Good"
+                                    : healthScore >= 50
+                                      ? "Fair"
+                                      : "Poor"}
                               </p>
                               <p className="text-[10px] text-gray-500 italic">
                                 {healthScore >= 90

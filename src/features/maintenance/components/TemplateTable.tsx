@@ -99,7 +99,7 @@ export function TemplateTable({
               </TableCell>
               <TableCell>
                 <Badge variant="outline" className="font-mono">
-                  {t("table.tasksCount", { count: template.tasks.length })}
+                  {t("table.tasksCount", { count: template.tasks?.length })}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">

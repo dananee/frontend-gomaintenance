@@ -23,7 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { WorkOrder, WorkOrderPriority, WorkOrderStatus, WorkOrderType } from "../types/workOrder.types";
 import { useTranslations } from "next-intl";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -55,6 +55,8 @@ interface WorkOrderFormValues {
   estimated_duration?: number;
   category: string;
   estimated_cost?: number;
+  labor_cost?: number;
+  external_service_cost?: number;
   notes?: string;
   scheduled_date?: string | Date;
 }
@@ -63,7 +65,7 @@ interface EditWorkOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
   workOrder?: WorkOrder;
-  onSave: (data: Partial<WorkOrder> & { assignee_ids?: string[] }) => void;
+  onSave: (data: Partial<WorkOrder> & { assignee_ids?: string[]; labor_cost?: number; external_service_cost?: number }) => void;
 }
 
 export function EditWorkOrderModal({
@@ -114,6 +116,8 @@ export function EditWorkOrderModal({
         estimated_duration: workOrder.estimated_duration,
         category: workOrder.category,
         estimated_cost: workOrder.estimated_cost,
+        labor_cost: workOrder.cost?.labor_cost,
+        external_service_cost: workOrder.cost?.external_service_cost,
         scheduled_date: workOrder.scheduled_date,
       });
     } else {
@@ -127,6 +131,8 @@ export function EditWorkOrderModal({
         estimated_duration: undefined,
         category: "",
         estimated_cost: undefined,
+        labor_cost: undefined,
+        external_service_cost: undefined,
         scheduled_date: undefined,
       });
     }
@@ -137,7 +143,7 @@ export function EditWorkOrderModal({
 
 
   const onSubmit = (data: WorkOrderFormValues) => {
-    const submitData: Partial<WorkOrder> & { assignee_ids?: string[] } = {
+    const submitData: Partial<WorkOrder> & { assignee_ids?: string[]; labor_cost?: number; external_service_cost?: number } = {
       ...data,
       scheduled_date: data.scheduled_date instanceof Date ? data.scheduled_date.toISOString() : data.scheduled_date,
     };
@@ -185,14 +191,12 @@ export function EditWorkOrderModal({
 
           <div className="space-y-2">
             <Label>{t("form.fields.scheduledDate")}</Label>
-            <DateTimePicker
-              date={
-                // @ts-ignore
-                getValues("scheduled_date") ? new Date(getValues("scheduled_date")) : undefined
-              }
-              setDate={(date) => {
+            <DatePicker
+              value={watch("scheduled_date")}
+              onChange={(date) => {
                 setValue("scheduled_date", date ? date.toISOString() : undefined);
               }}
+              withTime
             />
           </div>
 
@@ -364,6 +368,30 @@ export function EditWorkOrderModal({
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="labor_cost">Labor Cost (MAD)</Label>
+              <Input
+                id="labor_cost"
+                type="number"
+                step="0.01"
+                {...register("labor_cost", { valueAsNumber: true })}
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="external_service_cost">External Part Cost (MAD)</Label>
+              <Input
+                id="external_service_cost"
+                type="number"
+                step="0.01"
+                {...register("external_service_cost", { valueAsNumber: true })}
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
 
           <div className="space-y-2">
             <Label>{t("form.fields.attachments")}</Label>
@@ -387,6 +415,6 @@ export function EditWorkOrderModal({
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 }

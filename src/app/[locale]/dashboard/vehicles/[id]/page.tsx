@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PremiumMetricCard } from "@/components/ui/premium-metric-card";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ServiceSummary } from "@/features/vehicles/components/ServiceSummary";
 import { CostTrendChart } from "@/features/dashboard/components/CostTrendChart";
 import { DowntimeChart } from "@/features/dashboard/components/DowntimeChart";
@@ -32,6 +33,8 @@ import {
   Pencil,
   ArrowLeft,
   Package,
+  Calendar,
+  RefreshCw,
 } from "lucide-react";
 import {
   Table,
@@ -371,25 +374,12 @@ export default function VehicleDetailPage() {
           <div>
             <h2 className="mb-4 text-xl font-semibold">{t("details.performanceMetrics.title")}</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {t("details.metrics.totalCost")}
-                  </CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {formatCurrency(metrics.totalMaintenanceCost)}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {t("details.metrics.avgRepair")}: {formatCurrency(metrics.averageRepairCost)}
-                  </p>
-                </CardContent>
-              </Card>
+               
               <PremiumMetricCard
                 title={t("details.metrics.avgRepairCost")}
-                value={formatCurrency(metrics.averageRepairCost)}
+                value={metrics.averageRepairCost}
+                suffix="MAD"
+                decimals={2}
                 subtitle={t("details.metrics.perWorkOrder")}
                 icon={Wrench}
                 variant="indigo"
@@ -403,35 +393,43 @@ export default function VehicleDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {formatCurrency(metrics.costPerKm)}
+                    <AnimatedNumber value={metrics.costPerKm} currency="MAD" decimals={3} />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {t("details.metrics.perWorkOrder")}: {formatCurrency(metrics.averageRepairCost)}
+                    {t("details.metrics.perWorkOrder")}: <AnimatedNumber value={metrics.averageRepairCost} currency="MAD" />
                   </p>
                 </CardContent>
               </Card>
               <PremiumMetricCard
                 title={t("details.metrics.mtbf")}
-                value={metrics.mtbf > 0 ? `${metrics.mtbf.toFixed(0)}h` : t("details.metrics.noFailures")}
+                value={metrics.mtbf}
+                suffix="h"
+                decimals={0}
                 subtitle={t("details.metrics.meanTimeBetweenFailures")}
                 icon={Zap}
                 variant="green"
               />
               <PremiumMetricCard
                 title={t("details.metrics.reliabilityScore")}
-                value={`${metrics.reliabilityScore.toFixed(1)}%`}
+                value={metrics.reliabilityScore}
+                suffix="%"
+                decimals={1}
                 icon={Zap}
                 variant="teal"
               />
               <PremiumMetricCard
                 title={t("details.metrics.totalDowntime")}
-                value={`${metrics.totalDowntimeHours.toFixed(1)}h`}
+                value={metrics.totalDowntimeHours}
+                suffix="h"
+                decimals={1}
                 icon={Clock}
                 variant="orange"
               />
               <PremiumMetricCard
                 title={t("details.metrics.mttr")}
-                value={`${metrics.mttr.toFixed(1)}h`}
+                value={metrics.mttr}
+                suffix="h"
+                decimals={1}
                 subtitle={t("details.metrics.meanTimeToRepair")}
                 icon={Timer}
                 variant="rose"
@@ -523,8 +521,12 @@ export default function VehicleDetailPage() {
                                 {part.partName}
                               </div>
                             </TableCell>
-                            <TableCell>{part.quantity}</TableCell>
-                            <TableCell className="font-medium">{formatCurrency(part.cost)}</TableCell>
+                            <TableCell>
+                              <AnimatedNumber value={part.quantity} decimals={0} />
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              <AnimatedNumber value={part.cost} currency="MAD" />
+                            </TableCell>
                             <TableCell>{formatDateShort(part.dateUsed)}</TableCell>
                             <TableCell>
                               <Link
@@ -546,6 +548,54 @@ export default function VehicleDetailPage() {
         </TabsContent>
 
         <TabsContent value="plans" className="space-y-6">
+          {/* Upcoming Individual Tasks */}
+          {data?.upcomingMaintenance && data.upcomingMaintenance.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-blue-600" />
+                <h2 className="text-lg font-semibold">{t("details.tabs.upcomingTasks") || "Upcoming Tasks"}</h2>
+              </div>
+              <div className="grid gap-3">
+                {data.upcomingMaintenance.map((event: any) => (
+                  <div
+                    key={event.id}
+                    className="flex items-center justify-between p-4 rounded-xl border bg-white dark:bg-gray-900/40 border-gray-100 dark:border-gray-800"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                        <Wrench className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{event.title}</p>
+                        <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {formatDateShort(event.scheduled_date)}
+                          </span>
+                          {event.priority && (
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold px-1.5 h-4">
+                              {event.priority}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href="/dashboard/maintenance">
+                        {t("details.actions.view") || "View"}
+                      </Link>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 pt-2">
+            <RefreshCw className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold">{t("details.tabs.plans") || "Recurrent Plans"}</h2>
+          </div>
+
           <VehicleMaintenancePlans
             plans={plans || []}
             isLoading={isLoadingPlans}

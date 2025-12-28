@@ -34,5 +34,6 @@ export const getWorkOrder = async (id: string): Promise<WorkOrder> => {
     created_by: wo.created_by,
     vehicle: wo.vehicle,
     assigned_user: wo.assigned_user, // Pass full object if needed
+    cost: wo.cost, // Include cost data from backend
   };
 };

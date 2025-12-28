@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/formatters";
 
 interface WorkOrder {
   id: string;
@@ -12,6 +13,9 @@ interface WorkOrder {
   status: "pending" | "in_progress" | "completed" | "cancelled";
   priority: "low" | "medium" | "high" | "critical";
   scheduledDate?: string;
+  cost?: {
+    total_cost: number;
+  };
 }
 
 interface VehicleWorkOrdersProps {
@@ -31,6 +35,8 @@ const priorityVariant = {
   high: "warning" as const,
   critical: "destructive" as const,
 };
+
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 export function VehicleWorkOrders({
   workOrders = [],
@@ -100,9 +106,16 @@ export function VehicleWorkOrders({
                       {wo.scheduledDate && ` • ${t("scheduled")}: ${wo.scheduledDate}`}
                     </p>
                   </div>
-                  <Badge variant={statusVariant[wo.status]}>
-                    {wo.status.replace("_", " ")}
-                  </Badge>
+                  <div className="flex flex-col items-end gap-1">
+                    <Badge variant={statusVariant[wo.status]}>
+                      {wo.status.replace("_", " ")}
+                    </Badge>
+                    {wo.cost && (
+                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                        <AnimatedNumber value={wo.cost.total_cost} currency="MAD" />
+                      </span>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>

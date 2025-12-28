@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { CreateWorkOrderDTO } from "../types/workOrder.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { useCreateWorkOrder } from "../hooks/useCreateWorkOrder";
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
 import { useTranslations } from "next-intl";
@@ -99,9 +99,10 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId }: WorkOrderFormP
           control={control}
           name="scheduled_date"
           render={({ field }) => (
-            <DateTimePicker
-              date={field.value ? new Date(field.value) : undefined}
-              setDate={(date) => field.onChange(date ? date.toISOString() : "")}
+            <DatePicker
+              value={field.value}
+              onChange={(date) => field.onChange(date ? date.toISOString() : "")}
+              withTime
               error={errors.scheduled_date?.message}
             />
           )}

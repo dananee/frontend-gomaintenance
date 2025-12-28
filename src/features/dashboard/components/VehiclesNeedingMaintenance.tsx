@@ -4,6 +4,7 @@ import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Wrench, CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 interface MaintenanceVehicle {
   id: string;
@@ -40,12 +41,12 @@ function VehiclesNeedingMaintenanceComponent({
             <div className="flex gap-2">
               {overdueCount > 0 && (
                 <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                  {t("overdueBadge", { count: overdueCount })}
+                  {t.rich("overdueBadge", { count: () => <AnimatedNumber value={overdueCount} decimals={0} /> })}
                 </span>
               )}
               {soonCount > 0 && (
                 <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-bold text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-                  {t("soonBadge", { count: soonCount })}
+                  {t.rich("soonBadge", { count: () => <AnimatedNumber value={soonCount} decimals={0} /> })}
                 </span>
               )}
             </div>

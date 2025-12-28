@@ -5,14 +5,21 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatDateShort } from "@/lib/formatters";
-import { Calendar, MoreVertical, Edit, Trash2, Clock, PlayCircle, CheckCircle, XCircle } from "lucide-react";
+import { formatDateShort, formatCurrency } from "@/lib/formatters";
+import { Calendar, MoreVertical, Edit, Trash2, Clock, PlayCircle, CheckCircle, XCircle, Banknote } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface WorkOrderCardProps {
   workOrder: WorkOrder;
@@ -61,6 +68,8 @@ const statusConfig: Record<WorkOrderStatus, {
     icon: XCircle,
   },
 };
+
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrderCardProps) {
   const t = useTranslations("workOrders");
@@ -127,43 +136,49 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
               {t("card.due")} {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("card.noDate")}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="flex -space-x-2 overflow-hidden">
-              {workOrder.assignees && workOrder.assignees.length > 0 ? (
-                workOrder.assignees.slice(0, 3).map((assignee) => (
-                  <Avatar key={assignee.id} className="h-6 w-6 border-2 border-background">
-                    <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
-                      {assignee.first_name?.[0]}{assignee.last_name?.[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                ))
-              ) : workOrder.assigned_to ? (
-                // Backward compatibility
-                <Avatar className="h-6 w-6 border-2 border-background">
-                  <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
-                    U
-                  </AvatarFallback>
-                </Avatar>
-              ) : (
-                <Avatar className="h-6 w-6 border-2 border-dashed border-muted-foreground/30 bg-transparent">
-                  <AvatarFallback className="text-[10px] text-muted-foreground">
-                    ?
-                  </AvatarFallback>
-                </Avatar>
-              )}
-              {workOrder.assignees && workOrder.assignees.length > 3 && (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium">
-                  +{workOrder.assignees.length - 3}
-                </div>
-              )}
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {workOrder.assignees && workOrder.assignees.length > 0
-                ? workOrder.assignees.length === 1
-                  ? `${workOrder.assignees[0].first_name} ${workOrder.assignees[0].last_name}`
-                  : t("card.multipleAssignees", { count: workOrder.assignees.length })
-                : workOrder.assigned_to_name || t("card.unassigned")}
+          <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+            <Banknote className="h-3.5 w-3.5" />
+            <span className="font-medium">
+              <AnimatedNumber
+                value={workOrder.cost?.total_cost || 0}
+                currency="MAD"
+              />
             </span>
+          </div>
+          <div className="flex items-center gap-2 h-6">
+            <TooltipProvider delayDuration={0}>
+              <div className="flex -space-x-2 hover:space-x-1 transition-all duration-300 ease-out pl-1">
+                {workOrder.assignees && workOrder.assignees.length > 0 ? (
+                  workOrder.assignees.slice(0, 4).map((assignee) => (
+                    <Tooltip key={assignee.id}>
+                      <TooltipTrigger asChild>
+                        <div
+                          className="relative group transition-transform hover:z-20 hover:scale-110 cursor-default"
+                        >
+                          <Avatar className="h-6 w-6 border-2 border-white dark:border-gray-950 bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm">
+                            <AvatarFallback className="bg-gradient-to-br from-blue-50 to-blue-100 text-[9px] text-blue-700 dark:from-blue-900 dark:to-blue-950 dark:text-blue-300 font-bold">
+                              {assignee.first_name ? assignee.first_name[0].toUpperCase() : "?"}
+                              {assignee.last_name ? assignee.last_name[0].toUpperCase() : ""}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="bg-gray-900 text-white border-0 text-xs py-1.5 px-3 rounded-md shadow-xl animate-in zoom-in-95 duration-200">
+                        <div className="font-semibold text-center">{assignee.first_name} {assignee.last_name}</div>
+                        <div className="text-[10px] text-gray-300 font-medium text-center opacity-90">{t("card.assignee.role")}</div>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))
+                ) : (
+                  <div className="text-xs text-slate-400 italic px-1">{t("card.unassigned")}</div>
+                )}
+                {workOrder.assignees && workOrder.assignees.length > 4 && (
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium z-10 relative">
+                    +{workOrder.assignees.length - 4}
+                  </div>
+                )}
+              </div>
+            </TooltipProvider>
           </div>
         </CardContent>
 

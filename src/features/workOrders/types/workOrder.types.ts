@@ -39,6 +39,18 @@ export interface WorkOrder {
     license_plate: string;
   };
   assigned_user?: User; // Backward compatibility
+  cost?: WorkOrderCost;
+}
+
+export interface WorkOrderCost {
+  id: string;
+  work_order_id: string;
+  labor_cost: number;
+  parts_cost: number;
+  external_service_cost: number;
+  total_cost: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface WorkOrderBoardUpdateEvent {
@@ -76,6 +88,8 @@ export interface CreateWorkOrderDTO {
   estimated_duration?: number;
   category?: string;
   estimated_cost?: number;
+  labor_cost?: number;
+  external_service_cost?: number;
 }
 
 export interface UpdateWorkOrderDTO {
@@ -91,4 +105,6 @@ export interface UpdateWorkOrderDTO {
   category?: string;
   estimated_cost?: number;
   actual_cost?: number;
+  labor_cost?: number;
+  external_service_cost?: number;
 }

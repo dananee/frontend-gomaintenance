@@ -4,10 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Package, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/formatters";
 import { useWorkOrderParts, useAddWorkOrderPart, useRemoveWorkOrderPart } from "../hooks/useWorkOrderParts";
 import { AddPartToWorkOrderModal } from "./AddPartToWorkOrderModal";
 import { useState } from "react";
 import { WorkOrderPart } from "../api/workOrderParts";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 interface WorkOrderPartsProps {
   workOrderId: string;
@@ -18,27 +20,28 @@ export function WorkOrderParts({
 }: WorkOrderPartsProps) {
   const t = useTranslations("workOrders");
   const tc = useTranslations("common");
-  
+
   const { data: parts, isLoading } = useWorkOrderParts(workOrderId);
   const addPartMutation = useAddWorkOrderPart(workOrderId);
   const removePartMutation = useRemoveWorkOrderPart(workOrderId);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Calculate total - use backend total_price or compute from qty * unit_price
   const totalCost = parts?.reduce(
-    (sum, part) => sum + part.total_price,
+    (sum, part) => sum + (part.total_price || (part.quantity * (part.unit_price || 0))),
     0
   ) || 0;
 
   const handleAdd = (data: any) => {
     addPartMutation.mutate(data, {
-        onSuccess: () => setIsModalOpen(false)
+      onSuccess: () => setIsModalOpen(false)
     });
   };
 
   const handleRemove = (id: string) => {
     if (confirm("Are you sure you want to remove this part?")) {
-        removePartMutation.mutate(id);
+      removePartMutation.mutate(id);
     }
   };
 
@@ -96,17 +99,17 @@ export function WorkOrderParts({
                         {part.part?.sku || "—"}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
-                        {part.quantity}
+                        <AnimatedNumber value={part.quantity} decimals={0} />
                       </td>
                       <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
-                        {part.unit_price.toFixed(2)}
+                        <AnimatedNumber value={part.unit_price || 0} currency="EUR" />
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-gray-100">
-                        {part.total_price.toFixed(2)}
+                        <AnimatedNumber value={part.total_price || (part.quantity * (part.unit_price || 0))} currency="EUR" />
                       </td>
                       <td className="px-4 py-3 text-right">
                         <Button variant="ghost" size="icon" onClick={() => handleRemove(part.id)} className="text-destructive hover:text-destructive/90">
-                            <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </td>
                     </tr>
@@ -118,7 +121,7 @@ export function WorkOrderParts({
                       {tc("total")}:
                     </td>
                     <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
-                      ${totalCost.toFixed(2)}
+                      <AnimatedNumber value={totalCost} currency="EUR" />
                     </td>
                   </tr>
                 </tfoot>
@@ -127,7 +130,7 @@ export function WorkOrderParts({
           </CardContent>
         </Card>
       )}
-      <AddPartToWorkOrderModal 
+      <AddPartToWorkOrderModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAdd={handleAdd}

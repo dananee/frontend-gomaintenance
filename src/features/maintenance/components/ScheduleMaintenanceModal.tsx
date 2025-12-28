@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -130,7 +130,7 @@ export function ScheduleMaintenanceModal({ onClose, event }: ScheduleMaintenance
             <Label htmlFor="vehicle_id">
               {t("vehicle")} <span className="text-red-500">*</span>
             </Label>
-            <Select 
+            <Select
               onValueChange={(value) => setValue("vehicle_id", value)}
               defaultValue={event?.vehicle_id}
               disabled={isEdit}
@@ -154,7 +154,7 @@ export function ScheduleMaintenanceModal({ onClose, event }: ScheduleMaintenance
           {/* Template Selection (Optional) */}
           <div className="space-y-2">
             <Label htmlFor="template_id">{t("selectTemplate")}</Label>
-            <Select 
+            <Select
               onValueChange={handleTemplateChange}
               defaultValue={event?.template_id}
             >
@@ -206,9 +206,10 @@ export function ScheduleMaintenanceModal({ onClose, event }: ScheduleMaintenance
               name="scheduled_date"
               rules={{ required: t("validation.dateRequired") }}
               render={({ field }) => (
-                <DateTimePicker
-                  date={field.value ? new Date(field.value) : undefined}
-                  setDate={(date) => field.onChange(date ? date.toISOString() : "")}
+                <DatePicker
+                  value={field.value}
+                  onChange={(date) => field.onChange(date ? date.toISOString() : "")}
+                  withTime
                   error={errors.scheduled_date?.message}
                 />
               )}
@@ -240,7 +241,7 @@ export function ScheduleMaintenanceModal({ onClose, event }: ScheduleMaintenance
           {/* Assigned To */}
           <div className="space-y-2">
             <Label htmlFor="assigned_to">{t("assignTo")}</Label>
-            <Select 
+            <Select
               onValueChange={(value) => setValue("assigned_to", value)}
               defaultValue={event?.assigned_to}
             >

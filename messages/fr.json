@@ -205,7 +205,12 @@
         },
         "sections": {
             "fleetAnalytics": "Analyse de la flotte",
-            "predictiveAI": "Analytique prédictive & IA"
+            "predictiveAI": "Analytique prédictive & IA",
+            "strategicIndicators": "Indicateurs Stratégiques",
+            "operationalPerformance": "Performance Opérationnelle",
+            "analyticsTrends": "Analyses & Tendances",
+            "alertsActions": "Alertes & Actions Requises",
+            "deepAnalysis": "Analyse Approfondie"
         },
         "stats": {
             "totalVehicles": {
@@ -1839,8 +1844,12 @@
             "tabs": {
                 "overview": "Aperçu",
                 "plans": "Plans de maintenance",
+                "upcomingTasks": "Tâches à venir",
                 "documents": "Documents",
                 "history": "Historique"
+            },
+            "actions": {
+                "view": "Voir"
             },
             "performanceMetrics": {
                 "title": "Indicateurs de performance"
@@ -2032,7 +2041,7 @@
                 "historyTitle": "Historique complet de maintenance pour ce véhicule",
                 "noHistory": "Aucun historique disponible",
                 "timelineTitle": "Chronologie Maintenance",
-                "technician": "Technicien : {name}",
+                "technician": "Technicien",
                 "types": {
                     "preventive": "Préventif",
                     "corrective": "Correctif",
@@ -2058,6 +2067,9 @@
             "markToDo": "Marquer comme à faire",
             "markDone": "Marquer comme terminé",
             "dueTomorrow": "Prévu demain"
+        },
+        "messages": {
+            "updateSuccess": "Ordre de travail mis à jour avec succès"
         },
         "addPartModal": {
             "title": "Ajouter une pièce au bon de travail",
@@ -2092,6 +2104,7 @@
                 "selectVehicle": "Sélectionner un véhicule",
                 "scheduledDate": "Date prévue",
                 "scheduledDatePlaceholder": "Date prévue",
+                "dueDate": "Date d'échéance",
                 "title": "Titre",
                 "titlePlaceholder": "ex: Inspection des freins",
                 "type": "Type",
@@ -2201,6 +2214,9 @@
             "noDate": "Pas de date",
             "unassigned": "Non assign\u00e9",
             "multipleAssignees": "{count} techniciens",
+            "assignee": {
+                "role": "Rôle"
+            },
             "actions": {
                 "edit": "Modifier l'ordre de travail",
                 "delete": "Supprimer"
@@ -2306,6 +2322,10 @@
                     "priority": "Niveau de priorité",
                     "description": "Description",
                     "notes": "Notes supplémentaires"
+                },
+                "cost": {
+                    "title": "Coût total",
+                    "description": "Coût total de la maintenance"
                 }
             },
             "modal": {

@@ -29,6 +29,13 @@ interface BackendWorkOrder {
   status: string;
   priority: string;
   assigned_to?: string;
+  assignees?: Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    role: string;
+  }>;
   scheduled_date?: string;
   completed_date?: string;
   estimated_duration?: number;
@@ -38,6 +45,7 @@ interface BackendWorkOrder {
   notes?: string;
   created_at: string;
   updated_at: string;
+  created_by: string;
   vehicle?: {
     id: string;
     plate_number: string;
@@ -51,6 +59,19 @@ interface BackendWorkOrder {
     id: string;
     first_name: string;
     last_name: string;
+  };
+  assigned_user?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
+  cost?: {
+    id: string;
+    work_order_id: string;
+    labor_cost: number;
+    parts_cost: number;
+    external_service_cost: number;
+    total_cost: number;
   };
 }
 
@@ -78,18 +99,26 @@ export const getWorkOrders = async (params: GetWorkOrdersParams = {}): Promise<G
     status: wo.status as any,
     priority: wo.priority as any,
     assigned_to: wo.assigned_to,
-    assigned_to_name: wo.created_user?.first_name && wo.created_user?.last_name
-      ? `${wo.created_user.first_name} ${wo.created_user.last_name}`
+    assigned_to_name: wo.assigned_user 
+      ? `${wo.assigned_user.first_name} ${wo.assigned_user.last_name}`
       : undefined,
+    assignees: (wo.assignees || []).map(a => ({
+      ...a,
+      role: a.role as any // Cast string role to Role enum
+    })),
     scheduled_date: wo.scheduled_date,
     completed_date: wo.completed_date,
     estimated_duration: wo.estimated_duration,
     category: wo.category,
     estimated_cost: wo.estimated_cost,
     actual_cost: wo.actual_cost,
-    notes: wo.notes,
+    // notes: wo.notes,
     created_at: wo.created_at,
     updated_at: wo.updated_at,
+    created_by: wo.created_by,
+    vehicle: wo.vehicle,
+    assigned_user: wo.assigned_user,
+    cost: wo.cost, // Include cost data from backend
   }));
 
   return {
