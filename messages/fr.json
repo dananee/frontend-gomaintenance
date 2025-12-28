@@ -1755,6 +1755,7 @@
                 "VOITURE DE SOCIETE": "Voiture de société",
                 "PICK UP": "Pick-up",
                 "TRAFIC": "Trafic",
+                "CAMION": "Camion",
                 "unknown": "Inconnu"
             }
         },
@@ -1870,7 +1871,8 @@
                 "mttr": "MTTR",
                 "meanTimeToRepair": "Temps moyen de réparation",
                 "workOrders": "Ordres de travail",
-                "totalCompleted": "Total complétés"
+                "totalCompleted": "Total complétés",
+                "noFailures": "Aucune défaillance"
             },
             "analytics": {
                 "title": "Analyses",
@@ -2089,6 +2091,7 @@
                 "vehicle": "Véhicule",
                 "selectVehicle": "Sélectionner un véhicule",
                 "scheduledDate": "Date prévue",
+                "scheduledDatePlaceholder": "Date prévue",
                 "title": "Titre",
                 "titlePlaceholder": "ex: Inspection des freins",
                 "type": "Type",
@@ -2196,6 +2199,8 @@
             "unknownVehicle": "V\u00e9hicule inconnu",
             "due": "\u00c9ch\u00e9ance :",
             "noDate": "Pas de date",
+            "unassigned": "Non assign\u00e9",
+            "multipleAssignees": "{count} techniciens",
             "actions": {
                 "edit": "Modifier l'ordre de travail",
                 "delete": "Supprimer"
@@ -2292,7 +2297,8 @@
                 "assignee": {
                     "title": "Assigné à",
                     "role": "Technicien",
-                    "unassigned": "Non assigné"
+                    "unassigned": "Non assigné",
+                    "description": "Techniciens assignés à cet ordre de travail"
                 },
                 "details": {
                     "title": "Détails et description",

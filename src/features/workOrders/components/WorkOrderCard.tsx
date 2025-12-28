@@ -4,7 +4,7 @@ import { WorkOrder, WorkOrderPriority, WorkOrderStatus } from "../types/workOrde
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDateShort } from "@/lib/formatters";
 import { Calendar, MoreVertical, Edit, Trash2, Clock, PlayCircle, CheckCircle, XCircle } from "lucide-react";
 import {
@@ -127,18 +127,44 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
               {t("card.due")} {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("card.noDate")}
             </span>
           </div>
-          {workOrder.assigned_to_name && (
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6 flex-shrink-0">
-                <div className="flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 text-xs dark:bg-blue-900/30 dark:text-blue-400">
-                  {workOrder.assigned_to_name.charAt(0)}
+          <div className="flex items-center gap-2">
+            <div className="flex -space-x-2 overflow-hidden">
+              {workOrder.assignees && workOrder.assignees.length > 0 ? (
+                workOrder.assignees.slice(0, 3).map((assignee) => (
+                  <Avatar key={assignee.id} className="h-6 w-6 border-2 border-background">
+                    <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                      {assignee.first_name?.[0]}{assignee.last_name?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                ))
+              ) : workOrder.assigned_to ? (
+                // Backward compatibility
+                <Avatar className="h-6 w-6 border-2 border-background">
+                  <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                    U
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <Avatar className="h-6 w-6 border-2 border-dashed border-muted-foreground/30 bg-transparent">
+                  <AvatarFallback className="text-[10px] text-muted-foreground">
+                    ?
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              {workOrder.assignees && workOrder.assignees.length > 3 && (
+                <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium">
+                  +{workOrder.assignees.length - 3}
                 </div>
-              </Avatar>
-              <span className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
-                {workOrder.assigned_to_name}
-              </span>
+              )}
             </div>
-          )}
+            <span className="text-xs text-muted-foreground">
+              {workOrder.assignees && workOrder.assignees.length > 0
+                ? workOrder.assignees.length === 1
+                  ? `${workOrder.assignees[0].first_name} ${workOrder.assignees[0].last_name}`
+                  : t("card.multipleAssignees", { count: workOrder.assignees.length })
+                : workOrder.assigned_to_name || t("card.unassigned")}
+            </span>
+          </div>
         </CardContent>
 
         <CardFooter className="flex items-center justify-between border-t border-slate-100 p-3 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">

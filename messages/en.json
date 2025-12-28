@@ -1621,6 +1621,7 @@
                 "VOITURE DE SOCIETE": "Company Car",
                 "PICK UP": "Pick Up",
                 "TRAFIC": "Traffic",
+                "CAMION": "Truck",
                 "unknown": "Unknown"
             }
         },
@@ -1727,7 +1728,8 @@
                 "mttr": "MTTR",
                 "meanTimeToRepair": "Mean Time To Repair",
                 "workOrders": "Work Orders",
-                "totalCompleted": "Total completed"
+                "totalCompleted": "Total completed",
+                "noFailures": "No failures yet"
             },
             "parts": {
                 "title": "Parts Used & Costs",
@@ -1937,7 +1939,6 @@
             "fields": {
                 "vehicle": "Vehicle",
                 "selectVehicle": "Select a vehicle",
-                "scheduledDate": "Scheduled Date",
                 "title": "Title",
                 "titlePlaceholder": "e.g. Brake Inspection",
                 "type": "Type",
@@ -1948,8 +1949,9 @@
                 "selectPriority": "Select priority",
                 "status": "Status",
                 "selectStatus": "Select status",
-                "assignee": "Assignee",
-                "selectTechnician": "Select technician",
+                "assignee": "Assigned To",
+                "scheduledDate": "Scheduled Date",
+                "selectTechnician": "Select Technician",
                 "category": "Category",
                 "selectCategory": "Select category",
                 "estimatedDuration": "Est. Time (Hours)",
@@ -2081,6 +2083,8 @@
             "unknownVehicle": "Unknown Vehicle",
             "due": "Due:",
             "noDate": "No date",
+            "unassigned": "Unassigned",
+            "multipleAssignees": "{count} technicians",
             "actions": {
                 "edit": "Edit Work Order",
                 "delete": "Delete"
@@ -2139,9 +2143,10 @@
                     "unknown": "Unknown"
                 },
                 "assignee": {
-                    "title": "Assignee",
+                    "title": "Assigned To",
                     "role": "Technician",
-                    "unassigned": "Not assigned"
+                    "unassigned": "Unassigned",
+                    "description": "Technicians assigned to this work order"
                 },
                 "details": {
                     "title": "Details & Description",

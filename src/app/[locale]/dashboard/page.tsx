@@ -47,7 +47,7 @@ const DowntimeChart = lazy(() =>
     default: module.DowntimeChart,
   }))
 );
- 
+
 const FleetHealthScoreChart = lazy(() =>
   import("@/features/dashboard/components/FleetHealthScore").then((module) => ({
     default: module.FleetHealthScore,
@@ -63,7 +63,7 @@ const TechnicianPerformanceChart = lazy(() =>
     (module) => ({ default: module.TechnicianPerformanceChart })
   )
 );
- 
+
 import { useDashboardKPIs } from "@/features/dashboard/hooks/useDashboardKPIs";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";

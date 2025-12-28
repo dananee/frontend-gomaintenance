@@ -18,17 +18,21 @@ export const getWorkOrder = async (id: string): Promise<WorkOrder> => {
     status: wo.status,
     priority: wo.priority,
     assigned_to: wo.assigned_to,
-    assigned_to_name: wo.created_user?.first_name && wo.created_user?.last_name
-      ? `${wo.created_user.first_name} ${wo.created_user.last_name}`
+    assigned_to_name: wo.assigned_user 
+      ? `${wo.assigned_user.first_name} ${wo.assigned_user.last_name}`
       : undefined,
+    assignees: wo.assignees || [], // Pass assignees array
     scheduled_date: wo.scheduled_date,
     completed_date: wo.completed_date,
     estimated_duration: wo.estimated_duration,
     category: wo.category,
     estimated_cost: wo.estimated_cost,
     actual_cost: wo.actual_cost,
-    notes: wo.notes,
+    // notes: wo.notes, // Removed as it doesn't exist in type or response
     created_at: wo.created_at,
     updated_at: wo.updated_at,
+    created_by: wo.created_by,
+    vehicle: wo.vehicle,
+    assigned_user: wo.assigned_user, // Pass full object if needed
   };
 };

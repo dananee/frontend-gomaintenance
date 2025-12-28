@@ -113,7 +113,7 @@ export default function VehicleDetailPage() {
 
   // Fetch all users to select drivers from
   const { data: usersData, isLoading: isLoadingUsers } = useUsers({ page_size: 100 });
-  
+
   const availableDrivers = useMemo(() => {
     if (!usersData?.data) return [];
     return usersData.data
@@ -126,7 +126,7 @@ export default function VehicleDetailPage() {
           last_name: u.last_name || nameParts.slice(1).join(" ") || "",
           email: u.email,
           phone: "", // Phone number not available on User type yet
-          avatar_url: u.avatar || "", 
+          avatar_url: u.avatar || "",
         };
       });
   }, [usersData]);
@@ -253,7 +253,7 @@ export default function VehicleDetailPage() {
       onError: () => toast.error("Unable to delete document"),
     });
   };
-  
+
   const handleAssignDrivers = async (driverIds: string[], primaryDriverId?: string) => {
     assignDrivers(
       { driver_ids: driverIds, primary_driver_id: primaryDriverId },
@@ -412,7 +412,7 @@ export default function VehicleDetailPage() {
               </Card>
               <PremiumMetricCard
                 title={t("details.metrics.mtbf")}
-                value={`${metrics.mtbf.toFixed(0)}h`}
+                value={metrics.mtbf > 0 ? `${metrics.mtbf.toFixed(0)}h` : t("details.metrics.noFailures")}
                 subtitle={t("details.metrics.meanTimeBetweenFailures")}
                 icon={Zap}
                 variant="green"
@@ -471,7 +471,7 @@ export default function VehicleDetailPage() {
                   label: `${item.value.toFixed(0)}h`,
                 }))}
               />
-            
+
               <Card className="shadow-sm">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl font-semibold">{t("details.analytics.mileageGrowth")}</CardTitle>
