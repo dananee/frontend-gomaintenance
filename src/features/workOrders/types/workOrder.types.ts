@@ -7,6 +7,8 @@ export type WorkOrderStatus =
 export type WorkOrderType = "preventive" | "corrective" | "inspection";
 export type TaskStatus = "todo" | "in_progress" | "done";
 
+import { User } from "@/features/auth/types/auth.types";
+
 export interface WorkOrder {
   id: string;
   vehicle_id: string;
@@ -18,6 +20,7 @@ export interface WorkOrder {
   status: WorkOrderStatus;
   assigned_to?: string;
   assigned_to_name?: string;
+  assignees?: User[]; // New field
   scheduled_date?: string;
   completed_date?: string;
   position?: number;
@@ -25,9 +28,32 @@ export interface WorkOrder {
   category?: string;
   estimated_cost?: number;
   actual_cost?: number;
-  notes?: string;
+  mileage_at_service?: number;
+  created_by: string;
   created_at: string;
   updated_at: string;
+  vehicle?: {
+    id: string;
+    plate_number: string;
+    brand: string;
+    model: string;
+    year?: number;
+    type?: string;
+    status?: string;
+  };
+  assigned_user?: Partial<User>; // Backward compatibility
+  cost?: WorkOrderCost;
+}
+
+export interface WorkOrderCost {
+  id: string;
+  work_order_id: string;
+  labor_cost: number;
+  parts_cost: number;
+  external_service_cost: number;
+  total_cost: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface WorkOrderBoardUpdateEvent {
@@ -59,12 +85,14 @@ export interface CreateWorkOrderDTO {
   title: string;
   description?: string;
   priority?: WorkOrderPriority;
-  scheduled_date?: string;
   assigned_to?: string;
+  assignee_ids?: string[]; // New field
+  scheduled_date?: string;
   estimated_duration?: number;
   category?: string;
   estimated_cost?: number;
-  notes?: string;
+  labor_cost?: number;
+  external_service_cost?: number;
 }
 
 export interface UpdateWorkOrderDTO {
@@ -74,10 +102,12 @@ export interface UpdateWorkOrderDTO {
   status?: WorkOrderStatus;
   priority?: WorkOrderPriority;
   assigned_to?: string;
+  assignee_ids?: string[]; // New field
   scheduled_date?: string;
   estimated_duration?: number;
   category?: string;
   estimated_cost?: number;
   actual_cost?: number;
-  notes?: string;
+  labor_cost?: number;
+  external_service_cost?: number;
 }

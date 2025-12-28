@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { Modal } from "@/components/ui/modal";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -204,8 +205,8 @@ export function WorkOrderTasks() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
                     className={`group relative flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${task.is_done
-                        ? "bg-gray-50 border-gray-100 dark:bg-gray-900/30 dark:border-gray-800/50"
-                        : "bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-200 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-blue-900"
+                      ? "bg-gray-50 border-gray-100 dark:bg-gray-900/30 dark:border-gray-800/50"
+                      : "bg-white border-gray-200 shadow-sm hover:shadow-md hover:border-blue-200 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-blue-900"
                       }`}
                   >
                     <div className="flex items-start gap-4 flex-1">
@@ -215,8 +216,8 @@ export function WorkOrderTasks() {
                           checked={task.is_done}
                           onCheckedChange={() => handleToggle(task.id, task.is_done)}
                           className={`h-5 w-5 transition-all duration-300 ${task.is_done
-                              ? "data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
-                              : "border-gray-300 dark:border-gray-600"
+                            ? "data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                            : "border-gray-300 dark:border-gray-600"
                             }`}
                         />
                       </div>
@@ -225,8 +226,8 @@ export function WorkOrderTasks() {
                           <label
                             htmlFor={`task-${task.id}`}
                             className={`cursor-pointer font-semibold text-base transition-colors duration-200 ${task.is_done
-                                ? "text-gray-500 line-through decoration-gray-400"
-                                : "text-gray-900 dark:text-gray-100"
+                              ? "text-gray-500 line-through decoration-gray-400"
+                              : "text-gray-900 dark:text-gray-100"
                               }`}
                           >
                             {task.name}
@@ -319,12 +320,10 @@ export function WorkOrderTasks() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="task-due">{t("form.fields.dueDate")}</Label>
-              <Input
-                id="task-due"
-                type="date"
+              <DatePicker
+                label={t("form.fields.dueDate")}
                 value={newTaskDueDate}
-                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                onChange={(date) => setNewTaskDueDate(date ? date.toISOString() : "")}
               />
             </div>
             <div className="space-y-2">

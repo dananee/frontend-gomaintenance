@@ -4,6 +4,8 @@ import { User } from "@/features/auth/types/auth.types";
 export interface GetUsersParams {
   page?: number;
   page_size?: number;
+  search?: string;
+  role?: string;
 }
 
 export interface GetUsersResponse {

@@ -64,9 +64,8 @@ function FleetHealthScoreComponent({
 
   const cardContent = (
     <Card
-      className={`shadow-md bg-gradient-to-br ${statusBg} border-2 transition-all duration-150 hover:shadow-xl ${
-        onClick ? "cursor-pointer" : ""
-      }`}
+      className={`shadow-md bg-gradient-to-br ${statusBg} border-2 transition-all duration-150 hover:shadow-xl ${onClick ? "cursor-pointer" : ""
+        }`}
     >
       <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
@@ -81,7 +80,7 @@ function FleetHealthScoreComponent({
           <div>
             <div className="flex items-baseline gap-2">
               <span className={`text-5xl font-bold ${statusColor}`}>
-                {data.overall_score}
+                {data.overall_score.toFixed(2)}
               </span>
               <span className="text-sm font-medium text-muted-foreground">
                 / 100
@@ -89,12 +88,11 @@ function FleetHealthScoreComponent({
             </div>
             <div className="mt-1 flex items-center gap-1">
               <span
-                className={`text-sm font-bold ${
-                  hasImproved ? "text-green-600" : "text-red-600"
-                }`}
+                className={`text-sm font-bold ${hasImproved ? "text-green-600" : "text-red-600"
+                  }`}
               >
                 {hasImproved ? "+" : ""}
-                {scoreDiff}
+                {scoreDiff.toFixed(2)}
               </span>
               <span className="text-xs text-muted-foreground">
                 vs last month

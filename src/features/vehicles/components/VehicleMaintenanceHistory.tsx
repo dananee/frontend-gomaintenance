@@ -5,6 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Wrench, DollarSign } from "lucide-react";
 import { formatDateShort, formatCurrency } from "@/lib/formatters";
 import { useTranslations } from "next-intl";
+import { AnimatedNumber } from "@/components/ui/animated-number";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MaintenanceRecord {
   id: string;
@@ -15,6 +23,12 @@ interface MaintenanceRecord {
   cost?: number;
   status: "completed" | "cancelled";
   technician?: string;
+  assignees?: Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    avatar_url?: string;
+  }>;
 }
 
 interface VehicleMaintenanceHistoryProps {
@@ -82,21 +96,48 @@ export function VehicleMaintenanceHistory({
                         </div>
                         <div className="flex items-center gap-1">
                           <Wrench className="h-3.5 w-3.5" />
-                          <span>{record.mileage.toLocaleString()} km</span>
+                          <span><AnimatedNumber value={record.mileage} decimals={0} /> km</span>
                         </div>
                         {record.cost && (
                           <div className="flex items-center gap-1">
                             <DollarSign className="h-3.5 w-3.5" />
-                            <span>{formatCurrency(record.cost)}</span>
+                            <span><AnimatedNumber value={record.cost || 0} currency="MAD" /></span>
                           </div>
                         )}
                       </div>
 
-                      {record.technician && (
-                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                          {t("technician")}: {record.technician}
-                        </p>
-                      )}
+                      <div className="mt-4 flex items-center justify-between">
+                        <div className="flex -space-x-2">
+                          <TooltipProvider delayDuration={0}>
+                            {record.assignees && record.assignees.length > 0 ? (
+                              record.assignees.map((assignee) => (
+                                <Tooltip key={assignee.id}>
+                                  <TooltipTrigger asChild>
+                                    <div className="relative transition-transform hover:z-10 hover:scale-110 cursor-default">
+                                      <Avatar className="h-7 w-7 border-2 border-white dark:border-gray-900 shadow-sm">
+                                        {assignee.avatar_url && <AvatarImage src={assignee.avatar_url} alt={`${assignee.first_name} ${assignee.last_name}`} />}
+                                        <AvatarFallback className="bg-primary/10 text-[10px] font-bold text-primary">
+                                          {assignee.first_name?.[0]}{assignee.last_name?.[0]}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="text-xs">
+                                    <p className="font-semibold">{assignee.first_name} {assignee.last_name}</p>
+                                    <p className="text-[10px] opacity-70">{t("technician")}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              ))
+                            ) : (
+                              record.technician && (
+                                <Badge variant="secondary" className="text-[10px]">
+                                  {record.technician}
+                                </Badge>
+                              )
+                            )}
+                          </TooltipProvider>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

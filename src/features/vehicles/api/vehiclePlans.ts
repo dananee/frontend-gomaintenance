@@ -9,10 +9,10 @@ export interface VehicleMaintenancePlan {
   interval_months: number;
   last_service_km: number;
   last_service_date: string;
-  next_service_km: number;
-  next_service_date: string;
+  next_due_mileage?: number;
+  next_due_date?: string;
   is_active: boolean;
-  priority?: string;
+  priority: string;
   created_at: string;
   updated_at: string;
   template?: {

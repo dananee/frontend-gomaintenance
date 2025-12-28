@@ -4,15 +4,22 @@ import { WorkOrder, WorkOrderPriority, WorkOrderStatus } from "../types/workOrde
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
-import { formatDateShort } from "@/lib/formatters";
-import { Calendar, MoreVertical, Edit, Trash2, Clock, PlayCircle, CheckCircle, XCircle } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatDateShort, formatCurrency } from "@/lib/formatters";
+import { Calendar, MoreVertical, Edit, Trash2, Clock, PlayCircle, CheckCircle, XCircle, Banknote } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface WorkOrderCardProps {
   workOrder: WorkOrder;
@@ -61,6 +68,8 @@ const statusConfig: Record<WorkOrderStatus, {
     icon: XCircle,
   },
 };
+
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrderCardProps) {
   const t = useTranslations("workOrders");
@@ -127,18 +136,50 @@ export function WorkOrderCard({ workOrder, onClick, onEdit, onDelete }: WorkOrde
               {t("card.due")} {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("card.noDate")}
             </span>
           </div>
-          {workOrder.assigned_to_name && (
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6 flex-shrink-0">
-                <div className="flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 text-xs dark:bg-blue-900/30 dark:text-blue-400">
-                  {workOrder.assigned_to_name.charAt(0)}
-                </div>
-              </Avatar>
-              <span className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
-                {workOrder.assigned_to_name}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+            <Banknote className="h-3.5 w-3.5" />
+            <span className="font-medium">
+              <AnimatedNumber
+                value={workOrder.cost?.total_cost || 0}
+                currency="MAD"
+              />
+            </span>
+          </div>
+          <div className="flex items-center gap-2 h-6">
+            <TooltipProvider delayDuration={0}>
+              <div className="flex -space-x-2 hover:space-x-1 transition-all duration-300 ease-out pl-1">
+                {workOrder.assignees && workOrder.assignees.length > 0 ? (
+                  workOrder.assignees.slice(0, 4).map((assignee) => (
+                    <Tooltip key={assignee.id}>
+                      <TooltipTrigger asChild>
+                        <div
+                          className="relative group transition-transform hover:z-20 hover:scale-110 cursor-default"
+                        >
+                          <Avatar className="h-6 w-6 border-2 border-white dark:border-gray-950 bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm">
+                            <AvatarFallback className="bg-gradient-to-br from-blue-50 to-blue-100 text-[9px] text-blue-700 dark:from-blue-900 dark:to-blue-950 dark:text-blue-300 font-bold">
+                              {assignee.first_name ? assignee.first_name[0].toUpperCase() : "?"}
+                              {assignee.last_name ? assignee.last_name[0].toUpperCase() : ""}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="bg-gray-900 text-white border-0 text-xs py-1.5 px-3 rounded-md shadow-xl animate-in zoom-in-95 duration-200">
+                        <div className="font-semibold text-center">{assignee.first_name} {assignee.last_name}</div>
+                        <div className="text-[10px] text-gray-300 font-medium text-center opacity-90">{t("card.assignee.role")}</div>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))
+                ) : (
+                  <div className="text-xs text-slate-400 italic px-1">{t("card.unassigned")}</div>
+                )}
+                {workOrder.assignees && workOrder.assignees.length > 4 && (
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium z-10 relative">
+                    +{workOrder.assignees.length - 4}
+                  </div>
+                )}
+              </div>
+            </TooltipProvider>
+          </div>
         </CardContent>
 
         <CardFooter className="flex items-center justify-between border-t border-slate-100 p-3 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">

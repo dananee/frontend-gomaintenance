@@ -6,6 +6,7 @@ import { AlertCircle, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { differenceInDays } from "date-fns";
 import { useTranslations } from "next-intl";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 interface OverdueWorkOrder {
   id: string;
@@ -83,7 +84,7 @@ function OverdueWorkOrdersComponent({ data = [] }: OverdueWorkOrdersProps) {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-red-600 dark:text-red-400">
-                      {t("daysOverdue", { days: daysOverdue })}
+                      {t.rich("daysOverdue", { days: () => <AnimatedNumber value={daysOverdue} decimals={0} /> })}
                     </p>
                     <p className="text-xs text-gray-500">
                       {new Date(order.due_date).toLocaleDateString()}

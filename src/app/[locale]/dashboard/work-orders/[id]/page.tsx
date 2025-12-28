@@ -25,10 +25,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
-import { Modal } from "@/components/ui/modal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { DetailPageSkeleton } from "@/components/ui/skeleton";
 import { useModal } from "@/hooks/useModal";
 import { WorkOrderTasks } from "@/features/workOrders/components/WorkOrderTasks";
@@ -37,18 +40,35 @@ import { WorkOrderTimeline } from "@/features/workOrders/components/WorkOrderTim
 import { WorkOrderComments } from "@/features/workOrders/components/WorkOrderComments";
 import { WorkOrderParts } from "@/features/workOrders/components/WorkOrderParts";
 import { useWorkOrder } from "@/features/workOrders/hooks/useWorkOrder";
-import { formatDateShort } from "@/lib/formatters";
+import { formatDateShort, formatCurrency } from "@/lib/formatters";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { EditWorkOrderModal } from "@/features/workOrders/components/EditWorkOrderModal";
+import { updateWorkOrder } from "@/features/workOrders/api/updateWorkOrder";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 export default function WorkOrderDetailsPage() {
   const t = useTranslations("workOrders");
   const params = useParams();
   const workOrderId = params.id as string;
+  const queryClient = useQueryClient();
   const { isOpen, open, close } = useModal();
-  const [scheduledDate, setScheduledDate] = useState<Date | undefined>();
 
   const { data: workOrder, isLoading } = useWorkOrder(workOrderId);
+
+  const updateMutation = useMutation({
+    mutationFn: (data: any) => updateWorkOrder({ id: workOrderId, ...data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workOrder", workOrderId] });
+      toast.success(t("messages.updateSuccess"));
+      close();
+    },
+    onError: () => {
+      toast.error(t("messages.updateError"));
+    },
+  });
 
   if (isLoading) {
     return <DetailPageSkeleton />;
@@ -123,16 +143,38 @@ export default function WorkOrderDetailsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CalendarRange className="h-4 w-4" />
-                  <span>
-                    {t("details.cards.dueDate.title")} {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("details.cards.dueDate.none")}
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    {workOrder.scheduled_date ? formatDateShort(workOrder.scheduled_date) : t("details.cards.dueDate.none")}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>
-                    {workOrder.assigned_to_name || t("details.cards.assignee.unassigned")}
-                  </span>
-                </div>
+                {workOrder.assignees && workOrder.assignees.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <TooltipProvider delayDuration={0}>
+                      <div className="flex -space-x-2hover:space-x-1 transition-all duration-300 ease-out">
+                        {workOrder.assignees.map((assignee) => (
+                          <Tooltip key={assignee.id}>
+                            <TooltipTrigger asChild>
+                              <div
+                                className="relative group transition-transform hover:z-20 hover:scale-110 cursor-default"
+                              >
+                                <Avatar className="h-6 w-6 border-2 border-white dark:border-gray-950 bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm">
+                                  <AvatarFallback className="bg-gradient-to-br from-blue-50 to-blue-100 text-[9px] text-blue-700 dark:from-blue-900 dark:to-blue-950 dark:text-blue-300 font-bold">
+                                    {assignee.first_name ? assignee.first_name[0].toUpperCase() : "?"}
+                                    {assignee.last_name ? assignee.last_name[0].toUpperCase() : ""}
+                                  </AvatarFallback>
+                                </Avatar>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="bg-gray-900 text-white border-0 text-xs py-1.5 px-3 rounded-md shadow-xl animate-in zoom-in-95 duration-200">
+                              <div className="font-semibold text-center">{assignee.first_name} {assignee.last_name}</div>
+                              <div className="text-[10px] text-gray-300 font-medium text-center opacity-90">{t("details.cards.assignee.role")}</div>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </TooltipProvider>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -237,24 +279,82 @@ export default function WorkOrderDetailsPage() {
                   <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.assignee.title")}</CardTitle>
                   <User className="h-4 w-4 text-gray-400" />
                 </CardHeader>
-                <CardContent className="flex items-center gap-3">
-                  {workOrder.assigned_to_name ? (
-                    <>
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-blue-100 text-blue-700 text-xs">
-                          {workOrder.assigned_to_name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="text-sm font-bold text-gray-900 dark:text-white">
-                          {workOrder.assigned_to_name}
-                        </div>
-                        <p className="text-xs text-gray-500">{t("details.cards.assignee.role")}</p>
+                <CardContent>
+                  <div className="flex flex-col gap-1">
+                    {workOrder.assignees && workOrder.assignees.length > 0 ? (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <TooltipProvider delayDuration={0}>
+                          <div className="flex -space-x-3 hover:space-x-1.5 transition-all duration-300 ease-out pl-1">
+                            {workOrder.assignees.map((assignee) => (
+                              <Tooltip key={assignee.id}>
+                                <TooltipTrigger asChild>
+                                  <div
+                                    className="relative group transition-transform hover:z-20 hover:scale-110 cursor-default"
+                                  >
+                                    <Avatar className="h-9 w-9 border-2 border-white dark:border-gray-950 bg-white dark:bg-gray-800 ring-1 ring-black/5 dark:ring-white/10 shadow-sm">
+                                      <AvatarFallback className="bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 dark:from-blue-900 dark:to-blue-950 dark:text-blue-300 text-xs font-bold">
+                                        {assignee.first_name ? assignee.first_name[0].toUpperCase() : "?"}
+                                        {assignee.last_name ? assignee.last_name[0].toUpperCase() : ""}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" className="bg-gray-900 text-white border-0 text-xs py-1.5 px-3 rounded-md shadow-xl animate-in zoom-in-95 duration-200">
+                                  <div className="font-semibold text-center">{assignee.first_name} {assignee.last_name}</div>
+                                  <div className="text-[10px] text-gray-300 font-medium text-center opacity-90">{t("details.cards.assignee.role")}</div>
+                                </TooltipContent>
+                              </Tooltip>
+                            ))}
+                          </div>
+                        </TooltipProvider>
                       </div>
-                    </>
-                  ) : (
-                    <p className="text-sm text-gray-500">{t("details.cards.assignee.unassigned")}</p>
-                  )}
+                    ) : (
+                      <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {t("card.unassigned")}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">{t("details.cards.assignee.description")}</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white dark:bg-gray-900 shadow-sm border-gray-200 dark:border-gray-800">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.cost.title")}</CardTitle>
+                  <div className="h-4 w-4 text-gray-400 font-bold">$</div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {(workOrder.cost?.total_cost || 0) > 0 ? (
+                      <>
+                        <div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">Actual</div>
+                          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <AnimatedNumber value={workOrder.cost?.total_cost || 0} currency="MAD" />
+                          </div>
+                        </div>
+                        {workOrder.estimated_cost && workOrder.estimated_cost > 0 && (
+                          <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">Estimated</div>
+                            <div className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                              <AnimatedNumber value={workOrder.estimated_cost || 0} currency="MAD" />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : workOrder.estimated_cost && workOrder.estimated_cost > 0 ? (
+                      <>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Estimated</div>
+                        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                          <AnimatedNumber value={workOrder.estimated_cost || 0} currency="MAD" />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-2xl font-bold text-gray-400 dark:text-gray-600">
+                        <AnimatedNumber value={0} currency="MAD" />
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">{t("details.cards.cost.description")}</p>
                 </CardContent>
               </Card>
             </div>
@@ -297,16 +397,6 @@ export default function WorkOrderDetailsPage() {
                   </div>
                 )}
 
-                {workOrder.notes && (
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">{t("details.cards.details.notes")}</label>
-                    <div className="p-4 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg border border-yellow-100 dark:border-yellow-900/20">
-                      <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
-                        {workOrder.notes}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -332,29 +422,14 @@ export default function WorkOrderDetailsPage() {
           </TabsContent>
         </Tabs>
 
-        <Modal
-          isOpen={isOpen}
-          onClose={close}
-          title={t("details.modal.title")}
-          description={t("details.modal.description")}
-        >
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t("details.modal.titleLabel")}</label>
-              <Input placeholder="Title" defaultValue={workOrder.title} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t("details.modal.dueDateLabel")}</label>
-              <DateTimePicker
-                date={scheduledDate || (workOrder.scheduled_date ? new Date(workOrder.scheduled_date) : undefined)}
-                setDate={setScheduledDate}
-              />
-            </div>
-            <div className="flex justify-end pt-4">
-              <Button onClick={close}>{t("actions.saveChanges")}</Button>
-            </div>
-          </div>
-        </Modal>
+        {workOrder && (
+          <EditWorkOrderModal
+            isOpen={isOpen}
+            onClose={close}
+            workOrder={workOrder}
+            onSave={(data) => updateMutation.mutate(data)}
+          />
+        )}
       </div>
     </div>
   );

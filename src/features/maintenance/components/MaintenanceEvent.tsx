@@ -4,6 +4,7 @@ import { memo } from "react";
 import { useTranslations } from "next-intl";
 import { User, DollarSign, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
 import { getPriorityColor } from "../utils/colorMappings";
 
@@ -18,7 +19,7 @@ export const MaintenanceEvent = memo(function MaintenanceEvent({
 }: MaintenanceEventProps) {
   const t = useTranslations("features.maintenance.tooltips");
   const isHighPriority = event.priority === "high" || event.priority === "critical";
-  
+
   return (
     <div
       onClick={() => onClick(event)}
@@ -37,12 +38,12 @@ export const MaintenanceEvent = memo(function MaintenanceEvent({
           <AlertTriangle className="h-2.5 w-2.5 text-white" />
         </div>
       )}
-      
+
       {/* Left accent bar for high priority */}
       {isHighPriority && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-500 to-red-600 rounded-l-md" />
       )}
-      
+
       <div className={cn("font-semibold truncate", isHighPriority && "pl-1")}>
         {event.vehicle_name}
       </div>
@@ -63,7 +64,7 @@ export const MaintenanceEvent = memo(function MaintenanceEvent({
         {event.estimated_cost && (
           <div className="flex items-center gap-0.5">
             <DollarSign className="h-3 w-3" />
-            <span>{event.estimated_cost}</span>
+            <span>{formatCurrency(event.estimated_cost)}</span>
           </div>
         )}
       </div>

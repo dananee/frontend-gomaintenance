@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, DollarSign, User, Wrench } from "lucide-react";
 import { formatCurrency } from "@/lib/formatters";
 import { useTranslations } from "next-intl";
+import { AnimatedNumber } from "@/components/ui/animated-number";
 
 interface ServiceSummaryProps {
   lastMaintenanceDate: string;
@@ -21,7 +22,20 @@ export function ServiceSummary({
   serviceInterval,
 }: ServiceSummaryProps) {
   const t = useTranslations("vehicles.details.kpis.serviceSummary");
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
 
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+
+    };
+
+    return date.toLocaleDateString('fr-FR', options);
+  };
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-4">
@@ -51,7 +65,7 @@ export function ServiceSummary({
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-green-600" />
                 <p className="font-medium">
-                  {formatCurrency(lastMaintenanceCost)}
+                  <AnimatedNumber value={lastMaintenanceCost} currency="MAD" />
                 </p>
               </div>
             </div>
@@ -72,7 +86,8 @@ export function ServiceSummary({
                 {t("nextServiceDue")}
               </p>
               <p className="text-3xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
-                {nextServiceDue}
+                {formatDate(nextServiceDue)}
+
               </p>
             </div>
             <div>

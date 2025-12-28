@@ -180,15 +180,15 @@ export function VehicleMaintenancePlans({
                         {plan.interval_months ? `${plan.interval_months} ${t("months")}` : ""}
                       </span>
                     </div>
-                    {(plan.next_service_date || plan.next_service_km) && (
+                    {(plan.next_due_date || plan.next_due_mileage) && (
                       <div className={cn(
                         "flex items-center gap-1.5 font-medium",
-                        new Date(plan.next_service_date || "") < new Date() ? "text-red-600 dark:text-red-400" : "text-primary"
+                        plan.next_due_date && new Date(plan.next_due_date) < new Date() ? "text-red-600 dark:text-red-400" : "text-primary"
                       )}>
                         <Calendar className="h-3.5 w-3.5" />
                         <span>
-                          {t("due")}: {plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}
-                          {plan.next_service_km ? ` ${t("or")} ${plan.next_service_km.toLocaleString()} km` : ""}
+                          {t("due")}: {plan.next_due_date ? formatDateShort(plan.next_due_date) : "—"}
+                          {plan.next_due_mileage ? ` ${t("or")} ${plan.next_due_mileage.toLocaleString()} km` : ""}
                         </span>
                       </div>
                     )}
@@ -273,11 +273,11 @@ export function VehicleMaintenancePlans({
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("nextDue")}</p>
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-3.5 w-3.5 text-gray-400" />
-                        <span>{plan.next_service_date ? formatDateShort(plan.next_service_date) : "—"}</span>
+                        <span>{plan.next_due_date ? formatDateShort(plan.next_due_date) : "—"}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <Gauge className="h-3.5 w-3.5 text-gray-400" />
-                        <span>{plan.next_service_km ? `${plan.next_service_km.toLocaleString()} km` : "—"}</span>
+                        <span>{plan.next_due_mileage ? `${plan.next_due_mileage.toLocaleString()} km` : "—"}</span>
                       </div>
                     </div>
 

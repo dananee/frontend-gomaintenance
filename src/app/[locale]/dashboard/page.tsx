@@ -47,7 +47,7 @@ const DowntimeChart = lazy(() =>
     default: module.DowntimeChart,
   }))
 );
- 
+
 const FleetHealthScoreChart = lazy(() =>
   import("@/features/dashboard/components/FleetHealthScore").then((module) => ({
     default: module.FleetHealthScore,
@@ -63,7 +63,7 @@ const TechnicianPerformanceChart = lazy(() =>
     (module) => ({ default: module.TechnicianPerformanceChart })
   )
 );
- 
+
 import { useDashboardKPIs } from "@/features/dashboard/hooks/useDashboardKPIs";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -149,7 +149,9 @@ export default function DashboardPage() {
           {/* Fleet Availability */}
           <PremiumMetricCard
             title={t("stats.fleetAvailability.title")}
-            value={`${fleetAvailability.toFixed(1)}%`}
+            value={fleetAvailability}
+            suffix="%"
+            decimals={1}
             subtitle={t("stats.fleetAvailability.subtitle")}
             icon={CheckCircle}
             variant="green"
@@ -158,7 +160,9 @@ export default function DashboardPage() {
           {/* Fleet Health Score */}
           <PremiumMetricCard
             title={t("kpis.fleetHealthScore.title")}
-            value={`${kpiData?.fleet_kpis?.global_fleet_health_score || 0}%`}
+            value={kpiData?.fleet_kpis?.global_fleet_health_score || 0}
+            suffix="%"
+            decimals={2}
             subtitle={t("kpis.fleetHealthScore.subtitle")}
             icon={Shield}
             variant="blue"
@@ -185,7 +189,9 @@ export default function DashboardPage() {
           {/* Downtime (hours) */}
           <PremiumMetricCard
             title={t("kpis.downtimeMonth.title")}
-            value={`${kpiData?.fleet_kpis?.total_downtime_hours_month || 0}h`}
+            value={kpiData?.fleet_kpis?.total_downtime_hours_month || 0}
+            suffix="h"
+            decimals={0}
             subtitle={t("kpis.downtimeMonth.subtitle")}
             icon={Clock}
             variant="purple"
@@ -202,28 +208,36 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <PremiumMetricCard
             title={t("kpis.mttr.title")}
-            value={`${kpiData?.fleet_kpis?.fleet_mttr || 0}h`}
+            value={kpiData?.fleet_kpis?.fleet_mttr || 0}
+            suffix="h"
+            decimals={0}
             subtitle={t("kpis.mttr.subtitle")}
             icon={Timer}
             variant="teal"
           />
           <PremiumMetricCard
             title={t("kpis.mtbf.title")}
-            value={`${kpiData?.fleet_kpis?.fleet_mtbf || 0}h`}
+            value={kpiData?.fleet_kpis?.fleet_mtbf || 0}
+            suffix="h"
+            decimals={0}
             subtitle={t("kpis.mtbf.subtitle")}
             icon={Zap}
             variant="teal"
           />
           <PremiumMetricCard
             title={t("kpis.woSlaCompliance.title")}
-            value={`${kpiData?.fleet_kpis?.work_order_sla_compliance?.toFixed(1) || 0}%`}
+            value={kpiData?.fleet_kpis?.work_order_sla_compliance || 0}
+            suffix="%"
+            decimals={1}
             subtitle={t("kpis.woSlaCompliance.subtitle")}
             icon={Target}
             variant="blue"
           />
           <PremiumMetricCard
             title={t("kpis.pmCompliance.title")}
-            value={`${kpiData?.fleet_kpis?.preventive_maintenance_compliance?.toFixed(1) || 0}%`}
+            value={kpiData?.fleet_kpis?.preventive_maintenance_compliance || 0}
+            suffix="%"
+            decimals={1}
             subtitle={t("kpis.pmCompliance.subtitle")}
             icon={Gauge}
             variant="purple"
