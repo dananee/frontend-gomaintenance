@@ -67,7 +67,11 @@
             "logout": "Déconnexion",
             "user": "Utilisateur",
             "role": "Rôle"
-        }
+        },
+        "time": "Heure",
+        "hour": "Heure",
+        "minute": "Minute",
+        "shortcuts": "Raccourcis"
     },
     "toasts": {
         "success": {

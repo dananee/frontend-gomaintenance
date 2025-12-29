@@ -374,7 +374,7 @@ export default function VehicleDetailPage() {
           <div>
             <h2 className="mb-4 text-xl font-semibold">{t("details.performanceMetrics.title")}</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-               
+
               <PremiumMetricCard
                 title={t("details.metrics.avgRepairCost")}
                 value={metrics.averageRepairCost}
@@ -680,6 +680,7 @@ export default function VehicleDetailPage() {
           onSuccess={() => setIsWorkOrderModalOpen(false)}
           onCancel={() => setIsWorkOrderModalOpen(false)}
           vehicleId={vehicle.id}
+          vehicle={vehicle}
         />
       </Modal>
 

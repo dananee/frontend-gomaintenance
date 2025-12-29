@@ -251,7 +251,7 @@ export function EditWorkOrderModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="assignees">{t("form.fields.assignee")}</Label>
-              <Popover open={open} onOpenChange={setOpen}>
+              <Popover open={open} onOpenChange={setOpen} modal={false}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -298,7 +298,6 @@ export function EditWorkOrderModal({
                               // currentValue will be the lowercase ID (because cmdk normalizes values)
                               // But since we use the ID from the closure (tech.id), we can just use that directly.
 
-                              console.log("Selected tech clicked:", tech.id);
 
                               const current = getValues("assignee_ids") || [];
                               const isSelected = current.includes(tech.id);

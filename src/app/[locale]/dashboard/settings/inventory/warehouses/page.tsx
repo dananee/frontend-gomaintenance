@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { 
-  Plus, 
-  Search, 
-  MoreVertical, 
-  Edit2, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  MoreVertical,
+  Edit2,
+  Trash2,
   Warehouse as WarehouseIcon,
   ShieldCheck,
   MapPin,
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Table,
   TableBody,
@@ -47,12 +48,12 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { 
-  getWarehouses, 
-  createWarehouse, 
-  updateWarehouse, 
+import {
+  getWarehouses,
+  createWarehouse,
+  updateWarehouse,
   deleteWarehouse,
-  Warehouse 
+  Warehouse
 } from "@/features/inventory/api/inventory";
 import { getUsers } from "@/features/users/api/getUsers";
 import { useAuth } from "@/hooks/useAuth";
@@ -62,7 +63,7 @@ import { useEffect } from "react";
 export default function WarehousesSettingsPage() {
   const { user } = useAuth();
   const router = useRouter();
-  
+
   useEffect(() => {
     if (user && user.role !== "admin" && user.role !== "manager") {
       router.push("/dashboard");
@@ -79,7 +80,7 @@ export default function WarehousesSettingsPage() {
     queryKey: ["warehouses", "all"],
     queryFn: () => getWarehouses(),
   });
-  
+
   const warehouses = Array.isArray(warehousesData) ? warehousesData : (warehousesData as any)?.data || [];
 
   const { data: usersData } = useQuery({
@@ -130,7 +131,7 @@ export default function WarehousesSettingsPage() {
     }
   };
 
-  const filteredWarehouses = warehouses.filter((w: Warehouse) => 
+  const filteredWarehouses = warehouses.filter((w: Warehouse) =>
     w.name.toLowerCase().includes(search.toLowerCase()) ||
     w.address?.toLowerCase().includes(search.toLowerCase())
   );
@@ -180,7 +181,12 @@ export default function WarehousesSettingsPage() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">Loading...</TableCell>
+                  <TableCell colSpan={6} className="text-center py-12">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <LoadingSpinner size="md" />
+                      <p className="text-sm text-muted-foreground animate-pulse">Loading warehouses...</p>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ) : filteredWarehouses.length === 0 ? (
                 <TableRow>
@@ -200,10 +206,10 @@ export default function WarehousesSettingsPage() {
                     </TableCell>
                     <TableCell>
                       {warehouse.manager ? (
-                         <div className="flex items-center gap-2 text-sm">
-                            <User className="h-3 w-3" />
-                            {warehouse.manager.first_name} {warehouse.manager.last_name}
-                         </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <User className="h-3 w-3" />
+                          {warehouse.manager.first_name} {warehouse.manager.last_name}
+                        </div>
                       ) : "-"}
                     </TableCell>
                     <TableCell className="max-w-[150px] truncate text-muted-foreground">
@@ -227,7 +233,7 @@ export default function WarehousesSettingsPage() {
                             Edit
                           </DropdownMenuItem>
                           {warehouse.active && (
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               className="text-destructive"
                               onClick={() => handleDeactivate(warehouse.id)}
                             >
@@ -323,8 +329,8 @@ function WarehouseModal({ isOpen, onClose, warehouse, users, onSave, isSaving }:
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="type">{t("form.type")}</Label>
-            <Select 
-              value={formData.type} 
+            <Select
+              value={formData.type}
               onValueChange={(val: any) => setFormData({ ...formData, type: val })}
             >
               <SelectTrigger>
@@ -339,8 +345,8 @@ function WarehouseModal({ isOpen, onClose, warehouse, users, onSave, isSaving }:
           </div>
           <div className="space-y-2">
             <Label htmlFor="manager">{t("form.manager")}</Label>
-            <Select 
-              value={formData.manager_id || "none"} 
+            <Select
+              value={formData.manager_id || "none"}
               onValueChange={(val) => setFormData({ ...formData, manager_id: val === "none" ? undefined : val })}
             >
               <SelectTrigger>
@@ -367,8 +373,8 @@ function WarehouseModal({ isOpen, onClose, warehouse, users, onSave, isSaving }:
         </div>
 
         <div className="flex items-center space-x-2 pt-2">
-          <Checkbox 
-            id="negative" 
+          <Checkbox
+            id="negative"
             checked={formData.allow_negative_stock}
             onCheckedChange={(checked) => setFormData({ ...formData, allow_negative_stock: !!checked })}
           />
@@ -378,14 +384,14 @@ function WarehouseModal({ isOpen, onClose, warehouse, users, onSave, isSaving }:
         </div>
 
         {warehouse && (
-           <div className="flex items-center space-x-2">
-            <Checkbox 
-                id="active" 
-                checked={formData.active}
-                onCheckedChange={(checked) => setFormData({ ...formData, active: !!checked })}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="active"
+              checked={formData.active}
+              onCheckedChange={(checked) => setFormData({ ...formData, active: !!checked })}
             />
             <Label htmlFor="active" className="text-sm font-normal cursor-pointer">
-                {t("form.active")}
+              {t("form.active")}
             </Label>
           </div>
         )}

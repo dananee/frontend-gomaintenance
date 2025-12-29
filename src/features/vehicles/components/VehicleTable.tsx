@@ -29,6 +29,7 @@ import { useRouter } from "next/navigation";
 import { formatCurrency } from "@/lib/formatters";
 import { Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { useTranslations } from "next-intl";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 interface VehicleTableProps {
   vehicles: Vehicle[];
@@ -53,7 +54,7 @@ export function VehicleTable({
   const tc = useTranslations("common");
 
   if (isLoading) {
-    return <div className="p-8 text-center">{t("noData")}</div>;
+    return <TableSkeleton rows={8} />;
   }
 
   if (!vehicles?.length) {

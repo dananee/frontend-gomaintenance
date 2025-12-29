@@ -32,6 +32,7 @@ import { WorkOrder, WorkOrderStatus } from "../types/workOrder.types";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ClipboardList } from "lucide-react";
 import { toast } from "sonner";
+import { KanbanSkeleton } from "@/components/ui/skeleton";
 
 
 export interface WorkOrderFilters {
@@ -39,6 +40,7 @@ export interface WorkOrderFilters {
   status?: WorkOrderStatus | "all";
   priority?: string;
   assignee?: string;
+  vehicleIds?: string[];
 }
 
 export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
@@ -269,7 +271,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     : null;
 
   if (isLoading) {
-    return <div>Loading work orders...</div>;
+    return <KanbanSkeleton />;
   }
 
   if (!allWorkOrders || allWorkOrders.length === 0) {
@@ -308,6 +310,10 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
                   !filters?.priority || order.priority === filters.priority;
                 const matchesAssignee =
                   !filters?.assignee || order.assigned_to === filters.assignee;
+                const matchesVehicle =
+                  !filters?.vehicleIds ||
+                  filters.vehicleIds.length === 0 ||
+                  filters.vehicleIds.includes(order.vehicle_id);
                 const matchesSearch =
                   !filters?.search ||
                   order.title
@@ -319,6 +325,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
                   matchesStatus &&
                   matchesPriority &&
                   matchesAssignee &&
+                  matchesVehicle &&
                   matchesSearch
                 );
               });
