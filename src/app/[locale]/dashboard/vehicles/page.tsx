@@ -281,6 +281,7 @@ export default function VehiclesPage() {
       >
         <WorkOrderForm
           vehicleId={woVehicle?.id}
+          vehicle={woVehicle || undefined}
           onSuccess={() => {
             toast.success(t("toasts.workOrderCreated.title"));
             setWoVehicle(null);

@@ -67,7 +67,11 @@
             "logout": "Logout",
             "user": "User",
             "role": "Role"
-        }
+        },
+        "time": "Time",
+        "hour": "Hour",
+        "minute": "Minute",
+        "shortcuts": "Shortcuts"
     },
     "toasts": {
         "success": {

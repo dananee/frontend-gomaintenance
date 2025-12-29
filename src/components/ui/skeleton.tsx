@@ -145,3 +145,36 @@ export function ListSkeleton({ rows = 3 }: { rows?: number }) {
     </div>
   );
 }
+
+export function KanbanSkeleton() {
+  return (
+    <div className="flex h-full gap-6 overflow-x-auto pb-4 px-2">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="flex min-w-[300px] flex-col gap-4">
+          <div className="flex items-center justify-between px-2">
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-5 w-8 rounded-full" />
+          </div>
+          <div className="flex flex-col gap-3 rounded-lg bg-gray-50/50 dark:bg-gray-900/50 p-2 border border-gray-100 dark:border-gray-800 h-full min-h-[500px]">
+            {Array.from({ length: 3 }).map((_, j) => (
+              <div key={j} className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 shadow-sm space-y-3">
+                <div className="flex justify-between items-start">
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-4 w-4 rounded-full" />
+                </div>
+                <Skeleton className="h-3 w-full" />
+                <div className="flex justify-between items-center pt-2">
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                  <div className="flex gap-1">
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
