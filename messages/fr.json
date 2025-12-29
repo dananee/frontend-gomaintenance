@@ -45,6 +45,7 @@
         "edit": "Modifier",
         "create": "Créer",
         "view": "Voir",
+        "download": "Télécharger",
         "delete": "Supprimer",
         "save": "Enregistrer",
         "cancel": "Annuler",
@@ -56,6 +57,7 @@
         "confirmDelete": "Voulez-vous vraiment supprimer cet élément : {item} ?",
         "noData": "Aucune donnée trouvée",
         "search": "Rechercher...",
+        "confirmDiscardChanges": "Vous avez des modifications non enregistr\u00e9es. \u00cates-vous s\u00fbr de vouloir les ignorer ?",
         "total": "Total",
         "language": "Langue",
         "selectLanguage": "Choisir la langue",
@@ -109,9 +111,14 @@
             "statusUpdateFailed": "Échec de la mise à jour du statut",
             "workOrderUpdateFailed": "Échec de la mise à jour de l'ordre de travail",
             "workOrderDeleteFailed": "Échec de la suppression de l'ordre de travail",
+            "addTaskFailed": "Échec de l'ajout de la tâche",
+            "updateTaskFailed": "Échec de la mise à jour de la tâche",
+            "deleteTaskFailed": "Échec de la suppression de la tâche",
+            "postCommentFailed": "Échec de la publication du commentaire",
+            "deleteCommentFailed": "Échec de la suppression du commentaire",
+            "uploadFileFailed": "Échec du téléchargement du fichier",
+            "deleteFileFailed": "Échec de la suppression du fichier",
             "generic": "Une erreur s’est produite. Veuillez réessayer.",
-            "taskUpdateFailed": "Échec de la mise à jour de la tâche",
-            "taskDeleteFailed": "Échec de la suppression de la tâche",
             "roleCreateFailed": "Échec de la création du rôle",
             "roleDeleteFailed": "Échec de la suppression du rôle",
             "rolePermissionsUpdateFailed": "Échec de la mise à jour des permissions",
@@ -374,6 +381,12 @@
                 "noHistory": "Aucun historique de maintenance disponible",
                 "historyTitle": "Historique de maintenance",
                 "technician": "Technicien"
+            },
+            "history": {
+                "loading": "Chargement de l'historique...",
+                "noHistory": "Aucun historique disponible pour ce véhicule.",
+                "historyTitle": "Chronologie du véhicule",
+                "eventsCount": "Événements"
             },
             "documents": {
                 "title": "Documents",
@@ -2210,7 +2223,8 @@
                 "dropHere": "D\u00e9poser ici",
                 "noTasks": "Aucune t\u00e2che \u00e0 cette \u00e9tape",
                 "dragHere": "Faites glisser les cartes ici ou cr\u00e9ez-en de nouvelles"
-            }
+            },
+            "viewHistory": "Voir l'historique"
         },
         "card": {
             "unknownVehicle": "V\u00e9hicule inconnu",
@@ -2338,6 +2352,17 @@
                 "titleLabel": "Titre",
                 "dueDateLabel": "Date d'échéance"
             }
+        },
+        "attachments": {
+            "title": "Pièces jointes",
+            "subtitle": "Gérez les photos et documents liés à cet ordre de travail",
+            "upload": "Téléverser",
+            "dropzone": {
+                "title": "Cliquez pour téléverser",
+                "subtitle": "SVG, PNG, JPG ou PDF (max. 10MB)"
+            },
+            "empty": "Aucune pièce jointe pour le moment",
+            "item": "document"
         }
     },
     "forbidden": {

@@ -23,6 +23,7 @@ import {
   addWorkOrderAttachment,
   deleteWorkOrderAttachment
 } from "../api/workOrderAttachments";
+import { uploadFile } from "@/features/vehicles/api/vehicleDocuments";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatDateShort } from "@/lib/formatters";
@@ -47,11 +48,45 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
     enabled: !!workOrderId,
   });
 
+  const getFullUrl = (url: string) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+    const baseUrl = apiUrl.replace("/api/v1", "");
+    return `${baseUrl}${url}`;
+  };
+
+  const handleDownload = async (url: string, fileName: string) => {
+    try {
+      const fullUrl = getFullUrl(url);
+      const response = await fetch(fullUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName || "document";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
+      window.open(getFullUrl(url), "_blank");
+    }
+  };
+
+  const handleView = (url: string) => {
+    window.open(getFullUrl(url), "_blank");
+  };
+
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => {
-      const fakeUrl = URL.createObjectURL(file);
+    mutationFn: async (file: File) => {
+      // 1. Upload to permanent storage first
+      const uploadedRaw = await uploadFile(file);
+
+      // 2. Save metadata with permanent URL
       return addWorkOrderAttachment(workOrderId, {
-        file_url: fakeUrl,
+        file_url: uploadedRaw.url,
         file_name: file.name,
         file_type: file.type,
       });
@@ -231,27 +266,30 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
 
                     {/* Hover Actions Overlay */}
                     <div className="absolute inset-0 bg-white/90 dark:bg-gray-950/90 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl flex items-center justify-center gap-2 backdrop-blur-[1px]">
-                      <a
-                        href={attachment.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-blue-900/30")}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-blue-900/30"
                         title={tc("view")}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleView(attachment.file_url);
+                        }}
                       >
                         <Eye className="h-4 w-4" />
-                      </a>
-                      <a
-                        href={attachment.file_url}
-                        download={attachment.file_name}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-blue-900/30")}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-blue-900/30"
                         title={tc("download")}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownload(attachment.file_url, attachment.file_name);
+                        }}
                       >
                         <Download className="h-4 w-4" />
-                      </a>
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"

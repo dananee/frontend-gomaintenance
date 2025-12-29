@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,8 @@ import {
   Loader2,
   MoreVertical,
   ListTodo,
+  Calendar,
+  User,
 } from "lucide-react";
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
@@ -25,7 +28,9 @@ import {
   createWorkOrderTask,
   updateWorkOrderTask,
   deleteWorkOrderTask,
+  CreateWorkOrderTaskRequest,
 } from "../api/workOrderTasks";
+import { useUsers } from "@/features/users/hooks/useUsers";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -36,6 +41,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { useFormGuard } from "@/hooks/useFormGuard";
 
 export function WorkOrderTasks() {
   const t = useTranslations("workOrders");
@@ -49,6 +55,13 @@ export function WorkOrderTasks() {
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
   const [newTaskAssignee, setNewTaskAssignee] = useState("");
 
+  const isDirty = newTaskTitle.trim() !== "" || newTaskDescription.trim() !== "" || newTaskDueDate.trim() !== "" || newTaskAssignee.trim() !== "";
+
+  const { preventClose, handleAttemptClose } = useFormGuard({
+    isDirty,
+    onClose: close,
+  });
+
   const queryClient = useQueryClient();
 
   const { data: tasks = [], isLoading } = useQuery({
@@ -57,8 +70,13 @@ export function WorkOrderTasks() {
     enabled: !!workOrderId,
   });
 
+  const { data: techniciansData, isLoading: isLoadingTechnicians } = useUsers({
+    role: "technician",
+    page_size: 100
+  });
+
   const createMutation = useMutation({
-    mutationFn: (name: string) => createWorkOrderTask(workOrderId, { name }),
+    mutationFn: (data: CreateWorkOrderTaskRequest) => createWorkOrderTask(workOrderId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workOrderTasks", workOrderId] });
       setNewTaskTitle("");
@@ -101,7 +119,12 @@ export function WorkOrderTasks() {
 
   const handleAddTask = () => {
     if (!newTaskTitle.trim()) return;
-    createMutation.mutate(newTaskTitle);
+    createMutation.mutate({
+      name: newTaskTitle,
+      description: newTaskDescription,
+      due_date: newTaskDueDate || undefined,
+      assignee_id: newTaskAssignee || undefined,
+    });
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -249,11 +272,34 @@ export function WorkOrderTasks() {
                           )}
                         </div>
 
+                        {task.description && (
+                          <p className={`text-sm transition-colors duration-200 ${task.is_done ? "text-gray-400" : "text-gray-600 dark:text-gray-400"}`}>
+                            {task.description}
+                          </p>
+                        )}
+
                         <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                          {/* <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>{t("checklist.dueTomorrow")}</span>
-                          </div> */}
+                          {task.due_date && (
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              <span>{new Date(task.due_date).toLocaleDateString()}</span>
+                            </div>
+                          )}
+                          {task.assignee && (
+                            <div className="flex items-center gap-2" title={task.assignee.name}>
+                              <div className="flex -space-x-2 overflow-hidden">
+                                <Avatar className="h-6 w-6 border-2 border-white dark:border-gray-900 ring-1 ring-gray-100 dark:ring-gray-800">
+                                  <AvatarImage src={task.assignee.avatar_url} alt={task.assignee.name} />
+                                  <AvatarFallback className="text-[9px] bg-blue-100 text-blue-700 font-medium">
+                                    {(task.assignee.name || "?").split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                              </div>
+                              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                                {task.assignee.name || "Unknown"}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -294,6 +340,8 @@ export function WorkOrderTasks() {
         onClose={close}
         title={t("form.title")}
         description={t("form.description")}
+        preventClose={preventClose}
+        onAttemptClose={handleAttemptClose}
       >
         <div className="space-y-4 py-2">
           <div className="space-y-2">
@@ -333,16 +381,22 @@ export function WorkOrderTasks() {
                   <SelectValue placeholder={t("form.fields.selectTechnician")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="tech1">John Doe</SelectItem>
-                  <SelectItem value="tech2">Jane Smith</SelectItem>
-                  <SelectItem value="tech3">Mike Johnson</SelectItem>
+                  {isLoadingTechnicians ? (
+                    <div className="p-2 flex items-center justify-center">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </div>
+                  ) : techniciansData?.data.map((tech) => (
+                    <SelectItem key={tech.id} value={tech.id}>
+                      {tech.name || `${tech.first_name} ${tech.last_name}`}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-6">
-            <Button variant="outline" onClick={close} className="h-10 px-4">
+            <Button variant="outline" onClick={handleAttemptClose} className="h-10 px-4">
               {tc("cancel")}
             </Button>
             <Button

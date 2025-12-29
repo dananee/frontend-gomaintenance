@@ -30,6 +30,38 @@ export function VehicleDocuments({
 }: VehicleDocumentsProps) {
   const t = useTranslations("features.vehicles.documents");
 
+  const getFullUrl = (url: string) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+    const baseUrl = apiUrl.replace("/api/v1", "");
+    return `${baseUrl}${url}`;
+  };
+
+  const handleDownload = async (url: string, fileName: string) => {
+    try {
+      const fullUrl = getFullUrl(url);
+      const response = await fetch(fullUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName || "document";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // Fallback to simple window.open if fetch fails (e.g. CORS)
+      window.open(getFullUrl(url), "_blank");
+    }
+  };
+
+  const handleView = (url: string) => {
+    window.open(getFullUrl(url), "_blank");
+  };
+
   const getFileIcon = (type: string) => {
     if (type.includes("image")) return <ImageIcon className="h-8 w-8 text-purple-600" />;
     if (type.includes("sheet") || type.includes("csv")) return <FileSpreadsheet className="h-8 w-8 text-green-600" />;
@@ -39,7 +71,7 @@ export function VehicleDocuments({
 
   const getStatusBadge = (expiryDate?: string) => {
     if (!expiryDate) return null;
-    
+
     const today = new Date();
     const expiry = new Date(expiryDate);
     const diffTime = expiry.getTime() - today.getTime();
@@ -55,7 +87,7 @@ export function VehicleDocuments({
     if (diffDays <= 30) {
       return (
         <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 gap-1 pl-1 pr-2">
-           <AlertTriangle className="h-3 w-3" /> {t("expiringSoon")}
+          <AlertTriangle className="h-3 w-3" /> {t("expiringSoon")}
         </Badge>
       );
     }
@@ -112,7 +144,7 @@ export function VehicleDocuments({
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-900/50">
-                     {getFileIcon(doc.document_type || "file")}
+                    {getFileIcon(doc.document_type || "file")}
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -121,10 +153,10 @@ export function VehicleDocuments({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => window.open(doc.file_url, "_blank")}>
+                      <DropdownMenuItem onClick={() => handleView(doc.file_url)}>
                         <Eye className="mr-2 h-4 w-4" /> {t("view")}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => window.open(doc.file_url, "_blank")}>
+                      <DropdownMenuItem onClick={() => handleDownload(doc.file_url, doc.file_name)}>
                         <Download className="mr-2 h-4 w-4" /> {t("download")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onDelete(doc.id)} className="text-red-600 focus:text-red-600">
@@ -133,13 +165,13 @@ export function VehicleDocuments({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                
+
                 <div className="mb-3">
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate" title={doc.name}>
                     {doc.name || t("untitled")}
                   </h3>
                   <p className="text-xs text-muted-foreground capitalize">
-                     {doc.document_type?.replace(/_/g, " ") || "Document"} • {formatFileSize(doc.file_size)}
+                    {doc.document_type?.replace(/_/g, " ") || "Document"} • {formatFileSize(doc.file_size)}
                   </p>
                 </div>
 
@@ -148,7 +180,7 @@ export function VehicleDocuments({
                     <Calendar className="h-3 w-3" />
                     <span>{doc.expiry_date ? formatDateShort(doc.expiry_date) : "No Expiry"}</span>
                   </div>
-                   {getStatusBadge(doc.expiry_date)}
+                  {getStatusBadge(doc.expiry_date)}
                 </div>
               </CardContent>
             </Card>

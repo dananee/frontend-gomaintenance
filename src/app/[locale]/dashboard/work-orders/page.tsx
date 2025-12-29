@@ -9,6 +9,7 @@ import { WorkOrderForm } from "@/features/workOrders/components/WorkOrderForm";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
+import { useFormGuard } from "@/hooks/useFormGuard";
 import { Plus } from "lucide-react";
 import { WorkOrderStatus } from "@/features/workOrders/types/workOrder.types";
 import { toast } from "sonner";
@@ -42,6 +43,12 @@ export default function WorkOrdersPage() {
   const { data: vehiclesData, isLoading: isLoadingVehicles, isError: isErrorVehicles } = useVehicles({ page: 1, page_size: 100, include_kpis: false });
   const { data: workOrdersData } = useWorkOrders({ page_size: 100 });
   const [isVehiclePopoverOpen, setIsVehiclePopoverOpen] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+
+  const { preventClose, handleAttemptClose } = useFormGuard({
+    isDirty: isFormDirty,
+    onClose: close,
+  });
 
   const vehiclesWithWorkOrders = useMemo(() => {
     if (!workOrdersData?.data || !vehiclesData?.data) return [];
@@ -210,8 +217,18 @@ export default function WorkOrdersPage() {
         <WorkOrderKanban filters={filters} />
       </div>
 
-      <Modal isOpen={isOpen} onClose={close} title={t("actions.new")}>
-        <WorkOrderForm onSuccess={handleSuccess} onCancel={close} />
+      <Modal
+        isOpen={isOpen}
+        onClose={close}
+        title={t("actions.new")}
+        preventClose={preventClose}
+        onAttemptClose={handleAttemptClose}
+      >
+        <WorkOrderForm
+          onSuccess={handleSuccess}
+          onCancel={handleAttemptClose}
+          onDirtyChange={setIsFormDirty}
+        />
       </Modal>
     </div>
   );

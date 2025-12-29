@@ -56,6 +56,7 @@
         "confirmDelete": "Are you sure you want to delete this {item}?",
         "noData": "No data found",
         "search": "Search...",
+        "confirmDiscardChanges": "You have unsaved changes. Are you sure you want to discard them?",
         "total": "Total",
         "language": "Language",
         "selectLanguage": "Select language",
@@ -379,6 +380,12 @@
                 "noHistory": "No maintenance history available",
                 "historyTitle": "Maintenance History",
                 "technician": "Technician"
+            },
+            "history": {
+                "loading": "Loading history...",
+                "noHistory": "No history available for this vehicle.",
+                "historyTitle": "Vehicle Timeline",
+                "eventsCount": "Events"
             },
             "documents": {
                 "title": "Documents",

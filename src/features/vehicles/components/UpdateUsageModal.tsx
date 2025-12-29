@@ -16,6 +16,10 @@ interface UpdateUsageModalProps {
   currentKm?: number;
 }
 
+import { useFormGuard } from "@/hooks/useFormGuard";
+
+// ... existing code ...
+
 export function UpdateUsageModal({
   isOpen,
   onClose,
@@ -28,11 +32,16 @@ export function UpdateUsageModal({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<UpdateVehicleUsageRequest>({
     defaultValues: {
       current_km: currentKm,
     },
+  });
+
+  const { preventClose, handleAttemptClose } = useFormGuard({
+    isDirty,
+    onClose,
   });
 
   useEffect(() => {
@@ -50,6 +59,8 @@ export function UpdateUsageModal({
       onClose={onClose}
       title={t("updateTitle")}
       description={t("updateDesc")}
+      preventClose={preventClose}
+      onAttemptClose={handleAttemptClose}
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <Input
@@ -68,7 +79,7 @@ export function UpdateUsageModal({
         />
 
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={handleAttemptClose}>
             {t("cancel")}
           </Button>
           <Button type="submit" isLoading={isSubmitting}>
