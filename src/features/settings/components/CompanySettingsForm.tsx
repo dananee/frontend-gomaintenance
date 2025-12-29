@@ -16,6 +16,7 @@ interface CompanyFormValues {
   address: string;
   city: string;
   country: string;
+  kanbanCompletedDaysRetention: number;
 }
 
 export function CompanySettingsForm() {
@@ -33,6 +34,7 @@ export function CompanySettingsForm() {
         address: company.address,
         city: company.city,
         country: company.country,
+        kanbanCompletedDaysRetention: company.kanban_completed_days_retention || 7,
       });
     }
   }, [company, reset]);
@@ -44,6 +46,7 @@ export function CompanySettingsForm() {
       address: data.address,
       city: data.city,
       country: data.country,
+      kanban_completed_days_retention: data.kanbanCompletedDaysRetention,
     });
     // Reset dirty state
     reset(data);
@@ -122,6 +125,17 @@ export function CompanySettingsForm() {
             <div className="space-y-2">
               <label className="text-sm font-medium">Country</label>
               <Input {...register("country")} disabled={!isAdmin} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Kanban Retention Period (Days)</label>
+              <Input
+                type="number"
+                min={1}
+                max={365}
+                {...register("kanbanCompletedDaysRetention", { valueAsNumber: true })}
+                disabled={!isAdmin}
+              />
+              <p className="text-xs text-muted-foreground">Days to keep completed/cancelled orders on board.</p>
             </div>
           </div>
 

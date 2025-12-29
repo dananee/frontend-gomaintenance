@@ -11,6 +11,8 @@ interface ModalProps {
   description?: string;
   children: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
+  preventClose?: boolean;
+  onAttemptClose?: () => void;
 }
 
 const sizeClasses = {
@@ -27,10 +29,18 @@ export function Modal({
   description,
   children,
   size = "md",
+  preventClose = false,
+  onAttemptClose,
 }: ModalProps) {
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (preventClose && onAttemptClose) {
+          onAttemptClose();
+        } else {
+          onClose();
+        }
+      }
     };
 
     if (isOpen) {
@@ -42,16 +52,24 @@ export function Modal({
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, preventClose, onAttemptClose]);
 
   if (!isOpen) return null;
+
+  const handleBackdropClick = () => {
+    if (preventClose && onAttemptClose) {
+      onAttemptClose();
+    } else {
+      onClose();
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={handleBackdropClick}
       />
 
       {/* Modal */}
@@ -64,7 +82,7 @@ export function Modal({
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleBackdropClick}
           className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
         >
           <X className="h-5 w-5" />

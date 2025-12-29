@@ -8,6 +8,7 @@ export interface GetWorkOrdersParams {
   type?: string;
   vehicle_id?: string;
   assigned_to?: string;
+  show_archived?: boolean;
 }
 
 export interface GetWorkOrdersResponse {

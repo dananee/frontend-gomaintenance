@@ -1,5 +1,4 @@
-"use client";
-
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { CreateWorkOrderDTO } from "../types/workOrder.types";
 import { Button } from "@/components/ui/button";
@@ -20,18 +19,24 @@ interface WorkOrderFormProps {
     brand: string;
     model: string;
   };
+  onDirtyChange?: (isDirty: boolean) => void;
 }
 
-export function WorkOrderForm({ onSuccess, onCancel, vehicleId, vehicle }: WorkOrderFormProps) {
+export function WorkOrderForm({ onSuccess, onCancel, vehicleId, vehicle, onDirtyChange }: WorkOrderFormProps) {
   const t = useTranslations("workOrders");
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
+    watch
   } = useForm<CreateWorkOrderDTO>({
     defaultValues: vehicleId ? { vehicle_id: vehicleId } : undefined,
   });
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
   const { mutate: createWorkOrder, isPending } = useCreateWorkOrder();
   const { data: vehiclesData } = useVehicles({ page: 1, page_size: 100 });
 

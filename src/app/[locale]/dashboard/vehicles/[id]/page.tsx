@@ -61,8 +61,7 @@ import {
   useUploadVehicleDocument,
   useDeleteVehicleDocument,
 } from "@/features/vehicles/hooks/useVehicleDocuments";
-import { VehicleActivityTimeline } from "@/features/vehicles/components/VehicleActivityTimeline";
-import { VehicleMaintenanceHistory } from "@/features/vehicles/components/VehicleMaintenanceHistory";
+import { VehicleUnifiedHistory } from "@/features/vehicles/components/VehicleUnifiedHistory";
 import { Modal } from "@/components/ui/modal";
 import { WorkOrderForm } from "@/features/workOrders/components/WorkOrderForm";
 import { UpdateUsageModal } from "@/features/vehicles/components/UpdateUsageModal";
@@ -135,41 +134,6 @@ export default function VehicleDetailPage() {
   }, [usersData]);
 
   const { mutate: updateUsage, isPending: isUpdatingUsage } = useUpdateVehicleUsage(vehicleId);
-
-  const maintenanceRecords = useMemo(() => {
-    if (!data) return [];
-    const { maintenanceHistory, serviceSummary, vehicle } = data;
-    const records = maintenanceHistory ? [...maintenanceHistory] : [];
-
-    if (!maintenanceHistory?.length && serviceSummary.lastMaintenanceDate) {
-      records.push({
-        id: "last-service",
-        type: "Service",
-        description: serviceSummary.lastTechnicianName || "Maintenance completed",
-        date: serviceSummary.lastMaintenanceDate,
-        mileage: vehicle.mileage,
-        cost: serviceSummary.lastMaintenanceCost,
-        status: "completed" as const,
-      });
-    }
-
-    return records;
-  }, [data]);
-
-  const activityEvents = useMemo(() => {
-    if (!data) return [];
-    const { activityLog, partsUsed } = data;
-    return [
-      ...(activityLog || []),
-      ...(partsUsed || []).map((part, index) => ({
-        id: `part-${index}`,
-        title: `Part used: ${part.partName}`,
-        description: `Work order ${part.workOrderId} • Qty ${part.quantity} • ${formatCurrency(part.cost)}`,
-        date: part.dateUsed,
-        type: "parts",
-      })),
-    ];
-  }, [data]);
 
   if (isLoading) {
     return (
@@ -649,8 +613,7 @@ export default function VehicleDetailPage() {
         </TabsContent>
 
         <TabsContent value="history" className="space-y-6">
-          <VehicleActivityTimeline events={activityEvents} />
-          <VehicleMaintenanceHistory records={maintenanceRecords} />
+          <VehicleUnifiedHistory vehicleId={vehicleId} />
         </TabsContent>
       </Tabs>
 

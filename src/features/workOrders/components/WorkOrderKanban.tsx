@@ -1,9 +1,10 @@
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useDeleteWorkOrder, useUpdateWorkOrder } from "../hooks/useWorkOrders";
 import { useWorkOrdersBoard } from "../hooks/useWorkOrdersBoard";
 import { useWorkOrdersBoardStore } from "../store/useWorkOrdersBoardStore";
 import { updateWorkOrderStatus } from "../api/updateWorkOrderStatus";
+import { Button } from "@/components/ui/button";
 import {
   DndContext,
   closestCorners,
@@ -46,6 +47,8 @@ export interface WorkOrderFilters {
 export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
   const t = useTranslations("workOrders");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const showArchived = searchParams.get("show_archived") === "true";
 
   const columnDefinitions = useMemo(() => [
     { id: "pending" as WorkOrderStatus, title: t("status.pending"), color: "orange" },
@@ -53,7 +56,7 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
     { id: "completed" as WorkOrderStatus, title: t("status.completed"), color: "green" },
     { id: "cancelled" as WorkOrderStatus, title: t("status.cancelled"), color: "red" },
   ], [t]);
-  const { isLoading } = useWorkOrdersBoard("default");
+  const { isLoading } = useWorkOrdersBoard("default", showArchived);
 
   // Get state from Zustand store
   const workOrdersById = useWorkOrdersBoardStore((state) => state.workOrdersById);
@@ -296,6 +299,12 @@ export function WorkOrderKanban({ filters }: { filters?: WorkOrderFilters }) {
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
+        <div className="mb-4 flex justify-end px-2">
+          <Button variant="outline" size="sm" onClick={() => router.push("/dashboard/work-orders?show_archived=true")}>
+            <ClipboardList className="mr-2 h-4 w-4" />
+            {t("kanban.viewHistory")}
+          </Button>
+        </div>
         <div className="flex h-full gap-6 overflow-x-auto pb-4 px-2">
           {columnDefinitions.map((column) => {
             const columnOrderIds = boardColumns[column.id] || [];

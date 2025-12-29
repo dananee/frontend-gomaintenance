@@ -41,3 +41,21 @@ export const addVehicleDocument = async (
 export const deleteVehicleDocument = async (vehicleId: string, docId: string): Promise<void> => {
   await apiClient.delete(`/vehicles/${vehicleId}/documents/${docId}`);
 };
+
+// Generic file upload
+export const uploadFile = async (file: File): Promise<{ url: string; fileName: string; fileSize: number }> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  
+  const response = await apiClient.post<{ url: string; fileName: string; fileSize: number }>(
+    "/documents/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  
+  return response.data;
+};

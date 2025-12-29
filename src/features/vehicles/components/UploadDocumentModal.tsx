@@ -9,6 +9,7 @@ import { AddVehicleDocumentRequest } from "@/features/vehicles/api/vehicleDocume
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { FileUploader } from "@/components/ui/file-uploader";
+import { uploadFile } from "@/features/vehicles/api/vehicleDocuments";
 import { FileText, X, ChevronRight, AlertCircle, CheckCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
@@ -22,6 +23,10 @@ interface UploadDocumentModalProps {
 }
 
 type Step = "upload" | "details";
+
+import { useFormGuard } from "@/hooks/useFormGuard";
+
+// ... existing code ...
 
 export function UploadDocumentModal({
   isOpen,
@@ -38,26 +43,32 @@ export function UploadDocumentModal({
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<AddVehicleDocumentRequest>();
 
-  const handleClose = () => {
-    reset();
-    setStep("upload");
-    setSelectedFile(null);
-    onClose();
-  };
+  const { preventClose, handleAttemptClose } = useFormGuard({
+    isDirty: isDirty || step === "details", // Guard if form is dirty or if we are in details step
+    onClose: () => {
+      reset();
+      setStep("upload");
+      setSelectedFile(null);
+      onClose();
+    },
+  });
+
+  const handleClose = handleAttemptClose;
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
-    
+
     // Auto-fill metadata
     const fileName = file.name;
     const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf(".")) || fileName;
-    
+
     setValue("file_name", fileName);
     setValue("name", nameWithoutExt.split("_").join(" ").replace(/\b\w/g, l => l.toUpperCase())); // Title Case
-    
+    setValue("file_size", file.size);
+
     // Attempt auto-classify type
     const lowerName = fileName.toLowerCase();
     if (lowerName.includes("invoice") || lowerName.includes("bill")) setValue("document_type", "invoice");
@@ -66,18 +77,32 @@ export function UploadDocumentModal({
     else if (lowerName.includes("registration")) setValue("document_type", "registration");
     else setValue("document_type", "other");
 
-    // Mock URL for now (in real app, this would be S3 upload response)
-    setValue("file_url", URL.createObjectURL(file));
-
     setStep("details");
   };
 
-  const handleFormSubmit = (payload: AddVehicleDocumentRequest) => {
-    onSubmit(payload);
-    // Reset handled by parent or on success usually, but we do it here for now
-    setTimeout(() => {
-        if (!isSubmitting) handleClose();
-    }, 100);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFormSubmit = async (payload: AddVehicleDocumentRequest) => {
+    if (!selectedFile) return;
+
+    try {
+      setIsUploading(true);
+      // 1. Upload the physical file first to get the permanent URL
+      const { url } = await uploadFile(selectedFile);
+
+      // 2. Submit metadata with the permanent URL
+      onSubmit({
+        ...payload,
+        file_url: url,
+      });
+
+      // Close will be handled by success in parent (page.tsx)
+    } catch (error) {
+      console.error("Upload failed:", error);
+      // Error handling is usually done via toast in parent, 
+      // but we need to reset loading state here if we don't close
+      setIsUploading(false);
+    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -94,15 +119,16 @@ export function UploadDocumentModal({
       onClose={handleClose}
       title={t("modalTitle")}
       description={t("modalDesc")}
-      // className="sm:max-w-lg" // Modal component might need support for className prop
+      preventClose={preventClose}
+      onAttemptClose={handleAttemptClose}
     >
       <div className="mt-4">
         {step === "upload" ? (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-             <FileUploader 
-               onFileSelect={handleFileSelect}
-               accept=".pdf,.jpg,.jpeg,.png,.docx"
-             />
+            <FileUploader
+              onFileSelect={handleFileSelect}
+              accept=".pdf,.jpg,.jpeg,.png,.docx"
+            />
           </div>
         ) : (
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300">
@@ -118,15 +144,15 @@ export function UploadDocumentModal({
                     <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
                   </div>
                 </div>
-                <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0"
-                    onClick={() => {
-                        setSelectedFile(null);
-                        setStep("upload");
-                    }}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setStep("upload");
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -134,44 +160,44 @@ export function UploadDocumentModal({
             )}
 
             <div className="space-y-4">
-                <div className="grid gap-2">
-                    <Label htmlFor="name">{t("name")}</Label>
-                    <Input
-                        id="name"
-                        {...register("name", { required: true })}
-                        placeholder="e.g. Annual Inspection Report"
-                    />
-                    {errors.name && <span className="text-xs text-red-500">Required</span>}
-                </div>
+              <div className="grid gap-2">
+                <Label htmlFor="name">{t("name")}</Label>
+                <Input
+                  id="name"
+                  {...register("name", { required: true })}
+                  placeholder="e.g. Annual Inspection Report"
+                />
+                {errors.name && <span className="text-xs text-red-500">Required</span>}
+              </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="type">{t("type")}</Label>
-                     <Select 
-                        onValueChange={(val) => setValue("document_type", val)} 
-                        defaultValue="other"
-                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="insurance">{t("types.insurance")}</SelectItem>
-                        <SelectItem value="registration">{t("types.registration")}</SelectItem>
-                        <SelectItem value="inspection">{t("types.inspection")}</SelectItem>
-                        <SelectItem value="invoice">{t("types.invoice")}</SelectItem>
-                        <SelectItem value="other">{t("types.other")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                </div>
+              <div className="grid gap-2">
+                <Label htmlFor="type">{t("type")}</Label>
+                <Select
+                  onValueChange={(val) => setValue("document_type", val)}
+                  defaultValue="other"
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="insurance">{t("types.insurance")}</SelectItem>
+                    <SelectItem value="registration">{t("types.registration")}</SelectItem>
+                    <SelectItem value="inspection">{t("types.inspection")}</SelectItem>
+                    <SelectItem value="invoice">{t("types.invoice")}</SelectItem>
+                    <SelectItem value="other">{t("types.other")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="expiry_date">{t("expiryDate")}</Label>
-                    <Input
-                        id="expiry_date"
-                        type="date"
-                        {...register("expiry_date")}
-                        className="w-full"
-                    />
-                </div>
+              <div className="grid gap-2">
+                <Label htmlFor="expiry_date">{t("expiryDate")}</Label>
+                <Input
+                  id="expiry_date"
+                  type="date"
+                  {...register("expiry_date")}
+                  className="w-full"
+                />
+              </div>
             </div>
 
             {/* Hidden inputs for API compatibility */}
@@ -183,7 +209,7 @@ export function UploadDocumentModal({
               <Button type="button" variant="outline" onClick={handleClose}>
                 {t("cancel")}
               </Button>
-              <Button type="submit" isLoading={isSubmitting} className="min-w-[120px]">
+              <Button type="submit" isLoading={isSubmitting || isUploading} className="min-w-[120px]">
                 {t("confirmUpload")}
               </Button>
             </div>

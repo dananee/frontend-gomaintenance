@@ -6,6 +6,7 @@ export interface CompanyData {
     address: string;
     city: string;
     country: string;
+    kanban_completed_days_retention?: number;
 }
 
 export interface UpdateCompanyRequest {
@@ -14,6 +15,7 @@ export interface UpdateCompanyRequest {
     address: string;
     city: string;
     country: string;
+    kanban_completed_days_retention?: number;
 }
 
 export const getCompany = async (): Promise<CompanyData> => {

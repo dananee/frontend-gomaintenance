@@ -4,18 +4,32 @@ export interface WorkOrderTask {
   id: string;
   work_order_id: string;
   name: string;
+  description?: string;
   is_done: boolean;
+  due_date?: string;
+  assignee_id?: string;
+  assignee?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+  };
   created_at: string;
   updated_at: string;
 }
 
 export interface CreateWorkOrderTaskRequest {
   name: string;
+  description?: string;
+  due_date?: string;
+  assignee_id?: string;
 }
 
 export interface UpdateWorkOrderTaskRequest {
   name?: string;
+  description?: string;
   is_done?: boolean;
+  due_date?: string;
+  assignee_id?: string;
 }
 
 // List all tasks for a work order
