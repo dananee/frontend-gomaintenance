@@ -1967,7 +1967,7 @@
                     "totalCost": "Coût Maint. Total",
                     "downtime": "Temps d'arrêt",
                     "nextService": "Prochaine Révision",
-                    "healthScore": "Score Santé",
+                    "drivers": "Conducteurs",
                     "woCount": "Nb OT",
                     "actions": "Actions",
                     "partName": "Nom Pièce",

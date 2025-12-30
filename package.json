@@ -39,6 +39,7 @@
     "dayjs": "^1.11.12",
     "framer-motion": "^12.23.26",
     "frontend-maintenance": ".",
+    "frontend-maintenance": ".",
     "idb": "^8.0.3",
     "jose": "^6.1.2",
     "lucide-react": "^0.562.0",
