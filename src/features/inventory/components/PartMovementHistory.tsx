@@ -75,70 +75,72 @@ export function PartMovementHistory({ movements = [] }: PartMovementHistoryProps
       <CardContent>
         {movements.length === 0 ? (
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-             {t("empty")}
+            {t("empty")}
           </p>
         ) : (
           <div className="space-y-3">
             {movements.map((movement) => {
-               const config = movementTypeConfig[movement.movement_type] || movementTypeConfig["ADJUSTMENT"];
-               const Icon = config.icon;
-               const label = t(`types.${movement.movement_type}` as any) || config.label;
+              const config = movementTypeConfig[movement.movement_type] || movementTypeConfig["ADJUSTMENT"];
+              const Icon = config.icon;
+              const label = t(`types.${movement.movement_type}` as any) || config.label;
 
-               return (
-                 <div
-                   key={movement.id}
-                   className="rounded-lg border border-gray-200 p-4 dark:border-gray-800"
-                 >
-                   <div className="flex items-start gap-3">
-                     <div className={`flex-shrink-0 mt-1 ${config.color}`}>
-                       <Icon className="h-5 w-5" />
-                     </div>
-                     <div className="flex-1">
-                       <div className="flex items-start justify-between gap-2">
-                         <div>
-                           <div className="flex items-center gap-2">
-                             <span className="font-semibold text-gray-900 dark:text-gray-100">
-                               {label}
-                             </span>
-                             <Badge variant={config.variant} className="text-xs">
-                               {movement.quantity > 0 ? "+" : ""}
-                               {movement.quantity}
-                             </Badge>
-                             {movement.total_price_ttc > 0 && (
-                                <span className="text-xs font-medium text-gray-500">
-                                    {movement.total_price_ttc.toLocaleString()} MAD
-                                </span>
-                             )}
-                           </div>
-                           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                             {movement.warehouse?.name}
-                             {movement.to_warehouse && ` → ${movement.to_warehouse.name}`}
-                           </p>
-                           {movement.notes && (
-                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                               {movement.notes}
-                             </p>
-                           )}
-                           {movement.reference_no && (
-                             <p className="text-xs text-gray-400 mt-1">
-                               {t("ref")} {movement.reference_no}
-                             </p>
-                           )}
-                         </div>
-                       </div>
-                       <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                         <span>{format(new Date(movement.created_at), "PPP p")}</span>
-                         {movement.created_user && (
-                           <>
-                             <span>•</span>
-                             <span>{movement.created_user.first_name} {movement.created_user.last_name}</span>
-                           </>
-                         )}
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               );
+              return (
+                <div
+                  key={movement.id}
+                  className="rounded-lg border border-gray-200 p-4 dark:border-gray-800"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`flex-shrink-0 mt-1 ${config.color}`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-gray-900 dark:text-gray-100">
+                              {label}
+                            </span>
+                            <Badge
+                              variant={movement.quantity < 0 ? "destructive" : (movement.movement_type === "ADJUSTMENT" ? "success" : config.variant)}
+                              className="text-xs"
+                            >
+                              {movement.quantity > 0 ? "+" : ""}{movement.quantity}
+                            </Badge>
+                            {movement.total_price_ttc > 0 && (
+                              <span className="text-xs font-medium text-gray-500">
+                                {movement.total_price_ttc.toLocaleString()} MAD
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            {movement.warehouse?.name}
+                            {movement.to_warehouse && ` → ${movement.to_warehouse.name}`}
+                          </p>
+                          {movement.notes && (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                              {movement.notes}
+                            </p>
+                          )}
+                          {movement.reference_no && (
+                            <p className="text-xs text-gray-400 mt-1">
+                              {t("ref")} {movement.reference_no}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <span>{format(new Date(movement.created_at), "PPP p")}</span>
+                        {movement.created_user && (
+                          <>
+                            <span>•</span>
+                            <span>{movement.created_user.first_name} {movement.created_user.last_name}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
             })}
           </div>
         )}

@@ -98,7 +98,7 @@ function isRouteAllowed(pathname: string, role: Role | undefined): boolean {
 async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
     const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET || "your-secret-key"
+      process.env.JWT_SECRET || "63515156zrg56er1g65eg6e51g65e1g"
     );
 
     const { payload } = await jwtVerify(token, secret);

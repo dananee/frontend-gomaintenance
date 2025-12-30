@@ -102,10 +102,10 @@ export function WorkOrderParts({
                         <AnimatedNumber value={part.quantity} decimals={0} />
                       </td>
                       <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
-                        <AnimatedNumber value={part.unit_price || 0} currency="EUR" />
+                        <AnimatedNumber value={part.unit_price || 0} currency="MAD" />
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-gray-100">
-                        <AnimatedNumber value={part.total_price || (part.quantity * (part.unit_price || 0))} currency="EUR" />
+                        <AnimatedNumber value={part.total_price || (part.quantity * (part.unit_price || 0))} currency="MAD" />
                       </td>
                       <td className="px-4 py-3 text-right">
                         <Button variant="ghost" size="icon" onClick={() => handleRemove(part.id)} className="text-destructive hover:text-destructive/90">
@@ -121,7 +121,7 @@ export function WorkOrderParts({
                       {tc("total")}:
                     </td>
                     <td className="px-4 py-3 text-right text-gray-900 dark:text-gray-100">
-                      <AnimatedNumber value={totalCost} currency="EUR" />
+                      <AnimatedNumber value={totalCost} currency="MAD" />
                     </td>
                   </tr>
                 </tfoot>

@@ -502,20 +502,25 @@ export default function InventoryPartDetailsPage() {
                         <TableCell>
                           <Badge
                             variant="secondary"
-                            className={
-                              move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT"
-                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100"
-                                : move.movement_type === "CONSUMPTION" || move.movement_type === "SCRAP"
-                                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100"
-                                  : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                            }
+                            className={cn(
+                              move.quantity < 0
+                                ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-100"
+                                : move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT"
+                                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100"
+                                  : move.movement_type === "CONSUMPTION" || move.movement_type === "SCRAP"
+                                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-100"
+                                    : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                            )}
                           >
                             {t(`movements.types.${move.movement_type.toUpperCase()}`)}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <span className={move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT" ? "text-emerald-600 font-medium" : "text-gray-900 dark:text-gray-100"}>
-                            {move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT" ? "+" : ""}{move.quantity}
+                          <span className={cn(
+                            "font-medium",
+                            move.quantity < 0 ? "text-red-600" : (move.movement_type === "PURCHASE" || move.movement_type === "ADJUSTMENT" ? "text-emerald-600" : "text-gray-900 dark:text-gray-100")
+                          )}>
+                            {move.quantity > 0 ? "+" : ""}{move.quantity}
                           </span>
                         </TableCell>
                         <TableCell>{move.warehouse?.name || "-"}</TableCell>

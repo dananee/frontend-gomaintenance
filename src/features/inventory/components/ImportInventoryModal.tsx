@@ -12,21 +12,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { 
-  FileUp, 
-  Download, 
-  Loader2, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  FileUp,
+  Download,
+  Loader2,
+  CheckCircle2,
+  XCircle,
   AlertCircle,
   FileIcon
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { 
-  getInventoryImportTemplate, 
-  importInventoryExcel, 
-  ImportResult 
+import {
+  getInventoryImportTemplate,
+  importInventoryExcel,
+  analyzeInventoryExcel,
+  finalizeInventoryImport,
+  ImportResult,
+  AnalyzeResult,
+  ImportMapping,
+  ImportOptions
 } from "../api/inventoryExcel";
+import { ImportMappingWizard } from "./ImportMappingWizard";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ImportInventoryModalProps {
@@ -40,6 +46,8 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
   const [file, setFile] = useState<File | null>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [result, setResult] = useState<ImportResult | null>(null);
+  const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResult | null>(null);
+  const [step, setStep] = useState<"UPLOAD" | "MAPPING" | "RESULT">("UPLOAD");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -63,9 +71,26 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
     setResult(null);
 
     try {
-      const data = await importInventoryExcel(file);
+      // Analyze file first for the wizard
+      const analyze = await analyzeInventoryExcel(file);
+      setAnalyzeResult(analyze);
+      setStep("MAPPING");
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Failed to analyze file");
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const handleFinalizeImport = async (mapping: ImportMapping, options: ImportOptions) => {
+    if (!file) return;
+
+    setIsImporting(true);
+    try {
+      const data = await finalizeInventoryImport(file, mapping, options);
       setResult(data);
-      
+      setStep("RESULT");
+
       if (data.failed_count === 0) {
         toast.success(t("success"));
         queryClient.invalidateQueries({ queryKey: ["parts"] });
@@ -93,6 +118,8 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
   const reset = () => {
     setFile(null);
     setResult(null);
+    setAnalyzeResult(null);
+    setStep("UPLOAD");
     setIsImporting(false);
   };
 
@@ -107,20 +134,21 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileUp className="h-5 w-5 text-primary" />
-            {t("importTitle")}
+            {step === "MAPPING" ? t("mappingWizard.title") : t("importTitle")}
           </DialogTitle>
           <DialogDescription>
-            {t("importDescription")}
+            {step === "MAPPING"
+              ? t("mappingWizard.wizardDescription")
+              : t("importDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {!result ? (
+          {step === "UPLOAD" && (
             <>
-              <div 
-                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition-colors ${
-                  file ? "border-primary bg-primary/5" : "border-muted-foreground/20 hover:border-primary/50"
-                }`}
+              <div
+                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition-colors ${file ? "border-primary bg-primary/5" : "border-muted-foreground/20 hover:border-primary/50"
+                  }`}
               >
                 {file ? (
                   <div className="flex flex-col items-center">
@@ -129,9 +157,9 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
                     <p className="text-xs text-muted-foreground mt-1">
                       {(file.size / 1024).toFixed(1)} KB
                     </p>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="mt-4 text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() => setFile(null)}
                       disabled={isImporting}
@@ -147,10 +175,10 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
                         <span className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                           {t("selectFile")}
                         </span>
-                        <input 
-                          id="inventory-file-upload" 
-                          type="file" 
-                          className="hidden" 
+                        <input
+                          id="inventory-file-upload"
+                          type="file"
+                          className="hidden"
                           accept=".xlsx"
                           onChange={handleFileChange}
                           disabled={isImporting}
@@ -166,8 +194,8 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
                 <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-500 shrink-0" />
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-amber-900 dark:text-amber-100">{t("templateInfo")}</p>
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     className="h-auto p-0 text-amber-700 dark:text-amber-400 font-semibold"
                     onClick={handleDownloadTemplate}
                   >
@@ -177,7 +205,18 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
                 </div>
               </div>
             </>
-          ) : (
+          )}
+
+          {step === "MAPPING" && analyzeResult && (
+            <ImportMappingWizard
+              analyzeResult={analyzeResult}
+              onBack={() => setStep("UPLOAD")}
+              onConfirm={handleFinalizeImport}
+              isProcessing={isImporting}
+            />
+          )}
+
+          {step === "RESULT" && result && (
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/50 border">
                 <div className={`p-2 rounded-full ${result.failed_count === 0 ? "bg-green-100 text-green-600" : "bg-amber-100 text-amber-600"}`}>
@@ -215,13 +254,13 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
         </div>
 
         <DialogFooter>
-          {!result ? (
+          {step === "UPLOAD" && (
             <>
               <Button variant="outline" onClick={handleCancel} disabled={isImporting}>
                 {t("close")}
               </Button>
-              <Button 
-                onClick={handleImport} 
+              <Button
+                onClick={handleImport}
                 disabled={!file || isImporting}
                 className="min-w-[120px]"
               >
@@ -235,12 +274,14 @@ export function ImportInventoryModal({ isOpen, onClose }: ImportInventoryModalPr
                 )}
               </Button>
             </>
-          ) : (
+          )}
+          {step === "RESULT" && (
             <Button className="w-full" onClick={handleCancel}>
               {t("close")}
             </Button>
           )}
         </DialogFooter>
+
       </DialogContent>
     </Dialog>
   );

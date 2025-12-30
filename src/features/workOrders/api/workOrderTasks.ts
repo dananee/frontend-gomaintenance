@@ -10,7 +10,8 @@ export interface WorkOrderTask {
   assignee_id?: string;
   assignee?: {
     id: string;
-    name: string;
+    first_name: string;
+    last_name: string;
     avatar_url?: string;
   };
   created_at: string;

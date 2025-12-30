@@ -1035,48 +1035,46 @@
                 "success": "Permissions mises à jour",
                 "error": "Échec de la mise à jour des permissions"
             }
-        },
-        "inventory": {
-            "warehouses": {
-                "title": "Entrepôts",
-                "subtitle": "Gérez les emplacements de stockage des pièces et les centres de la chaîne d'approvisionnement",
-                "actions": {
-                    "add": "Ajouter un entrepôt",
-                    "edit": "Modifier l'entrepôt",
-                    "deactivate": "Désactiver"
-                },
-                "table": {
-                    "name": "Nom",
-                    "type": "Type",
-                    "manager": "Gestionnaire",
-                    "address": "Adresse",
-                    "status": "Statut",
-                    "active": "Actif",
-                    "inactive": "Inactif",
-                    "actions": "Actions"
-                },
-                "form": {
-                    "name": "Nom",
-                    "type": "Type",
-                    "address": "Adresse",
-                    "manager": "Gestionnaire",
-                    "allowNegativeStock": "Autoriser le stock négatif",
-                    "active": "Actif",
-                    "types": {
-                        "MAIN": "Entrepôt principal",
-                        "SITE": "Stockage sur site",
-                        "VAN": "Camionnette de service"
-                    }
-                },
-                "toasts": {
-                    "created": "Entrepôt créé avec succès",
-                    "updated": "Entrepôt mis à jour avec succès",
-                    "deactivated": "Entrepôt désactivé"
-                }
-            }
         }
     },
     "inventory": {
+        "warehouses": {
+            "title": "Entrepôts",
+            "subtitle": "Gérez les emplacements de stockage des pièces et les centres de la chaîne d'approvisionnement",
+            "actions": {
+                "add": "Ajouter un entrepôt",
+                "edit": "Modifier l'entrepôt",
+                "deactivate": "Désactiver"
+            },
+            "table": {
+                "name": "Nom",
+                "type": "Type",
+                "manager": "Gestionnaire",
+                "address": "Adresse",
+                "status": "Statut",
+                "active": "Actif",
+                "inactive": "Inactif",
+                "actions": "Actions"
+            },
+            "form": {
+                "name": "Nom",
+                "type": "Type",
+                "address": "Adresse",
+                "manager": "Gestionnaire",
+                "allowNegativeStock": "Autoriser le stock négatif",
+                "active": "Actif",
+                "types": {
+                    "MAIN": "Entrepôt principal",
+                    "SITE": "Stockage sur site",
+                    "VAN": "Camionnette de service"
+                }
+            },
+            "toasts": {
+                "created": "Entrepôt créé avec succès",
+                "updated": "Entrepôt mis à jour avec succès",
+                "deactivated": "Entrepôt désactivé"
+            }
+        },
         "title": "Inventaire",
         "subtitle": "Gérez les pièces, les niveaux de stock et les fournisseurs",
         "actions": {
@@ -1106,7 +1104,40 @@
             "errors": "Détails des erreurs",
             "noFile": "Aucun fichier sélectionné",
             "warehouseRequired": "L'entrepôt est requis pour toutes les lignes",
-            "close": "Fermer"
+            "close": "Fermer",
+            "mappingWizard": {
+                "title": "Assistant de mappage",
+                "wizardDescription": "Mappez vos colonnes Excel avec les champs du système.",
+                "columnMapping": "Mappage des colonnes",
+                "importOptions": "Options d'importation",
+                "priceFormat": "Format de prix",
+                "preTax": "Hors Taxe (HT)",
+                "taxIncluded": "Toutes Taxes Comprises (TTC)",
+                "priceHTDesc": "Les prix seront importés exactement tels quels.",
+                "priceTTCDesc": "Les prix HT seront calculés automatiquement en utilisant la TVA.",
+                "defaultVat": "Taux de TVA par défaut (%)",
+                "vatDesc": "Utilisé si une ligne ou une pièce n'a pas de taux de TVA.",
+                "defaultWarehouse": "Entrepôt par défaut",
+                "warehouseDesc": "Valeur de repli pour les lignes sans code d'entrepôt.",
+                "preview": "Aperçu (5 premières lignes)",
+                "unmapped": "-- Non mappé --",
+                "back": "Retour",
+                "confirm": "Lancer l'importation",
+                "sku": "SKU / Code machine",
+                "partNumber": "Numéro de pièce (MPN)",
+                "quantity": "Quantité",
+                "unitCostHT": "Coût unitaire (HT)",
+                "vatRate": "Taux de TVA (%)",
+                "warehouseCode": "Code Entrepôt",
+                "movementType": "Type de mouvement",
+                "reference": "Référence",
+                "comment": "Commentaire",
+                "partName": "Nom de la pièce",
+                "category": "Catégorie",
+                "brand": "Marque",
+                "description": "Description",
+                "requiredFieldsWarning": "Le mappage du SKU/MPN, de la quantité et du coût unitaire est requis pour continuer."
+            }
         },
         "stats": {
             "totalParts": {
@@ -1166,7 +1197,7 @@
                 "delete": "Supprimer",
                 "receiveStock": "Recevoir du stock"
             },
-            "minQty": "Min : {count}"
+            "minQty": "Min : <count></count>"
         },
         "emptyStates": {
             "noParts": {
@@ -1388,7 +1419,15 @@
                     "sku": "ex: SKU-12345",
                     "part_number": "ex: MPN-67890",
                     "location": "ex: Allée 5, Étagère B",
-                    "none": "Aucune"
+                    "none": "Aucune",
+                    "newCategory": "Entrez le nom de la nouvelle catégorie..."
+                },
+                "addCategory": "Ajouter une catégorie",
+                "newCategoryName": "Nouveau nom de catégorie",
+                "defaultCategories": {
+                    "electric": "Électrique",
+                    "chemical": "Chimique",
+                    "hydraulic": "Hydraulique"
                 },
                 "save": "Enregistrer les modifications",
                 "cancel": "Annuler",
@@ -1397,7 +1436,8 @@
                     "liter": "Litre",
                     "kg": "KG",
                     "set": "Lot"
-                }
+                },
+                "unsavedChanges": "Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter ?"
             },
             "stockAdjustment": {
                 "title": "Ajuster le stock - {name}",
