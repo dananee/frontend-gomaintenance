@@ -30,12 +30,14 @@ export function VehicleDocuments({
 }: VehicleDocumentsProps) {
   const t = useTranslations("features.vehicles.documents");
 
-  const getFullUrl = (url: string) => {
-    if (!url) return "";
-    if (url.startsWith("http")) return url;
+  const getFullUrl = (path: string) => {
+    if (!path) return "";
+    if (path.startsWith("http") || path.startsWith("blob:")) {
+      return path; // It's already a full URL or a blob, don't touch it
+    }
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
     const baseUrl = apiUrl.replace("/api/v1", "");
-    return `${baseUrl}${url}`;
+    return `${baseUrl}${path}`; // Only prepend for relative paths
   };
 
   const handleDownload = async (url: string, fileName: string) => {
@@ -54,12 +56,20 @@ export function VehicleDocuments({
     } catch (error) {
       console.error("Download failed:", error);
       // Fallback to simple window.open if fetch fails (e.g. CORS)
-      window.open(getFullUrl(url), "_blank");
+      try {
+        window.open(getFullUrl(url), "_blank");
+      } catch (openError) {
+        console.error("Failed to open window:", openError);
+      }
     }
   };
 
   const handleView = (url: string) => {
-    window.open(getFullUrl(url), "_blank");
+    try {
+      window.open(getFullUrl(url), "_blank");
+    } catch (error) {
+      console.error("Failed to open window:", error);
+    }
   };
 
   const getFileIcon = (type: string) => {

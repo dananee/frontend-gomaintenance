@@ -467,6 +467,56 @@
             "clearFilters": "مسح عوامل التصفية",
             "deleteConfirm": "هل أنت متأكد أنك تريد حذف \"{name}\"؟"
         },
+        "excel": {
+            "importTitle": "استيراد المخزون",
+            "importDescription": "قم برفع ملف Excel لاستلام المخزون أو تعديل المستويات بشكل مجمع.",
+            "selectFile": "اختر ملف Excel",
+            "onlyXlsx": "فقط ملفات .xlsx مدعومة",
+            "templateInfo": "يرجى استخدام القالب الخاص بنا لضمان وجود جميع الحقول المطلوبة.",
+            "downloadTemplate": "تحميل القالب",
+            "import": "استيراد",
+            "importing": "جارٍ الاستيراد...",
+            "success": "تم الاستيراد بنجاح",
+            "importedCount": "تم استيراد {count} عنصر بنجاح",
+            "failedCount": "فشل استيراد {count} عنصر",
+            "errors": "تفاصيل الأخطاء",
+            "noFile": "لم يتم اختيار ملف",
+            "warehouseRequired": "المستودع مطلوب لجميع الصفوف",
+            "close": "إغلاق",
+            "mappingWizard": {
+                "title": "معالج التعيين",
+                "wizardDescription": "طابق أعمدة Excel مع حقول النظام.",
+                "columnMapping": "تعيين الأعمدة",
+                "importOptions": "خيارات الاستيراد",
+                "priceFormat": "تنسيق السعر",
+                "preTax": "قبل الضريبة (HT)",
+                "taxIncluded": "شامل الضريبة (TTC)",
+                "priceHTDesc": "سيتم استيراد الأسعار كما هي.",
+                "priceTTCDesc": "سيتم حساب الأسعار قبل الضريبة تلقائيًا باستخدام نسبة الضريبة.",
+                "defaultVat": "نسبة الضريبة الافتراضية (%)",
+                "vatDesc": "تستخدم إذا كان الصف أو القطعة تفتقر إلى نسبة ضريبة.",
+                "defaultWarehouse": "المستودع الافتراضي",
+                "warehouseDesc": "قيمة احتياطية للصفوف التي ليس لها رمز مستودع.",
+                "preview": "معاينة (أول 5 صفوف)",
+                "unmapped": "-- غير معين --",
+                "back": "رجوع",
+                "confirm": "بدء الاستيراد",
+                "sku": "SKU / رمز الآلة",
+                "partNumber": "رقم القطعة (MPN)",
+                "quantity": "الكمية",
+                "unitCostHT": "تكلفة الوحدة (HT)",
+                "vatRate": "نسبة الضريبة (%)",
+                "warehouseCode": "رمز المستودع",
+                "movementType": "نوع الحركة",
+                "reference": "المرجع",
+                "comment": "تعليق",
+                "partName": "اسم القطعة",
+                "category": "الفئة",
+                "brand": "العلامة التجارية",
+                "description": "الوصف",
+                "requiredFieldsWarning": "مطلوب تعيين SKU/MPN والكمية وتكلفة الوحدة للمتابعة."
+            }
+        },
         "stats": {
             "totalParts": {
                 "title": "إجمالي القطع",
@@ -525,7 +575,7 @@
                 "delete": "حذف",
                 "receiveStock": "استلام المخزون"
             },
-            "minQty": "الحد الأدنى: {count}"
+            "minQty": "الحد الأدنى: <count></count>"
         },
         "emptyStates": {
             "noParts": {
@@ -742,7 +792,15 @@
                     "sku": "مثلاً: SKU-12345",
                     "part_number": "مثلاً: MPN-67890",
                     "location": "مثلاً: الممر 5، الرف B",
-                    "none": "لا يوجد"
+                    "none": "لا يوجد",
+                    "newCategory": "أدخل اسم الفئة الجديدة..."
+                },
+                "addCategory": "إضافة فئة",
+                "newCategoryName": "اسم الفئة الجديدة",
+                "defaultCategories": {
+                    "electric": "كهربائي",
+                    "chemical": "كيميائي",
+                    "hydraulic": "هيدروليكي"
                 },
                 "save": "حفظ التغييرات",
                 "cancel": "إلغاء",
@@ -751,7 +809,8 @@
                     "liter": "لتر",
                     "kg": "كجم",
                     "set": "مجموعة"
-                }
+                },
+                "unsavedChanges": "لديك تغييرات غير محفوظة. هل تريد حقا المغادرة؟"
             },
             "stockAdjustment": {
                 "title": "تعديل المخزون - {name}",

@@ -579,7 +579,7 @@
                 "delete": "Delete",
                 "receiveStock": "Receive Stock"
             },
-            "minQty": "Min: {count}"
+            "minQty": "Min: <count></count>"
         },
         "emptyStates": {
             "noParts": {
@@ -800,7 +800,15 @@
                     "sku": "e.g. SKU-12345",
                     "part_number": "e.g. MPN-67890",
                     "location": "e.g. Aisle 5, Shelf B",
-                    "none": "None"
+                    "none": "None",
+                    "newCategory": "Enter new category name..."
+                },
+                "addCategory": "Add Category",
+                "newCategoryName": "New Category Name",
+                "defaultCategories": {
+                    "electric": "Electric",
+                    "chemical": "Chemical",
+                    "hydraulic": "Hydraulic"
                 },
                 "save": "Save changes",
                 "cancel": "Cancel",
@@ -809,7 +817,8 @@
                     "liter": "Liter",
                     "kg": "KG",
                     "set": "Set"
-                }
+                },
+                "unsavedChanges": "You have unsaved changes. Do you really want to leave?"
             },
             "stockAdjustment": {
                 "title": "Adjust Stock - {name}",
@@ -863,6 +872,55 @@
                     "increased": "increased",
                     "decreased": "decreased",
                     "updated": "updated"
+                }
+            },
+            "excel": {
+                "importTitle": "Import Inventory",
+                "importDescription": "Update your stock levels and catalog via Excel (.xlsx).",
+                "selectFile": "Select Excel File",
+                "onlyXlsx": "Only .xlsx files are supported.",
+                "noFile": "Please select a file first.",
+                "success": "Import Completed",
+                "importedCount": "{count} items imported successfully",
+                "failedCount": "{count} items failed to import",
+                "errors": "Import Errors",
+                "templateInfo": "For best results, use our standard template.",
+                "downloadTemplate": "Download Template",
+                "import": "Import",
+                "importing": "Importing...",
+                "close": "Close",
+                "mappingWizard": {
+                    "title": "Mapping Wizard",
+                    "wizardDescription": "Map your Excel columns to our system fields.",
+                    "columnMapping": "Column Mapping",
+                    "importOptions": "Import Options",
+                    "priceFormat": "Price Format",
+                    "preTax": "Pre-Tax (HT)",
+                    "taxIncluded": "Tax Included (TTC)",
+                    "priceHTDesc": "Prices will be imported exactly as they appear.",
+                    "priceTTCDesc": "HT prices will be calculated automatically using VAT.",
+                    "defaultVat": "Default VAT Rate (%)",
+                    "vatDesc": "Used if a row or part is missing a VAT rate.",
+                    "defaultWarehouse": "Default Warehouse",
+                    "warehouseDesc": "Fallback for rows without a warehouse code.",
+                    "preview": "Preview (Top 5 Rows)",
+                    "unmapped": "-- Unmapped --",
+                    "back": "Back",
+                    "confirm": "Start Import",
+                    "sku": "SKU / Machine Code",
+                    "partNumber": "Part Number (MPN)",
+                    "quantity": "Quantity",
+                    "unitCostHT": "Unit Cost (HT)",
+                    "vatRate": "VAT Rate (%)",
+                    "warehouseCode": "Warehouse Code",
+                    "movementType": "Movement Type",
+                    "reference": "Reference",
+                    "comment": "Comment",
+                    "partName": "Part Name",
+                    "category": "Category",
+                    "brand": "Brand",
+                    "description": "Description",
+                    "requiredFieldsWarning": "Mapping SKU/MPN, Quantity, and Unit Cost is required to proceed."
                 }
             }
         }

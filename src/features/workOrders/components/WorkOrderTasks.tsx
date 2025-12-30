@@ -286,17 +286,17 @@ export function WorkOrderTasks() {
                             </div>
                           )}
                           {task.assignee && (
-                            <div className="flex items-center gap-2" title={task.assignee.name}>
+                            <div className="flex items-center gap-2" title={`${task.assignee.first_name} ${task.assignee.last_name}`}>
                               <div className="flex -space-x-2 overflow-hidden">
                                 <Avatar className="h-6 w-6 border-2 border-white dark:border-gray-900 ring-1 ring-gray-100 dark:ring-gray-800">
-                                  <AvatarImage src={task.assignee.avatar_url} alt={task.assignee.name} />
+                                  <AvatarImage src={task.assignee.avatar_url} alt={task.assignee.first_name + " " + task.assignee.last_name} />
                                   <AvatarFallback className="text-[9px] bg-blue-100 text-blue-700 font-medium">
-                                    {(task.assignee.name || "?").split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                                    {(`${task.assignee.first_name} ${task.assignee.last_name}` || "?").split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
                                   </AvatarFallback>
                                 </Avatar>
                               </div>
                               <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                                {task.assignee.name || "Unknown"}
+                                {`${task.assignee.first_name} ${task.assignee.last_name}` || "Unknown"}
                               </span>
                             </div>
                           )}
