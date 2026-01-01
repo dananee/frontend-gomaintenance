@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { CreateVehicleDTO, Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useCreateVehicle } from "../hooks/useCreateVehicle";
 import { useUpdateVehicle } from "../hooks/useUpdateVehicle";
 import { useTranslations } from "next-intl";
+import { useVehicleTypes } from "../hooks/useVehicleTypes";
 
 interface VehicleFormProps {
   initialData?: Vehicle;
@@ -16,11 +18,14 @@ interface VehicleFormProps {
 
 export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormProps) {
   const t = useTranslations("features.vehicles.form");
+  const tVehicleTypes = useTranslations("vehicleTypes");
+  const { data: vehicleTypes = [] } = useVehicleTypes();
+
   const { register, handleSubmit, formState: { errors } } = useForm<CreateVehicleDTO>({
     defaultValues: initialData ? {
       plate_number: initialData.plate_number,
       vin: initialData.vin,
-      type: initialData.type,
+      vehicle_type_id: initialData.vehicle_type_id,
       brand: initialData.brand,
       model: initialData.model,
       year: initialData.year,
@@ -32,6 +37,33 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
   const { mutate: updateVehicle, isPending: isUpdating } = useUpdateVehicle();
 
   const isPending = isCreating || isUpdating;
+
+  const uniqueVehicleTypes = useMemo(() => {
+    const map = new Map<string, typeof vehicleTypes[0]>();
+
+    vehicleTypes.forEach((type: any) => {
+      const label = tVehicleTypes.has(type.code) ? tVehicleTypes(type.code) : type.name;
+      const normalized = label.toLowerCase().trim();
+
+      const existing = map.get(normalized);
+      if (!existing) {
+        map.set(normalized, type);
+      } else {
+        const existingLabel = tVehicleTypes.has(existing.code) ? tVehicleTypes(existing.code) : existing.name;
+        const isTitleCase = (str: string) => /^[A-Z][a-z]/.test(str);
+
+        if (!isTitleCase(existingLabel) && isTitleCase(label)) {
+          map.set(normalized, type);
+        }
+      }
+    });
+
+    return Array.from(map.values()).sort((a, b) => {
+      const labelA = tVehicleTypes.has(a.code) ? tVehicleTypes(a.code) : a.name;
+      const labelB = tVehicleTypes.has(b.code) ? tVehicleTypes(b.code) : b.name;
+      return labelA.localeCompare(labelB);
+    });
+  }, [vehicleTypes, tVehicleTypes]);
 
   const onSubmit = (data: CreateVehicleDTO) => {
     if (initialData) {
@@ -63,11 +95,22 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
           {...register("year", { required: "Year is required", valueAsNumber: true })}
           error={errors.year?.message}
         />
-        <Input
-          label={t("type")}
-          {...register("type", { required: "Type is required" })}
-          error={errors.type?.message}
-        />
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">{t("type")}</label>
+          <select
+            {...register("vehicle_type_id", { required: "Type is required" })}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">{t("selectType")}</option>
+            {uniqueVehicleTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {tVehicleTypes.has(type.code) ? tVehicleTypes(type.code) : type.name}
+              </option>
+            ))}
+          </select>
+          {errors.vehicle_type_id && <p className="text-sm text-red-500">{errors.vehicle_type_id.message}</p>}
+        </div>
       </div>
 
       <Input

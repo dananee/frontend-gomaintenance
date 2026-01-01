@@ -137,7 +137,7 @@ export default function WorkOrdersPage() {
                         const vehicle = vehiclesData?.data.find((v) => v.id === id);
                         return (
                           <Badge key={id} variant="secondary" className="text-[10px] px-1 h-5">
-                            {vehicle ? vehicle.plate_number : id}
+                            {vehicle ? `[${vehicle.plate_number}]` : id}
                           </Badge>
                         );
                       })
@@ -198,9 +198,9 @@ export default function WorkOrdersPage() {
                           className="mr-2 pointer-events-none"
                         />
                         <div className="flex flex-col">
-                          <span className="font-medium">{vehicle.plate_number}</span>
-                          <span className="text-xs text-muted-foreground font-normal">
-                            {vehicle.brand} {vehicle.model}
+                          <span className="font-medium">[{vehicle.plate_number}] - {vehicle.brand} {vehicle.model}</span>
+                          <span className="text-[10px] text-muted-foreground font-normal">
+                            VIN: {vehicle.vin || "N/A"}
                           </span>
                         </div>
                       </CommandItem>

@@ -16,11 +16,21 @@ export interface Driver {
   avatar_url?: string;
 }
 
+export interface VehicleType {
+  id: string;
+  tenant_id: string | null;
+  code: string;
+  name: string;
+  icon: string;
+}
+
 export interface Vehicle {
   id: string;
   plate_number: string;
   vin: string;
-  type: string;
+  type: string; // Deprecated
+  vehicle_type_id: string;
+  vehicle_type?: VehicleType;
   brand: string;
   model: string;
   year: number;
@@ -36,7 +46,7 @@ export interface Vehicle {
 export interface CreateVehicleDTO {
   plate_number: string;
   vin: string;
-  type: string;
+  vehicle_type_id: string;
   brand: string;
   model: string;
   year: number;

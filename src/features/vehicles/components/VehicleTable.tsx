@@ -39,6 +39,7 @@ interface VehicleTableProps {
   onDelete: (id: string) => void;
   onCreateWorkOrder: (vehicle: Vehicle) => void;
   onCreatePlan: (vehicle: Vehicle) => void;
+  isRefetching?: boolean;
 }
 
 export function VehicleTable({
@@ -47,12 +48,14 @@ export function VehicleTable({
   onEdit,
   onDelete,
   onCreateWorkOrder,
-  onCreatePlan
+  onCreatePlan,
+  isRefetching
 }: VehicleTableProps) {
   const router = useRouter();
   const t = useTranslations("vehicles.details.table");
   const tf = useTranslations("vehicles.filters");
   const tc = useTranslations("common");
+  const tVehicleTypes = useTranslations("vehicleTypes");
 
   if (isLoading) {
     return <TableSkeleton rows={8} />;
@@ -92,8 +95,9 @@ export function VehicleTable({
               {t("headers.actions")}
             </TableHead>
           </TableRow>
+
         </TableHeader>
-        <TableBody>
+        <TableBody className={isRefetching ? "opacity-50 transition-opacity duration-200" : "transition-opacity duration-200"}>
           {vehicles.map((vehicle) => (
             <TableRow key={vehicle.id}>
               <TableCell className="font-medium">
@@ -102,7 +106,9 @@ export function VehicleTable({
                     {vehicle.brand} {vehicle.model}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {vehicle.year} • {tf.has(`type.${vehicle.type}`) ? tf(`type.${vehicle.type}`) : vehicle.type}
+                    {vehicle.year} • {vehicle.vehicle_type ? (
+                      tVehicleTypes.has(vehicle.vehicle_type.code) ? tVehicleTypes(vehicle.vehicle_type.code) : vehicle.vehicle_type.name
+                    ) : vehicle.type}
                   </span>
                 </div>
               </TableCell>
@@ -235,6 +241,6 @@ export function VehicleTable({
           ))}
         </TableBody>
       </Table>
-    </div>
+    </div >
   );
 }

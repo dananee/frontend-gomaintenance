@@ -9,6 +9,7 @@ import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
 import { useTranslations } from "next-intl";
 import { Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { Car } from "lucide-react";
+import { VehicleSelect } from "@/features/vehicles/components/VehicleSelect";
 
 interface WorkOrderFormProps {
   onSuccess: () => void;
@@ -38,7 +39,7 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId, vehicle, onDirty
     onDirtyChange?.(isDirty);
   }, [isDirty, onDirtyChange]);
   const { mutate: createWorkOrder, isPending } = useCreateWorkOrder();
-  const { data: vehiclesData } = useVehicles({ page: 1, page_size: 100 });
+  const { data: vehiclesData } = useVehicles();
 
   const contextualVehicle = vehicle || vehiclesData?.data.find(v => v.id === vehicleId);
 
@@ -70,22 +71,20 @@ export function WorkOrderForm({ onSuccess, onCancel, vehicleId, vehicle, onDirty
           <input type="hidden" {...register("vehicle_id", { required: true })} />
         </div>
       ) : (
-        <div>
+        <div className="space-y-2">
           <label className="mb-2 block text-sm font-medium">{t("form.fields.vehicle")}</label>
-          <select
-            {...register("vehicle_id", { required: t("form.errors.vehicleRequired") })}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="">{t("form.fields.selectVehicle")}</option>
-            {vehiclesData?.data.map((vehicle) => (
-              <option key={vehicle.id} value={vehicle.id}>
-                {vehicle.plate_number} - {vehicle.brand} {vehicle.model}
-              </option>
-            ))}
-          </select>
-          {errors.vehicle_id && (
-            <p className="text-sm text-red-500">{errors.vehicle_id.message}</p>
-          )}
+          <Controller
+            control={control}
+            name="vehicle_id"
+            rules={{ required: t("form.errors.vehicleRequired") }}
+            render={({ field }) => (
+              <VehicleSelect
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.vehicle_id?.message}
+              />
+            )}
+          />
         </div>
       )}
 

@@ -13,6 +13,7 @@ export interface VehicleMaintenancePlan {
   next_due_date?: string;
   is_active: boolean;
   priority: string;
+  status?: string;
   created_at: string;
   updated_at: string;
   template?: {
