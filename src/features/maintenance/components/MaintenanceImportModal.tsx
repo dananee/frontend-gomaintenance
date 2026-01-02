@@ -102,7 +102,8 @@ const getBestMatch = (target: string, headers: string[]) => {
 
 export function MaintenanceImportModal({ onClose, onSuccess }: MaintenanceImportModalProps) {
     const queryClient = useQueryClient();
-    const { data: templates = [] } = useMaintenanceTemplates();
+    const { data: templatesResponse } = useMaintenanceTemplates();
+    const templates = templatesResponse?.data || [];
 
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [file, setFile] = useState<File | null>(null);
@@ -261,7 +262,7 @@ export function MaintenanceImportModal({ onClose, onSuccess }: MaintenanceImport
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="undefined">None (Use Excel "Template Name" column)</SelectItem>
-                                    {templates?.data?.map((t: any) => (
+                                    {templates.map((t: any) => (
                                         <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
                                     ))}
                                 </SelectContent>
