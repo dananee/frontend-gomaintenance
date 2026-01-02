@@ -5,40 +5,66 @@ import { MaintenanceCalendarV2 } from "@/features/maintenance/components/Mainten
 import { ActivePlansList } from "@/features/maintenance/components/ActivePlansList";
 import { ActivePlansTable } from "@/features/maintenance/components/ActivePlansTable";
 import { ScheduleMaintenanceModal } from "@/features/maintenance/components/ScheduleMaintenanceModal";
+import { MaintenanceImportModal } from "@/features/maintenance/components/MaintenanceImportModal";
 import { FilterDropdown } from "@/features/maintenance/components/FilterDropdown";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
-import { Plus, Settings, Calendar as CalendarIcon, List } from "lucide-react";
+import { Plus, Settings, Calendar as CalendarIcon, List, Download, Upload } from "lucide-react";
 import Link from "next/link";
 import { useScheduledMaintenance, useActiveMaintenancePlans } from "@/features/maintenance/hooks/useMaintenanceDashboard";
 import { useMaintenanceFilters } from "@/features/maintenance/hooks/useMaintenanceFilters";
+import apiClient from "@/lib/api/axiosClient";
+import { toast } from "sonner";
 import { startOfMonth, endOfMonth, formatISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
 export default function MaintenanceDashboardPage() {
   const t = useTranslations("features.maintenance.dashboard");
-  const { isOpen, open, close } = useModal();
+  const { isOpen: isScheduleOpen, open: openSchedule, close: closeSchedule } = useModal();
+  const { isOpen: isImportOpen, open: openImport, close: closeImport } = useModal();
   const { filters } = useMaintenanceFilters();
-  
+
   // Manage calendar date state
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Calculate start and end of the current month for fetching
   const startDate = formatISO(startOfMonth(currentDate));
   const endDate = formatISO(endOfMonth(currentDate));
-  
+
   // Fetch data using optimized hooks with date range and filters
   const { data: scheduledEvents = [], isLoading: isLoadingCalendar } = useScheduledMaintenance({
     start_date: startDate,
     end_date: endDate,
     statuses: filters.statuses.length > 0 ? filters.statuses : undefined,
   });
-  
+
   const { data: activePlans = [], isLoading: isLoadingPlans } = useActiveMaintenancePlans({
     statuses: filters.statuses.length > 0 ? filters.statuses : undefined,
   });
+
+  const handleExport = async () => {
+    try {
+      const res = await apiClient.get("/vehicles/maintenance/export", {
+        responseType: "blob",
+        params: {
+          status: filters.statuses.length > 0 ? filters.statuses[0] : undefined // Simple filter mapping for now
+        }
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `maintenance_export_${new Date().toISOString().split('T')[0]}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success("Export downloaded");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to export maintenance plans");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
@@ -62,7 +88,15 @@ export default function MaintenanceDashboardPage() {
                   {t("actions.templates")}
                 </Button>
               </Link>
-              <Button onClick={open} className="h-10 rounded-xl bg-blue-600 shadow-md hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">
+              <Button variant="outline" onClick={openImport} className="h-10 rounded-xl border-gray-200 bg-white shadow-sm hover:bg-gray-50 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 dark:hover:text-white">
+                <Upload className="mr-2 h-4 w-4" />
+                Import
+              </Button>
+              <Button variant="outline" onClick={handleExport} className="h-10 rounded-xl border-gray-200 bg-white shadow-sm hover:bg-gray-50 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800 dark:hover:text-white">
+                <Download className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+              <Button onClick={openSchedule} className="h-10 rounded-xl bg-blue-600 shadow-md hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">
                 <Plus className="mr-2 h-4 w-4" />
                 {t("actions.schedule")}
               </Button>
@@ -89,15 +123,15 @@ export default function MaintenanceDashboardPage() {
                 {t("tabs.activePlans")}
               </TabsTrigger>
             </TabsList>
-            
+
             <div className="flex items-center gap-2">
               <FilterDropdown />
             </div>
           </div>
 
           <TabsContent value="calendar" className="mt-0 focus-visible:outline-none">
-            <MaintenanceCalendarV2 
-              events={scheduledEvents} 
+            <MaintenanceCalendarV2
+              events={scheduledEvents}
               isLoading={isLoadingCalendar}
               currentDate={currentDate}
               onDateChange={setCurrentDate}
@@ -105,19 +139,27 @@ export default function MaintenanceDashboardPage() {
           </TabsContent>
 
           <TabsContent value="plans" className="mt-0 focus-visible:outline-none">
-            <ActivePlansTable 
-              plans={activePlans} 
-              isLoading={isLoadingPlans} 
+            <ActivePlansTable
+              plans={activePlans}
+              isLoading={isLoadingPlans}
             />
           </TabsContent>
         </Tabs>
 
         <Modal
-          isOpen={isOpen}
-          onClose={close}
+          isOpen={isScheduleOpen}
+          onClose={closeSchedule}
           title={t("modals.schedule.title")}
         >
-          <ScheduleMaintenanceModal onClose={close} />
+          <ScheduleMaintenanceModal onClose={closeSchedule} />
+        </Modal>
+
+        <Modal
+          isOpen={isImportOpen}
+          onClose={closeImport}
+          title="Import Maintenance Plans"
+        >
+          <MaintenanceImportModal onClose={closeImport} />
         </Modal>
       </div>
     </div>
