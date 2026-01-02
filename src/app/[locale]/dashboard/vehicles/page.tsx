@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { VehicleTable } from "@/features/vehicles/components/VehicleTable";
 import { VehicleForm } from "@/features/vehicles/components/VehicleForm";
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
+import { useVehicleTypes } from "@/features/vehicles/hooks/useVehicleTypes";
 import { Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -19,9 +20,8 @@ import { CreateMaintenancePlanModal } from "@/features/vehicles/components/Creat
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useCreateVehicleMaintenancePlan } from "@/features/vehicles/hooks/useVehiclePlans";
 import { CreateMaintenancePlanRequest } from "@/features/vehicles/api/vehiclePlans";
-import { VehicleImportModal } from "@/features/vehicles/components/VehicleImportModal";
+import { VehicleImportWizard } from "@/features/vehicles/components/VehicleImportWizard";
 import {
-  importVehicles,
   exportVehicles,
   downloadTemplate,
   downloadFile,
@@ -30,18 +30,25 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function VehiclesPage() {
   const t = useTranslations("vehicles");
+  const tVehicleTypes = useTranslations("vehicleTypes");
+  const { data: vehicleTypes = [] } = useVehicleTypes();
   const locale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const { data, isLoading } = useVehicles({
-    page: currentPage,
-    page_size: pageSize,
+
+  const hasFilters = search !== "" || statusFilter !== "all" || typeFilter !== "all";
+  const effectivePage = hasFilters ? 1 : currentPage;
+  const effectivePageSize = hasFilters ? 1000 : pageSize;
+
+  const { data, isLoading, isFetching } = useVehicles({
+    page: effectivePage,
+    page_size: effectivePageSize,
     search: search || undefined,
     status: statusFilter === "all" ? undefined : statusFilter,
-    type: typeFilter === "all" ? undefined : typeFilter,
+    type_id: typeFilter === "all" ? undefined : typeFilter,
   });
   const { isOpen, open, close } = useModal();
   const queryClient = useQueryClient();
@@ -56,18 +63,6 @@ export default function VehiclesPage() {
   const deleteMutation = useDeleteVehicle();
   const createPlanMutation = useCreateVehicleMaintenancePlan(planVehicle?.id || "");
 
-  const importMutation = useMutation({
-    mutationFn: importVehicles,
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      // Success toast is handled by the modal or component showing results
-      // We can also show a generic success here if needed
-      toast.success(t("toasts.import.success"));
-    },
-    onError: () => {
-      toast.error(t("toasts.import.error"));
-    }
-  });
 
   const handleEdit = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
@@ -147,7 +142,35 @@ export default function VehiclesPage() {
   const totalItems = data?.total_items || 0;
 
   const hasVehicles = totalItems > 0;
-  const hasFilters = search || statusFilter !== "all" || typeFilter !== "all";
+  // hasFilters is now defined above
+
+  const uniqueVehicleTypes = useMemo(() => {
+    const map = new Map<string, typeof vehicleTypes[0]>();
+
+    vehicleTypes.forEach((type) => {
+      const label = tVehicleTypes.has(type.code) ? tVehicleTypes(type.code) : type.name;
+      const normalized = label.toLowerCase().trim();
+
+      const existing = map.get(normalized);
+      if (!existing) {
+        map.set(normalized, type);
+      } else {
+        // If existing is not Title Case and current is Title Case, prefer current
+        const existingLabel = tVehicleTypes.has(existing.code) ? tVehicleTypes(existing.code) : existing.name;
+        const isTitleCase = (str: string) => /^[A-Z][a-z]/.test(str);
+
+        if (!isTitleCase(existingLabel) && isTitleCase(label)) {
+          map.set(normalized, type);
+        }
+      }
+    });
+
+    return Array.from(map.values()).sort((a, b) => {
+      const labelA = tVehicleTypes.has(a.code) ? tVehicleTypes(a.code) : a.name;
+      const labelB = tVehicleTypes.has(b.code) ? tVehicleTypes(b.code) : b.name;
+      return labelA.localeCompare(labelB);
+    });
+  }, [vehicleTypes, tVehicleTypes]);
 
   return (
     <div className="space-y-6 p-6">
@@ -174,13 +197,19 @@ export default function VehiclesPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setCurrentPage(1);
+          }}
           placeholder={t("filters.searchPlaceholder")}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         />
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setCurrentPage(1);
+          }}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">{t("filters.status.all")}</option>
@@ -190,16 +219,18 @@ export default function VehiclesPage() {
         </select>
         <select
           value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
+          onChange={(e) => {
+            setTypeFilter(e.target.value);
+            setCurrentPage(1);
+          }}
           className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="all">{t("filters.type.all")}</option>
-          <option value="truck">{t.has("filters.type.truck") ? t("filters.type.truck") : "truck"}</option>
-          <option value="van">{t.has("filters.type.van") ? t("filters.type.van") : "van"}</option>
-          <option value="car">{t.has("filters.type.car") ? t("filters.type.car") : "car"}</option>
-          <option value="VOITURE DE SOCIETE">{t.has("filters.type.VOITURE DE SOCIETE") ? t("filters.type.VOITURE DE SOCIETE") : "VOITURE DE SOCIETE"}</option>
-          <option value="PICK UP">{t.has("filters.type.PICK UP") ? t("filters.type.PICK UP") : "PICK UP"}</option>
-          <option value="TRAFIC">{t.has("filters.type.TRAFIC") ? t("filters.type.TRAFIC") : "TRAFIC"}</option>
+          {uniqueVehicleTypes.map((type) => (
+            <option key={type.id} value={type.id}>
+              {tVehicleTypes.has(type.code) ? tVehicleTypes(type.code) : type.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -240,6 +271,7 @@ export default function VehiclesPage() {
           <VehicleTable
             vehicles={vehicles}
             isLoading={isLoading}
+            isRefetching={isFetching}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onCreateWorkOrder={handleCreateWorkOrder}
@@ -294,6 +326,7 @@ export default function VehiclesPage() {
       {planVehicle && (
         <CreateMaintenancePlanModal
           isOpen={!!planVehicle}
+          meterUnit={planVehicle?.meter_unit || "km"}
           onClose={() => setPlanVehicle(null)}
           onSubmit={(data: CreateMaintenancePlanRequest) => {
             createPlanMutation.mutate(data, {
@@ -316,12 +349,20 @@ export default function VehiclesPage() {
         variant="destructive"
       />
 
-      <VehicleImportModal
-        open={isImportModalOpen}
-        onOpenChange={setIsImportModalOpen}
-        onImport={(file) => importMutation.mutateAsync(file)}
-        onDownloadTemplate={handleDownloadTemplate}
-      />
+      <Modal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        title={t("import.import")}
+        size="xl"
+      >
+        <VehicleImportWizard
+          onClose={() => setIsImportModalOpen(false)}
+          onSuccess={() => {
+            setIsImportModalOpen(false);
+            // Query invalidation handles the refresh
+          }}
+        />
+      </Modal>
     </div>
   );
 }

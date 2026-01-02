@@ -6,7 +6,7 @@ export interface GetVehiclesParams {
   page_size?: number;
   search?: string;
   status?: string;
-  type?: string;
+  type_id?: string;
   include_kpis?: boolean;
 }
 

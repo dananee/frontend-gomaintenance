@@ -22,6 +22,7 @@ import { useCreateScheduledMaintenance, useUpdateScheduledMaintenance } from "@/
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { ScheduledMaintenanceEvent } from "../types/maintenanceDashboard.types";
+import { VehicleSelect } from "@/features/vehicles/components/VehicleSelect";
 
 interface ScheduleMaintenanceModalProps {
   onClose: () => void;
@@ -125,30 +126,23 @@ export function ScheduleMaintenanceModal({ onClose, event }: ScheduleMaintenance
         </div>
       ) : (
         <>
-          {/* Vehicle Selection */}
           <div className="space-y-2">
             <Label htmlFor="vehicle_id">
               {t("vehicle")} <span className="text-red-500">*</span>
             </Label>
-            <Select
-              onValueChange={(value) => setValue("vehicle_id", value)}
-              defaultValue={event?.vehicle_id}
-              disabled={isEdit}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("selectVehicle")} />
-              </SelectTrigger>
-              <SelectContent>
-                {vehiclesData?.data.map((vehicle) => (
-                  <SelectItem key={vehicle.id} value={vehicle.id}>
-                    {vehicle.year} {vehicle.brand} {vehicle.model} ({vehicle.plate_number})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.vehicle_id && (
-              <p className="text-sm text-red-500">{errors.vehicle_id.message}</p>
-            )}
+            <Controller
+              control={control}
+              name="vehicle_id"
+              rules={{ required: t("validation.vehicleRequired") || "Vehicle is required" }}
+              render={({ field }) => (
+                <VehicleSelect
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={errors.vehicle_id?.message}
+                  disabled={isEdit}
+                />
+              )}
+            />
           </div>
 
           {/* Template Selection (Optional) */}

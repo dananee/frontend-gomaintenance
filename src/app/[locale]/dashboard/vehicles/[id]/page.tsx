@@ -625,6 +625,7 @@ export default function VehicleDetailPage() {
         }}
         onSubmit={handlePlanSubmit}
         plan={selectedPlan || undefined}
+        meterUnit={vehicle.meter_unit || "km"}
       />
 
       <UploadDocumentModal

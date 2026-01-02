@@ -432,6 +432,7 @@
                 "brand": "Marque",
                 "model": "Modèle",
                 "year": "Année",
+                "selectType": "Sélectionner le type",
                 "type": "Type",
                 "licensePlate": "Immatriculation",
                 "vin": "VIN",
@@ -709,7 +710,8 @@
                 },
                 "validation": {
                     "titleRequired": "Le titre est requis",
-                    "dateRequired": "La date prévue est requise"
+                    "dateRequired": "La date prévue est requise",
+                    "vehicleRequired": "Le véhicule est requis"
                 }
             },
             "templates": {
@@ -1791,6 +1793,7 @@
             "notFound": "Véhicule non trouvé"
         },
         "filters": {
+            "noResults": "Aucun véhicule trouvé",
             "searchPlaceholder": "Rechercher par nom ou plaque",
             "status": {
                 "all": "Tous les statuts",
@@ -1807,6 +1810,9 @@
                 "Van": "Fourgon",
                 "car": "Voiture",
                 "Car": "Voiture",
+                "Camion": "Camion",
+                "Voiture": "Voiture",
+                "Fourgon": "Fourgon",
                 "8×4": "8×4",
                 "6×4": "6×4",
                 "4×2": "4×2",
@@ -2081,12 +2087,13 @@
                 "noPlansDesc": "Configurez des calendriers de maintenance récurrents.",
                 "createFirstPlan": "Créer le premier plan",
                 "customPlan": "Plan Personnalisé",
+                "active": "Actif",
                 "paused": "En Pause",
                 "every": "Tous les",
                 "or": "ou",
                 "months": "mois",
                 "never": "Jamais",
-                "due": "Dû le : {date}",
+                "due": "Dû le",
                 "lastService": "Dernier Service",
                 "nextDue": "Prochain Dû",
                 "editConfig": "Modifier Config",
@@ -2697,5 +2704,12 @@
             "tenant": "Organisation",
             "joined": "Membre depuis"
         }
+    },
+    "vehicleTypes": {
+        "TRUCK": "Camion",
+        "CAR": "Voiture",
+        "VAN": "Fourgon",
+        "MOTORCYCLE": "Moto",
+        "CUSTOM": "{name}"
     }
 }

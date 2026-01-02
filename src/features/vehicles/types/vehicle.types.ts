@@ -16,17 +16,28 @@ export interface Driver {
   avatar_url?: string;
 }
 
+export interface VehicleType {
+  id: string;
+  tenant_id: string | null;
+  code: string;
+  name: string;
+  icon: string;
+}
+
 export interface Vehicle {
   id: string;
   plate_number: string;
   vin: string;
-  type: string;
+  type: string; // Deprecated
+  vehicle_type_id: string;
+  vehicle_type?: VehicleType;
   brand: string;
   model: string;
   year: number;
   status: VehicleStatus;
   current_km?: number;
   current_engine_hours?: number;
+  meter_unit?: "km" | "hours";
   created_at?: string;
   updated_at?: string;
   kpis?: VehicleSummaryKPIs;
@@ -36,11 +47,12 @@ export interface Vehicle {
 export interface CreateVehicleDTO {
   plate_number: string;
   vin: string;
-  type: string;
+  vehicle_type_id: string;
   brand: string;
   model: string;
   year: number;
   status: VehicleStatus;
+  meter_unit?: "km" | "hours";
   drivers?: string[]; // IDs of assigned drivers
 }
 

@@ -78,9 +78,9 @@ export function ActivePlansTable({ plans, isLoading }: ActivePlansTableProps) {
 
   const handlePauseResume = (plan: ActiveMaintenancePlan) => {
     if (plan.is_active) {
-      pausePlan.mutate(plan.id);
+      pausePlan.mutate({ id: plan.id });
     } else {
-      resumePlan.mutate(plan.id);
+      resumePlan.mutate({ id: plan.id });
     }
   };
 

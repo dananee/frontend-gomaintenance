@@ -82,24 +82,166 @@ export const useMaintenanceMutations = () => {
   });
 
   const pausePlanMutation = useMutation({
-    mutationFn: (planId: string) => pausePlan(planId),
+    mutationFn: ({ id }: { id: string; vehicleId?: string }) => pausePlan(id),
+    onMutate: async ({ id }: { id: string; vehicleId?: string }) => {
+      // Cancel all relevant queries using prefix matching
+      await queryClient.cancelQueries({ queryKey: ["maintenance", "plans"] });
+      await queryClient.cancelQueries({ queryKey: ["vehicles"] });
+      await queryClient.cancelQueries({ queryKey: ["vehicle-maintenance-plans"] });
+
+      // Snapshot previous values
+      const previousPlans = queryClient.getQueriesData({ queryKey: ["maintenance", "plans"] });
+      const previousVehicles = queryClient.getQueriesData({ queryKey: ["vehicles"] });
+      const previousVehiclePlans = queryClient.getQueriesData({ queryKey: ["vehicle-maintenance-plans"] });
+
+      // Helper to update plan status
+      const updatePlanStatus = (old: any) => {
+        if (!old) return old;
+        if (Array.isArray(old)) {
+          return old.map((plan: any) =>
+            plan.id === id
+              ? { ...plan, status: "paused", is_active: false }
+              : plan
+          );
+        }
+        return old;
+      };
+
+      // Update ALL queries matching the prefixes - this handles specific vehicle IDs automatically
+      queryClient.setQueriesData({ queryKey: ["maintenance", "plans"] }, updatePlanStatus);
+      queryClient.setQueriesData({ queryKey: ["vehicle-maintenance-plans"] }, updatePlanStatus);
+      
+      // Update nested vehicle plans
+      queryClient.setQueriesData({ queryKey: ["vehicles"] }, (old: any) => {
+        if (!old) return old;
+        if (Array.isArray(old)) {
+          return old.map((vehicle: any) => {
+            if (vehicle.maintenance_plans) {
+              return {
+                ...vehicle,
+                maintenance_plans: vehicle.maintenance_plans.map((plan: any) =>
+                  plan.id === id
+                    ? { ...plan, status: "paused", is_active: false }
+                    : plan
+                ),
+              };
+            }
+            return vehicle;
+          });
+        }
+        return old;
+      });
+
+      return { previousPlans, previousVehicles, previousVehiclePlans };
+    },
+    onError: (err, { id }, context) => {
+      // Rollback on error
+      if (context?.previousPlans) {
+        context.previousPlans.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      if (context?.previousVehicles) {
+        context.previousVehicles.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      if (context?.previousVehiclePlans) {
+        context.previousVehiclePlans.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      toast.error("Failed to pause plan");
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["maintenance", "plans"] });
       toast.success("Plan paused");
     },
-    onError: () => {
-      toast.error("Failed to pause plan");
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["maintenance", "plans"] });
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+      queryClient.invalidateQueries({ queryKey: ["vehicle-maintenance-plans"] });
     },
   });
 
   const resumePlanMutation = useMutation({
-    mutationFn: (planId: string) => resumePlan(planId),
+    mutationFn: ({ id }: { id: string; vehicleId?: string }) => resumePlan(id),
+    onMutate: async ({ id }: { id: string; vehicleId?: string }) => {
+      // Cancel all relevant queries using prefix matching
+      await queryClient.cancelQueries({ queryKey: ["maintenance", "plans"] });
+      await queryClient.cancelQueries({ queryKey: ["vehicles"] });
+      await queryClient.cancelQueries({ queryKey: ["vehicle-maintenance-plans"] });
+
+      // Snapshot previous values
+      const previousPlans = queryClient.getQueriesData({ queryKey: ["maintenance", "plans"] });
+      const previousVehicles = queryClient.getQueriesData({ queryKey: ["vehicles"] });
+      const previousVehiclePlans = queryClient.getQueriesData({ queryKey: ["vehicle-maintenance-plans"] });
+
+      // Helper to update plan status
+      const updatePlanStatus = (old: any) => {
+        if (!old) return old;
+        if (Array.isArray(old)) {
+          return old.map((plan: any) =>
+            plan.id === id
+              ? { ...plan, status: "active", is_active: true }
+              : plan
+          );
+        }
+        return old;
+      };
+
+      // Update ALL queries matching the prefixes
+      queryClient.setQueriesData({ queryKey: ["maintenance", "plans"] }, updatePlanStatus);
+      queryClient.setQueriesData({ queryKey: ["vehicle-maintenance-plans"] }, updatePlanStatus);
+
+      // Update nested vehicle plans
+      queryClient.setQueriesData({ queryKey: ["vehicles"] }, (old: any) => {
+        if (!old) return old;
+        if (Array.isArray(old)) {
+          return old.map((vehicle: any) => {
+            if (vehicle.maintenance_plans) {
+              return {
+                ...vehicle,
+                maintenance_plans: vehicle.maintenance_plans.map((plan: any) =>
+                  plan.id === id
+                    ? { ...plan, status: "active", is_active: true }
+                    : plan
+                ),
+              };
+            }
+            return vehicle;
+          });
+        }
+        return old;
+      });
+
+      return { previousPlans, previousVehicles, previousVehiclePlans };
+    },
+    onError: (err, { id }, context) => {
+      // Rollback on error
+      if (context?.previousPlans) {
+        context.previousPlans.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      if (context?.previousVehicles) {
+        context.previousVehicles.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      if (context?.previousVehiclePlans) {
+        context.previousVehiclePlans.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      toast.error("Failed to resume plan");
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["maintenance", "plans"] });
       toast.success("Plan resumed");
     },
-    onError: () => {
-      toast.error("Failed to resume plan");
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["maintenance", "plans"] });
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+      queryClient.invalidateQueries({ queryKey: ["vehicle-maintenance-plans"] });
     },
   });
 

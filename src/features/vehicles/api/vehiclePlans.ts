@@ -6,13 +6,17 @@ export interface VehicleMaintenancePlan {
   vehicle_id: string;
   template_id: string;
   interval_km: number;
+  interval_hours: number;
   interval_months: number;
   last_service_km: number;
+  last_service_hours: number;
   last_service_date: string;
   next_due_mileage?: number;
+  next_due_hours?: number;
   next_due_date?: string;
   is_active: boolean;
   priority: string;
+  status?: string;
   created_at: string;
   updated_at: string;
   template?: {
@@ -24,9 +28,11 @@ export interface VehicleMaintenancePlan {
 
 export interface CreateMaintenancePlanRequest {
   template_id: string;
-  interval_km: number;
-  interval_months: number;
+  interval_km?: number;
+  interval_hours?: number;
+  interval_months?: number;
   last_service_km?: number;
+  last_service_hours?: number;
   last_service_date?: string;
   priority?: string;
 }

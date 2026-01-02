@@ -431,6 +431,7 @@
                 "brand": "Brand",
                 "model": "Model",
                 "year": "Year",
+                "selectType": "Select Type",
                 "type": "Type",
                 "licensePlate": "License Plate",
                 "vin": "VIN",
@@ -1819,6 +1820,7 @@
                     "totalCost": "Total Maint. Cost",
                     "downtime": "Downtime",
                     "nextService": "Next Service",
+                    "drivers": "Drivers",
                     "healthScore": "Health Score",
                     "woCount": "WO Count",
                     "actions": "Actions",
@@ -1927,7 +1929,7 @@
                 "or": "or",
                 "months": "months",
                 "never": "Never",
-                "due": "Due: {date}",
+                "due": "Due",
                 "lastService": "Last Service",
                 "nextDue": "Next Due",
                 "editConfig": "Edit Configuration",
@@ -2539,5 +2541,12 @@
             "tenant": "Organization",
             "joined": "Member Since"
         }
+    },
+    "vehicleTypes": {
+        "TRUCK": "Truck",
+        "CAR": "Car",
+        "VAN": "Van",
+        "MOTORCYCLE": "Motorcycle",
+        "CUSTOM": "{name}"
     }
 }
