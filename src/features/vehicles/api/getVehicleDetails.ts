@@ -10,6 +10,8 @@ export type VehicleDetailsResponse = {
     plate_number: string;
     status: string;
     mileage: number;
+    current_engine_hours?: number;
+    meter_unit: "km" | "hours";
     type: string;
   };
   metrics: {

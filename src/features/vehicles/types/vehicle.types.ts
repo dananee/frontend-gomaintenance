@@ -37,6 +37,7 @@ export interface Vehicle {
   status: VehicleStatus;
   current_km?: number;
   current_engine_hours?: number;
+  meter_unit?: "km" | "hours";
   created_at?: string;
   updated_at?: string;
   kpis?: VehicleSummaryKPIs;
@@ -51,6 +52,7 @@ export interface CreateVehicleDTO {
   model: string;
   year: number;
   status: VehicleStatus;
+  meter_unit?: "km" | "hours";
   drivers?: string[]; // IDs of assigned drivers
 }
 

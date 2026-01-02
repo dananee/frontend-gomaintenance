@@ -431,6 +431,7 @@
                 "brand": "Brand",
                 "model": "Model",
                 "year": "Year",
+                "selectType": "Select Type",
                 "type": "Type",
                 "licensePlate": "License Plate",
                 "vin": "VIN",

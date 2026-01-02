@@ -13,6 +13,15 @@ import { BrandingProvider } from "@/features/settings/providers/BrandingProvider
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 
+import GoogleAnalyticsComponent from "@/components/analytics/GoogleAnalytics";
+import MicrosoftClarity from "@/components/analytics/MicrosoftClarity";
+import { initSentry } from "@/lib/analytics/sentry";
+
+// Initialize Sentry outside component to run once
+if (typeof window !== "undefined") {
+  initSentry();
+}
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -39,10 +48,15 @@ export default async function LocaleLayout({
   const isRtl = locale === "ar";
   const dir = isRtl ? "rtl" : "ltr";
 
+  const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || "";
+  const clarityId = process.env.NEXT_PUBLIC_MICROSOFT_CLARITY_ID || "";
+
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <GlobalErrorBoundary>
+          {googleAnalyticsId && <GoogleAnalyticsComponent gaId={googleAnalyticsId} />}
+          {clarityId && <MicrosoftClarity clarityId={clarityId} />}
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Providers>
               <BrandingProvider>

@@ -432,6 +432,7 @@
                 "brand": "Marque",
                 "model": "Modèle",
                 "year": "Année",
+                "selectType": "Sélectionner le type",
                 "type": "Type",
                 "licensePlate": "Immatriculation",
                 "vin": "VIN",

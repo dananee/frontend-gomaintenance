@@ -25,6 +25,12 @@ export class GlobalErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("GlobalErrorBoundary caught an error", error, errorInfo);
+    // Send error to Sentry
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      import("@sentry/react").then((Sentry) => {
+        Sentry.captureException(error, { extra: errorInfo as any });
+      });
+    }
   }
 
   handleReset = () => {

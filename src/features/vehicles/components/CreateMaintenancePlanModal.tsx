@@ -24,19 +24,22 @@ import {
 import { useState } from "react";
 import { CreateMaintenancePlanRequest, VehicleMaintenancePlan } from "../api/vehiclePlans";
 import { useMaintenanceTemplates } from "@/features/maintenance/hooks/useMaintenanceTemplates";
- 
+
 interface CreateMaintenancePlanModalProps {
   isOpen: boolean;
   onClose: () => void;
   plan?: VehicleMaintenancePlan; // If provided, we are editing
+  meterUnit: "km" | "hours";
   onSubmit: (payload: CreateMaintenancePlanRequest) => void;
 }
 
 interface FormData {
   template_id: string;
   interval_km?: number;
+  interval_hours?: number;
   interval_months?: number;
   last_service_km?: number;
+  last_service_hours?: number;
   last_service_date?: string;
 }
 
@@ -44,11 +47,12 @@ export function CreateMaintenancePlanModal({
   isOpen,
   onClose,
   plan,
+  meterUnit,
   onSubmit,
 }: CreateMaintenancePlanModalProps) {
   const t = useTranslations("vehicles.details.form");
   const { data: templatesData, isLoading: isLoadingTemplates, error: templatesError } = useMaintenanceTemplates();
-  
+
   const {
     register,
     handleSubmit,
@@ -59,8 +63,10 @@ export function CreateMaintenancePlanModal({
     defaultValues: {
       template_id: plan?.template?.id || "",
       interval_km: plan?.interval_km || undefined,
+      interval_hours: plan?.interval_hours || undefined,
       interval_months: plan?.interval_months || undefined,
       last_service_km: plan?.last_service_km || undefined,
+      last_service_hours: plan?.last_service_hours || undefined,
       last_service_date: plan?.last_service_date?.split("T")[0] || undefined,
     },
   });
@@ -69,6 +75,7 @@ export function CreateMaintenancePlanModal({
 
   const selectedTemplate = watch("template_id");
   const intervalKm = watch("interval_km");
+  const intervalHours = watch("interval_hours");
   const intervalMonths = watch("interval_months");
 
   // Get templates from API
@@ -80,15 +87,18 @@ export function CreateMaintenancePlanModal({
 
   const handleFormSubmit = async (data: FormData) => {
     // Validate that at least one interval is set
-    if (!data.interval_km && !data.interval_months) {
+    if (!data.interval_km && !data.interval_hours && !data.interval_months) {
       return; // Or show error
     }
 
     console.log("Submitting:", data);
     onSubmit({
-        ...data,
-        interval_km: data.interval_km || 0,
-        interval_months: data.interval_months || 0
+      ...data,
+      interval_km: data.interval_km || 0,
+      interval_hours: data.interval_hours || 0,
+      interval_months: data.interval_months || 0,
+      last_service_km: data.last_service_km || 0,
+      last_service_hours: data.last_service_hours || 0,
     });
     onClose();
   };
@@ -97,12 +107,16 @@ export function CreateMaintenancePlanModal({
     const template = templates.find((t) => t.id === templateId);
     if (template) {
       setValue("template_id", templateId);
-      setValue("interval_km", template.interval_km ?? undefined);
+      if (meterUnit === "km") {
+        setValue("interval_km", template.interval_km ?? undefined);
+      } else {
+        setValue("interval_hours", template.interval_hours ?? undefined);
+      }
       setValue("interval_months", template.interval_days ? Math.floor(template.interval_days / 30) : undefined);
     }
   };
 
-  const hasIntervalError = !intervalKm && !intervalMonths;
+  const hasIntervalError = !intervalKm && !intervalHours && !intervalMonths;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -166,9 +180,9 @@ export function CreateMaintenancePlanModal({
                 </SelectContent>
               </Select>
               {hasIntervalError && selectedTemplate && (
-                 <p className="text-sm text-gray-500">
-                   {t("templateDesc")}
-                 </p>
+                <p className="text-sm text-gray-500">
+                  {t("templateDesc")}
+                </p>
               )}
             </div>
 
@@ -177,21 +191,40 @@ export function CreateMaintenancePlanModal({
                 {t("serviceIntervals")}
               </Label>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="interval_km" className="text-sm text-gray-700 dark:text-gray-300">
-                    {t("intervalKm")}
-                  </Label>
-                  <Input
-                    id="interval_km"
-                    type="number"
-                    min={0}
-                    placeholder="e.g. 5000"
-                    {...register("interval_km", {
-                      valueAsNumber: true,
-                    })}
-                    className="h-11"
-                  />
-                </div>
+                {meterUnit === "km" ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="interval_km" className="text-sm text-gray-700 dark:text-gray-300">
+                      {t("intervalKm")}
+                    </Label>
+                    <Input
+                      id="interval_km"
+                      type="number"
+                      min={0}
+                      placeholder="e.g. 5000"
+                      {...register("interval_km", {
+                        valueAsNumber: true,
+                      })}
+                      className="h-11"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor="interval_hours" className="text-sm text-gray-700 dark:text-gray-300">
+                      Interval (Hours)
+                    </Label>
+                    <Input
+                      id="interval_hours"
+                      type="number"
+                      min={0}
+                      placeholder="e.g. 250"
+                      {...register("interval_hours", {
+                        valueAsNumber: true,
+                      })}
+                      className="h-11"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="interval_months" className="text-sm text-gray-700 dark:text-gray-300">
                     {t("intervalMonths")}
@@ -220,19 +253,36 @@ export function CreateMaintenancePlanModal({
                 {t("lastServiceInfo")}
               </Label>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="last_service_km" className="text-sm text-gray-700 dark:text-gray-300">
-                    {t("lastServiceKm")}
-                  </Label>
-                  <Input
-                    id="last_service_km"
-                    type="number"
-                    min={0}
-                    placeholder={t("lastServiceKm")}
-                    {...register("last_service_km", { valueAsNumber: true })}
-                    className="h-11"
-                  />
-                </div>
+                {meterUnit === "km" ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="last_service_km" className="text-sm text-gray-700 dark:text-gray-300">
+                      {t("lastServiceKm")}
+                    </Label>
+                    <Input
+                      id="last_service_km"
+                      type="number"
+                      min={0}
+                      placeholder={t("lastServiceKm")}
+                      {...register("last_service_km", { valueAsNumber: true })}
+                      className="h-11"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor="last_service_hours" className="text-sm text-gray-700 dark:text-gray-300">
+                      Last Service (Hours)
+                    </Label>
+                    <Input
+                      id="last_service_hours"
+                      type="number"
+                      min={0}
+                      placeholder="e.g. 1000"
+                      {...register("last_service_hours", { valueAsNumber: true })}
+                      className="h-11"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="last_service_date" className="text-sm text-gray-700 dark:text-gray-300">
                     {t("lastServiceDate")}

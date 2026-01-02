@@ -30,7 +30,11 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
       model: initialData.model,
       year: initialData.year,
       status: initialData.status,
-    } : undefined,
+      meter_unit: initialData.meter_unit || "km",
+    } : {
+      meter_unit: "km",
+      status: "active" as const
+    },
   });
 
   const { mutate: createVehicle, isPending: isCreating } = useCreateVehicle();
@@ -125,16 +129,29 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
         error={errors.vin?.message}
       />
 
-      <div>
-        <label className="mb-2 block text-sm font-medium">{t("status")}</label>
-        <select
-          {...register("status")}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <option value="active">{t("active")}</option>
-          <option value="maintenance">{t("maintenance")}</option>
-          <option value="inactive">{t("inactive")}</option>
-        </select>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="mb-2 block text-sm font-medium">{t("status")}</label>
+          <select
+            {...register("status")}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="active">{t("active")}</option>
+            <option value="maintenance">{t("maintenance")}</option>
+            <option value="inactive">{t("inactive")}</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">Tracking Unit</label>
+          <select
+            {...register("meter_unit")}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="km">Kilometers (km)</option>
+            <option value="hours">Engine Hours (h)</option>
+          </select>
+        </div>
       </div>
 
       <div className="flex justify-end gap-2">

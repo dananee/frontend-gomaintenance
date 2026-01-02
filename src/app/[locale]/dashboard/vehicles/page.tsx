@@ -20,9 +20,8 @@ import { CreateMaintenancePlanModal } from "@/features/vehicles/components/Creat
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useCreateVehicleMaintenancePlan } from "@/features/vehicles/hooks/useVehiclePlans";
 import { CreateMaintenancePlanRequest } from "@/features/vehicles/api/vehiclePlans";
-import { VehicleImportModal } from "@/features/vehicles/components/VehicleImportModal";
+import { VehicleImportWizard } from "@/features/vehicles/components/VehicleImportWizard";
 import {
-  importVehicles,
   exportVehicles,
   downloadTemplate,
   downloadFile,
@@ -64,18 +63,6 @@ export default function VehiclesPage() {
   const deleteMutation = useDeleteVehicle();
   const createPlanMutation = useCreateVehicleMaintenancePlan(planVehicle?.id || "");
 
-  const importMutation = useMutation({
-    mutationFn: importVehicles,
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      // Success toast is handled by the modal or component showing results
-      // We can also show a generic success here if needed
-      toast.success(t("toasts.import.success"));
-    },
-    onError: () => {
-      toast.error(t("toasts.import.error"));
-    }
-  });
 
   const handleEdit = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
@@ -339,6 +326,7 @@ export default function VehiclesPage() {
       {planVehicle && (
         <CreateMaintenancePlanModal
           isOpen={!!planVehicle}
+          meterUnit={planVehicle?.meter_unit || "km"}
           onClose={() => setPlanVehicle(null)}
           onSubmit={(data: CreateMaintenancePlanRequest) => {
             createPlanMutation.mutate(data, {
@@ -361,12 +349,20 @@ export default function VehiclesPage() {
         variant="destructive"
       />
 
-      <VehicleImportModal
-        open={isImportModalOpen}
-        onOpenChange={setIsImportModalOpen}
-        onImport={(file) => importMutation.mutateAsync(file)}
-        onDownloadTemplate={handleDownloadTemplate}
-      />
+      <Modal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        title={t("import.import")}
+        size="xl"
+      >
+        <VehicleImportWizard
+          onClose={() => setIsImportModalOpen(false)}
+          onSuccess={() => {
+            setIsImportModalOpen(false);
+            // Query invalidation handles the refresh
+          }}
+        />
+      </Modal>
     </div>
   );
 }
