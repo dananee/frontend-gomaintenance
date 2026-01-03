@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api/axiosClient";
+import { VehicleType } from "@/features/vehicles/types/vehicle.types";
 
 export type VehicleDetailsResponse = {
   vehicle: {
@@ -13,6 +14,7 @@ export type VehicleDetailsResponse = {
     current_engine_hours?: number;
     meter_unit: "km" | "hours";
     type: string;
+    vehicle_type?: VehicleType;
   };
   metrics: {
     totalMaintenanceCost: number;

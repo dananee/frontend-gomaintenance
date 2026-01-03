@@ -38,6 +38,9 @@ export interface Vehicle {
   current_km?: number;
   current_engine_hours?: number;
   meter_unit?: "km" | "hours";
+  fuel_type?: string;
+  address?: string;
+  vehicle_condition?: string;
   created_at?: string;
   updated_at?: string;
   kpis?: VehicleSummaryKPIs;
