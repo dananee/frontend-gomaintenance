@@ -83,6 +83,7 @@ import { useTranslations } from "next-intl";
 
 export default function VehicleDetailPage() {
   const t = useTranslations("vehicles");
+  const tVehicleTypes = useTranslations("vehicleTypes");
   const params = useParams();
   const router = useRouter();
   const vehicleId = params.id as string;
@@ -281,7 +282,11 @@ export default function VehicleDetailPage() {
             <span>{vehicle.year}</span>
             <span>•</span>
             <span className="capitalize">
-              {vehicle.type ? t(`filters.type.${vehicle.type}`) : t('filters.type.unknown')}
+              {vehicle.vehicle_type ? (
+                tVehicleTypes.has(vehicle.vehicle_type.code) ? tVehicleTypes(vehicle.vehicle_type.code) : vehicle.vehicle_type.name
+              ) : vehicle.type ? (
+                t.has(`filters.type.${vehicle.type}`) ? t(`filters.type.${vehicle.type}`) : vehicle.type
+              ) : t('filters.type.unknown')}
             </span>
           </p>
         </div>
