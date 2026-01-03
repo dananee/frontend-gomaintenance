@@ -47,7 +47,7 @@ export function OdooIntegrationCard() {
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-4">
                         <div className="relative h-12 w-12 bg-white rounded-lg border p-1">
-                            <Image src="/logos/odoo.png" alt="Odoo" fill className="object-contain" />
+                            <Image src="https://odoocdn.com/openerp_website/static/src/img/assets/png/odoo_logo.png" alt="Odoo" fill className="object-contain" />
                         </div>
                         <div>
                             <CardTitle className="text-xl">{t("cardTitle")}</CardTitle>
