@@ -1636,6 +1636,7 @@
             "headers": {
                 "user": "Utilisateur",
                 "email": "Email",
+                "department": "Département",
                 "role": "Rôle",
                 "status": "Statut",
                 "actions": "Actions"
@@ -1669,7 +1670,9 @@
         "errors": {
             "loadFailed": "Échec du chargement des utilisateurs",
             "generic": "Une erreur s’est produite lors du chargement des utilisateurs",
-            "notFound": "Utilisateur introuvable"
+            "notFound": "Utilisateur introuvable",
+            "existingUserWarning": "Utilisateur existant",
+            "existingUserDescription": "Un utilisateur avec ce nom existe déjà :"
         },
         "empty": {
             "title": "Aucun utilisateur pour le moment",
@@ -1683,22 +1686,31 @@
             "editDescription": "Mettre à jour les détails de l'utilisateur, son rôle et le statut de son compte.",
             "inviteDescription": "Envoyer une invitation par e-mail à un nouveau membre de l'équipe.",
             "fields": {
-                "name": "Nom",
-                "namePlaceholder": "Entrez le nom complet",
+                "name": "Nom complet",
+                "namePlaceholder": "Jean Dupont",
+                "firstName": "Prénom",
+                "firstNamePlaceholder": "Jean",
+                "lastName": "Nom",
+                "lastNamePlaceholder": "Dupont",
                 "email": "Email",
-                "emailPlaceholder": "utilisateur@exemple.com",
-                "phone": "Téléphone",
-                "phonePlaceholder": "+33 1 23 45 67 89",
+                "emailPlaceholder": "jean.dupont@example.com",
+                "phone": "Numéro de téléphone",
+                "phonePlaceholder": "+212 6 12 34 56 78",
+                "department": "Service",
+                "departmentPlaceholder": "Selectionnez un department",
                 "role": "Rôle",
-                "selectRole": "Sélectionner le rôle",
+                "selectRole": "Sélectionner un rôle",
                 "status": "Statut",
                 "selectStatus": "Sélectionner le statut",
+                "selectDepartment": "Sélectionner un département",
                 "profilePhoto": "Photo de profil",
                 "language": "Langue",
                 "selectLanguage": "Choisir la langue"
             },
             "errors": {
                 "nameRequired": "Le nom est requis",
+                "firstNameRequired": "Le prénom est requis",
+                "lastNameRequired": "Le nom de famille est requis",
                 "emailRequired": "L'email est requis",
                 "validEmail": "Entrez un email valide",
                 "roleRequired": "Le rôle est requis",

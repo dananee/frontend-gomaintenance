@@ -214,6 +214,7 @@ export default function VehiclesPage() {
         >
           <option value="all">{t("filters.status.all")}</option>
           <option value="active">{t("filters.status.active")}</option>
+          <option value="inactive">{t("filters.status.inactive")}</option>
           <option value="maintenance">{t("filters.status.maintenance")}</option>
           <option value="retired">{t("filters.status.retired")}</option>
         </select>

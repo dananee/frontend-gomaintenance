@@ -1507,6 +1507,7 @@
             "headers": {
                 "user": "User",
                 "email": "Email",
+                "department": "Department",
                 "role": "Role",
                 "status": "Status",
                 "actions": "Actions"
@@ -1540,7 +1541,9 @@
         "errors": {
             "loadFailed": "Failed to load users",
             "generic": "An error occurred while fetching users",
-            "notFound": "User not found"
+            "notFound": "User not found",
+            "existingUserWarning": "User already exists",
+            "existingUserDescription": "A user with this name already exists:"
         },
         "empty": {
             "title": "No users yet",
@@ -1556,20 +1559,29 @@
             "fields": {
                 "name": "Name",
                 "namePlaceholder": "Enter full name",
+                "firstName": "First Name",
+                "firstNamePlaceholder": "John",
+                "lastName": "Last Name",
+                "lastNamePlaceholder": "Doe",
                 "email": "Email",
-                "emailPlaceholder": "user@example.com",
-                "phone": "Phone",
-                "phonePlaceholder": "+1 (555) 123-4567",
+                "emailPlaceholder": "john.doe@example.com",
+                "phone": "Phone Number",
+                "phonePlaceholder": "+1 234 567 8900",
+                "department": "Department",
+                "departmentPlaceholder": "Engineering",
                 "role": "Role",
-                "selectRole": "Select role",
+                "selectRole": "Select a role",
                 "status": "Status",
                 "selectStatus": "Select status",
+                "selectDepartment": "Select department",
                 "profilePhoto": "Profile photo",
                 "language": "Language",
                 "selectLanguage": "Select language"
             },
             "errors": {
                 "nameRequired": "Name is required",
+                "firstNameRequired": "First name is required",
+                "lastNameRequired": "Last name is required",
                 "emailRequired": "Email is required",
                 "validEmail": "Enter a valid email",
                 "roleRequired": "Role is required",

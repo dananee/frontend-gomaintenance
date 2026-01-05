@@ -25,6 +25,7 @@ import { getInitials } from "@/lib/utils";
 import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserRecord, UserStatus } from "../store/useUsersStore";
 import { useUpdateUser } from "../hooks/useUpdateUser";
+import { useDepartments } from "@/features/departments/hooks/useDepartments";
 import { useTranslations } from "next-intl";
 
 interface EditUserModalProps {
@@ -45,11 +46,13 @@ export function EditUserModal({
   const tt = useTranslations("toasts");
 
   const { mutate: performUpdate, isPending: isUpdating } = useUpdateUser();
+  const { data: departments } = useDepartments();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone || "");
   const [role, setRole] = useState<Role>(user.role);
   const [status, setStatus] = useState<UserStatus>(user.status);
+  const [department, setDepartment] = useState(user.department || "");
   const [avatar, setAvatar] = useState<string | undefined>(user.avatar);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -60,6 +63,7 @@ export function EditUserModal({
       setPhone(user.phone || "");
       setRole(user.role);
       setStatus(user.status);
+      setDepartment(user.department || "");
       setAvatar(user.avatar);
       setErrors({});
     }
@@ -97,6 +101,7 @@ export function EditUserModal({
           phone: phone || undefined,
           role,
           status,
+          department,
           avatar,
         },
       },
@@ -178,6 +183,25 @@ export function EditUserModal({
               placeholder={t("form.fields.phonePlaceholder")}
               disabled={isUpdating}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>{t("form.fields.department")}</Label>
+            <Select
+              value={department}
+              onValueChange={setDepartment}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={t("form.fields.selectDepartment")} />
+              </SelectTrigger>
+              <SelectContent>
+                {departments?.map((dept) => (
+                  <SelectItem key={dept.id} value={dept.name}>
+                    {dept.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -21,6 +21,8 @@ export function useUsers(params?: GetUsersParams) {
         email: user.email,
         role: user.role,
         status: user.is_invited ? "pending" : (user.is_active !== false ? "active" : "inactive"),
+        department: user.department,
+        phone: user.phone,
         avatar: user.avatar,
         created_at: user.created_at,
         last_active: user.updated_at,
