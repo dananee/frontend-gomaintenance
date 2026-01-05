@@ -134,6 +134,7 @@ export function UsersTable({ users: propUsers }: UsersTableProps = {}) {
                 <TableRow>
                   <TableHead>{t("table.headers.user")}</TableHead>
                   <TableHead>{t("table.headers.email")}</TableHead>
+                  <TableHead>{t("table.headers.department")}</TableHead>
                   <TableHead>{t("table.headers.role")}</TableHead>
                   <TableHead>{t("table.headers.status")}</TableHead>
                   <TableHead className="text-right">{t("table.headers.actions")}</TableHead>
@@ -169,6 +170,9 @@ export function UsersTable({ users: propUsers }: UsersTableProps = {}) {
                       </TableCell>
                       <TableCell className="text-gray-600 dark:text-gray-300">
                         {user.email}
+                      </TableCell>
+                      <TableCell className="text-gray-600 dark:text-gray-300">
+                        {user.department || "-"}
                       </TableCell>
                       <TableCell className="capitalize">
                         <Badge

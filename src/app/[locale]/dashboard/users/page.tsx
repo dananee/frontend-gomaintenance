@@ -12,11 +12,13 @@ import { InviteUserDialog } from "@/features/users/components/InviteUserDialog";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { useUsersStore } from "@/features/users/store/useUsersStore";
 import { useTranslations } from "next-intl";
+import { AddDepartmentDialog } from "@/features/departments/components/AddDepartmentDialog";
 
 export default function UsersPage() {
   const t = useTranslations("users");
   const [open, setOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [departmentOpen, setDepartmentOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -38,6 +40,10 @@ export default function UsersPage() {
           {t("title")}
         </h1>
         <div className="flex gap-3">
+          <Button variant="outline" onClick={() => setDepartmentOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Department
+          </Button>
           <Button variant="outline" onClick={() => setInviteOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             {t("actions.invite")}
@@ -92,6 +98,7 @@ export default function UsersPage() {
 
       <AddUserDialog open={open} onOpenChange={setOpen} />
       <InviteUserDialog open={inviteOpen} onOpenChange={setInviteOpen} />
+      <AddDepartmentDialog open={departmentOpen} onOpenChange={setDepartmentOpen} />
     </div>
   );
 }

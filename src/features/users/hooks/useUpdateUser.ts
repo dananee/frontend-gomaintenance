@@ -25,6 +25,7 @@ export function useUpdateUser() {
       if (updates.email) updateData.email = updates.email;
       if (updates.phone) updateData.phone = updates.phone;
       if (updates.status) updateData.is_active = updates.status === "active";
+      if (updates.department) updateData.department = updates.department;
 
       // 1. Update basic info
       await updateUser(id, updateData);

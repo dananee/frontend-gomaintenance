@@ -9,6 +9,7 @@ export interface UserRecord {
   email: string;
   role: Role;
   status: UserStatus;
+  department?: string;
   avatar?: string;
   phone?: string;
   created_at?: string;
