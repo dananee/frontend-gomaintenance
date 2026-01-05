@@ -14,6 +14,8 @@ import { getStatusColor, getStatusDisplayName } from '@/types/parts';
 import type { WorkOrderPartRequest } from '@/types/parts';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+
 export default function SupervisorApprovalPage() {
     const t = useTranslations('partRequests.approvals');
     const [searchQuery, setSearchQuery] = useState('');
@@ -69,7 +71,7 @@ export default function SupervisorApprovalPage() {
     return (
         <div className="container mx-auto py-8 px-4 max-w-7xl">
             {/* Header */}
-            <motion.div
+            <MotionDiv
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8"
@@ -85,10 +87,10 @@ export default function SupervisorApprovalPage() {
                         <p className="text-gray-500 mt-1">{t('subtitle')}</p>
                     </div>
                 </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* Search */}
-            <motion.div
+            <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -107,7 +109,7 @@ export default function SupervisorApprovalPage() {
                         </div>
                     </CardContent>
                 </Card>
-            </motion.div>
+            </MotionDiv>
 
             {/* Error */}
             {error && (
@@ -132,7 +134,7 @@ export default function SupervisorApprovalPage() {
                     </div>
                 </div>
             ) : !filteredRequests || filteredRequests.length === 0 ? (
-                <motion.div
+                <MotionDiv
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                 >
@@ -149,12 +151,12 @@ export default function SupervisorApprovalPage() {
                             </div>
                         </CardContent>
                     </Card>
-                </motion.div>
+                </MotionDiv>
             ) : (
                 <div className="space-y-4">
                     <AnimatePresence>
                         {filteredRequests.map((request, index) => (
-                            <motion.div
+                            <MotionDiv
                                 key={request.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -167,18 +169,18 @@ export default function SupervisorApprovalPage() {
                                             <div className="flex-1 space-y-4">
                                                 {/* Part Info */}
                                                 <div className="flex items-center space-x-4">
-                                                <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200">
-                                                    <Package className="h-8 w-8 text-indigo-600" />
+                                                    <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200">
+                                                        <Package className="h-8 w-8 text-indigo-600" />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-gray-900">
+                                                            {request.part?.name || t('fallback.unknownPart')}
+                                                        </h3>
+                                                        <p className="text-sm text-gray-500">
+                                                            {t('fields.sku')}: {request.part?.part_number || t('fallback.na')} • {t('fields.quantity')}: {request.quantity}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <h3 className="text-xl font-bold text-gray-900">
-                                                        {request.part?.name || t('fallback.unknownPart')}
-                                                    </h3>
-                                                    <p className="text-sm text-gray-500">
-                                                        {t('fields.sku')}: {request.part?.part_number || t('fallback.na')} • {t('fields.quantity')}: {request.quantity}
-                                                    </p>
-                                                </div>
-                                            </div>
 
                                                 {/* Request Details */}
                                                 <div className="grid grid-cols-3 gap-4 text-sm">
@@ -242,7 +244,7 @@ export default function SupervisorApprovalPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </MotionDiv>
                         ))}
                     </AnimatePresence>
                 </div>
@@ -250,7 +252,7 @@ export default function SupervisorApprovalPage() {
 
             {/* Pagination */}
             {data && data.total > 20 && (
-                <motion.div
+                <MotionDiv
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
@@ -275,7 +277,7 @@ export default function SupervisorApprovalPage() {
                     >
                         {t('actions.next')}
                     </Button>
-                </motion.div>
+                </MotionDiv>
             )}
 
             {/* Confirmation Modals */}
