@@ -11,6 +11,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getStatusColor } from '@/types/parts';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+const MotionButton = motion.button as any;
+
 interface PremiumPartRequestsTableProps {
     requests: WorkOrderPartRequest[];
     onMarkUsed?: (request: WorkOrderPartRequest) => void;
@@ -55,7 +58,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
 
 
                 return (
-                    <motion.div
+                    <MotionDiv
                         key={request.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -70,13 +73,13 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-4 flex-1">
                                     {/* Expand Icon */}
-                                    <motion.button
+                                    <MotionButton
                                         animate={{ rotate: isExpanded ? 90 : 0 }}
                                         transition={{ duration: 0.2 }}
                                         className="text-gray-400 hover:text-indigo-600 transition-colors"
                                     >
                                         <ChevronRight className="h-5 w-5" />
-                                    </motion.button>
+                                    </MotionButton>
 
                                     {/* Part Info */}
                                     <div className="flex items-center space-x-3">
@@ -138,7 +141,7 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                         {/* Expanded Content */}
                         <AnimatePresence>
                             {isExpanded && (
-                                <motion.div
+                                <MotionDiv
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 'auto', opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
@@ -213,10 +216,10 @@ export function PremiumPartRequestsTable({ requests, onMarkUsed }: PremiumPartRe
                                             </div>
                                         )}
                                     </div>
-                                </motion.div>
+                                </MotionDiv>
                             )}
                         </AnimatePresence>
-                    </motion.div>
+                    </MotionDiv>
                 );
             })}
         </div>

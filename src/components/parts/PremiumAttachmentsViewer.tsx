@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+
 interface PremiumAttachmentsViewerProps {
     attachments: OdooAttachment[];
 }
@@ -42,7 +44,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
             <div className="space-y-3">
                 <AnimatePresence>
                     {attachments.map((attachment, index) => (
-                        <motion.div
+                        <MotionDiv
                             key={attachment.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -90,7 +92,7 @@ export function PremiumAttachmentsViewer({ attachments }: PremiumAttachmentsView
                                     </Button>
                                 </div>
                             </div>
-                        </motion.div>
+                        </MotionDiv>
                     ))}
                 </AnimatePresence>
             </div>

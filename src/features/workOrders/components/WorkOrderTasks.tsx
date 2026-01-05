@@ -43,6 +43,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useFormGuard } from "@/hooks/useFormGuard";
 
+const MotionDiv = motion.div as any;
+
 export function WorkOrderTasks() {
   const t = useTranslations("workOrders");
   const tc = useTranslations("common");
@@ -182,7 +184,7 @@ export function WorkOrderTasks() {
               </div>
             </div>
             <div className="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
-              <motion.div
+              <MotionDiv
                 className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
@@ -220,7 +222,7 @@ export function WorkOrderTasks() {
             <div className="space-y-3">
               <AnimatePresence mode="popLayout">
                 {tasks.map((task) => (
-                  <motion.div
+                  <MotionDiv
                     key={task.id}
                     layout
                     initial={{ opacity: 0, y: 10 }}
@@ -326,7 +328,7 @@ export function WorkOrderTasks() {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-                  </motion.div>
+                  </MotionDiv>
                 ))}
               </AnimatePresence>
             </div>

@@ -33,6 +33,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+const MotionDiv = motion.div as any;
+
 interface WorkOrderCommentsProps {
   workOrderId: string;
 }
@@ -183,7 +185,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
           <div className="space-y-4">
             <AnimatePresence mode="popLayout">
               {comments.map((comment) => (
-                <motion.div
+                <MotionDiv
                   key={comment.id}
                   layout
                   initial={{ opacity: 0, y: 20 }}
@@ -249,7 +251,7 @@ export function WorkOrderComments({ workOrderId }: WorkOrderCommentsProps) {
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </MotionDiv>
               ))}
             </AnimatePresence>
           </div>

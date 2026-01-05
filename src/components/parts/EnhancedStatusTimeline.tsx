@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+
 interface EnhancedStatusTimelineProps {
     request: WorkOrderPartRequest;
 }
@@ -83,7 +85,7 @@ export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps)
                             {/* Connector Line */}
                             {!isLast && (
                                 <div className="absolute top-5 left-1/2 w-full h-0.5 -z-10">
-                                    <motion.div
+                                    <MotionDiv
                                         className={`h-full ${step.completed ? 'bg-gradient-to-r from-indigo-500 to-indigo-300' : 'bg-gray-200'
                                             }`}
                                         initial={{ scaleX: 0 }}
@@ -94,7 +96,7 @@ export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps)
                             )}
 
                             {/* Step Circle */}
-                            <motion.div
+                            <MotionDiv
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 0.3, delay: stepIdx * 0.1 }}
@@ -102,8 +104,8 @@ export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps)
                             >
                                 <div
                                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${step.completed
-                                            ? `bg-${step.color}-100 border-${step.color}-500 shadow-lg shadow-${step.color}-200`
-                                            : 'bg-white border-gray-300'
+                                        ? `bg-${step.color}-100 border-${step.color}-500 shadow-lg shadow-${step.color}-200`
+                                        : 'bg-white border-gray-300'
                                         }`}
                                 >
                                     <Icon
@@ -111,7 +113,7 @@ export function EnhancedStatusTimeline({ request }: EnhancedStatusTimelineProps)
                                             }`}
                                     />
                                 </div>
-                            </motion.div>
+                            </MotionDiv>
 
                             {/* Step Label */}
                             <div className="mt-3 text-center">

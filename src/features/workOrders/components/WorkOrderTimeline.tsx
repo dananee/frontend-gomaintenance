@@ -20,6 +20,8 @@ import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+const MotionDiv = motion.div as any;
+
 export function WorkOrderTimeline() {
   const t = useTranslations("workOrders");
   const params = useParams();
@@ -114,7 +116,7 @@ export function WorkOrderTimeline() {
                 const colorClass = getEventColor(log.action);
 
                 return (
-                  <motion.div
+                  <MotionDiv
                     key={log.id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -181,7 +183,7 @@ export function WorkOrderTimeline() {
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </MotionDiv>
                 );
               })}
             </div>
