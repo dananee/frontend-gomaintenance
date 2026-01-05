@@ -12,6 +12,8 @@ import { Package, Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+
 interface ConsumePartsModalProps {
     workOrderId: string;
     request: WorkOrderPartRequest | null;
@@ -101,14 +103,14 @@ export function ConsumePartsModal({ workOrderId, request, isOpen, onClose }: Con
                             className="mt-2 bg-white/50 border-gray-300 focus:border-green-500 focus:ring-green-500"
                         />
                         {quantityUsed && parseFloat(quantityUsed) > request.quantity && (
-                            <motion.div
+                            <MotionDiv
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className="mt-2 flex items-center space-x-2 text-red-600 text-sm"
                             >
                                 <AlertCircle className="h-4 w-4" />
                                 <span>{t('alerts.quantityWarning')}</span>
-                            </motion.div>
+                            </MotionDiv>
                         )}
                     </div>
 

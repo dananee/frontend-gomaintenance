@@ -30,6 +30,8 @@ import { formatDateShort } from "@/lib/formatters";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+const MotionDiv = motion.div as any;
+
 interface WorkOrderAttachmentsProps {
   workOrderId: string;
 }
@@ -251,7 +253,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {attachments.map((attachment) => (
-                  <motion.div
+                  <MotionDiv
                     key={attachment.id}
                     layout
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -313,7 +315,7 @@ export function WorkOrderAttachments({ workOrderId }: WorkOrderAttachmentsProps)
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                  </motion.div>
+                  </MotionDiv>
                 ))}
               </AnimatePresence>
             </div>

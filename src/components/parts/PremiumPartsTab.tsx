@@ -13,6 +13,8 @@ import { motion } from 'framer-motion';
 import type { WorkOrderPartRequest } from '@/types/parts';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+
 interface PremiumPartsTabProps {
     workOrderId: string;
 }
@@ -49,7 +51,7 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <motion.div
+            <MotionDiv
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center justify-between"
@@ -75,11 +77,11 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
                     {t('actions.requestPart')}
                     <Sparkles className="h-4 w-4 ml-2" />
                 </Button>
-            </motion.div>
+            </MotionDiv>
 
             {/* Requests Table or Empty State */}
             {!requests || requests.length === 0 ? (
-                <motion.div
+                <MotionDiv
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 }}
@@ -104,7 +106,7 @@ export function PremiumPartsTab({ workOrderId }: PremiumPartsTabProps) {
                             </div>
                         </CardContent>
                     </Card>
-                </motion.div>
+                </MotionDiv>
             ) : (
                 <PremiumPartRequestsTable
                     requests={requests}

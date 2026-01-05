@@ -14,6 +14,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Part } from '@/types/parts';
 import { useTranslations } from 'next-intl';
 
+const MotionDiv = motion.div as any;
+const MotionButton = motion.button as any;
+
 interface PremiumRequestPartModalProps {
     workOrderId: string;
     isOpen: boolean;
@@ -115,14 +118,14 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                         {/* Search Results */}
                         <AnimatePresence>
                             {searchResults && searchResults.data.length > 0 && (
-                                <motion.div
+                                <MotionDiv
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     className="mt-3 max-h-80 overflow-y-auto border border-gray-200 rounded-xl divide-y divide-gray-100 bg-white shadow-lg"
                                 >
                                     {searchResults.data.map((part) => (
-                                        <motion.button
+                                        <MotionButton
                                             key={part.id}
                                             type="button"
                                             onClick={() => {
@@ -146,9 +149,9 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                                                 </div>
                                                 {getStockBadge(part)}
                                             </div>
-                                        </motion.button>
+                                        </MotionButton>
                                     ))}
-                                </motion.div>
+                                </MotionDiv>
                             )}
                         </AnimatePresence>
                     </div>
@@ -156,7 +159,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                     {/* Selected Part */}
                     <AnimatePresence>
                         {selectedPart && (
-                            <motion.div
+                            <MotionDiv
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
@@ -182,7 +185,7 @@ export function PremiumRequestPartModal({ workOrderId, isOpen, onClose }: Premiu
                                         {t('actions.change')}
                                     </Button>
                                 </div>
-                            </motion.div>
+                            </MotionDiv>
                         )}
                     </AnimatePresence>
 
