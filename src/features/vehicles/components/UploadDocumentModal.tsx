@@ -184,6 +184,11 @@ export function UploadDocumentModal({
                     <SelectItem value="registration">{t("types.registration")}</SelectItem>
                     <SelectItem value="inspection">{t("types.inspection")}</SelectItem>
                     <SelectItem value="invoice">{t("types.invoice")}</SelectItem>
+                    <SelectItem value="vignette">{t("types.vignette")}</SelectItem>
+                    <SelectItem value="registration_certificate">{t("types.registration_certificate")}</SelectItem>
+                    <SelectItem value="vehicle_registration_document">{t("types.vehicle_registration_document")}</SelectItem>
+                    <SelectItem value="regulatory_inspection">{t("types.regulatory_inspection")}</SelectItem>
+                    <SelectItem value="tachygraphe">{t("types.tachygraphe")}</SelectItem>
                     <SelectItem value="other">{t("types.other")}</SelectItem>
                   </SelectContent>
                 </Select>

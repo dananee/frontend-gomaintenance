@@ -425,6 +425,11 @@
                     "registration": "Carte grise",
                     "inspection": "Contrôle technique",
                     "invoice": "Facture",
+                    "vignette": "Vignette",
+                    "registration_certificate": "Certificat d'immatriculation",
+                    "vehicle_registration_document": "Carte Grise",
+                    "regulatory_inspection": "Contrôle Réglementaire",
+                    "tachygraphe": "Tachygraphe",
                     "other": "Autre"
                 }
             },
