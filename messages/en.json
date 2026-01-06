@@ -424,6 +424,11 @@
                     "registration": "Registration",
                     "inspection": "Inspection",
                     "invoice": "Invoice",
+                    "vignette": "Vignette",
+                    "registration_certificate": "Registration Certificate",
+                    "vehicle_registration_document": "Vehicle Registration Document",
+                    "regulatory_inspection": "Regulatory Inspection",
+                    "tachygraphe": "Tachygraphe",
                     "other": "Other"
                 }
             },
