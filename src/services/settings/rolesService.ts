@@ -23,7 +23,7 @@ export const updateRolePermissions = async (role: string, permissions: Record<st
 };
 
 export const createRole = async (name: string, description: string): Promise<Role> => {
-    const response = await axiosClient.post("/roles", { name, description });
+    const response = await axiosClient.post("/roles", { role: name, description });
     return response.data;
 };
 

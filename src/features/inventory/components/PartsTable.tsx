@@ -142,17 +142,19 @@ export function PartsTable({ parts, isLoading, onEdit, onDelete, onReceiveStock 
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEdit?.(part);
-                        }}
-                        title={t("actions.edit")}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
+                      {onEdit && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(part);
+                          }}
+                          title={t("actions.edit")}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      )}
                       {onReceiveStock && (
                         <Button
                           variant="ghost"

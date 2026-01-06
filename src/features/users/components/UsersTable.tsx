@@ -134,6 +134,7 @@ export function UsersTable({ users: propUsers }: UsersTableProps = {}) {
                 <TableRow>
                   <TableHead>{t("table.headers.user")}</TableHead>
                   <TableHead>{t("table.headers.email")}</TableHead>
+                  <TableHead>{t("table.headers.phone")}</TableHead>
                   <TableHead>{t("table.headers.department")}</TableHead>
                   <TableHead>{t("table.headers.role")}</TableHead>
                   <TableHead>{t("table.headers.status")}</TableHead>
@@ -170,6 +171,9 @@ export function UsersTable({ users: propUsers }: UsersTableProps = {}) {
                       </TableCell>
                       <TableCell className="text-gray-600 dark:text-gray-300">
                         {user.email}
+                      </TableCell>
+                      <TableCell className="text-gray-600 dark:text-gray-300">
+                        {user.phone || "-"}
                       </TableCell>
                       <TableCell className="text-gray-600 dark:text-gray-300">
                         {user.department || "-"}
