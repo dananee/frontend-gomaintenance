@@ -5,20 +5,20 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Pagination } from "@/components/ui/pagination";
 import { TableSkeleton } from "@/components/ui/skeleton";
-import { Plus, Users as UsersIcon, AlertCircle } from "lucide-react";
+import { Plus, Users as UsersIcon, AlertCircle, Settings2 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { AddUserDialog } from "@/features/users/components/AddUserDialog";
 import { InviteUserDialog } from "@/features/users/components/InviteUserDialog";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { useUsersStore } from "@/features/users/store/useUsersStore";
 import { useTranslations } from "next-intl";
-import { AddDepartmentDialog } from "@/features/departments/components/AddDepartmentDialog";
+import { ManageDepartmentsDialog } from "@/features/departments/components/ManageDepartmentsDialog";
 
 export default function UsersPage() {
   const t = useTranslations("users");
   const [open, setOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [departmentOpen, setDepartmentOpen] = useState(false);
+  const [manageDepartmentsOpen, setManageDepartmentsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -35,14 +35,15 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white shrink-0">
           {t("title")}
         </h1>
-        <div className="flex gap-3">
-          <Button variant="outline" onClick={() => setDepartmentOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Department
+
+        <div className="flex gap-3 ml-auto">
+          <Button variant="outline" onClick={() => setManageDepartmentsOpen(true)}>
+            <Settings2 className="mr-2 h-4 w-4" />
+            Manage Departments
           </Button>
           <Button variant="outline" onClick={() => setInviteOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
@@ -98,7 +99,7 @@ export default function UsersPage() {
 
       <AddUserDialog open={open} onOpenChange={setOpen} />
       <InviteUserDialog open={inviteOpen} onOpenChange={setInviteOpen} />
-      <AddDepartmentDialog open={departmentOpen} onOpenChange={setDepartmentOpen} />
+      <ManageDepartmentsDialog open={manageDepartmentsOpen} onOpenChange={setManageDepartmentsOpen} />
     </div>
   );
 }
