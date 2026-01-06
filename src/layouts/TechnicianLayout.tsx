@@ -1,3 +1,5 @@
+"use client";
+
 import { Home, Wrench, Package, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
