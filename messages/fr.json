@@ -1636,6 +1636,7 @@
             "headers": {
                 "user": "Utilisateur",
                 "email": "Email",
+                "phone": "Téléphone",
                 "department": "Département",
                 "role": "Rôle",
                 "status": "Statut",
@@ -2137,6 +2138,8 @@
         }
     },
     "workOrders": {
+        "reportIssue": "Signaler un problème",
+        "reportIssueDescription": "Décrivez le problème que vous rencontrez avec ce véhicule. Soyez aussi détaillé que possible pour nous aider à le résoudre rapidement.",
         "title": "Ordres de travail",
         "checklist": {
             "title": "Liste de tâches",

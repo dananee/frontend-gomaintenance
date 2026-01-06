@@ -1507,6 +1507,7 @@
             "headers": {
                 "user": "User",
                 "email": "Email",
+                "phone": "Phone",
                 "department": "Department",
                 "role": "Role",
                 "status": "Status",
@@ -1984,6 +1985,8 @@
         }
     },
     "workOrders": {
+        "reportIssue": "Report an Issue",
+        "reportIssueDescription": "Describe the issue you are experiencing with this vehicle. Please be as detailed as possible to help us resolve it quickly.",
         "title": "Work Orders",
         "checklist": {
             "title": "Task Checklist",
