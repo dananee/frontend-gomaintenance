@@ -69,9 +69,11 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getWorkOrders } from "@/features/workOrders/api/getWorkOrders";
 import { getFleetAvailability } from "@/features/reports/api/reports";
+import { useRouter } from "next/navigation";
 import { getScheduledMaintenance } from "@/features/maintenance/api/maintenanceDashboard";
 
 export default function DashboardPage() {
+  const router = useRouter();
   // Fetch work orders data
   const { data: workOrdersData } = useQuery({
     queryKey: ["work-orders", "active"],
@@ -259,7 +261,12 @@ export default function DashboardPage() {
           </div>
           <div>
             <Suspense fallback={<div className="h-[350px] w-full animate-pulse rounded-xl bg-muted" />}>
-              {kpiData?.fleet_health && <FleetHealthScoreChart data={kpiData.fleet_health} />}
+              {kpiData?.fleet_health && (
+                <FleetHealthScoreChart
+                  data={kpiData.fleet_health}
+                  onClick={() => router.push("/dashboard/vehicles")}
+                />
+              )}
             </Suspense>
           </div>
           <div className="lg:col-span-3">
