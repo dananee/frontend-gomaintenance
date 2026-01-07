@@ -298,6 +298,7 @@ export default function VehiclesPage() {
         isOpen={isOpen}
         onClose={close}
         title={selectedVehicle ? t("actions.edit") : t("actions.add")}
+        size="lg"
       >
         <VehicleForm
           initialData={selectedVehicle || undefined}

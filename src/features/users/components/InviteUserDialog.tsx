@@ -11,23 +11,25 @@ import { Role } from "@/lib/rbac/permissions";
 import { useTranslations } from "next-intl";
 import { inviteUser } from "../api/inviteUser";
 import { useUsersStore } from "../store/useUsersStore";
+import { useRoles } from "@/hooks/useRoles";
 
 interface InviteUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const roles: Role[] = ["admin", "manager", "technician", "viewer", "driver"];
-const languages = [
-  { value: "en", label: "English" },
-  { value: "fr", label: "Français" },
-  { value: "ar", label: "العربية" },
-];
-
 export function InviteUserDialog({ open, onOpenChange }: InviteUserDialogProps) {
   const t = useTranslations("users");
   const tc = useTranslations("common");
   const tt = useTranslations("toasts");
+
+  const { roles: fetchedRoles } = useRoles();
+
+  const languages = [
+    { value: "en", label: "English" },
+    { value: "fr", label: "Français" },
+    { value: "ar", label: "العربية" },
+  ];
 
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("viewer");
@@ -102,9 +104,11 @@ export function InviteUserDialog({ open, onOpenChange }: InviteUserDialogProps) 
                     <SelectValue placeholder={t("form.fields.selectRole")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {roles.map((option) => (
-                      <SelectItem key={option} value={option} className="capitalize">
-                        {t(`roles.${option}`)}
+                    {fetchedRoles?.map((r) => (
+                      <SelectItem key={r.role} value={r.role} className="capitalize">
+                        {["admin", "manager", "technician", "viewer", "driver"].includes(r.role.toLowerCase())
+                          ? t(`roles.${r.role.toLowerCase()}`)
+                          : r.role}
                       </SelectItem>
                     ))}
                   </SelectContent>

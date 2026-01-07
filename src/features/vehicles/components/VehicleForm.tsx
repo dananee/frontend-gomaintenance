@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { CreateVehicleDTO, Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AddressSelector } from "@/components/form/AddressSelector";
 import { useCreateVehicle } from "../hooks/useCreateVehicle";
 import { useUpdateVehicle } from "../hooks/useUpdateVehicle";
 import { useTranslations } from "next-intl";
@@ -21,7 +22,7 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
   const tVehicleTypes = useTranslations("vehicleTypes");
   const { data: vehicleTypes = [] } = useVehicleTypes();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateVehicleDTO>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<CreateVehicleDTO>({
     defaultValues: initialData ? {
       plate_number: initialData.plate_number,
       vin: initialData.vin,
@@ -31,6 +32,8 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
       year: initialData.year,
       status: initialData.status,
       meter_unit: initialData.meter_unit || "km",
+      ville_id: initialData.ville_id,
+      address: initialData.address,
     } : {
       meter_unit: "km",
       status: "active" as const
@@ -128,6 +131,25 @@ export function VehicleForm({ initialData, onSuccess, onCancel }: VehicleFormPro
         {...register("vin", { required: "VIN is required" })}
         error={errors.vin?.message}
       />
+
+      <div className="grid grid-cols-2 gap-4">
+        <Input
+          label={t("address")}
+          {...register("address")}
+          error={errors.address?.message}
+        />
+        <Controller
+          control={control}
+          name="ville_id"
+          render={({ field }) => (
+            <AddressSelector
+              selectedVilleId={field.value}
+              onVilleChange={(val) => field.onChange(val)}
+              initialRegionId={initialData?.ville?.region_id}
+            />
+          )}
+        />
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>

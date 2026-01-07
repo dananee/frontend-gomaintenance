@@ -26,6 +26,7 @@ import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserRecord, UserStatus } from "../store/useUsersStore";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 import { useDepartments } from "@/features/departments/hooks/useDepartments";
+import { useRoles } from "@/hooks/useRoles";
 import { useTranslations } from "next-intl";
 
 interface EditUserModalProps {
@@ -33,8 +34,6 @@ interface EditUserModalProps {
   onOpenChange: (open: boolean) => void;
   user: UserRecord;
 }
-
-const roles = ["admin", "manager", "technician", "viewer", "driver"] as const;
 
 export function EditUserModal({
   open,
@@ -45,6 +44,7 @@ export function EditUserModal({
   const tc = useTranslations("common");
   const tt = useTranslations("toasts");
 
+  const { roles: fetchedRoles } = useRoles();
   const { mutate: performUpdate, isPending: isUpdating } = useUpdateUser();
   const { data: departments } = useDepartments();
   const [name, setName] = useState(user.name);
@@ -215,13 +215,15 @@ export function EditUserModal({
                   <SelectValue placeholder={t("form.fields.selectRole")} />
                 </SelectTrigger>
                 <SelectContent>
-                  {roles.map((option) => (
+                  {fetchedRoles?.map((r) => (
                     <SelectItem
-                      key={option}
-                      value={option}
+                      key={r.role}
+                      value={r.role}
                       className="capitalize"
                     >
-                      {t(`roles.${option}`)}
+                      {["admin", "manager", "technician", "viewer", "driver"].includes(r.role.toLowerCase())
+                        ? t(`roles.${r.role.toLowerCase()}`)
+                        : r.role}
                     </SelectItem>
                   ))}
                 </SelectContent>
