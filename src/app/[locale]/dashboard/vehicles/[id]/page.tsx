@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Link from "next/link";
+import { getVehicle } from "@/features/vehicles/api/getVehicle";
 import { getVehicleDetails, VehicleDetailsResponse } from "@/features/vehicles/api/getVehicleDetails";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,6 +81,7 @@ import {
 import { VehicleDriversTab } from "@/features/vehicles/components/VehicleDriversTab";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { useTranslations } from "next-intl";
+import { DataErrorPlaceholder } from "@/components/ui/data-error-placeholder";
 
 export default function VehicleDetailPage() {
   const t = useTranslations("vehicles");
@@ -94,10 +96,25 @@ export default function VehicleDetailPage() {
   const [isWorkOrderModalOpen, setIsWorkOrderModalOpen] = useState(false);
   const [isUsageModalOpen, setIsUsageModalOpen] = useState(false);
 
-  const { data, isLoading, error } = useQuery<VehicleDetailsResponse>({
+  // 1. Core Query: Minimal vehicle data for the header/shell
+  const { data: basicVehicle, isLoading: isLoadingBasic, error: errorBasic } = useQuery({
+    queryKey: ["vehicle", vehicleId],
+    queryFn: () => getVehicle(vehicleId),
+    enabled: !!vehicleId,
+  });
+
+  // 2. Extended Query: Complex metrics, charts, and history
+  const {
+    data: extendedDetails,
+    isLoading: isLoadingExtended,
+    error: errorExtended,
+    refetch: refetchExtended
+  } = useQuery<VehicleDetailsResponse>({
     queryKey: ["vehicle-details", vehicleId],
     queryFn: () => getVehicleDetails(vehicleId),
     enabled: !!vehicleId,
+    // Add retries for the complex query
+    retry: 1,
   });
 
   const { data: plans, isLoading: isLoadingPlans } = useVehicleMaintenancePlans(vehicleId);
@@ -119,22 +136,22 @@ export default function VehicleDetailPage() {
 
   const availableDrivers = useMemo(() => {
     if (!usersData?.data) return [];
-    return usersData.data
-      .filter(u => u.role === "driver")
-      .map(u => {
-        const nameParts = (u.name || "").split(" ");
-        return {
-          id: u.id,
-          first_name: u.first_name || nameParts[0] || "",
-          last_name: u.last_name || nameParts.slice(1).join(" ") || "",
-          email: u.email,
-          phone: "", // Phone number not available on User type yet
-          avatar_url: u.avatar || "",
-        };
-      });
+    return usersData.data.map(u => {
+      const nameParts = (u.name || "").split(" ");
+      return {
+        id: u.id,
+        first_name: u.first_name || nameParts[0] || "",
+        last_name: u.last_name || nameParts.slice(1).join(" ") || "",
+        email: u.email,
+        phone: "", // Phone number not available on User type yet
+        avatar_url: u.avatar || "",
+      };
+    });
   }, [usersData]);
 
   const { mutate: updateUsage, isPending: isUpdatingUsage } = useUpdateVehicleUsage(vehicleId);
+
+  const isLoading = isLoadingBasic && !basicVehicle;
 
   if (isLoading) {
     return (
@@ -162,16 +179,53 @@ export default function VehicleDetailPage() {
     );
   }
 
-  if (error || !data) {
+  // Only fail the entire page if the basic info query fails
+  if (errorBasic && !basicVehicle) {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
-        <p className="text-lg text-muted-foreground">Failed to load vehicle details</p>
+        <p className="text-lg text-muted-foreground">Failed to load vehicle basic information</p>
         <Button onClick={() => window.location.reload()}>Retry</Button>
       </div>
     );
   }
 
-  const { vehicle, metrics, serviceSummary, charts, partsUsed } = data!;
+  // If we don't have basic vehicle data, we can't render the shell
+  if (!basicVehicle) {
+    return (
+      <div className="flex h-96 flex-col items-center justify-center gap-4">
+        <p className="text-lg text-muted-foreground">Vehicle not found</p>
+        <Button onClick={() => router.push("/dashboard/vehicles")}>Back to Vehicles</Button>
+      </div>
+    );
+  }
+
+  // Safe data extraction for the shell
+  const vehicle = basicVehicle;
+
+  // Safe data extraction for extended details with fallbacks
+  const metrics = extendedDetails?.metrics || {
+    averageRepairCost: 0,
+    costPerKm: 0,
+    mtbf: 0,
+    reliabilityScore: 0,
+    totalDowntimeHours: 0,
+    mttr: 0,
+    totalWorkOrders: 0,
+  };
+  const serviceSummary = extendedDetails?.serviceSummary || {
+    lastMaintenanceDate: null,
+    lastMaintenanceCost: 0,
+    nextServiceDue: null,
+    lastTechnicianName: null,
+    serviceInterval: null,
+  };
+  const charts = extendedDetails?.charts || {
+    maintenanceCostTrend: [],
+    downtimeTrend: [],
+    mileageGrowth: [],
+  };
+  const partsUsed = extendedDetails?.partsUsed || [];
+
 
   const handlePlanSubmit = (payload: CreateMaintenancePlanRequest) => {
     if (selectedPlan) {
@@ -282,11 +336,9 @@ export default function VehicleDetailPage() {
             <span>{vehicle.year}</span>
             <span>•</span>
             <span className="capitalize">
-              {vehicle.vehicle_type ? (
+              {vehicle.vehicle_type?.code && vehicle.vehicle_type?.name ? (
                 tVehicleTypes.has(vehicle.vehicle_type.code) ? tVehicleTypes(vehicle.vehicle_type.code) : vehicle.vehicle_type.name
-              ) : vehicle.type ? (
-                t.has(`filters.type.${vehicle.type}`) ? t(`filters.type.${vehicle.type}`) : vehicle.type
-              ) : t('filters.type.unknown')}
+              ) : vehicle.type || 'Unknown'}
             </span>
           </p>
         </div>
@@ -342,190 +394,238 @@ export default function VehicleDetailPage() {
         <TabsContent value="overview" className="space-y-6">
           <div>
             <h2 className="mb-4 text-xl font-semibold">{t("details.performanceMetrics.title")}</h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-
-              <PremiumMetricCard
-                title={t("details.metrics.avgRepairCost")}
-                value={metrics.averageRepairCost}
-                suffix="MAD"
-                decimals={2}
-                subtitle={t("details.metrics.perWorkOrder")}
-                icon={Wrench}
-                variant="indigo"
-              />
+            {!extendedDetails?.metrics ? (
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {t("details.metrics.costPerKm")}
-                  </CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    <AnimatedNumber value={metrics.costPerKm} currency="MAD" decimals={3} />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {t("details.metrics.perWorkOrder")}: <AnimatedNumber value={metrics.averageRepairCost} currency="MAD" />
-                  </p>
+                <CardContent className="p-6">
+                  <DataErrorPlaceholder
+                    message="Failed to load performance metrics"
+                    onRetry={() => refetchExtended()}
+                    size="md"
+                  />
                 </CardContent>
               </Card>
-              <PremiumMetricCard
-                title={t("details.metrics.mtbf")}
-                value={metrics.mtbf}
-                suffix="h"
-                decimals={0}
-                subtitle={t("details.metrics.meanTimeBetweenFailures")}
-                icon={Zap}
-                variant="green"
-              />
-              <PremiumMetricCard
-                title={t("details.metrics.reliabilityScore")}
-                value={metrics.reliabilityScore}
-                suffix="%"
-                decimals={1}
-                icon={Zap}
-                variant="teal"
-              />
-              <PremiumMetricCard
-                title={t("details.metrics.totalDowntime")}
-                value={metrics.totalDowntimeHours}
-                suffix="h"
-                decimals={1}
-                icon={Clock}
-                variant="orange"
-              />
-              <PremiumMetricCard
-                title={t("details.metrics.mttr")}
-                value={metrics.mttr}
-                suffix="h"
-                decimals={1}
-                subtitle={t("details.metrics.meanTimeToRepair")}
-                icon={Timer}
-                variant="rose"
-              />
-              <PremiumMetricCard
-                title={t("details.metrics.workOrders")}
-                value={metrics.totalWorkOrders}
-                subtitle={t("details.metrics.totalCompleted")}
-                icon={Wrench}
-                variant="slate"
-              />
-            </div>
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+                <PremiumMetricCard
+                  title={t("details.metrics.avgRepairCost")}
+                  value={metrics.averageRepairCost}
+                  suffix="MAD"
+                  decimals={2}
+                  subtitle={t("details.metrics.perWorkOrder")}
+                  icon={Wrench}
+                  variant="indigo"
+                />
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {t("details.metrics.costPerKm")}
+                    </CardTitle>
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      <AnimatedNumber value={metrics.costPerKm} currency="MAD" decimals={3} />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("details.metrics.perWorkOrder")}: <AnimatedNumber value={metrics.averageRepairCost} currency="MAD" />
+                    </p>
+                  </CardContent>
+                </Card>
+                <PremiumMetricCard
+                  title={t("details.metrics.mtbf")}
+                  value={metrics.mtbf}
+                  suffix="h"
+                  decimals={0}
+                  subtitle={t("details.metrics.meanTimeBetweenFailures")}
+                  icon={Zap}
+                  variant="green"
+                />
+                <PremiumMetricCard
+                  title={t("details.metrics.reliabilityScore")}
+                  value={metrics.reliabilityScore}
+                  suffix="%"
+                  decimals={1}
+                  icon={Zap}
+                  variant="teal"
+                />
+                <PremiumMetricCard
+                  title={t("details.metrics.totalDowntime")}
+                  value={metrics.totalDowntimeHours}
+                  suffix="h"
+                  decimals={1}
+                  icon={Clock}
+                  variant="orange"
+                />
+                <PremiumMetricCard
+                  title={t("details.metrics.mttr")}
+                  value={metrics.mttr}
+                  suffix="h"
+                  decimals={1}
+                  subtitle={t("details.metrics.meanTimeToRepair")}
+                  icon={Timer}
+                  variant="rose"
+                />
+                <PremiumMetricCard
+                  title={t("details.metrics.workOrders")}
+                  value={metrics.totalWorkOrders}
+                  subtitle={t("details.metrics.totalCompleted")}
+                  icon={Wrench}
+                  variant="slate"
+                />
+              </div>
+            )}
           </div>
 
-          <ServiceSummary
-            lastMaintenanceDate={serviceSummary.lastMaintenanceDate || "—"}
-            lastMaintenanceCost={serviceSummary.lastMaintenanceCost || 0}
-            nextServiceDue={serviceSummary.nextServiceDue || "—"}
-            lastTechnician={serviceSummary.lastTechnicianName || "—"}
-            serviceInterval={serviceSummary.serviceInterval || "—"}
-          />
+          {!extendedDetails?.serviceSummary ? (
+            <Card>
+              <CardContent className="p-6">
+                <DataErrorPlaceholder
+                  message="Failed to load service summary"
+                  onRetry={() => refetchExtended()}
+                  size="md"
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <ServiceSummary
+              lastMaintenanceDate={serviceSummary.lastMaintenanceDate || "—"}
+              lastMaintenanceCost={serviceSummary.lastMaintenanceCost || 0}
+              nextServiceDue={serviceSummary.nextServiceDue || "—"}
+              lastTechnician={serviceSummary.lastTechnicianName || "—"}
+              serviceInterval={serviceSummary.serviceInterval || "—"}
+            />
+          )}
 
           <div>
             <h2 className="mb-4 text-xl font-semibold">{t("details.analytics.title")}</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              <CostTrendChart
-                data={(charts.maintenanceCostTrend || []).map((item) => ({
-                  month: item.date,
-                  value: item.value,
-                  label: formatCurrency(item.value),
-                }))}
-              />
-              <DowntimeChart
-                data={(charts.downtimeTrend || []).map((item) => ({
-                  month: item.date,
-                  value: item.value,
-                  label: `${item.value.toFixed(0)}h`,
-                }))}
-              />
-
-              <Card className="shadow-sm">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-xl font-semibold">{t("details.analytics.mileageGrowth")}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex h-[240px] items-center justify-center text-muted-foreground">
-                    {(charts.mileageGrowth || []).length > 0 ? (
-                      <p>{t("details.analytics.chartDataAvailable")}</p>
-                    ) : (
-                      <p>{t("details.analytics.noMileageHistory")}</p>
-                    )}
-                  </div>
+            {!extendedDetails?.charts ? (
+              <Card>
+                <CardContent className="p-6">
+                  <DataErrorPlaceholder
+                    message="Failed to load analytics charts"
+                    onRetry={() => refetchExtended()}
+                    size="md"
+                  />
                 </CardContent>
               </Card>
-            </div>
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2">
+                <CostTrendChart
+                  data={(charts.maintenanceCostTrend || []).map((item) => ({
+                    month: item.date,
+                    value: item.value,
+                    label: formatCurrency(item.value),
+                  }))}
+                />
+                <DowntimeChart
+                  data={(charts.downtimeTrend || []).map((item) => ({
+                    month: item.date,
+                    value: item.value,
+                    label: `${item.value.toFixed(0)}h`,
+                  }))}
+                />
+
+                <Card className="shadow-sm">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-xl font-semibold">{t("details.analytics.mileageGrowth")}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex h-[240px] items-center justify-center text-muted-foreground">
+                      {(charts.mileageGrowth || []).length > 0 ? (
+                        <p>{t("details.analytics.chartDataAvailable")}</p>
+                      ) : (
+                        <p>{t("details.analytics.noMileageHistory")}</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
 
           <div>
             <h2 className="mb-4 text-xl font-semibold">{t("details.partsUsed.title")}</h2>
-            <Card className="shadow-sm">
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-gray-50 dark:bg-gray-800/50">
-                        <TableHead className="font-semibold">{t("details.partsUsed.partName")}</TableHead>
-                        <TableHead className="font-semibold">{t("details.partsUsed.quantity")}</TableHead>
-                        <TableHead className="font-semibold">{t("details.partsUsed.cost")}</TableHead>
-                        <TableHead className="font-semibold">{t("details.partsUsed.dateUsed")}</TableHead>
-                        <TableHead className="font-semibold">{t("details.partsUsed.workOrder")}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {(partsUsed || []).length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
-                            {t("details.partsUsed.noPartsUsed")}
-                          </TableCell>
+            {!extendedDetails?.partsUsed ? (
+              <Card>
+                <CardContent className="p-6">
+                  <DataErrorPlaceholder
+                    message="Failed to load parts usage data"
+                    onRetry={() => refetchExtended()}
+                    size="md"
+                  />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="shadow-sm">
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                          <TableHead className="font-semibold">{t("details.partsUsed.partName")}</TableHead>
+                          <TableHead className="font-semibold">{t("details.partsUsed.quantity")}</TableHead>
+                          <TableHead className="font-semibold">{t("details.partsUsed.cost")}</TableHead>
+                          <TableHead className="font-semibold">{t("details.partsUsed.dateUsed")}</TableHead>
+                          <TableHead className="font-semibold">{t("details.partsUsed.workOrder")}</TableHead>
                         </TableRow>
-                      ) : (
-                        partsUsed.map((part, index) => (
-                          <TableRow
-                            key={index}
-                            className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30"
-                          >
-                            <TableCell className="font-medium">
-                              <div className="flex items-center gap-2">
-                                <Package className="h-4 w-4 text-blue-600" />
-                                {part.partName}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <AnimatedNumber value={part.quantity} decimals={0} />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              <AnimatedNumber value={part.cost} currency="MAD" />
-                            </TableCell>
-                            <TableCell>{formatDateShort(part.dateUsed)}</TableCell>
-                            <TableCell>
-                              <Link
-                                href={`/dashboard/work-orders/${part.workOrderId}`}
-                                className="text-blue-600 hover:underline dark:text-blue-400"
-                              >
-                                {t("details.partsUsed.viewWorkOrder")}
-                              </Link>
+                      </TableHeader>
+                      <TableBody>
+                        {partsUsed.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
+                              {t("details.partsUsed.noPartsUsed")}
                             </TableCell>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
+                        ) : (
+                          partsUsed.map((part, index) => (
+                            <TableRow
+                              key={index}
+                              className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30"
+                            >
+                              <TableCell className="font-medium">
+                                <div className="flex items-center gap-2">
+                                  <Package className="h-4 w-4 text-blue-600" />
+                                  {part.partName}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <AnimatedNumber value={part.quantity} decimals={0} />
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                <AnimatedNumber value={part.cost} currency="MAD" />
+                              </TableCell>
+                              <TableCell>{formatDateShort(part.dateUsed)}</TableCell>
+                              <TableCell>
+                                <Link
+                                  href={`/dashboard/work-orders/${part.workOrderId}`}
+                                  className="text-blue-600 hover:underline dark:text-blue-400"
+                                >
+                                  {t("details.partsUsed.viewWorkOrder")}
+                                </Link>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </TabsContent>
 
         <TabsContent value="plans" className="space-y-6">
           {/* Upcoming Individual Tasks */}
-          {data?.upcomingMaintenance && data.upcomingMaintenance.length > 0 && (
+          {extendedDetails?.upcomingMaintenance && extendedDetails.upcomingMaintenance.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
                 <h2 className="text-lg font-semibold">{t("details.tabs.upcomingTasks") || "Upcoming Tasks"}</h2>
               </div>
               <div className="grid gap-3">
-                {data.upcomingMaintenance.map((event: any) => (
+                {extendedDetails.upcomingMaintenance.map((event: any) => (
                   <div
                     key={event.id}
                     className="flex items-center justify-between p-4 rounded-xl border bg-white dark:bg-gray-900/40 border-gray-100 dark:border-gray-800"
@@ -658,7 +758,7 @@ export default function VehicleDetailPage() {
         onClose={() => setIsUsageModalOpen(false)}
         onSubmit={handleUsageUpdate}
         isSubmitting={isUpdatingUsage}
-        currentKm={vehicle.mileage}
+        currentKm={vehicle.current_km || 0}
       />
     </div>
   );

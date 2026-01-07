@@ -176,9 +176,9 @@ export function VehicleTable({
                         {vehicle.brand} {vehicle.model}
                       </span>
                       <span className="text-xs text-gray-500">
-                        {vehicle.year} • {vehicle.vehicle_type ? (
+                        {vehicle.year} • {vehicle.vehicle_type?.code && vehicle.vehicle_type?.name ? (
                           tVehicleTypes.has(vehicle.vehicle_type.code) ? tVehicleTypes(vehicle.vehicle_type.code) : vehicle.vehicle_type.name
-                        ) : vehicle.type}
+                        ) : vehicle.type || 'Unknown'}
                       </span>
                     </div>
                   </TableCell>

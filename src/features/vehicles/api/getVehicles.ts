@@ -22,6 +22,7 @@ export const getVehicles = async (params: GetVehiclesParams = {}): Promise<GetVe
   const response = await apiClient.get<GetVehiclesResponse>("/vehicles", { 
     params: {
       include_kpis: true,
+      include_drivers: true,
       ...params,
     }
   });
