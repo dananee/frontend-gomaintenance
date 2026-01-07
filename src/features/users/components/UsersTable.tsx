@@ -183,7 +183,9 @@ export function UsersTable({ users: propUsers }: UsersTableProps = {}) {
                           variant="outline"
                           className={`${roleColor.bg} ${roleColor.text} ${roleColor.border}`}
                         >
-                          {t(`roles.${user.role}`)}
+                          {["admin", "manager", "technician", "viewer", "driver"].includes(user.role.toLowerCase())
+                            ? t(`roles.${user.role.toLowerCase()}`)
+                            : user.role}
                         </Badge>
                       </TableCell>
                       <TableCell>

@@ -11,7 +11,7 @@ export function checkPermission(permission: Permission): boolean {
     return false;
   }
 
-  const permissions = rolePermissions[user.role];
+  const permissions = rolePermissions[user.role] || [];
   return permissions.includes(permission);
 }
 
@@ -25,7 +25,7 @@ export function usePermission(permission: Permission): boolean {
     return false;
   }
 
-  const permissions = rolePermissions[user.role];
+  const permissions = rolePermissions[user.role] || [];
   return permissions.includes(permission);
 }
 

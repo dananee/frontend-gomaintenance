@@ -1,4 +1,4 @@
-export type Role = "admin" | "manager" | "technician" | "viewer" | "driver";
+export type Role = string;
 
 export type Permission =
   | "view_dashboard"
@@ -21,7 +21,7 @@ export type Permission =
   | "report_incident"
   | "view_costs";
 
-export const rolePermissions: Record<Role, Permission[]> = {
+export const rolePermissions: Record<string, Permission[]> = {
   admin: [
     "manage_users",
     "view_users",

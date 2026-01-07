@@ -13,6 +13,7 @@ import { getInitials } from "@/lib/utils";
 import { Role } from "@/lib/rbac/permissions";
 import { useUsersStore, UserStatus } from "../store/useUsersStore";
 import { useCreateUser } from "../hooks/useCreateUser";
+import { useRoles } from "@/hooks/useRoles";
 import { useTranslations } from "next-intl";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ interface AddUserDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const roles: Role[] = ["admin", "manager", "technician", "viewer", "driver"];
+
 
 export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
   const t = useTranslations("users");
@@ -34,6 +35,7 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
   const tt = useTranslations("toasts");
 
   const { mutate: performCreate, isPending: isCreating } = useCreateUser();
+  const { roles: fetchedRoles, isLoading: rolesLoading } = useRoles();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -219,9 +221,11 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                   <SelectValue placeholder={t("form.fields.selectRole")} />
                 </SelectTrigger>
                 <SelectContent>
-                  {roles.map((option) => (
-                    <SelectItem key={option} value={option} className="capitalize">
-                      {t(`roles.${option}`)}
+                  {fetchedRoles?.map((r) => (
+                    <SelectItem key={r.role} value={r.role} className="capitalize">
+                      {["admin", "manager", "technician", "viewer", "driver"].includes(r.role.toLowerCase())
+                        ? t(`roles.${r.role.toLowerCase()}`)
+                        : r.role}
                     </SelectItem>
                   ))}
                 </SelectContent>

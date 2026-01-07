@@ -40,6 +40,8 @@ export interface Vehicle {
   meter_unit?: "km" | "hours";
   fuel_type?: string;
   address?: string;
+  ville_id?: number;
+  ville?: { id: number; ville: string; region_id: number; region_data?: { id: number; region: string } };
   vehicle_condition?: string;
   created_at?: string;
   updated_at?: string;
@@ -57,6 +59,8 @@ export interface CreateVehicleDTO {
   status: VehicleStatus;
   meter_unit?: "km" | "hours";
   drivers?: string[]; // IDs of assigned drivers
+  ville_id?: number;
+  address?: string;
 }
 
 export interface UpdateVehicleDTO extends Partial<CreateVehicleDTO> {
