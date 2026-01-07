@@ -449,6 +449,9 @@
                 "active": "Actif",
                 "maintenance": "Maintenance",
                 "inactive": "Inactif",
+                "drivers": "Chauffeurs",
+                "searchDrivers": "Rechercher des chauffeurs...",
+                "selectDrivers": "Sélectionner des chauffeurs...",
                 "cancel": "Annuler",
                 "create": "Créer",
                 "update": "Mettre à jour"
