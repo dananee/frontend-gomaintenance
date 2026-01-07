@@ -34,6 +34,7 @@ import { Download, FileUp, FileOutput } from "lucide-react";
 import { ImportInventoryModal } from "@/features/inventory/components/ImportInventoryModal";
 import { getInventoryImportTemplate, exportInventoryExcel } from "@/features/inventory/api/inventoryExcel";
 import { useLocale } from "next-intl";
+import { useInventoryStats } from "@/features/inventory/hooks/useInventoryStats";
 
 export default function InventoryPage() {
   const t = useTranslations("inventory");
@@ -68,15 +69,10 @@ export default function InventoryPage() {
   const canImport = role && ["admin", "manager", "storekeeper"].includes(role);
   const canExport = role && ["admin", "manager"].includes(role);
 
-  const lowStockCount = useMemo(() => {
-    const rows = parts?.data || [];
-    return rows.filter((part) => part.total_quantity <= part.min_quantity).length;
-  }, [parts?.data]);
+  const { data: stats } = useInventoryStats();
 
-  const totalValue = useMemo(() => {
-    const rows = parts?.data || [];
-    return rows.reduce((sum, part) => sum + part.total_quantity * (part.unit_price_ht || 0), 0);
-  }, [parts?.data]);
+  const lowStockCount = stats?.low_stock_count || 0;
+  const totalValue = stats?.total_value || 0;
 
   const hasParts = (parts?.data || []).length > 0;
   const hasFilters =
@@ -247,7 +243,7 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                <AnimatedNumber value={parts?.data?.length || 0} decimals={0} />
+                <AnimatedNumber value={stats?.total_parts || 0} decimals={0} />
               </div>
               <p className="text-xs text-gray-500">{t("stats.totalParts.description")}</p>
             </CardContent>
@@ -283,7 +279,7 @@ export default function InventoryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                <AnimatedNumber value={categories?.length || 0} decimals={0} />
+                <AnimatedNumber value={stats?.categories_count || 0} decimals={0} />
               </div>
               <p className="text-xs text-gray-500">{t("stats.categories.description")}</p>
             </CardContent>
