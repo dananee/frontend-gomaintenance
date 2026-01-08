@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { AddVehicleDocumentRequest } from "@/features/vehicles/api/vehicleDocuments";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileUploader } from "@/components/ui/file-uploader";
 import { uploadFile } from "@/features/vehicles/api/vehicleDocuments";
 import { FileText, X, ChevronRight, AlertCircle, CheckCircle } from "lucide-react";
@@ -37,6 +37,7 @@ export function UploadDocumentModal({
   const t = useTranslations("features.vehicles.documents");
   const [step, setStep] = useState<Step>("upload");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     register,
@@ -45,6 +46,16 @@ export function UploadDocumentModal({
     reset,
     formState: { errors, isDirty },
   } = useForm<AddVehicleDocumentRequest>();
+
+  // Reset modal state when it opens
+  useEffect(() => {
+    if (isOpen) {
+      reset();
+      setStep("upload");
+      setSelectedFile(null);
+      setIsUploading(false);
+    }
+  }, [isOpen, reset]);
 
   const { preventClose, handleAttemptClose } = useFormGuard({
     isDirty: isDirty || step === "details", // Guard if form is dirty or if we are in details step
@@ -79,8 +90,6 @@ export function UploadDocumentModal({
 
     setStep("details");
   };
-
-  const [isUploading, setIsUploading] = useState(false);
 
   const handleFormSubmit = async (payload: AddVehicleDocumentRequest) => {
     if (!selectedFile) return;
