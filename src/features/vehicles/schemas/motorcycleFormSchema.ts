@@ -22,7 +22,7 @@ export const motorcycleFormSchema = z.object({
   
   energy_type: z.enum(["PETROL", "ELECTRIC"]),
   
-  status: z.enum(["active", "maintenance", "inactive"]).default("active"),
+  status: z.enum(["active", "inactive", "maintenance"]),
 });
 
 export type MotorcycleFormData = z.infer<typeof motorcycleFormSchema>;
