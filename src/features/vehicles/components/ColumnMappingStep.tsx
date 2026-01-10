@@ -118,10 +118,10 @@ export function ColumnMappingStep({
             }
         });
 
-        // Check for duplicate mappings (excluding ignore)
+        // Check for duplicate mappings (excluding ignore and empty)
         const fieldCounts = new Map<string, number>();
         Object.values(mapping).forEach((field) => {
-            if (field && field !== "ignore" && field !== "") {
+            if (field && field !== "ignore") {
                 fieldCounts.set(field, (fieldCounts.get(field) || 0) + 1);
             }
         });

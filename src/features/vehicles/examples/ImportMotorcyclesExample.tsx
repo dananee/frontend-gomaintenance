@@ -9,60 +9,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ImportMotorcyclesModal } from "@/features/vehicles/components/ImportMotorcyclesModal";
 import { apiClient } from "@/lib/api/axiosClient";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import type { MotorcycleRow } from "@/features/vehicles/schemas/motorcycleImportSchema";
 
 export function MotorcyclesPage() {
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-    const { toast } = useToast();
-
-    /**
-     * Handle motorcycle import
-     * Sends the validated motorcycle data to the backend API
-     */
-    const handleImportMotorcycles = async (motorcycles: MotorcycleRow[]) => {
-        try {
-            // Send to backend API endpoint
-            const response = await apiClient.post("/vehicles/motorcycles/import", {
-                motorcycles,
-            });
-
-            // Show success toast
-            if (response.data.success_count > 0) {
-                toast({
-                    title: "Import Successful",
-                    description: `${response.data.success_count} motorcycles imported successfully`,
-                });
-            }
-
-            // Return result for modal to display
-            return {
-                success: response.data.success_count || 0,
-                failed: response.data.failed_count || 0,
-                errors: response.data.errors || [],
-            };
-        } catch (error: any) {
-            // Handle API errors
-            console.error("Import failed:", error);
-
-            toast({
-                title: "Import Failed",
-                description: error.response?.data?.message || "Failed to import motorcycles",
-                variant: "destructive",
-            });
-
-            return {
-                success: 0,
-                failed: motorcycles.length,
-                errors: [
-                    {
-                        row: 0,
-                        message: error.response?.data?.message || "Server error occurred",
-                    },
-                ],
-            };
-        }
-    };
 
     return (
         <div className="container mx-auto p-6">
@@ -79,11 +30,10 @@ export function MotorcyclesPage() {
 
             {/* Your motorcycles table/list here */}
 
-            {/* Import Modal */}
+            {/* Import Modal - Now handles import internally */}
             <ImportMotorcyclesModal
                 open={isImportModalOpen}
                 onOpenChange={setIsImportModalOpen}
-                onImport={handleImportMotorcycles}
             />
         </div>
     );
@@ -92,53 +42,17 @@ export function MotorcyclesPage() {
 /**
  * Alternative: Using with React Query for better state management
  */
+import { useQueryClient } from "@tanstack/react-query";
+
 export function MotorcyclesPageWithReactQuery() {
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-    const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const importMutation = useMutation({
-        mutationFn: async (motorcycles: MotorcycleRow[]) => {
-            const response = await apiClient.post("/vehicles/motorcycles/import", {
-                motorcycles,
-            });
-            return response.data;
-        },
-        onSuccess: (data) => {
-            // Invalidate and refetch motorcycles list
-            queryClient.invalidateQueries({ queryKey: ["motorcycles"] });
-
-            if (data.success_count > 0) {
-                toast({
-                    title: "Import Successful",
-                    description: `${data.success_count} motorcycles imported`,
-                });
-            }
-        },
-        onError: (error: any) => {
-            toast({
-                title: "Import Failed",
-                description: error.response?.data?.message || "Failed to import",
-                variant: "destructive",
-            });
-        },
-    });
-
-    const handleImportMotorcycles = async (motorcycles: MotorcycleRow[]) => {
-        try {
-            const result = await importMutation.mutateAsync(motorcycles);
-            return {
-                success: result.success_count || 0,
-                failed: result.failed_count || 0,
-                errors: result.errors || [],
-            };
-        } catch (error) {
-            return {
-                success: 0,
-                failed: motorcycles.length,
-                errors: [{ row: 0, message: "Import failed" }],
-            };
-        }
+    // Modal handles import internally, just invalidate queries on success
+    const handleImportSuccess = () => {
+        // Invalidate and refetch motorcycles list
+        queryClient.invalidateQueries({ queryKey: ["motorcycles"] });
+        toast.success("Motorcycles imported successfully");
     };
 
     return (
@@ -149,8 +63,13 @@ export function MotorcyclesPageWithReactQuery() {
 
             <ImportMotorcyclesModal
                 open={isImportModalOpen}
-                onOpenChange={setIsImportModalOpen}
-                onImport={handleImportMotorcycles}
+                onOpenChange={(open) => {
+                    setIsImportModalOpen(open);
+                    if (!open) {
+                        // Refresh data when modal closes
+                        handleImportSuccess();
+                    }
+                }}
             />
         </div>
     );
