@@ -42,6 +42,7 @@ interface VehicleTableProps {
   onCreateWorkOrder: (vehicle: Vehicle) => void;
   onCreatePlan: (vehicle: Vehicle) => void;
   isRefetching?: boolean;
+  isMotorcycleView?: boolean; // Hide mileage/engine hours/meter unit for motorcycles
 }
 
 export function VehicleTable({
@@ -51,7 +52,8 @@ export function VehicleTable({
   onDelete,
   onCreateWorkOrder,
   onCreatePlan,
-  isRefetching
+  isRefetching,
+  isMotorcycleView = false,
 }: VehicleTableProps) {
   const router = useRouter();
   const t = useTranslations("vehicles.details.table");
@@ -64,9 +66,11 @@ export function VehicleTable({
     { id: "plate", label: t("headers.plate") },
     { id: "vin", label: t("headers.vin") },
     { id: "status", label: t("headers.status") },
-    { id: "mileage", label: t("headers.mileage") },
-    { id: "engineHours", label: t("headers.engineHours") },
-    { id: "meterUnit", label: t("headers.meterUnit") },
+    ...(!isMotorcycleView ? [
+      { id: "mileage", label: t("headers.mileage") },
+      { id: "engineHours", label: t("headers.engineHours") },
+      { id: "meterUnit", label: t("headers.meterUnit") },
+    ] : []),
     { id: "fuelType", label: t("headers.fuelType") },
     { id: "address", label: t("headers.address") },
     { id: "condition", label: t("headers.condition") },
@@ -150,9 +154,9 @@ export function VehicleTable({
               {isVisible("plate") && <TableHead className="font-semibold">{t("headers.plate")}</TableHead>}
               {isVisible("vin") && <TableHead className="font-semibold">{t("headers.vin")}</TableHead>}
               {isVisible("status") && <TableHead className="font-semibold">{t("headers.status")}</TableHead>}
-              {isVisible("mileage") && <TableHead className="font-semibold">{t("headers.mileage")}</TableHead>}
-              {isVisible("engineHours") && <TableHead className="font-semibold">{t("headers.engineHours")}</TableHead>}
-              {isVisible("meterUnit") && <TableHead className="font-semibold">{t("headers.meterUnit")}</TableHead>}
+              {!isMotorcycleView && isVisible("mileage") && <TableHead className="font-semibold">{t("headers.mileage")}</TableHead>}
+              {!isMotorcycleView && isVisible("engineHours") && <TableHead className="font-semibold">{t("headers.engineHours")}</TableHead>}
+              {!isMotorcycleView && isVisible("meterUnit") && <TableHead className="font-semibold">{t("headers.meterUnit")}</TableHead>}
               {isVisible("fuelType") && <TableHead className="font-semibold">{t("headers.fuelType")}</TableHead>}
               {isVisible("address") && <TableHead className="font-semibold">{t("headers.address")}</TableHead>}
               {isVisible("condition") && <TableHead className="font-semibold">{t("headers.condition")}</TableHead>}
@@ -199,7 +203,7 @@ export function VehicleTable({
                     </span>
                   </TableCell>
                 )}
-                {isVisible("mileage") && (
+                {!isMotorcycleView && isVisible("mileage") && (
                   <TableCell>
                     <div className="flex items-center gap-1.5">
                       <Activity className="h-3.5 w-3.5 text-gray-400" />
@@ -209,7 +213,7 @@ export function VehicleTable({
                     </div>
                   </TableCell>
                 )}
-                {isVisible("engineHours") && (
+                {!isMotorcycleView && isVisible("engineHours") && (
                   <TableCell>
                     <div className="flex items-center gap-1.5 text-gray-500">
                       <Clock className="h-3.5 w-3.5" />
@@ -219,7 +223,7 @@ export function VehicleTable({
                     </div>
                   </TableCell>
                 )}
-                {isVisible("meterUnit") && (
+                {!isMotorcycleView && isVisible("meterUnit") && (
                   <TableCell>
                     <Badge variant="outline" className="capitalize">
                       {vehicle.meter_unit}

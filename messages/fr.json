@@ -497,6 +497,55 @@
                 "close": "Fermer",
                 "cancel": "Annuler"
             },
+            "motorcycles": {
+                "import": {
+                    "title": "Importer des motos",
+                    "description": "Téléversez un fichier Excel ou CSV pour importer des motos. Seuls la plaque, la marque, le modèle et le type d'énergie sont requis.",
+                    "dragDrop": "Glissez-déposez votre fichier ici",
+                    "onlyXlsxCsv": "Seuls les fichiers .xlsx et .csv sont supportés (max 10MB)",
+                    "browse": "Parcourir les fichiers",
+                    "removeFile": "Supprimer le fichier",
+                    "preview": "Aperçu",
+                    "plate": "Immatriculation",
+                    "brand": "Marque",
+                    "model": "Modèle",
+                    "energy": "Type d'énergie",
+                    "import": "Importer les motos",
+                    "importing": "Importation...",
+                    "successful": "Succès",
+                    "failed": "Échec",
+                    "motorcyclesImported": "motos importées avec succès",
+                    "motorcyclesFailed": "motos n'ont pas pu être importées",
+                    "errorDetails": "Détails des erreurs",
+                    "row": "Ligne",
+                    "error": "Erreur",
+                    "close": "Fermer",
+                    "cancel": "Annuler"
+                },
+                "form": {
+                    "title": "Créer une nouvelle moto",
+                    "editTitle": "Modifier la moto",
+                    "immatriculation": "Immatriculation",
+                    "immatriculationPlaceholder": "Ex: ABC-1234",
+                    "marque": "Marque",
+                    "marquePlaceholder": "Ex: Yamaha, Honda",
+                    "modele": "Modèle",
+                    "modelePlaceholder": "Ex: MT-07",
+                    "energyType": "Type d'énergie",
+                    "selectEnergyType": "Sélectionner...",
+                    "petrol": "Essence",
+                    "electric": "Électrique",
+                    "status": "Statut",
+                    "active": "Actif",
+                    "maintenance": "En maintenance",
+                    "inactive": "Inactif",
+                    "cancel": "Annuler",
+                    "create": "Créer",
+                    "update": "Mettre à jour",
+                    "description": "Ajoutez une nouvelle moto à votre flotte",
+                    "editDescription": "Modifiez les informations de la moto"
+                }
+            },
             "export": {
                 "button": "Exporter vers Excel",
                 "downloading": "Téléchargement..."
@@ -1797,6 +1846,10 @@
     },
     "vehicles": {
         "title": "Véhicules",
+        "tabs": {
+            "all": "Tous les véhicules",
+            "motorcycles": "Motos"
+        },
         "actions": {
             "add": "Ajouter un véhicule",
             "addFirst": "Ajoutez votre premier véhicule",

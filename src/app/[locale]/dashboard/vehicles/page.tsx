@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { VehicleTable } from "@/features/vehicles/components/VehicleTable";
 import { VehicleForm } from "@/features/vehicles/components/VehicleForm";
 import { useVehicles } from "@/features/vehicles/hooks/useVehicles";
+import { useMotorcycles } from "@/features/vehicles/hooks/useMotorcycles";
 import { useVehicleTypes } from "@/features/vehicles/hooks/useVehicleTypes";
 import { Vehicle } from "@/features/vehicles/types/vehicle.types";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,8 @@ import { Modal } from "@/components/ui/modal";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Pagination } from "@/components/ui/pagination";
 import { useModal } from "@/hooks/useModal";
-import { Plus, Truck, FileUp, FileDown } from "lucide-react";
+import { Plus, Truck, FileUp, FileDown, Bike } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
 import { useDeleteVehicle } from "@/features/vehicles/hooks/useDeleteVehicle";
@@ -21,6 +23,8 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useCreateVehicleMaintenancePlan } from "@/features/vehicles/hooks/useVehiclePlans";
 import { CreateMaintenancePlanRequest } from "@/features/vehicles/api/vehiclePlans";
 import { VehicleImportWizard } from "@/features/vehicles/components/VehicleImportWizard";
+import { CreateMotorcycleModal } from "@/features/vehicles/components/CreateMotorcycleModal";
+import { ImportMotorcyclesModal } from "@/features/vehicles/components/ImportMotorcyclesModal";
 import {
   exportVehicles,
   downloadTemplate,
@@ -38,18 +42,41 @@ export default function VehiclesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState<"all" | "motorcycles">("all");
+
+  // Find motorcycle type ID
+  const motorcycleType = useMemo(() => {
+    return vehicleTypes.find(type => type.code === "MOTORCYCLE");
+  }, [vehicleTypes]);
+
+  // Determine effective type filter based on active tab
+  const effectiveTypeFilter = useMemo(() => {
+    if (activeTab === "motorcycles" && motorcycleType) {
+      return motorcycleType.id;
+    }
+    return typeFilter === "all" ? undefined : typeFilter;
+  }, [activeTab, motorcycleType, typeFilter]);
 
   const hasFilters = search !== "" || statusFilter !== "all" || typeFilter !== "all";
   const effectivePage = hasFilters ? 1 : currentPage;
   const effectivePageSize = hasFilters ? 1000 : pageSize;
 
-  const { data, isLoading, isFetching } = useVehicles({
+  // Fetch vehicles or motorcycles based on active tab
+  const vehiclesQuery = useVehicles({
     page: effectivePage,
     page_size: effectivePageSize,
     search: search || undefined,
     status: statusFilter === "all" ? undefined : statusFilter,
-    type_id: typeFilter === "all" ? undefined : typeFilter,
+    type_id: effectiveTypeFilter,
   });
+
+  const motorcyclesQuery = useMotorcycles({
+    search: search || undefined,
+    status: statusFilter === "all" ? undefined : statusFilter,
+  });
+
+  // Use the appropriate query based on active tab
+  const { data, isLoading, isFetching } = activeTab === "motorcycles" ? motorcyclesQuery : vehiclesQuery;
   const { isOpen, open, close } = useModal();
   const queryClient = useQueryClient();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
@@ -59,6 +86,8 @@ export default function VehiclesPage() {
   const [woVehicle, setWoVehicle] = useState<Vehicle | null>(null);
   const [planVehicle, setPlanVehicle] = useState<Vehicle | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isMotorcycleModalOpen, setIsMotorcycleModalOpen] = useState(false);
+  const [isMotorcycleImportOpen, setIsMotorcycleImportOpen] = useState(false);
 
   const deleteMutation = useDeleteVehicle();
   const createPlanMutation = useCreateVehicleMaintenancePlan(planVehicle?.id || "");
@@ -71,7 +100,11 @@ export default function VehiclesPage() {
 
   const handleCreate = () => {
     setSelectedVehicle(null);
-    open();
+    if (activeTab === "motorcycles") {
+      setIsMotorcycleModalOpen(true);
+    } else {
+      open();
+    }
   };
 
   const handleSuccess = () => {
@@ -137,9 +170,24 @@ export default function VehiclesPage() {
     }
   };
 
-  const vehicles = data?.data || [];
-  const totalPages = data?.total_pages || 1;
-  const totalItems = data?.total_items || 0;
+  // Normalize data structure (motorcycles returns array, vehicles returns paginated response)
+  const vehicles = useMemo(() => {
+    if (activeTab === "motorcycles") {
+      return Array.isArray(data) ? data : [];
+    }
+    return (data as any)?.data || [];
+  }, [data, activeTab]);
+
+  const totalPages = useMemo(() => {
+    return activeTab === "motorcycles" ? 1 : ((data as any)?.total_pages || 1);
+  }, [data, activeTab]);
+
+  const totalItems = useMemo(() => {
+    if (activeTab === "motorcycles") {
+      return Array.isArray(data) ? data.length : 0;
+    }
+    return (data as any)?.total_items || 0;
+  }, [data, activeTab]);
 
   const hasVehicles = totalItems > 0;
   // hasFilters is now defined above
@@ -179,7 +227,16 @@ export default function VehiclesPage() {
           {t("title")}
         </h1>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setIsImportModalOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (activeTab === "motorcycles") {
+                setIsMotorcycleImportOpen(true);
+              } else {
+                setIsImportModalOpen(true);
+              }
+            }}
+          >
             <FileUp className="mr-2 h-4 w-4" />
             {t("import.import")}
           </Button>
@@ -189,110 +246,127 @@ export default function VehiclesPage() {
           </Button>
           <Button onClick={handleCreate}>
             <Plus className="mr-2 h-4 w-4" />
-            {t("actions.add")}
+            {activeTab === "motorcycles" ? "Ajouter une moto" : t("actions.add")}
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <input
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
-          placeholder={t("filters.searchPlaceholder")}
-          className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
-        >
-          <option value="all">{t("filters.status.all")}</option>
-          <option value="active">{t("filters.status.active")}</option>
-          <option value="inactive">{t("filters.status.inactive")}</option>
-          <option value="maintenance">{t("filters.status.maintenance")}</option>
-          <option value="retired">{t("filters.status.retired")}</option>
-        </select>
-        <select
-          value={typeFilter}
-          onChange={(e) => {
-            setTypeFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
-        >
-          <option value="all">{t("filters.type.all")}</option>
-          {uniqueVehicleTypes.map((type) => (
-            <option key={type.id} value={type.id}>
-              {tVehicleTypes.has(type.code) ? tVehicleTypes(type.code) : type.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "all" | "motorcycles")} className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="all" className="gap-2">
+            <Truck className="h-4 w-4" />
+            {t("tabs.all")}
+          </TabsTrigger>
+          <TabsTrigger value="motorcycles" className="gap-2">
+            <Bike className="h-4 w-4" />
+            {t("tabs.motorcycles")}
+          </TabsTrigger>
+        </TabsList>
 
-      {!isLoading && !hasVehicles ? (
-        <div className="rounded-lg border border-gray-200 dark:border-gray-700">
-          <EmptyState
-            icon={Truck}
-            title={t("empty.title")}
-            description={t("empty.description")}
-            action={{
-              label: t("actions.addFirst"),
-              onClick: handleCreate,
-            }}
-          />
-        </div>
-      ) : !isLoading && vehicles.length === 0 && hasFilters ? (
-        <div className="rounded-lg border border-gray-200 dark:border-gray-700">
-          <EmptyState
-            icon={Truck}
-            title={t("empty.notFoundTitle")}
-            description={t("empty.notFoundDescription")}
-            action={{
-              label: t("actions.clearFilters"),
-              onClick: () => {
-                setSearch("");
-                setStatusFilter("all");
-                setTypeFilter("all");
-              },
-            }}
-            secondaryAction={{
-              label: t("actions.add"),
-              onClick: handleCreate,
-            }}
-          />
-        </div>
-      ) : (
-        <>
-          <VehicleTable
-            vehicles={vehicles}
-            isLoading={isLoading}
-            isRefetching={isFetching}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onCreateWorkOrder={handleCreateWorkOrder}
-            onCreatePlan={handleCreatePlan}
-          />
-          {vehicles.length > 0 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              pageSize={pageSize}
-              totalItems={totalItems}
-              onPageChange={(page) => setCurrentPage(page)}
-              onPageSizeChange={(size) => {
-                setPageSize(size);
+        <TabsContent value={activeTab} className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-4">
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setCurrentPage(1);
               }}
+              placeholder={t("filters.searchPlaceholder")}
+              className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
             />
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+            >
+              <option value="all">{t("filters.status.all")}</option>
+              <option value="active">{t("filters.status.active")}</option>
+              <option value="inactive">{t("filters.status.inactive")}</option>
+              <option value="maintenance">{t("filters.status.maintenance")}</option>
+              <option value="retired">{t("filters.status.retired")}</option>
+            </select>
+            <select
+              value={typeFilter}
+              onChange={(e) => {
+                setTypeFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="rounded-lg border border-gray-200 p-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+              disabled={activeTab === "motorcycles"}
+            >
+              <option value="all">{t("filters.type.all")}</option>
+              {uniqueVehicleTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {tVehicleTypes.has(type.code) ? tVehicleTypes(type.code) : type.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {!isLoading && !hasVehicles ? (
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700">
+              <EmptyState
+                icon={activeTab === "motorcycles" ? Bike : Truck}
+                title={t("empty.title")}
+                description={t("empty.description")}
+                action={{
+                  label: t("actions.addFirst"),
+                  onClick: handleCreate,
+                }}
+              />
+            </div>
+          ) : !isLoading && vehicles.length === 0 && hasFilters ? (
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700">
+              <EmptyState
+                icon={activeTab === "motorcycles" ? Bike : Truck}
+                title={t("empty.notFoundTitle")}
+                description={t("empty.notFoundDescription")}
+                action={{
+                  label: t("actions.clearFilters"),
+                  onClick: () => {
+                    setSearch("");
+                    setStatusFilter("all");
+                    setTypeFilter("all");
+                  },
+                }}
+                secondaryAction={{
+                  label: t("actions.add"),
+                  onClick: handleCreate,
+                }}
+              />
+            </div>
+          ) : (
+            <>
+              <VehicleTable
+                vehicles={vehicles}
+                isLoading={isLoading}
+                isRefetching={isFetching}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onCreateWorkOrder={handleCreateWorkOrder}
+                onCreatePlan={handleCreatePlan}
+                isMotorcycleView={activeTab === "motorcycles"}
+              />
+              {vehicles.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  pageSize={pageSize}
+                  totalItems={totalItems}
+                  onPageChange={(page) => setCurrentPage(page)}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setCurrentPage(1);
+                  }}
+                />
+              )}
+            </>
           )}
-        </>
-      )}
+        </TabsContent>
+      </Tabs>
 
       <Modal
         isOpen={isOpen}
@@ -351,6 +425,7 @@ export default function VehiclesPage() {
         variant="destructive"
       />
 
+      {/* Vehicle Import Modal */}
       <Modal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
@@ -365,6 +440,21 @@ export default function VehiclesPage() {
           }}
         />
       </Modal>
+
+      {/* Motorcycle Create Modal */}
+      <CreateMotorcycleModal
+        open={isMotorcycleModalOpen}
+        onOpenChange={setIsMotorcycleModalOpen}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+        }}
+      />
+
+      {/* Motorcycle Import Modal */}
+      <ImportMotorcyclesModal
+        open={isMotorcycleImportOpen}
+        onOpenChange={setIsMotorcycleImportOpen}
+      />
     </div>
   );
 }
