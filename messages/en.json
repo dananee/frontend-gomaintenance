@@ -448,6 +448,9 @@
                 "active": "Active",
                 "maintenance": "Maintenance",
                 "inactive": "Inactive",
+                "drivers": "Drivers",
+                "searchDrivers": "Search drivers...",
+                "selectDrivers": "Select drivers...",
                 "cancel": "Cancel",
                 "create": "Create",
                 "update": "Update"
@@ -492,6 +495,55 @@
                 "error": "Error",
                 "close": "Close",
                 "cancel": "Cancel"
+            },
+            "motorcycles": {
+                "import": {
+                    "title": "Import Motorcycles",
+                    "description": "Upload an Excel or CSV file to import motorcycles. Only plate, brand, model, and energy type are required.",
+                    "dragDrop": "Drag & drop your file here",
+                    "onlyXlsxCsv": "Only .xlsx and .csv files are supported (max 10MB)",
+                    "browse": "Browse Files",
+                    "removeFile": "Remove file",
+                    "preview": "Preview",
+                    "plate": "License Plate",
+                    "brand": "Brand",
+                    "model": "Model",
+                    "energy": "Energy Type",
+                    "import": "Import Motorcycles",
+                    "importing": "Importing...",
+                    "successful": "Successful",
+                    "failed": "Failed",
+                    "motorcyclesImported": "motorcycles imported successfully",
+                    "motorcyclesFailed": "motorcycles failed to import",
+                    "errorDetails": "Error Details",
+                    "row": "Row",
+                    "error": "Error",
+                    "close": "Close",
+                    "cancel": "Cancel"
+                },
+                "form": {
+                    "title": "Create New Motorcycle",
+                    "editTitle": "Edit Motorcycle",
+                    "immatriculation": "License Plate",
+                    "immatriculationPlaceholder": "Ex: ABC-1234",
+                    "marque": "Brand",
+                    "marquePlaceholder": "Ex: Yamaha, Honda",
+                    "modele": "Model",
+                    "modelePlaceholder": "Ex: MT-07",
+                    "energyType": "Energy Type",
+                    "selectEnergyType": "Select...",
+                    "petrol": "Petrol",
+                    "electric": "Electric",
+                    "status": "Status",
+                    "active": "Active",
+                    "maintenance": "In Maintenance",
+                    "inactive": "Inactive",
+                    "cancel": "Cancel",
+                    "create": "Create",
+                    "update": "Update",
+                    "description": "Add a new motorcycle to your fleet",
+                    "editDescription": "Edit motorcycle information"
+                }
             },
             "export": {
                 "button": "Export to Excel",
@@ -1666,6 +1718,10 @@
     },
     "vehicles": {
         "title": "Vehicles",
+        "tabs": {
+            "all": "All Vehicles",
+            "motorcycles": "Motorcycles"
+        },
         "actions": {
             "add": "Add Vehicle",
             "addFirst": "Add Your First Vehicle",
